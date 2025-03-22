@@ -1,0 +1,42 @@
+services:
+  web:
+    image: tomcat:latest
+    ports:
+      - "8081:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./target/bookly-1.00.war:/usr/local/tomcat/webapps/ROOT.war
+      - ./logs:/usr/local/tomcat/webapps/logs
+      - ./logs:/usr/local/tomcat/webapps/my-logs
+
+  db:
+    image: postgres
+    ports:
+      - "5434:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=BooklyDB
+    volumes:
+      - ./src/main/database/schema.sql:/docker-entrypoint-initdb.d/01_database.sql
+      - ./src/main/database/insert.sql:/docker-entrypoint-initdb.d/02_insert.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 10s
+      retries: 50
+
+#
+#      services:
+#          volumes:
+#            - ./HW2-frontend/target/yummy-center-1.00.war:/usr/local/tomcat/webapps/ROOT.war
+#            - ./logs:/usr/local/tomcat/webapps/logs
+#        db:
+#          image: postgres
+#          ports:
+#            - "5432:5432"
+#          volumes:
+#            - ./HW2-frontend/src/main/database/database.sql:/docker-entrypoint-initdb.d/01_database.sql
+#            - ./HW2-frontend/src/main/database/insert.sql:/docker-entrypoint-initdb.d/02_insert.sql

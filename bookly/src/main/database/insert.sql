@@ -1,0 +1,144 @@
+-- CREATE DATABASE BooklyDB
+--     WITH
+--     OWNER = postgres
+--     ENCODING = 'UTF8'
+--     LC_COLLATE = 'en_US.utf8'
+--     LC_CTYPE = 'en_US.utf8'
+--     LOCALE_PROVIDER = 'libc'
+--     TABLESPACE = pg_default
+--     CONNECTION LIMIT = -1
+--     IS_TEMPLATE = False;
+--
+--
+-- CREATE SCHEMA IF NOT EXISTS bookly_web;
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.user (
+--     username VARCHAR(50) PRIMARY KEY NOT NULL,
+--     name VARCHAR(50) NOT NULL,
+--     surname VARCHAR(50) NOT NULL,
+--     password VARCHAR(50) NOT NULL,
+--     email VARCHAR(100) NOT NULL,
+--     about_me TEXT,
+--     contact TEXT
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.user_image (
+--     username VARCHAR(50) PRIMARY KEY NOT NULL,
+--     image BYTEA NOT NULL,
+--     image_type VARCHAR(255) NOT NULL,
+--     FOREIGN KEY (username) REFERENCES food_recipe_web.user(username)
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.category (
+--      category_name VARCHAR(100) PRIMARY KEY NOT NULL
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.sub_category (
+--     sub_category_name VARCHAR(100) PRIMARY KEY NOT NULL,
+--     category_name VARCHAR(100) NOT NULL,
+--     FOREIGN KEY (category_name) REFERENCES food_recipe_web.category(category_name)
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.collection (
+--     collection_name VARCHAR(100) PRIMARY KEY NOT NULL UNIQUE,
+--     description TEXT
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.collection_image (
+--     collection_name VARCHAR(100) PRIMARY KEY NOT NULL,
+--     image BYTEA NOT NULL,
+--     image_type VARCHAR(255) NOT NULL,
+--     FOREIGN KEY (collection_name) REFERENCES food_recipe_web.collection(collection_name)
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.ingredients (
+--     main_ingredients VARCHAR(100) PRIMARY KEY NOT NULL UNIQUE
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.recipe (
+--     recipe_id SERIAL PRIMARY KEY,
+--     owner VARCHAR(50) NOT NULL,
+--     title VARCHAR(100) NOT NULL,
+--     instruction TEXT NOT NULL,
+--     ingredients TEXT NOT NULL,
+--     preparation_time INT NOT NULL,
+--     creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     FOREIGN KEY (owner) REFERENCES food_recipe_web.user(username)
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.recipe_image (
+--     recipe_id INT PRIMARY KEY NOT NULL,
+--     image BYTEA NOT NULL,
+--     image_type VARCHAR(255) NOT NULL,
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.comment (
+--    comment_id SERIAL PRIMARY KEY,
+--    recipe_id INT NOT NULL,
+--    title VARCHAR(100) NOT NULL,
+--     text TEXT NOT NULL,
+--     comment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     username VARCHAR(50) NOT NULL,
+--     reply_id INT,
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE,
+--     FOREIGN KEY (username) REFERENCES food_recipe_web.user(username),
+--     FOREIGN KEY (reply_id) REFERENCES food_recipe_web.comment(comment_id)
+-- );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.user_follows (
+--     follower VARCHAR(50),
+--     following VARCHAR(50),
+--     PRIMARY KEY (follower, following),
+--     FOREIGN KEY (follower) REFERENCES food_recipe_web.user(username),
+--     FOREIGN KEY (following) REFERENCES food_recipe_web.user(username)
+--     );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.user_bookmarks (
+--                                                               username VARCHAR(50) NOT NULL,
+--     recipe_id INT NOT NULL,
+--     PRIMARY KEY (username, recipe_id),
+--     FOREIGN KEY (username) REFERENCES food_recipe_web.user(username),
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE
+--     );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.recipe_rates (
+--                                                             username VARCHAR(50) NOT NULL,
+--     recipe_id INT NOT NULL,
+--     value INT NOT NULL,
+--     PRIMARY KEY (username, recipe_id),
+--     FOREIGN KEY (username) REFERENCES food_recipe_web.user(username),
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE
+--     );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.recipe_ingredients (
+--                                                                   recipe_id INT NOT NULL,
+--                                                                   ingredient_name VARCHAR(100) NOT NULL,
+--     PRIMARY KEY (recipe_id, ingredient_name),
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE,
+--     FOREIGN KEY (ingredient_name) REFERENCES food_recipe_web.ingredients(main_ingredients)
+--     );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.recipe_collection (
+--                                                                  recipe_id INT NOT NULL,
+--                                                                  collection_name VARCHAR(100) NOT NULL,
+--     PRIMARY KEY (recipe_id, collection_name),
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE,
+--     FOREIGN KEY (collection_name) REFERENCES food_recipe_web.collection(collection_name)
+--     );
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.recipe_sub_category (
+--                                                                    recipe_id INT NOT NULL,
+--                                                                    sub_category_name VARCHAR(100) NOT NULL,
+--     PRIMARY KEY (recipe_id, sub_category_name),
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE,
+--     FOREIGN KEY (sub_category_name) REFERENCES food_recipe_web.sub_category(sub_category_name)
+--     ) ;
+--
+-- CREATE TABLE IF NOT EXISTS food_recipe_web.recipe_category (
+--                                                                recipe_id INT NOT NULL,
+--                                                                category_name VARCHAR(100) NOT NULL,
+--     PRIMARY KEY (recipe_id, category_name),
+--     FOREIGN KEY (recipe_id) REFERENCES food_recipe_web.recipe(recipe_id) ON DELETE CASCADE,
+--     FOREIGN KEY (category_name) REFERENCES food_recipe_web.category(category_name)
+--   );
