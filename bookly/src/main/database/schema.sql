@@ -6,8 +6,8 @@ DROP SCHEMA IF EXISTS booklySchema CASCADE;
 CREATE SCHEMA booklySchema;
 
 -- Create new domains
-CREATE DOMAIN booklySchema.username_domain AS VARCHAR(30)
-  CHECK (VALUE ~ '^[a-zA-Z0-9_]{5,30}$');
+CREATE DOMAIN booklySchema.username_domain AS VARCHAR(50)
+  CHECK (VALUE ~ '^[a-zA-Z0-9_]{5,50}$');
 
 CREATE DOMAIN booklySchema.password_domain AS VARCHAR(255)
   CHECK (char_length(VALUE) >= 8);
@@ -17,7 +17,7 @@ CREATE DOMAIN booklySchema.phone_domain AS VARCHAR(20)
 
 -- ENUM types
 CREATE TYPE booklySchema.user_role AS ENUM ('user', 'admin');
-CREATE TYPE booklySchema.payment_method AS ENUM ('in_person', 'credit_card');
+CREATE TYPE booklySchema.shippment_method AS ENUM ('in_person', 'credit_card');
 
 -- Users
 CREATE TABLE booklySchema.users (
@@ -30,6 +30,8 @@ CREATE TABLE booklySchema.users (
     phone booklySchema.phone_domain,
     address TEXT,
     role booklySchema.user_role DEFAULT 'user'
+    shopcart INTEGER NOT NULL,
+    FOREIGN KEY (shopcart) REFERENCES booklySchema.shopcart(cart_id),
 );
 
 -- Authors
@@ -37,7 +39,7 @@ CREATE TABLE booklySchema.authors (
     author_id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
-    author_books VARCHAR(100) NOT NULL,
+    biography TEXT,
     nationality VARCHAR(100) NOT NULL
 );
 
@@ -52,7 +54,7 @@ CREATE TABLE booklySchema.publishers (
 -- Categories
 CREATE TABLE booklySchema.categories (
     category_id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
+    category_name VARCHAR(50) NOT NULL,
     description TEXT
 );
 
@@ -62,15 +64,13 @@ CREATE TABLE bookly_db.books (
     title VARCHAR(150) NOT NULL,
     language VARCHAR(50),
     isbn VARCHAR(20) UNIQUE,
-    price NUMERIC(10,2) NOT NULL,
+    price REAL NOT NULL,
     edition VARCHAR(50),
-    publication_year INT CHECK (publication_year BETWEEN 1000 AND EXTRACT(YEAR FROM CURRENT_DATE)::INT),
-    number_of_pages INT CHECK (number_of_pages > 0),
-    stock_quantity INT DEFAULT 0 CHECK (stock_quantity >= 0),
-    publisher_id INT,
-    category_id INT,
-    FOREIGN KEY (publisher_id) REFERENCES bookly_db.publishers(publisher_id),
-    FOREIGN KEY (category_id) REFERENCES bookly_db.categories(category_id)
+    publication_year INTEGER CHECK (publication_year BETWEEN 1000 AND EXTRACT(YEAR FROM CURRENT_DATE)::INT),
+    number_of_pages INTEGER CHECK (number_of_pages > 0),
+    stock_quantity INTEGER DEFAULT 0 CHECK (stock_quantity >= 0),
+    average_rate REAL,
+    summary TEXT,
 );
 
 
@@ -82,7 +82,7 @@ CREATE TABLE booklySchema.writes (
     FOREIGN KEY (author_id) REFERENCES booklySchema.authors(author_id)
 );
 
-CREATE TABLE booklySchema.cotains (
+CREATE TABLE booklySchema.contains (
     book_id INTEGER NOT NULL,
     cart_id INTEGER NOT NULL,
     PRIMARY KEY (book_id, cart_id),
@@ -91,7 +91,7 @@ CREATE TABLE booklySchema.cotains (
 );
 
 
-CREATE TABLE booklySchema.belongs_to (
+CREATE TABLE booklySchema.category_belongs (
     book_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
     PRIMARY KEY (book_id, category_id),
@@ -108,12 +108,16 @@ CREATE TABLE booklySchema.published_by (
 );
 
 -- Carts
-CREATE TABLE booklySchema.cart (
+CREATE TABLE booklySchema.shopcart (
     cart_id SERIAL PRIMARY KEY,
+    shippment_method
     user_id INTEGER UNIQUE NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    quantity INTEGER NOT NULL DEFAULT 0
-    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
+    quantity INTEGER NOT NULL DEFAULT 0,
+    discount INTEGER NOT NULL,
+    order INTEGER NOT NULL,
+    FOREIGN KEY (discount) REFERENCES booklySchema.discount(discount_id)
+    FOREIGN KEY (order) REFERENCES booklySchema.orders(order_id)
 );
 
 
@@ -122,9 +126,11 @@ CREATE TABLE booklySchema.reviews (
     review_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
-    comment TEXT,
+    review_text TEXT,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    number_of_likes INTEGER,
+    number_of_dislikes INTEGER,
     FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
     FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
 );
@@ -140,11 +146,7 @@ CREATE TABLE booklySchema.discounts (
 
 CREATE TABLE booklySchema.orders (
     order_id SERIAL PRIMARY KEY,
-    cart_id INTEGER UNIQUE NOT NULL,
-    discount_id INTEGER,
     total_amount NUMERIC(10,2) NOT NULL,
     payment_method booklySchema.payment_method NOT NULL,
     payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (cart_id) REFERENCES booklySchema.carts(cart_id),
-    FOREIGN KEY (discount_id) REFERENCES booklySchema.discounts(discount_id)
 );

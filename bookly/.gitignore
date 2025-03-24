@@ -84,6 +84,7 @@ dist/
 # JetBrains IDE
 .idea/
 *.iml
+.DS_Store
 
 # Unit test reports
 TEST*.xml
