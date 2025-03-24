@@ -117,11 +117,11 @@ INSERT INTO booklySchema.belongs_to (book_id, category_id) VALUES
 (3, 3),
 (4, 1),
 (5, 5),
-(6, 10),  -- History
-(7, 10),  -- History
-(8, 9),   -- Romance
-(9, 6),   -- Drama
-(10, 6);  -- Drama
+(6, 10), 
+(7, 10), 
+(8, 9),
+(9, 6), 
+(10, 6); 
 
 
 INSERT INTO booklySchema.published_by (book_id, publisher_id) VALUES
