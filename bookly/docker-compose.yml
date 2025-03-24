@@ -11,6 +11,7 @@ services:
       - ./logs:/usr/local/tomcat/webapps/logs
       - ./logs:/usr/local/tomcat/webapps/my-logs
 
+
   db:
     image: postgres
     ports:

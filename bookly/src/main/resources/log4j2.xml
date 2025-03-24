@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <Configuration status="WARN">
     <Appenders>
         <Console name="STDOUT" target="SYSTEM_OUT"> <!-- console appender: it  sets up a console appender named "STDOUT" that sends log messages to the standard output stream of the system, allowing them to be displayed in the console or terminal window during the execution of the application.-->
@@ -9,7 +10,7 @@
     </Appenders>
     <Loggers>
         <Root level="trace"> <!-- levels: trace, debug, info, warn, error, fatal -->
-            <AppenderRef ref="STDOUT"/>
+            <Append erRef ref="STDOUT"/>
         </Root>
     </Loggers>
 </Configuration>
