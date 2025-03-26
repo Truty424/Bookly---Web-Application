@@ -17,30 +17,72 @@ The Home Page serves as the central hub where all users (whether signed in or no
     \item \textbf{New Arrivals} : Displaying the latest books added to our stock.
     \item \textbf{Best Sellers} : Highlighting books with the highest sales.
 \end{itemize}
-
-The homepage will also include:
+Additionally, the homepage will include:
 \begin{itemize}
-    \item A \textbf{search bar} to allow users to find books by title, author, or genre.
-    \item If the user is signed in, an \textbf{account icon} linking to their profile and a \textbf{basket icon} leading to their cart.
-    \item If the user is not signed in, a \textbf{Sign In/Sign Up button} for account access.
+    \item A \textbf{search bar} allowing users to find books by title, author, or genre within the store's catalog.
+    \item A \textbf{basket icon} that provides quick access to the user's shopping cart. Users can click on it to navigate directly to the \hyperref[sec:basket]{Basket Page}.
+    \item An \textbf{account icon} that, when clicked, redirects the user to their \hyperref[sec:profile]{User Profile Page} if they are signed in. If not, they will be prompted to the \hyperref[sec:signin]{Sign In/Sign Up Page}.
 \end{itemize}
-
-\includegraphics[width=\textwidth]{homepage.png}
 
 
 \subsection{Sign In/Sign Up Page} \label{sec:signin}
 This page allows users to register or log in to their accounts. It includes fields for username, password, an option for password recovery, and a button leading to the Sign-up Page.
 
-\includegraphics[width=\textwidth]{signin.png}
 
 \subsection{User Profile Page} \label{sec:profile}
-Users can also access their profile page, which displays their personal details and order history.
+Users can also access their profile page, which displays their personal details and order history. The page will include the following information:
+
+\begin{itemize}
+    \item \textbf{First Name and Last Name}: The full name of the user.
+    \item \textbf{Role}: Indicates whether the user is a \textit{Client} or an \textit{Admin}.
+    \item \textbf{Username}: A unique identifier for the user within the platform.
+    \item \textbf{Email Address}: The registered email associated with the account.
+    \item \textbf{Address}: The user's delivery address.
+    \item \textbf{Phone Number}: The user's contact number.
+\end{itemize}
+
+The page will also provide:
+\begin{itemize}
+    \item \textbf{Edit Buttons}: Users will have the option to update their personal information through dedicated buttons.
+    \item \textbf{Change Password Link}: A dynamic text link labeled \textit{"Change my password"} that, when clicked, redirects users to a dedicated password update page.
+\end{itemize}
 
 \subsection{Book Page} \label{sec:book}
-Each book will have its own dedicated page containing details such as title, author, price, edition, genre, and description. It will also include a review section and a button to add the book to the basket.
+Each book will have its own dedicated page containing the following details: \textbf{Title}, \textbf{Author}, \textbf{Price}, \textbf{Edition}, \textbf{Genre}, \textbf{Summary} and a \textbf{cover image} of the book.
+
+In top of that, the page will also have:
+\begin{itemize}
+    \item A \textbf{Review Section}, where users can:
+    \begin{itemize}
+        \item Like or dislike existing reviews.
+        \item Add their own review by writing a comment and rating the book on a scale from \textbf{0 to 5 stars}.
+    \end{itemize}
+    \item A \textbf{"Add to basket"} button, allowing users to purchase the book.
+    \item A \textbf{"Add to wishlist"} button, allowing users to save the book on their wishlist.
+\end{itemize}
 
 \subsection{Basket Page} \label{sec:basket}
-This page will show the books added by the user, along with options to update quantities or proceed to checkout.
+This page will display the books added on the basket by the user, along with options to update quantities. It will also include the following features:
+
+\begin{itemize}
+    \item A \textbf{recap of all selected books}, displaying their titles, prices, and quantities.
+    \item The \textbf{total price}, dynamically updated based on the selected books, their quantities and the shipping price.
+    \item Several input fields for the user to enter their \textbf{billing address}.
+    \item A \textbf{payment method selection}, offering the choice between:
+    \begin{itemize}
+        \item \textbf{Credit/Debit Card Payment}.
+        \item \textbf{Cash on Delivery}.
+    \end{itemize}
+    \item An optional input field for entering a \textbf{discount code} if the user has one.
+    \item A \textbf{"Confirm Order"} button that finalizes the payment and processes the order once all required fields are completed.
+\end{itemize}
 
 \subsection{Search Results Page} \label{sec:search}
 When a user enters a query in the search bar, they will be redirected to this page, where relevant books will be displayed based on title, author, or genre.
+
+For each book displayed in the search results, the following details will be shown:
+\begin{itemize}
+    \item The \textbf{book title} and \textbf{cover image}, both acting as clickable links that redirect to the corresponding \hyperref[sec:book]{Book Page}.
+    \item The \textbf{average rating}, displayed as a star rating out of 5, based on user reviews.
+    \item A \textbf{"Add to Basket"} button along with the corresponding price of the book, allowing users to quickly add the book to their shopping cart.
+\end{itemize}
