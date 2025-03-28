@@ -16,7 +16,7 @@ public final class WishlistQueries {
             "SELECT * FROM booklySchema.wishlists WHERE user_id = ?";
 
     public static final String GET_BOOKS_IN_WISHLIST =
-            "SELECT b.* FROM booklySchema.books b " +
+            "SELECT b.book_id, b.title, b.price FROM booklySchema.books b " +
             "JOIN booklySchema.contains_wishlist cw ON b.book_id = cw.book_id " +
             "WHERE cw.wishlist_id = ?";
 
