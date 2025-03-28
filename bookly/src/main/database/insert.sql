@@ -107,12 +107,12 @@ INSERT INTO booklySchema.discounts (code, discount_percentage, expired_date) VAL
 ('SPRING5', 5.0, '2025-09-01'),
 ('SUMMER25', 25.0, '2025-08-01');
 
-INSERT INTO booklySchema.orders (total_amount, payment_method) VALUES
-(135.76, 'credit_card'),
-(52.83, 'credit_card'),
-(119.7, 'credit_card'),
-(137.22, 'credit_card'),
-(39.13, 'credit_card');
+INSERT INTO booklySchema.orders (total_amount, payment_method, address, shipment_code, status) VALUES
+(135.76, 'credit_card', '123 Ocean Drive, Lisbon, Portugal', 'SHIP123', 'paid'),
+(52.83, 'credit_card', '77 Sakura St, Kyoto, Japan', 'SHIP124', 'shipped'),
+(119.70, 'credit_card', '456 Maple Avenue, Toronto, Canada', 'SHIP125', 'placed'),
+(137.22, 'credit_card', '10 Rue de Rivoli, Paris, France', 'SHIP126', 'delivered'),
+(39.13, 'credit_card', '891 Green Lane, Cape Town, South Africa', 'SHIP127', 'cancelled');
 
 INSERT INTO booklySchema.shoppingcart (user_id, quantity, discount_id, order_id, shipment_method) VALUES
 (1, 2, 1, 1, 'in_person'),
@@ -133,7 +133,7 @@ INSERT INTO booklySchema.contains (book_id, cart_id) VALUES
 (9, 4),
 (10, 5);
 
-INSERT INTO booklySchema.reviews (user_id, book_id, review_text, rating, number_of_likes, number_of_dislikes) VALUES
+INSERT INTO booklySchema.reviews (user_id, book_id, comment, rating, number_of_likes, number_of_dislikes) VALUES
 (1, 1, 'Task factor particularly against seek consider anyone set article poor.', 4, 58, 0),
 (2, 2, 'Place full else security begin thousand the lay partner street.', 5, 14, 7),
 (3, 3, 'Hospital network sell act evidence ready start.', 3, 67, 1),

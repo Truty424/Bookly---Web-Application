@@ -18,6 +18,7 @@ CREATE DOMAIN booklySchema.phone_domain AS VARCHAR(20)
 -- ENUM types
 CREATE TYPE booklySchema.user_role AS ENUM ('user', 'admin');
 CREATE TYPE booklySchema.payment_method AS ENUM ('in_person', 'credit_card');
+CREATE TYPE booklySchema.status AS ENUM ('placed', 'paid','cancelled','shipped','delivered');
 
 -- Users
 CREATE TABLE IF NOT EXISTS booklySchema.users (
@@ -56,7 +57,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.publishers (
     address TEXT
 );
 
--- Categories
 CREATE TABLE IF NOT EXISTS booklySchema.categories (
     category_id SERIAL PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL,
@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.reviews (
     review_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
-    review_text TEXT,
+    comment TEXT,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     number_of_likes INTEGER,
@@ -179,4 +179,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.orders (
     total_amount NUMERIC(10,2) NOT NULL,
     payment_method booklySchema.payment_method NOT NULL,
     payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    address TEXT NOT NULL,
+    shipment_code VARCHAR(50),
+    status booklySchema.status NOT NULL,
 );
