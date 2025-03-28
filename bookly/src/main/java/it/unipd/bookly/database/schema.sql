@@ -17,7 +17,7 @@ CREATE DOMAIN booklySchema.phone_domain AS VARCHAR(20)
 
 -- ENUM types
 CREATE TYPE booklySchema.user_role AS ENUM ('user', 'admin');
-CREATE TYPE booklySchema.shippment_method AS ENUM ('in_person', 'credit_card');
+CREATE TYPE booklySchema.payment_method AS ENUM ('in_person', 'credit_card');
 
 -- Users
 CREATE TABLE booklySchema.users (
@@ -30,8 +30,6 @@ CREATE TABLE booklySchema.users (
     phone booklySchema.phone_domain,
     address TEXT,
     role booklySchema.user_role DEFAULT 'user'
-    shopcart INTEGER NOT NULL,
-    FOREIGN KEY (shopcart) REFERENCES booklySchema.shopcart(cart_id),
 );
 
 -- Authors
@@ -59,7 +57,7 @@ CREATE TABLE booklySchema.categories (
 );
 
 
-CREATE TABLE bookly_db.books (
+CREATE TABLE booklySchema.books (
     book_id SERIAL PRIMARY KEY,
     title VARCHAR(150) NOT NULL,
     language VARCHAR(50),
@@ -108,16 +106,33 @@ CREATE TABLE booklySchema.published_by (
 );
 
 -- Carts
-CREATE TABLE booklySchema.shopcart (
+CREATE TABLE booklySchema.shoppingcart (
     cart_id SERIAL PRIMARY KEY,
-    shippment_method
+    shipment_method booklySchema.shippment_method,
     user_id INTEGER UNIQUE NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     quantity INTEGER NOT NULL DEFAULT 0,
-    discount INTEGER NOT NULL,
-    order INTEGER NOT NULL,
-    FOREIGN KEY (discount) REFERENCES booklySchema.discount(discount_id)
-    FOREIGN KEY (order) REFERENCES booklySchema.orders(order_id)
+    discount_id INTEGER,
+    order_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
+    FOREIGN KEY (discount_id) REFERENCES booklySchema.discounts(discount_id),
+    FOREIGN KEY (order_id) REFERENCES booklySchema.orders(order_id)
+);
+
+CREATE TABLE booklySchema.wishlists (
+    wishlist_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
+);
+
+
+CREATE TABLE booklySchema.contains_wishlist (
+    wishlist_id INTEGER NOT NULL,
+    book_id INTEGER UNIQUE, 
+    PRIMARY KEY (wishlist_id, book_id),
+    FOREIGN KEY (wishlist_id) REFERENCES booklySchema.wishlists(wishlist_id),
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
 );
 
 
@@ -140,7 +155,7 @@ CREATE TABLE booklySchema.discounts (
     discount_id SERIAL PRIMARY KEY,
     code VARCHAR(50) UNIQUE NOT NULL,
     discount_percentage NUMERIC(5,2) CHECK (discount_percentage >= 0 AND discount_percentage <= 100),
-    expired_date DATE
+    expired_date TIMESTAMP
 );
 
 
