@@ -21,7 +21,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=BooklyDB
     volumes:
-      - ./src/main/database/schema.sql:/docker-entrypoint-initdb.d/01_database.sql
+      - ./src/main/database/database.sql:/docker-entrypoint-initdb.d/01_database.sql
       - ./src/main/database/insert.sql:/docker-entrypoint-initdb.d/02_insert.sql
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]

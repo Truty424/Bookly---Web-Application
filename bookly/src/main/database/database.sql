@@ -20,7 +20,7 @@ CREATE TYPE booklySchema.user_role AS ENUM ('user', 'admin');
 CREATE TYPE booklySchema.payment_method AS ENUM ('in_person', 'credit_card');
 
 -- Users
-CREATE TABLE booklySchema.users (
+CREATE TABLE IF NOT EXISTS booklySchema.users (
     user_id SERIAL PRIMARY KEY,
     username booklySchema.username_domain UNIQUE NOT NULL,
     password booklySchema.password_domain NOT NULL,
@@ -32,8 +32,15 @@ CREATE TABLE booklySchema.users (
     role booklySchema.user_role DEFAULT 'user'
 );
 
--- Authors
-CREATE TABLE booklySchema.authors (
+CREATE TABLE IF NOT EXISTS booklySchema.user_image (
+    user_id INT PRIMARY KEY NOT NULL,
+    image BYTEA NOT NULL,
+    image_type VARCHAR(255) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES booklySchema.user(user_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS booklySchema.authors (
     author_id SERIAL PRIMARY KEY,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -41,8 +48,8 @@ CREATE TABLE booklySchema.authors (
     nationality VARCHAR(100) NOT NULL
 );
 
--- Publishers
-CREATE TABLE booklySchema.publishers (
+
+CREATE TABLE IF NOT EXISTS booklySchema.publishers (
     publisher_id SERIAL PRIMARY KEY,
     publisher_name VARCHAR(100) NOT NULL,
     phone booklySchema.phone_domain,
@@ -50,14 +57,14 @@ CREATE TABLE booklySchema.publishers (
 );
 
 -- Categories
-CREATE TABLE booklySchema.categories (
+CREATE TABLE IF NOT EXISTS booklySchema.categories (
     category_id SERIAL PRIMARY KEY,
     category_name VARCHAR(50) NOT NULL,
     description TEXT
 );
 
 
-CREATE TABLE booklySchema.books (
+CREATE TABLE IF NOT EXISTS booklySchema.books (
     book_id SERIAL PRIMARY KEY,
     title VARCHAR(150) NOT NULL,
     language VARCHAR(50),
@@ -71,8 +78,15 @@ CREATE TABLE booklySchema.books (
     summary TEXT,
 );
 
+CREATE TABLE IF NOT EXISTS booklySchema.book_image (
+    book_id INT PRIMARY KEY NOT NULL,
+    image BYTEA NOT NULL,
+    image_type VARCHAR(255) NOT NULL,
+    FOREIGN KEY (book_id) REFERENCES booklySchema.book(book_id) ON DELETE CASCADE
+);
 
-CREATE TABLE booklySchema.writes (
+
+CREATE TABLE IF NOT EXISTS booklySchema.writes (
     book_id INTEGER NOT NULL,
     author_id INTEGER NOT NULL,
     PRIMARY KEY (book_id, author_id),
@@ -80,7 +94,7 @@ CREATE TABLE booklySchema.writes (
     FOREIGN KEY (author_id) REFERENCES booklySchema.authors(author_id)
 );
 
-CREATE TABLE booklySchema.contains (
+CREATE TABLE IF NOT EXISTS booklySchema.contains (
     book_id INTEGER NOT NULL,
     cart_id INTEGER NOT NULL,
     PRIMARY KEY (book_id, cart_id),
@@ -89,7 +103,7 @@ CREATE TABLE booklySchema.contains (
 );
 
 
-CREATE TABLE booklySchema.category_belongs (
+CREATE TABLE IF NOT EXISTS booklySchema.category_belongs (
     book_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
     PRIMARY KEY (book_id, category_id),
@@ -97,7 +111,8 @@ CREATE TABLE booklySchema.category_belongs (
     FOREIGN KEY (category_id) REFERENCES booklySchema.categories(category_id)
 );
 
-CREATE TABLE booklySchema.published_by (
+
+CREATE TABLE IF NOT EXISTS booklySchema.published_by (
     book_id INTEGER NOT NULL,
     publisher_id INTEGER NOT NULL,
     PRIMARY KEY (book_id, publisher_id),
@@ -106,7 +121,7 @@ CREATE TABLE booklySchema.published_by (
 );
 
 -- Carts
-CREATE TABLE booklySchema.shoppingcart (
+CREATE TABLE IF NOT EXISTS booklySchema.shoppingcart (
     cart_id SERIAL PRIMARY KEY,
     shipment_method booklySchema.shippment_method,
     user_id INTEGER UNIQUE NOT NULL,
@@ -119,7 +134,7 @@ CREATE TABLE booklySchema.shoppingcart (
     FOREIGN KEY (order_id) REFERENCES booklySchema.orders(order_id)
 );
 
-CREATE TABLE booklySchema.wishlists (
+CREATE TABLE IF NOT EXISTS booklySchema.wishlists (
     wishlist_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -127,7 +142,7 @@ CREATE TABLE booklySchema.wishlists (
 );
 
 
-CREATE TABLE booklySchema.contains_wishlist (
+CREATE TABLE IF NOT EXISTS booklySchema.contains_wishlist (
     wishlist_id INTEGER NOT NULL,
     book_id INTEGER UNIQUE, 
     PRIMARY KEY (wishlist_id, book_id),
@@ -137,7 +152,7 @@ CREATE TABLE booklySchema.contains_wishlist (
 
 
 -- Reviews
-CREATE TABLE booklySchema.reviews (
+CREATE TABLE IF NOT EXISTS booklySchema.reviews (
     review_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
@@ -151,7 +166,7 @@ CREATE TABLE booklySchema.reviews (
 );
 
 
-CREATE TABLE booklySchema.discounts (
+CREATE TABLE IF NOT EXISTS booklySchema.discounts (
     discount_id SERIAL PRIMARY KEY,
     code VARCHAR(50) UNIQUE NOT NULL,
     discount_percentage NUMERIC(5,2) CHECK (discount_percentage >= 0 AND discount_percentage <= 100),
@@ -159,7 +174,7 @@ CREATE TABLE booklySchema.discounts (
 );
 
 
-CREATE TABLE booklySchema.orders (
+CREATE TABLE IF NOT EXISTS booklySchema.orders (
     order_id SERIAL PRIMARY KEY,
     total_amount NUMERIC(10,2) NOT NULL,
     payment_method booklySchema.payment_method NOT NULL,
