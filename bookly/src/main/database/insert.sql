@@ -9,6 +9,16 @@ INSERT INTO booklySchema.authors (first_name, last_name, biography, nationality)
 ('Khaled', 'Hosseini', 'Afghan-American novelist best known for The Kite Runner and stories of exile and resilience.', 'Afghan'),
 ('Yaa', 'Gyasi', 'Ghanaian-American author recognized for her debut novel Homegoing.', 'Ghanaian'),
 ('Han', 'Kang', 'South Korean author awarded the Man Booker Prize for The Vegetarian.', 'South Korean');
+('Margaret', 'Atwood', 'Canadian author known for dystopian and speculative fiction.', 'Canadian'),
+('Gabriel', 'García Márquez', 'Colombian novelist famous for magical realism.', 'Colombian'),
+('Salman', 'Rushdie', 'British-Indian writer known for postcolonial and magical realist fiction.', 'British-Indian'),
+('Toni', 'Morrison', 'American novelist renowned for her profound exploration of race and identity.', 'American'),
+('Kazuo', 'Ishiguro', 'British author known for his deeply introspective and melancholic novels.', 'British'),
+('J.K.', 'Rowling', 'British writer famous for the Harry Potter series.', 'British'),
+('Chinua', 'Achebe', 'Nigerian novelist credited with pioneering modern African literature.', 'Nigerian'),
+('George', 'Orwell', 'British author famous for dystopian novels like 1984 and Animal Farm.', 'British'),
+('Leo', 'Tolstoy', 'Russian writer known for his epic novels War and Peace and Anna Karenina.', 'Russian'),
+('Virginia', 'Woolf', 'English modernist author known for her stream-of-consciousness style.', 'English');
 
 INSERT INTO booklySchema.users (username, password, first_name, last_name, email, phone, address, role) VALUES
 ('esmith', 'vUU@3MdB7b', 'Phillip', 'Akhtar', 'ypritchard@yahoo.co.uk', '01514960872', 'Flat 09, Terry centers, New Lesleyhaven, G0J 2DZ', 'admin'),
@@ -21,6 +31,16 @@ INSERT INTO booklySchema.users (username, password, first_name, last_name, email
 ('oswingiess', 'Y+&1Y+IgM#', 'Berend', 'Gude-Hübel', 'hans-erich04@yahoo.de', '+4901671902294', 'Brita-Wilmsen-Straße 86, 74964 Schmölln', 'user'),
 ('neelofarborde', '#bHi#&Nw5q', 'Aarna', 'Bhandari', 'fkanda@hotmail.com', '05940139904', '87, Chana Road, Pallavaram 756551', 'admin'),
 ('wpires', '(yOGpIBk6G', 'Manuela', 'Moreira', 'ceciliagoncalves@bol.com.br', '+55816773-7826', 'Conjunto de Campos, 66, João Pinheiro, 04499-727 Monteiro de Melo / PI', 'admin');
+('mwillis', 'Yq2@f9dT6', 'Michael', 'Willis', 'mwillis@example.com', '+1-310-555-0198', '234 Elm Street, Los Angeles, CA', 'user'),
+('sophiaj', 'X4!bQ8vKs', 'Sophia', 'Jones', 'sophiaj@gmail.com', '+44-7415-888222', '12 Maple Drive, London', 'admin'),
+('tandrews', 'G*9FgJs3T', 'Tom', 'Andrews', 'tandrews@example.net', '051-2233445', '43 Baker Street, Manchester', 'user'),
+('emilyh', 'Hj73@Lq8D', 'Emily', 'Harrison', 'emilyh@example.com', '+33-765-987654', '56 Avenue des Champs, Paris', 'admin'),
+('davidp', 'Pa$8gqTl2', 'David', 'Peterson', 'davidp@outlook.com', '+49-160-7891234', '78 Hauptstraße, Berlin', 'user'),
+('oliviac', 'UqT6@!dH9', 'Olivia', 'Carter', 'oliviac@gmail.com', '+61-402-555-789', '102 Victoria Street, Sydney', 'admin'),
+('johnm', '9XvT4@!gQ', 'John', 'Miller', 'johnm@example.com', '+39-333-1234567', 'Via Roma, Milan', 'user'),
+('rachelb', 'M8qT6!Lk2', 'Rachel', 'Brown', 'rachelb@example.com', '+81-90-5555-6789', 'Shinjuku, Tokyo', 'user'),
+('lucasg', 'Tg4Q8@!9X', 'Lucas', 'Green', 'lucasg@outlook.com', '+55-11-99999-8888', 'Avenida Paulista, São Paulo', 'admin'),
+('isabellaw', 'X9TgQ!@4M', 'Isabella', 'White', 'isabellaw@example.com', '+27-72-555-6789', 'Main Road, Cape Town', 'user');
 
 INSERT INTO booklySchema.publishers (publisher_name, phone, address) VALUES
 ('Gandhi, Virk and Bedi', '01870262174', '15/865, Viswanathan Chowk, Tadipatri 343161'),
@@ -33,6 +53,16 @@ INSERT INTO booklySchema.publishers (publisher_name, phone, address) VALUES
 ('Costa Ramos S/A', '+55119005-3293', 'Favela de da Rosa, 35, Vila Suzana Primeira Seção, 42284210 Alves / MS'),
 ('Martins Aragão S.A.', '+55710268-1177', 'Colônia de Porto, 139, Vila Oeste, 70076-617 Cardoso de Cardoso / MT'),
 ('Finke', '+4902499856984', 'Ljudmila-Trapp-Gasse 67, 65766 Heinsberg');
+('Penguin Random House', '+1-212-782-9000', 'New York, USA'),
+('HarperCollins', '+1-800-242-7737', '195 Broadway, New York, USA'),
+('Macmillan Publishers', '+44-20-7841-4000', 'London, UK'),
+('Simon & Schuster', '+1-800-223-2336', 'Rockefeller Center, New York, USA'),
+('Hachette Livre', '+33-1-43-92-30-00', 'Paris, France'),
+('Bloomsbury Publishing', '+44-20-7631-5600', 'London, UK'),
+('Scholastic Corporation', '+1-212-343-6100', 'Broadway, New York, USA'),
+('Oxford University Press', '+44-1865-556767', 'Oxford, UK'),
+('Cambridge University Press', '+44-1223-358331', 'Cambridge, UK'),
+('Springer Nature', '+49-6221-487-0', 'Heidelberg, Germany');
 
 INSERT INTO booklySchema.categories (category_name, description) VALUES
 ('Fiction', 'Narrative literary works from all cultures.'),
@@ -63,6 +93,16 @@ Glass local manage western provide media eight.'),
 ('Month staff', 'English', '978-1-05-935394-1', 34.36, 'Revised', 1993, 660, 48, 3.7, 'Use expert population value enter church financial kind. Play doctor front however life idea process. Per discover yourself expect trade.'),
 ('Yeah foreign everybody', 'Chinese', '978-1-192-21172-6', 47.73, 'Deluxe', 2001, 899, 8, 4.6, 'Article Republican nearly lawyer. Figure how friend popular learn official near notice.
 Sister training attorney sea number scientist administration.');
+('The Handmaid\'s Tale', 'English', '978-0-385-49081-8', 24.99, 'First', 1985, 311, 50, 4.6, 'A dystopian novel about a totalitarian society.'),
+('One Hundred Years of Solitude', 'Spanish', '978-0-06-088328-7', 22.50, 'Second', 1967, 417, 40, 4.8, 'A generational saga of the Buendía family.'),
+('Midnight\'s Children', 'English', '978-0-394-53668-6', 19.99, 'Revised', 1981, 446, 30, 4.7, 'A novel blending magical realism with India\'s history.'),
+('Beloved', 'English', '978-0-394-53597-9', 18.50, 'First', 1987, 324, 25, 4.9, 'A haunting novel about slavery and memory.'),
+('Never Let Me Go', 'English', '978-1-4000-7871-0', 16.75, 'Deluxe', 2005, 288, 35, 4.5, 'A speculative fiction novel exploring cloning.'),
+('Harry Potter and the Sorcerer\'s Stone', 'English', '978-0-590-35340-3', 39.99, 'First', 1997, 309, 100, 4.9, 'A young wizard embarks on a magical journey.'),
+('Things Fall Apart', 'English', '978-0-385-47454-2', 14.99, 'Second', 1958, 209, 40, 4.8, 'A novel about Igbo society and colonialism.'),
+('1984', 'English', '978-0-452-28423-4', 21.50, 'Revised', 1949, 328, 50, 4.9, 'A classic dystopian novel about surveillance.'),
+('Anna Karenina', 'Russian', '978-0-679-42306-4', 25.75, 'Deluxe', 1877, 864, 30, 4.7, 'A tragic love story in imperial Russia.'),
+('Mrs Dalloway', 'English', '978-0-15-662870-9', 14.25, 'Second', 1925, 194, 20, 4.5, 'A novel about one day in the life of Clarissa Dalloway.');
 
 INSERT INTO booklySchema.writes (book_id, author_id) VALUES
 (1, 1),
@@ -75,6 +115,16 @@ INSERT INTO booklySchema.writes (book_id, author_id) VALUES
 (8, 8),
 (9, 9),
 (10, 10);
+(11, 11),
+(12, 12),
+(13, 13),
+(14, 14),
+(15, 15),
+(16, 16),
+(17, 17),
+(18, 18),
+(19, 19),
+(20, 20);
 
 INSERT INTO booklySchema.category_belongs (book_id, category_id) VALUES
 (1, 1),
@@ -87,6 +137,16 @@ INSERT INTO booklySchema.category_belongs (book_id, category_id) VALUES
 (8, 8),
 (9, 9),
 (10, 10);
+(11, 1),
+(12, 2),
+(13, 3),
+(14, 4),
+(15, 5),
+(16, 6),
+(17, 7),
+(18, 8),
+(19, 9),
+(20, 10);
 
 INSERT INTO booklySchema.published_by (book_id, publisher_id) VALUES
 (1, 1),
@@ -99,6 +159,16 @@ INSERT INTO booklySchema.published_by (book_id, publisher_id) VALUES
 (8, 8),
 (9, 9),
 (10, 10);
+(11, 1),
+(12, 2),
+(13, 3),
+(14, 4),
+(15, 5),
+(16, 6),
+(17, 7),
+(18, 8),
+(19, 9),
+(20, 10);
 
 INSERT INTO booklySchema.discounts (code, discount_percentage, expired_date) VALUES
 ('NEWYEAR10', 10.0, '2025-12-31'),
