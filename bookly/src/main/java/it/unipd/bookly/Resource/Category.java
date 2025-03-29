@@ -1,4 +1,4 @@
-package it.unipd.bookly.resource;
+package it.unipd.bookly.Resource;
 
 import java.util.Objects;
 

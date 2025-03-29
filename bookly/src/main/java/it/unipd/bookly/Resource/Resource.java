@@ -1,4 +1,4 @@
-package it.unipd.yummycenter.Resource;
+package it.unipd.bookly.resource;
 import java.io.IOException;
 import java.io.OutputStream;
 
