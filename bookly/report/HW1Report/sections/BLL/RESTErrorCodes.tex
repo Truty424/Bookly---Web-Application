@@ -9,7 +9,10 @@ Here is the list of errors defined in the application. Application-specific erro
 \hline
 \textbf{Error Code} & \textbf{HTTP Status Code} & \textbf{Description} \\\hline
 
-
+\hline 
+200 & OK & This status code indicates that the request was successful, and the server is returning the requested data or that the request was successfully processed \\
+\hline 
+202 & Accepted & This status code means that the request has been accepted for processing, but the processing is not yet complete. \\
 \hline 
 400 & Bad Request & Required fields (e.g., username, email, password) are missing or invalid. \\
 \hline 
@@ -45,7 +48,7 @@ Here is the list of errors defined in the application. Application-specific erro
 \hline
 403 & Forbidden & The user is not authorized to perform this action. \\
 \hline
-422 & Unprocessable Entity & The data provided is valid but cannot be processed (e.g., invalid book details or ratings). \\
+415 & Unsupported Media Type & The server does not support the media type of the request (e.g., trying to upload a .bmp file when only .jpg or .png are allowed). \\
 \hline
 400 & Bad Request & The request body is malformed or contains invalid data (e.g., invalid email format or missing required fields). \\
 \hline
@@ -63,9 +66,7 @@ Here is the list of errors defined in the application. Application-specific erro
 \hline
 409 & Conflict & A conflict occurred during a request (e.g., trying to add the same book to a wishlist that already exists). \\
 \hline
-422 & Unprocessable Entity & The entity provided in the request is syntactically correct but semantically incorrect or incomplete (e.g., missing author name for a book). \\
 \hline
-429 & Too Many Requests & The user has made too many requests in a short amount of time, triggering rate-limiting protection. \\
 \hline
 500 & Internal Server Error & An unexpected error occurred on the server, typically related to server malfunctions or database failures. \\
 \hline
