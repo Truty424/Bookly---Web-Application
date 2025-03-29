@@ -1,7 +1,7 @@
 package it.unipd.bookly.dao.author;
 
 import it.unipd.bookly.dao.AbstractDAO;
-import it.unipd.bookly.resource.Author;
+import it.unipd.bookly.Resource.Author;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
