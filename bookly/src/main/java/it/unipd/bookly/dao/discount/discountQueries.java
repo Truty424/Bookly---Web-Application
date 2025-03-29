@@ -1,4 +1,5 @@
 package it.unipd.bookly.dao.discount;
+package it.unipd.bookly.dao.shoppingcart;
 
 public final class DiscountQueries {
 
@@ -9,8 +10,6 @@ public final class DiscountQueries {
             "INSERT INTO booklySchema.discounts (code, discount_percentage, expired_date) VALUES (?, ?, ?)";
 
     // --- READ ---
-    public static final String GET_DISCOUNT_BY_ID =
-            "SELECT * FROM booklySchema.discounts WHERE discount_id = ?";
 
     public static final String GET_DISCOUNT_BY_CODE =
             "SELECT * FROM booklySchema.discounts WHERE code = ?";
@@ -28,9 +27,6 @@ public final class DiscountQueries {
     public static final String COUNT_DISCOUNT_USAGE =
             "SELECT COUNT(*) FROM booklySchema.shoppingcart WHERE discount_id = ?";
 
-    // --- UPDATE ---
-    public static final String UPDATE_DISCOUNT =
-            "UPDATE booklySchema.discounts SET code = ?, discount_percentage = ?, expired_date = ? WHERE discount_id = ?";
 
     // --- DELETE ---
     public static final String DELETE_DISCOUNT =
