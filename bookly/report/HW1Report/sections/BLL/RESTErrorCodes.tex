@@ -2,11 +2,79 @@
 
 %If needed, add few lines of text, describing the error codes table
 
+Here is the list of errors defined in the application. Application-specific errors have the application error, which follows a progressive numeration starting from 400. METHOD NOT ALLOWED errors are identified with the error code 405. Internal errors, which correspond to server issues, database failures, or problems with the input/output streams, are identified with the Error Code 500. User, Wishlist, Review, Order, Book, Publisher, Author: Each of these entities and their relationships has been considered, ensuring all relevant errors related to user actions (e.g., login, wishlist updates) and entity-specific operations (e.g., book reviews, order placements) are covered.
+
+
 \begin{longtable}{|p{.15\columnwidth}|p{.2\columnwidth} |p{.6\columnwidth}|} 
 \hline
 \textbf{Error Code} & \textbf{HTTP Status Code} & \textbf{Description} \\\hline
-(Amirreza and gul)
-Error Code Identifier & Corresponding HTTP Status Code &  Description of the error \\\hline
+
+
+\hline 
+400 & Bad Request & Required fields (e.g., username, email, password) are missing or invalid. \\
+\hline 
+409 & Conflict & A user with the same email or username already exists. \\
+\hline 
+401 & Unauthorized & Login credentials are incorrect. \\
+\hline
+400 & Bad Request & The login payload is incomplete. \\
+\hline
+404 & Not Found & User with the specified user\_id does not exist. \\
+\hline
+404 & Not Found & The specified user\_id does not have a wishlist. \\
+\hline
+401 & Unauthorized & The request is made by a user who is not authenticated. \\
+\hline
+400 & Bad Request & Wishlist data provided is invalid or incomplete. \\
+\hline
+401 & Unauthorized & The user is not logged in. \\
+\hline
+404 & Not Found & The requested book does not exist. \\
+\hline
+400 & Bad Request & The review data is incomplete or invalid. \\
+\hline
+401 & Unauthorized & The user is not logged in to write a review. \\
+\hline
+404 & Not Found & The specified category or publisher does not exist. \\
+\hline
+404 & Not Found & The author of the book does not exist. \\
+\hline
+409 & Conflict & A conflict occurred when trying to add a book or wishlist item. \\
+\hline
+500 & Internal Server Error & An unexpected error occurred on the server. \\
+\hline
+403 & Forbidden & The user is not authorized to perform this action. \\
+\hline
+422 & Unprocessable Entity & The data provided is valid but cannot be processed (e.g., invalid book details or ratings). \\
+\hline
+400 & Bad Request & The request body is malformed or contains invalid data (e.g., invalid email format or missing required fields). \\
+\hline
+401 & Unauthorized & User is not logged in or the session has expired. \\
+\hline
+403 & Forbidden & The user does not have permission to access the requested resource (e.g., trying to access another user's wishlist). \\
+\hline
+404 & Not Found & The requested resource (e.g., book, user, wishlist) does not exist. \\
+\hline
+405 & Method Not Allowed & The HTTP method used is not allowed for the requested resource (e.g., using POST instead of GET). \\
+\hline
+406 & Not Acceptable & The requested resource is not available in a format acceptable by the client (e.g., requesting XML when the API only supports JSON). \\
+\hline
+408 & Request Timeout & The server timed out waiting for the request. This could happen if the operation takes too long. \\
+\hline
+409 & Conflict & A conflict occurred during a request (e.g., trying to add the same book to a wishlist that already exists). \\
+\hline
+422 & Unprocessable Entity & The entity provided in the request is syntactically correct but semantically incorrect or incomplete (e.g., missing author name for a book). \\
+\hline
+429 & Too Many Requests & The user has made too many requests in a short amount of time, triggering rate-limiting protection. \\
+\hline
+500 & Internal Server Error & An unexpected error occurred on the server, typically related to server malfunctions or database failures. \\
+\hline
+502 & Bad Gateway & The server received an invalid response from an upstream server while processing the request. \\
+\hline
+503 & Service Unavailable & The server is currently unable to handle the request due to temporary overload or maintenance. \\
+\hline
+504 & Gateway Timeout & The server did not receive a timely response from an upstream server while processing the request.
+\\\hline
 \caption{Describe in this table your REST API}
 \label{tab:termGlossary}
 \end{longtable}

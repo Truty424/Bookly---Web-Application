@@ -6,16 +6,209 @@
 
 % the description of the resource
 
-(Gul)
+A REST API (Representational State Transfer Application Programming Interface) allows communication between a client and a server over the HTTP protocol. It defines a set of standards and conventions to access and manipulate resources (data) via endpoints, typically using CRUD operations (Create, Read, Update, Delete).
+
 
 
 \begin{itemize}
-    \item URL: \texttt{the URL to retrieve it}
-    \item Method: \texttt{Method to retrieve it}
-    \item URL Parameters:
-    \item Data Parameters: 
-    \item Success Response:
-    \item Error Response:
+\item[\textbf{Users}] -----------------------------------------------
+
+\item URL: \texttt /users  
+\item Method: \texttt POST  
+\item URL Parameters: None
+\item Data Parameters: 
+\begin{itemize}  
+  \item \texttt username   (string, required)
+  \item \texttt email   (string, required)
+  \item \texttt password   (string, required)
+  \item \texttt first\_name   (string, optional)
+  \item \texttt last\_name   (string, optional)
+  \item \texttt phone   (string, optional)
+\end{itemize}  
+\item Success Response:
+\begin{itemize}  
+  \item \texttt Code: 201 Created  
+  \item \texttt Content: \{ "user\_id": "12345",
+    "username": "user\_name",
+    "email": "user@example.com"\} 
+
+\end{itemize}  
+\item Error Response:
+\begin{itemize}  
+  \item \texttt Code: 400 Bad Request  
+  \item \texttt Content: \{"error": "Required fields are missing or invalid."\}
+  \item \texttt Code: 409 Conflict  
+  \item \texttt Content:  \{"error": "User with the same email or username already exists."\}
+     
+\end{itemize}  
+
+\item[\textbf{Login}] -----------------------------------------------
+
+\item URL: /users/login  
+\item Method:  POST  
+\item URL Parameters: None
+\item Data Parameters: 
+\begin{itemize}
+  \item \texttt username   (string, required)
+  \item \texttt password   (string, required)
+\end{itemize}  
+\item Success Response:
+\begin{itemize}  
+  \item \texttt Code: 200 OK  
+  \item \texttt Content: \{ "token": "xyz1234567890",
+    "message": "Login successful."\}
+     
+\end{itemize}  
+
+\item Error Response:
+\begin{itemize}  
+  \item \texttt Code: 400 Bad Request  
+  \item \texttt Content:  \{"error": "Login payload is incomplete."\}
+     
+  \item \texttt Code: 401 Unauthorized  
+  \item \texttt Content: \{"error": "Invalid login credentials."\}
+     
+\end{itemize}  
+
+\item[\textbf{User ID}] -----------------------------------------------
+
+\item URL: /users/\ user\_id\    
+\item Method:  GET  
+\item URL Parameters:
+\begin{itemize}  
+  \item \texttt user\_id   (string, required) — ID of the user to retrieve
+\end{itemize}  
+\item Data Parameters: None
+\item Success Response:
+\begin{itemize}  
+  \item \texttt Code: 200 OK  
+  \item \texttt Content:  \{"user\_id": "12345",
+    "username": "user\_name",
+    "email": "user@example.com",
+    "first\_name": "John",
+    "last\_name": "Doe"\}
+
+\end{itemize} 
+
+\item Error Response:
+\begin{itemize}  
+  \item \texttt Code: 404 Not Found  
+  \item \texttt Content: \{"error": "User not found."\}  
+\end{itemize}  
+
+\item[\textbf{Wishlists GET}] -----------------------------------------------
+
+\item URL: /users/\ user\_id\  /wishlists  
+\item Method:  GET  
+\item URL Parameters:
+\begin{itemize}  
+  \item \texttt user\_id   (string, required) — ID of the user whose wishlist is being retrieved
+\end{itemize}  
+\item Data Parameters: None
+\item Success Response:
+\begin{itemize}  
+  \item \texttt Code: 200 OK  
+  \item \texttt Content: \{"wishlists": [
+    {
+      "book\_id": "1",
+      "book\_title": "Book Title 1",
+      "author": "Author 1"
+    },
+    {
+      "book\_id": "2",
+      "book\_title": "Book Title 2",
+      "author": "Author 2"
+    }
+  ]
+\}
+\end{itemize} 
+
+\item Error Response:
+\begin{itemize}  
+  \item \texttt Code: 404 Not Found  
+  \item \texttt Content: \{"error": "Wishlist not found."\}  
+  \item \texttt Code: 401 Unauthorized  
+  \item \texttt Content: \{"error": "User is not authenticated."\} 
+\end{itemize} 
+
+\item[\textbf{Wishlists POST}] -----------------------------------------------
+
+\item URL: \texttt /users/\ user\_id\  /wishlists  
+\item Method: \texttt POST  
+\item URL Parameters: 
+\begin{itemize}
+\item \texttt user\_id   (string, required) — ID of the user to add a book to their wishlist
+\end{itemize}  
+\item Data Parameters:
+\begin{itemize}  
+  \item \texttt book\_id   (string, required) — ID of the book to add to the wishlist
+\end{itemize}  
+\item Success Response:
+\begin{itemize} 
+  \item \texttt Code: 201 Created  
+  \item \texttt Content: \{"message": "Book successfully added to wishlist.",
+    "wishlist\_id": "67890"\}
+\end{itemize}    
+ 
+\item Error Response:
+\begin{itemize} 
+  \item \texttt Code: 400 Bad Request  
+  \item \texttt Content:  \{"error": "Invalid book or wishlist data."\}
     
+  \item \texttt Code: 401 Unauthorized  
+  \item \texttt Content:  \{"error": "User is not logged in."\}
+\end{itemize} 
+
+\item[\textbf{Book\_ID}] -----------------------------------------------
+
+\item URL: \texttt /books/\ book\_id\    
+\item Method: GET  
+\item URL Parameters:
+\begin{itemize}  
+  \item \texttt book\_id (string, required) — ID of the book to retrieve
+\end{itemize} 
+\item Data Parameters: None
+\item Success Response:
+\begin{itemize}
+  \item \texttt Code: 200 OK  
+  \item \texttt Content:  \{"book\_id": "1",
+    "title": "Book Title 1",
+    "author": "Author Name",
+    "publisher": "Publisher Name",
+    "price": "19.99"\}
+\end{itemize} 
+\item Error Response:
+\begin{itemize}
+  \item \texttt Code: 404 Not Found  
+  \item \texttt Content:  \{"error": "Book not found."\} 
+\end{itemize}
+
+
+\item[\textbf{Books}] -----------------------------------------------
+
+\item URL: \texttt /books  
+\item Method: \texttt POST  
+\item URL Parameters: None
+\item Data Parameters:
+\begin{itemize}
+\item \texttt title   (string, required)
+\item \texttt author\_id   (string, required)
+\item \texttt publisher\_id   (string, required)
+\item \texttt price   (float, required)
+\end{itemize}
+\item Success Response:
+\begin{itemize}
+\item \texttt Code: 201 Created  
+  \item \texttt Content:  \{"book\_id": "12345",
+    "title": "New Book Title",
+    "author": "Author Name",
+    "publisher": "Publisher Name"\}
+\end{itemize}
+\item Error Response:
+\begin{itemize}
+  \item \texttt Code: 400 Bad Request  
+  \item \texttt Content: \{"error": "Missing or invalid book details."\}
+\end{itemize}
+
 \end{itemize}
 
