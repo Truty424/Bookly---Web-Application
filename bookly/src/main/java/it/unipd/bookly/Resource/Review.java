@@ -64,19 +64,4 @@ public class Review {
     public void setUsername(String username) { this.username = username; }
     public void setBookTitle(String bookTitle) { this.bookTitle = bookTitle; }
 
-    @Override
-    public String toString() {
-        return "Review{" +
-                "reviewId=" + reviewId +
-                ", userId=" + userId +
-                ", bookId=" + bookId +
-                ", reviewText='" + reviewText + '\'' +
-                ", rating=" + rating +
-                ", numberOfLikes=" + numberOfLikes +
-                ", numberOfDislikes=" + numberOfDislikes +
-                ", reviewDate=" + reviewDate +
-                ", username='" + username + '\'' +
-                ", bookTitle='" + bookTitle + '\'' +
-                '}';
-    }
 }

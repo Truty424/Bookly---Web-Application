@@ -9,7 +9,7 @@ import java.util.Objects;
 public class Order {
 
     private int orderId;
-    private double totalAmount;
+    private BigDecimal totalPrice;
     private String paymentMethod;
     private Timestamp paymentDate;
     private String address;
@@ -20,10 +20,10 @@ public class Order {
     public Order() {}
 
     // Constructor with all fields (for retrieval)
-    public Order(int orderId, double totalAmount, String paymentMethod, Timestamp paymentDate, String address,
+    public Order(int orderId, BigDecimal totalPrice, String paymentMethod, Timestamp paymentDate, String address,
                  String shipmentCode, String status) {
         this.orderId = orderId;
-        this.totalAmount = totalAmount;
+        this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.paymentDate = paymentDate;
         this.address = address;
@@ -32,8 +32,8 @@ public class Order {
     }
 
     // Constructor without ID and paymentDate (for creation)
-    public Order(double totalAmount, String paymentMethod, String address, String shipmentCode, String status) {
-        this.totalAmount = totalAmount;
+    public Order(BigDecimal totalPrice, String paymentMethod, String address, String shipmentCode, String status) {
+        this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.address = address;
         this.shipmentCode = shipmentCode;
@@ -45,8 +45,8 @@ public class Order {
         return orderId;
     }
 
-    public double getTotalAmount() {
-        return totalAmount;
+    public double getTotalPrice() {
+        return totalPrice;
     }
 
     public String getPaymentMethod() {
@@ -74,8 +74,8 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
     }
 
     public void setPaymentMethod(String paymentMethod) {
@@ -98,35 +98,4 @@ public class Order {
         this.status = status;
     }
 
-    // --- Utility Methods ---
-    @Override
-    public String toString() {
-        return "Order{" +
-                "orderId=" + orderId +
-                ", totalAmount=" + totalAmount +
-                ", paymentMethod='" + paymentMethod + '\'' +
-                ", paymentDate=" + paymentDate +
-                ", address='" + address + '\'' +
-                ", shipmentCode='" + shipmentCode + '\'' +
-                ", status='" + status + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Order order)) return false;
-        return orderId == order.orderId &&
-                Double.compare(order.totalAmount, totalAmount) == 0 &&
-                Objects.equals(paymentMethod, order.paymentMethod) &&
-                Objects.equals(paymentDate, order.paymentDate) &&
-                Objects.equals(address, order.address) &&
-                Objects.equals(shipmentCode, order.shipmentCode) &&
-                Objects.equals(status, order.status);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(orderId);
-    }
 }

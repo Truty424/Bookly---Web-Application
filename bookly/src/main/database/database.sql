@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.users (
 );
 
 CREATE TABLE IF NOT EXISTS booklySchema.user_image (
-    user_id INT PRIMARY KEY NOT NULL,
+    user_id INTEGER PRIMARY KEY NOT NULL,
     image BYTEA NOT NULL,
     image_type VARCHAR(255) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES booklySchema.user(user_id) ON DELETE CASCADE
@@ -71,7 +71,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.books (
     isbn VARCHAR(20) UNIQUE,
     price REAL NOT NULL,
     edition VARCHAR(50),
-    publication_year INTEGER CHECK (publication_year BETWEEN 1000 AND EXTRACT(YEAR FROM CURRENT_DATE)::INT),
+    publication_year INTEGER CHECK (publication_year BETWEEN 1000 AND EXTRACT(YEAR FROM CURRENT_DATE)::INTEGER),
     number_of_pages INTEGER CHECK (number_of_pages > 0),
     stock_quantity INTEGER DEFAULT 0 CHECK (stock_quantity >= 0),
     average_rate REAL,
@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.books (
 );
 
 CREATE TABLE IF NOT EXISTS booklySchema.book_image (
-    book_id INT PRIMARY KEY NOT NULL,
+    book_id INTEGER PRIMARY KEY NOT NULL,
     image BYTEA NOT NULL,
     image_type VARCHAR(255) NOT NULL,
     FOREIGN KEY (book_id) REFERENCES booklySchema.book(book_id) ON DELETE CASCADE

@@ -7,6 +7,7 @@ public class Cart {
     private int cartId;
     private int userId;
     private int quantity;
+    private BigDecimal totalPrice;
     private String shipmentMethod;
     private Integer discountId;
     private Integer orderId;
@@ -17,7 +18,7 @@ public class Cart {
 
     // Full constructor
     public Cart(int cartId, int userId, int quantity, String shipmentMethod,
-                Integer discountId, Integer orderId, Timestamp createdDate) {
+                Integer discountId, Integer orderId, Timestamp createdDate,BigDecimal totalPrice) {
         this.cartId = cartId;
         this.userId = userId;
         this.quantity = quantity;
@@ -25,13 +26,15 @@ public class Cart {
         this.discountId = discountId;
         this.orderId = orderId;
         this.createdDate = createdDate;
+        this.totalPrice = totalPrice;
     }
 
     // Minimal constructor (e.g., for inserts)
-    public Cart(int userId, String shipmentMethod) {
+    public Cart(int userId, String shipmentMethod ,BigDecimal totalPrice) {
         this.userId = userId;
         this.shipmentMethod = shipmentMethod;
         this.quantity = 0;
+        this.totalPrice = totalPrice;
     }
 
     // Getters
@@ -41,6 +44,7 @@ public class Cart {
     public String getShipmentMethod() { return shipmentMethod; }
     public Integer getDiscountId() { return discountId; }
     public Integer getOrderId() { return orderId; }
+    public BigDecimal getTotalPrice() { return totalPrice; }
     public Timestamp getCreatedDate() { return createdDate; }
 
     // Setters
@@ -51,27 +55,8 @@ public class Cart {
     public void setDiscountId(Integer discountId) { this.discountId = discountId; }
     public void setOrderId(Integer orderId) { this.orderId = orderId; }
     public void setCreatedDate(Timestamp createdDate) { this.createdDate = createdDate; }
+    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
 
-    @Override
-    public String toString() {
-        return "Cart{" +
-               "cartId=" + cartId +
-               ", userId=" + userId +
-               ", quantity=" + quantity +
-               ", shipmentMethod='" + shipmentMethod + '\'' +
-               ", discountId=" + discountId +
-               ", orderId=" + orderId +
-               ", createdDate=" + createdDate +
-               '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Cart)) return false;
-        Cart that = (Cart) o;
-        return cartId == that.cartId;
-    }
 
     @Override
     public int hashCode() {
