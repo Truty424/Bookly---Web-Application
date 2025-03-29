@@ -38,9 +38,6 @@ public final class BookQueries {
     public static final String GET_TOP_RATED_BOOKS =
         "SELECT * FROM booklySchema.books WHERE average_rate >= ? ORDER BY average_rate DESC";
 
-    public static final String GET_LOW_STOCK_BOOKS =
-        "SELECT * FROM booklySchema.books WHERE stock_quantity < ? ORDER BY stock_quantity ASC";
-
     // --- UPDATE ---
     public static final String UPDATE_BOOK =
         "UPDATE booklySchema.books SET " +
@@ -50,9 +47,6 @@ public final class BookQueries {
 
     public static final String UPDATE_BOOK_STOCK =
         "UPDATE booklySchema.books SET stock_quantity = ? WHERE book_id = ?";
-
-    public static final String UPDATE_BOOK_AVG_RATING =
-        "UPDATE booklySchema.books SET average_rate = ? WHERE book_id = ?";
 
     // --- DELETE ---
     public static final String DELETE_BOOK =
