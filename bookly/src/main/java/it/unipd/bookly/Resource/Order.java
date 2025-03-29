@@ -1,4 +1,5 @@
-package it.unipd.bookly.resource;
+package it.unipd.bookly.Resource;
+
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -9,7 +10,7 @@ import java.util.Objects;
 public class Order {
 
     private int orderId;
-    private BigDecimal totalPrice;
+    private int totalPrice;
     private String paymentMethod;
     private Timestamp paymentDate;
     private String address;
@@ -17,11 +18,12 @@ public class Order {
     private String status;
 
     // Default constructor for frameworks and JSON mapping
-    public Order() {}
+    public Order() {
+    }
 
     // Constructor with all fields (for retrieval)
-    public Order(int orderId, BigDecimal totalPrice, String paymentMethod, Timestamp paymentDate, String address,
-                 String shipmentCode, String status) {
+    public Order(int orderId, int totalPrice, String paymentMethod, Timestamp paymentDate, String address,
+            String shipmentCode, String status) {
         this.orderId = orderId;
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
@@ -32,7 +34,7 @@ public class Order {
     }
 
     // Constructor without ID and paymentDate (for creation)
-    public Order(BigDecimal totalPrice, String paymentMethod, String address, String shipmentCode, String status) {
+    public Order(int totalPrice, String paymentMethod, String address, String shipmentCode, String status) {
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.address = address;
@@ -74,7 +76,7 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
+    public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }
 

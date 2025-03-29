@@ -1,5 +1,6 @@
 package it.unipd.bookly.Resource;
 
+import it.unipd.bookly.Resource.Image;
 import java.util.List;
 
 public class User {

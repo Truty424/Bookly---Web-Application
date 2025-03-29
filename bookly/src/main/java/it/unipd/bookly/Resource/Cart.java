@@ -1,4 +1,4 @@
-package it.unipd.bookly.resource;
+package it.unipd.bookly.Resource;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -7,7 +7,7 @@ public class Cart {
     private int cartId;
     private int userId;
     private int quantity;
-    private BigDecimal totalPrice;
+    private int totalPrice;
     private String shipmentMethod;
     private Integer discountId;
     private Integer orderId;
@@ -18,7 +18,7 @@ public class Cart {
 
     // Full constructor
     public Cart(int cartId, int userId, int quantity, String shipmentMethod,
-                Integer discountId, Integer orderId, Timestamp createdDate,BigDecimal totalPrice) {
+                Integer discountId, Integer orderId, Timestamp createdDate,int totalPrice) {
         this.cartId = cartId;
         this.userId = userId;
         this.quantity = quantity;
@@ -30,7 +30,7 @@ public class Cart {
     }
 
     // Minimal constructor (e.g., for inserts)
-    public Cart(int userId, String shipmentMethod ,BigDecimal totalPrice) {
+    public Cart(int userId, String shipmentMethod ,int totalPrice) {
         this.userId = userId;
         this.shipmentMethod = shipmentMethod;
         this.quantity = 0;
@@ -44,7 +44,7 @@ public class Cart {
     public String getShipmentMethod() { return shipmentMethod; }
     public Integer getDiscountId() { return discountId; }
     public Integer getOrderId() { return orderId; }
-    public BigDecimal getTotalPrice() { return totalPrice; }
+    public Integer getTotalPrice() { return totalPrice; }
     public Timestamp getCreatedDate() { return createdDate; }
 
     // Setters
@@ -55,7 +55,7 @@ public class Cart {
     public void setDiscountId(Integer discountId) { this.discountId = discountId; }
     public void setOrderId(Integer orderId) { this.orderId = orderId; }
     public void setCreatedDate(Timestamp createdDate) { this.createdDate = createdDate; }
-    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
+    public void setTotalPrice(int totalPrice) { this.totalPrice = totalPrice; }
 
 
     @Override
