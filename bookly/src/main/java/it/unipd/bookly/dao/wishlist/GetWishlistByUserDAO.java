@@ -1,29 +1,28 @@
 package it.unipd.bookly.dao.wishlist;
 
+import it.unipd.bookly.Resource.Wishlist;
 import it.unipd.bookly.dao.AbstractDAO;
-import it.unipd.bookly.model.Wishlist;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.GET_WISHLIST_BY_USER;
 
 /**
- * DAO class to retrieve a user's wishlist object.
+ * DAO class to retrieve all wishlists belonging to a specific user.
  */
 public class GetWishlistByUserDAO extends AbstractDAO<List<Wishlist>> {
 
     private final int userId;
 
     /**
-     * Constructs a DAO to retrieve wishlists for a given user.
+     * Constructor to create DAO instance.
      *
      * @param con    the database connection.
-     * @param userId the user ID.
+     * @param userId the user ID whose wishlists are requested.
      */
     public GetWishlistByUserDAO(final Connection con, final int userId) {
         super(con);
@@ -35,6 +34,7 @@ public class GetWishlistByUserDAO extends AbstractDAO<List<Wishlist>> {
         List<Wishlist> wishlists = new ArrayList<>();
         try (PreparedStatement stmnt = con.prepareStatement(GET_WISHLIST_BY_USER)) {
             stmnt.setInt(1, userId);
+
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
                     Wishlist wishlist = new Wishlist(
@@ -45,10 +45,12 @@ public class GetWishlistByUserDAO extends AbstractDAO<List<Wishlist>> {
                     wishlists.add(wishlist);
                 }
             }
+
             this.outputParam = wishlists;
             LOGGER.info("{} wishlist(s) retrieved for user ID {}.", wishlists.size(), userId);
+
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving wishlist for user {}: {}", userId, ex.getMessage());
+            LOGGER.error("Error retrieving wishlists for user {}: {}", userId, ex.getMessage());
         }
     }
 }

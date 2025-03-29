@@ -1,6 +1,6 @@
 package it.unipd.bookly.dao.wishlist;
 
-import it.unipd.bookly.model.Book;
+import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
@@ -12,17 +12,17 @@ import java.util.List;
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.GET_BOOKS_IN_WISHLIST;
 
 /**
- * DAO class that retrieves all books in a given wishlist.
+ * DAO class to retrieve all books in a specific wishlist.
  */
 public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
 
     private final int wishlistId;
 
     /**
-     * Constructs a DAO for retrieving books in a specific wishlist.
+     * Constructor to create the DAO instance.
      *
      * @param con        the database connection.
-     * @param wishlistId the wishlist ID to search books for.
+     * @param wishlistId the ID of the wishlist to query.
      */
     public GetBooksInWishlistDAO(final Connection con, final int wishlistId) {
         super(con);
@@ -34,6 +34,7 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
         List<Book> books = new ArrayList<>();
         try (PreparedStatement stmnt = con.prepareStatement(GET_BOOKS_IN_WISHLIST)) {
             stmnt.setInt(1, wishlistId);
+
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
                     Book book = new Book(
@@ -52,10 +53,12 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
                     books.add(book);
                 }
             }
+
             this.outputParam = books;
-            LOGGER.info("{} books found in wishlist ID {}.", books.size(), wishlistId);
+            LOGGER.info("{} books retrieved from wishlist ID {}.", books.size(), wishlistId);
+
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving books in wishlist {}: {}", wishlistId, ex.getMessage());
+            LOGGER.error("Failed to retrieve books from wishlist ID {}: {}", wishlistId, ex.getMessage());
         }
     }
 }

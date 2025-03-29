@@ -1,7 +1,7 @@
 package it.unipd.bookly.dao.wishlist;
 
 import it.unipd.bookly.dao.AbstractDAO;
-import it.unipd.bookly.model.Wishlist;
+import it.unipd.bookly.Resource.Wishlist;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.sql.PreparedStatement;
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.DELETE_WISHLIST;
 
 /**
- * DAO class to delete a wishlist.
+ * DAO class to delete a wishlist by its ID.
  */
 public class DeleteWishlistDAO extends AbstractDAO<Wishlist> {
 
@@ -19,7 +19,7 @@ public class DeleteWishlistDAO extends AbstractDAO<Wishlist> {
      * Constructs a DAO to delete a wishlist.
      *
      * @param con       the database connection.
-     * @param wishlist  the Wishlist object to be deleted.
+     * @param wishlist  the wishlist object to be deleted.
      */
     public DeleteWishlistDAO(final Connection con, final Wishlist wishlist) {
         super(con);
@@ -29,11 +29,12 @@ public class DeleteWishlistDAO extends AbstractDAO<Wishlist> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(DELETE_WISHLIST)) {
-            stmnt.setInt(1, wishlist.getWishlistId());
-            stmnt.execute();
-            LOGGER.info("Wishlist ID {} deleted.", wishlist.getWishlistId());
+            stmnt.setInt(1, wishlist.getWishlist_id());
+            stmnt.executeUpdate(); // Use executeUpdate instead of execute for clarity
+            LOGGER.info("Wishlist with ID {} deleted successfully.", wishlist.getWishlist_id());
+            this.outputParam = wishlist;
         } catch (Exception ex) {
-            LOGGER.error("Error deleting wishlist ID {}: {}", wishlist.getWishlistId(), ex.getMessage());
+            LOGGER.error("Error deleting wishlist ID {}: {}", wishlist.getWishlist_id(), ex.getMessage());
         }
     }
 }

@@ -1,0 +1,52 @@
+//package it.unipd.bookly.serverlet.home;
+//
+//import it.unipd.bookly.LogContext;
+//import it.unipd.bookly.Resource.Category;
+//import it.unipd.bookly.Resource.Collection;
+//import it.unipd.bookly.Resource.Recipe;
+//import it.unipd.bookly.dao.category.GetAllCategoriesDAO;
+//import it.unipd.bookly.dao.category.GetRecipesOfCategoryDAO;
+//import it.unipd.bookly.dao.collection.GetAllCollectionsDAO;
+//import it.unipd.bookly.dao.collection.GetRecipesInCollectionDAO;
+//import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+//import jakarta.servlet.ServletException;
+//import jakarta.servlet.http.HttpServletRequest;
+//import jakarta.servlet.http.HttpServletResponse;
+//
+//import java.io.IOException;
+//import java.util.List;
+//
+//import static it.unipd.yummycenter.services.user.UserValidation.isUserLoggedIn;
+//
+//public class HomeServlet extends AbstractDatabaseServlet {
+//
+//    @Override
+//    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        LogContext.setIPAddress(req.getRemoteAddr());
+//        LogContext.setResource(req.getRequestURI());
+//        LogContext.setAction("Home");
+//        LOGGER.info("HomeServlet");
+//        prepareAddRecipe(req, resp);
+//    }
+//
+//    private void prepareAddRecipe(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+//        try {
+//            List<Category> categories = new GetAllCategoriesDAO(getConnection()).access().getOutputParam();
+//            // show the recipes of the first category which is Breakfast
+//            List<Recipe> recipes = new GetRecipesOfCategoryDAO(getConnection(), categories.getFirst().getCategory_name()).access().getOutputParam();
+//            List<Collection> collections = new GetAllCollectionsDAO(getConnection()).access().getOutputParam();
+//            List<Recipe> collectionRecipes = new GetRecipesInCollectionDAO(getConnection(), collections.getFirst().getCollection_name()).access().getOutputParam();
+//
+//            req.setAttribute("home_recipes", recipes);
+//            req.setAttribute("categories", categories);
+//            req.setAttribute("collections", collections);
+//            req.setAttribute("collection_recipes", collectionRecipes);
+//            req.setAttribute("userIsLoggedIn", isUserLoggedIn(req));
+//
+//            req.getRequestDispatcher("/jsp/home.jsp").forward(req, resp);
+//        } catch (Exception e) {
+//            LOGGER.error(String.format("Error accessing the database: %s", e.getMessage()));
+//            req.getRequestDispatcher("/html/error.html").forward(req, resp);
+//        }
+//    }
+//}

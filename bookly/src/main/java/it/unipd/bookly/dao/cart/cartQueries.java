@@ -19,12 +19,7 @@ public final class CartQueries {
             "SELECT b.* FROM booklySchema.books b " +
             "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
             "WHERE c.cart_id = ?";
-
-    public static final String GET_CART_TOTAL_AMOUNT =
-            "SELECT SUM(b.price) FROM booklySchema.books b " +
-            "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
-            "WHERE c.cart_id = ?";
-
+            
     public static final String GET_CART_DETAILS =
             "SELECT b.book_id, b.title, b.price FROM booklySchema.books b " +
             "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
