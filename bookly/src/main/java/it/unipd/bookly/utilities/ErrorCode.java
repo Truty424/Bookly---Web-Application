@@ -4,7 +4,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONObject;
 
 public enum ErrorCode {
-    OK(200, HttpServletResponse.SC_OK, "OK."),
+    OK(200, HttpServletResponse.SC_OK, "This status code indicates that the request was successful, and the server is returning the requested data or that the request was successfully processed."),
+    ACCEPTED(202, HttpServletResponse.SC_ACCEPTED, "This status code means that the request has been accepted for processing, but the processing is not yet complete."),
     BAD_REQUEST(400, HttpServletResponse.SC_BAD_REQUEST, "Required fields (e.g., username, email, password) are missing or invalid."),
     CONFLICT(409, HttpServletResponse.SC_CONFLICT, "A user with the same email or username already exists."),
     UNAUTHORIZED(401, HttpServletResponse.SC_UNAUTHORIZED, "Login credentials are incorrect."),
@@ -22,7 +23,7 @@ public enum ErrorCode {
     CONFLICT_ADDING_BOOK_OR_WISHLIST_ITEM(409, HttpServletResponse.SC_CONFLICT, "A conflict occurred when trying to add a book or wishlist item."),
     INTERNAL_SERVER_ERROR(500, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred on the server."),
     FORBIDDEN(403, HttpServletResponse.SC_FORBIDDEN, "The user is not authorized to perform this action."),
-    UNPROCESSABLE_ENTITY(422, HttpServletResponse.SC_UNPROCESSABLE_ENTITY, "The data provided is valid but cannot be processed (e.g., invalid book details or ratings)."),
+    UNSUPPORTED_MEDIA_TYPE(415, HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, "The server does not support the media type of the request (e.g., trying to upload a .bmp file when only .jpg or .png are allowed)."),
     MALFORMED_REQUEST_BODY(400, HttpServletResponse.SC_BAD_REQUEST, "The request body is malformed or contains invalid data (e.g., invalid email format or missing required fields)."),
     SESSION_EXPIRED(401, HttpServletResponse.SC_UNAUTHORIZED, "User is not logged in or the session has expired."),
     PERMISSION_DENIED(403, HttpServletResponse.SC_FORBIDDEN, "The user does not have permission to access the requested resource."),
@@ -31,8 +32,6 @@ public enum ErrorCode {
     NOT_ACCEPTABLE(406, HttpServletResponse.SC_NOT_ACCEPTABLE, "The requested resource is not available in a format acceptable by the client."),
     REQUEST_TIMEOUT(408, HttpServletResponse.SC_REQUEST_TIMEOUT, "The server timed out waiting for the request."),
     CONFLICT_IN_REQUEST(409, HttpServletResponse.SC_CONFLICT, "A conflict occurred during a request."),
-    UNPROCESSABLE_ENTITY_ENTITY(422, HttpServletResponse.SC_UNPROCESSABLE_ENTITY, "The entity provided in the request is syntactically correct but semantically incorrect or incomplete."),
-    TOO_MANY_REQUESTS(429, HttpServletResponse.SC_, "The user has made too many requests in a short amount of time."),
     SERVER_ERROR(500, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred on the server."),
     BAD_GATEWAY(502, HttpServletResponse.SC_BAD_GATEWAY, "The server received an invalid response from an upstream server."),
     SERVICE_UNAVAILABLE(503, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "The server is currently unable to handle the request due to temporary overload or maintenance."),
