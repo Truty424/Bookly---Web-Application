@@ -53,7 +53,7 @@ public class Order {
         return paymentMethod;
     }
 
-    public Timestamp getorderDate() {
+    public Timestamp getOrderDate() {
         return orderDate;
     }
 

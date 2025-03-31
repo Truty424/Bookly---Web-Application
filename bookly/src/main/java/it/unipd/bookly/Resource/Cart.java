@@ -1,7 +1,9 @@
 package it.unipd.bookly.Resource;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
+import java.util.ArrayList;
 
 public class Cart {
     private int cartId;
@@ -12,13 +14,14 @@ public class Cart {
     private Integer discountId;
     private Integer orderId;
     private Timestamp createdDate;
+    private List<CartItem> items = new ArrayList<>(); // New field for cart items
 
-    // Default constructor
+    // Constructors
     public Cart() {}
 
-    // Full constructor
     public Cart(int cartId, int userId, int quantity, String shipmentMethod,
-                Integer discountId, Integer orderId, Timestamp createdDate,int totalPrice) {
+               Integer discountId, Integer orderId, Timestamp createdDate, 
+               int totalPrice, List<CartItem> items) {
         this.cartId = cartId;
         this.userId = userId;
         this.quantity = quantity;
@@ -27,14 +30,14 @@ public class Cart {
         this.orderId = orderId;
         this.createdDate = createdDate;
         this.totalPrice = totalPrice;
+        this.items = items != null ? items : new ArrayList<>();
     }
 
-    // Minimal constructor (e.g., for inserts)
-    public Cart(int userId, String shipmentMethod ,int totalPrice) {
+    public Cart(int userId, String shipmentMethod, int totalPrice) {
         this.userId = userId;
         this.shipmentMethod = shipmentMethod;
-        this.quantity = 0;
         this.totalPrice = totalPrice;
+        this.quantity = 0;
     }
 
     // Getters
@@ -44,22 +47,65 @@ public class Cart {
     public String getShipmentMethod() { return shipmentMethod; }
     public Integer getDiscountId() { return discountId; }
     public Integer getOrderId() { return orderId; }
-    public Integer getTotalPrice() { return totalPrice; }
+    public int getTotalPrice() { return totalPrice; }
     public Timestamp getCreatedDate() { return createdDate; }
+    public List<CartItem> getItems() { return new ArrayList<>(items); } // Defensive copy
 
     // Setters
     public void setCartId(int cartId) { this.cartId = cartId; }
     public void setUserId(int userId) { this.userId = userId; }
-    public void setQuantity(int quantity) { this.quantity = quantity; }
+    public void setQuantity(int quantity) { 
+        this.quantity = Math.max(0, quantity); // Prevent negative quantities
+    }
     public void setShipmentMethod(String shipmentMethod) { this.shipmentMethod = shipmentMethod; }
     public void setDiscountId(Integer discountId) { this.discountId = discountId; }
     public void setOrderId(Integer orderId) { this.orderId = orderId; }
     public void setCreatedDate(Timestamp createdDate) { this.createdDate = createdDate; }
-    public void setTotalPrice(int totalPrice) { this.totalPrice = totalPrice; }
+    public void setTotalPrice(int totalPrice) { 
+        this.totalPrice = Math.max(0, totalPrice); // Prevent negative totals
+    }
+    public void setItems(List<CartItem> items) {
+        this.items = items != null ? new ArrayList<>(items) : new ArrayList<>();
+        updateDerivedFields();
+    }
 
+    // Item management methods
+    public void addItem(CartItem item) {
+        if (item != null) {
+            items.add(item);
+            updateDerivedFields();
+        }
+    }
+
+    public void removeItem(int bookId) {
+        items.removeIf(item -> item.getBookId() == bookId);
+        updateDerivedFields();
+    }
+
+    public void clearItems() {
+        items.clear();
+        updateDerivedFields();
+    }
+
+    private void updateDerivedFields() {
+        this.quantity = items.stream()
+                           .mapToInt(CartItem::getQuantity)
+                           .sum();
+        this.totalPrice = items.stream()
+                             .mapToInt(item -> item.getQuantity() * item.getUnitPrice())
+                             .sum();
+    }
 
     @Override
     public int hashCode() {
         return Objects.hash(cartId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Cart other = (Cart) obj;
+        return cartId == other.cartId;
     }
 }
