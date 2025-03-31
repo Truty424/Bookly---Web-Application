@@ -16,7 +16,7 @@
 //import java.io.IOException;
 //import java.util.List;
 //
-//import static it.unipd.yummycenter.services.user.UserValidation.isUserLoggedIn;
+//import static it.unipd.bookly.services.user.UserValidation.isUserLoggedIn;
 //
 //public class HomeServlet extends AbstractDatabaseServlet {
 //

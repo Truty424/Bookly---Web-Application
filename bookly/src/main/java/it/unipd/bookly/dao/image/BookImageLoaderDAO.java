@@ -1,8 +1,8 @@
 
 package it.unipd.bookly.dao.image;
 
-import it.unipd.yummycenter.Resource.Image;
-import it.unipd.yummycenter.dao.AbstractDAO;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class BookImageLoaderDAO extends AbstractDAO<Image> {
-    private static final String STATEMENT_LOAD_RECIPE_IMAGE = "SELECT * FROM booklySchema.recipe_image WHERE recipe_id = ?";
+    private static final String STATEMENT_LOAD_RECIPE_IMAGE = "SELECT * FROM booklySchema.book_image WHERE recipe_id = ?";
     private final int recipeId;
 
     public BookImageLoaderDAO(final Connection con, int recipeId) {

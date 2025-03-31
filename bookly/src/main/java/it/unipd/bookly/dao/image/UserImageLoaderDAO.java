@@ -1,7 +1,7 @@
 package it.unipd.bookly.dao.image;
 
-import it.unipd.yummycenter.Resource.Image;
-import it.unipd.yummycenter.dao.AbstractDAO;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
