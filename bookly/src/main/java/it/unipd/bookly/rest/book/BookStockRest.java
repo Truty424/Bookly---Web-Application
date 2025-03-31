@@ -1,13 +1,13 @@
 package it.unipd.bookly.rest.book;
 
+import java.io.IOException;
+import java.sql.Connection;
+
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.book.UpdateBookStockDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
-import java.sql.Connection;
 
 /**
  * REST endpoint to update the stock quantity of a book.
