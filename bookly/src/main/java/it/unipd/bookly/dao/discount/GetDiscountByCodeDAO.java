@@ -6,51 +6,50 @@ import it.unipd.bookly.dao.AbstractDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 
-import static it.unipd.bookly.dao.discount.DiscountQueries.GET_DISCOUNT_BY_ID;
+import static it.unipd.bookly.dao.discount.DiscountQueries.GET_DISCOUNT_BY_CODE;
 
 /**
- * DAO class to retrieve a discount by its ID.
+ * DAO class to retrieve a discount by its unique code.
  */
-public class GetDiscountByIDDAO extends AbstractDAO<Discount> {
+public class GetDiscountByCodeDAO extends AbstractDAO<Discount> {
 
-    private final int discountId;
+    private final String discountCode;
 
     /**
      * Constructor to create DAO instance.
      *
-     * @param con         the database connection.
-     * @param discountId  the ID of the discount to retrieve.
+     * @param con          the database connection
+     * @param discountCode the unique discount code to search for
      */
-    public GetDiscountByIDDAO(final Connection con, final int discountId) {
+    public GetDiscountByCodeDAO(final Connection con, final String discountCode) {
         super(con);
-        this.discountId = discountId;
+        this.discountCode = discountCode;
     }
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(GET_DISCOUNT_BY_ID)) {
-            stmnt.setInt(1, discountId);
+        try (PreparedStatement stmt = con.prepareStatement(GET_DISCOUNT_BY_CODE)) {
+            stmt.setString(1, discountCode);
 
-            try (ResultSet rs = stmnt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Discount discount = new Discount(
-                            rs.getInt("discount_id"),
-                            rs.getString("code"),
-                            rs.getDouble("discount_percentage"),
-                            rs.getTimestamp("expired_date") // This line changed
+                        rs.getInt("discount_id"),
+                        rs.getString("code"),
+                        rs.getDouble("discount_percentage"),
+                        rs.getTimestamp("expired_date")
                     );
                     this.outputParam = discount;
-                    LOGGER.info("Discount retrieved for ID {}.", discountId);
+                    LOGGER.info("Discount retrieved for code '{}'.", discountCode);
                 } else {
-                    LOGGER.warn("No discount found for ID {}.", discountId);
+                    LOGGER.warn("No discount found for code '{}'.", discountCode);
                     this.outputParam = null;
                 }
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving discount with ID {}: {}", discountId, ex.getMessage());
+            LOGGER.error("Error retrieving discount with code '{}': {}", discountCode, ex.getMessage());
             throw ex;
         }
     }

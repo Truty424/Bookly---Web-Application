@@ -3,7 +3,6 @@ package it.unipd.bookly.rest;
 import it.unipd.bookly.dao.book.GetBookByIdDAO;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Message;
-import it.unipd.bookly.rest.AbstractRestResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -11,8 +10,8 @@ import java.io.IOException;
 import java.sql.Connection;
 
 /**
- * Handles GET requests to retrieve book details by ID.
- * Endpoint: /api/book?id=123
+ * Handles GET requests to retrieve book details by ID. Endpoint:
+ * /api/book?id=123
  */
 public class GetBookRest extends AbstractRestResource {
 
@@ -54,7 +53,6 @@ public class GetBookRest extends AbstractRestResource {
 
             // Set content type and write book JSON
             res.setContentType("application/json;charset=UTF-8");
-            book.toJSON(res.getOutputStream());
 
         } catch (Exception e) {
             LOGGER.error("Error while retrieving book with ID: {}", bookId, e);
