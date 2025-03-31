@@ -19,6 +19,12 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
 
     private final int wishlistId;
 
+    /**
+     * Constructor.
+     *
+     * @param con        the database connection
+     * @param wishlistId the wishlist ID to query
+     */
     public GetBooksInWishlistDAO(final Connection con, final int wishlistId) {
         super(con);
         this.wishlistId = wishlistId;
@@ -26,24 +32,24 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
 
     @Override
     protected void doAccess() throws Exception {
-        List<Book> books = new ArrayList<>();
+        final List<Book> books = new ArrayList<>();
 
         try (PreparedStatement stmnt = con.prepareStatement(GET_BOOKS_IN_WISHLIST)) {
             stmnt.setInt(1, wishlistId);
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
-                    int book_id = rs.getInt("book_id");
-                    String title = rs.getString("title");
-                    String language = rs.getString("language");
-                    String isbn = rs.getString("isbn");
-                    double price = rs.getDouble("price");
-                    String edition = rs.getString("edition");
-                    int publication_year = rs.getInt("publication_year");
-                    int number_of_pages = rs.getInt("number_of_pages");
-                    int stock_quantity = rs.getInt("stock_quantity");
-                    double average_rate = rs.getDouble("average_rate");
-                    String summary = rs.getString("summary");
+                    final int bookId = rs.getInt("book_id");
+                    final String title = rs.getString("title");
+                    final String language = rs.getString("language");
+                    final String isbn = rs.getString("isbn");
+                    final double price = rs.getDouble("price");
+                    final String edition = rs.getString("edition");
+                    final int publicationYear = rs.getInt("publication_year");
+                    final int numberOfPages = rs.getInt("number_of_pages");
+                    final int stockQuantity = rs.getInt("stock_quantity");
+                    final double averageRate = rs.getDouble("average_rate");
+                    final String summary = rs.getString("summary");
 
                     Image bookImage = null;
                     try {
@@ -53,24 +59,25 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
                             bookImage = new Image(imageData, imageType);
                         }
                     } catch (Exception ignored) {
-                        LOGGER.debug("No image found for book ID {} in wishlist {}", book_id, wishlistId);
+                        LOGGER.debug("Optional image not found for book ID {} (wishlist ID {}).", bookId, wishlistId);
                     }
 
                     Book book = (bookImage == null)
-                            ? new Book(book_id, title, language, isbn, price, edition,
-                            publication_year, number_of_pages, stock_quantity, average_rate, summary)
-                            : new Book(book_id, title, language, isbn, price, edition,
-                            publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
+                            ? new Book(bookId, title, language, isbn, price, edition,
+                            publicationYear, numberOfPages, stockQuantity, averageRate, summary)
+                            : new Book(bookId, title, language, isbn, price, edition,
+                            publicationYear, numberOfPages, stockQuantity, averageRate, summary, bookImage);
 
                     books.add(book);
                 }
             }
 
             this.outputParam = books;
-            LOGGER.info("{} books retrieved from wishlist ID {}", books.size(), wishlistId);
+            LOGGER.info("{} book(s) retrieved from wishlist ID {}.", books.size(), wishlistId);
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving books from wishlist ID {}: {}", wishlistId, ex.getMessage());
+            LOGGER.error("Failed to retrieve books from wishlist ID {}: {}", wishlistId, ex.getMessage());
+            throw ex;
         }
     }
 }

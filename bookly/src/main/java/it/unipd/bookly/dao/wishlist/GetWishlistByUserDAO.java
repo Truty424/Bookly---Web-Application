@@ -6,23 +6,24 @@ import it.unipd.bookly.dao.AbstractDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.GET_WISHLIST_BY_USER;
 
 /**
- * DAO class to retrieve all wishlists belonging to a specific user.
+ * DAO class to retrieve all wishlists associated with a specific user.
  */
 public class GetWishlistByUserDAO extends AbstractDAO<List<Wishlist>> {
 
     private final int userId;
 
     /**
-     * Constructor to create DAO instance.
+     * Constructor.
      *
-     * @param con    the database connection.
-     * @param userId the user ID whose wishlists are requested.
+     * @param con    the database connection
+     * @param userId the ID of the user whose wishlists should be retrieved
      */
     public GetWishlistByUserDAO(final Connection con, final int userId) {
         super(con);
@@ -31,26 +32,28 @@ public class GetWishlistByUserDAO extends AbstractDAO<List<Wishlist>> {
 
     @Override
     protected void doAccess() throws Exception {
-        List<Wishlist> wishlists = new ArrayList<>();
+        final List<Wishlist> wishlists = new ArrayList<>();
+
         try (PreparedStatement stmnt = con.prepareStatement(GET_WISHLIST_BY_USER)) {
             stmnt.setInt(1, userId);
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
-                    Wishlist wishlist = new Wishlist(
-                            rs.getInt("wishlist_id"),
-                            rs.getInt("user_id"),
-                            rs.getTimestamp("created_at")
-                    );
+                    final int wishlistId = rs.getInt("wishlist_id");
+                    final int ownerId = rs.getInt("user_id");
+                    final Timestamp createdAt = rs.getTimestamp("created_at");
+
+                    Wishlist wishlist = new Wishlist(wishlistId, ownerId, createdAt);
                     wishlists.add(wishlist);
                 }
             }
 
             this.outputParam = wishlists;
-            LOGGER.info("{} wishlist(s) retrieved for user ID {}.", wishlists.size(), userId);
+            LOGGER.info("Retrieved {} wishlist(s) for user ID {}.", wishlists.size(), userId);
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving wishlists for user {}: {}", userId, ex.getMessage());
+            LOGGER.error("Failed to retrieve wishlists for user ID {}: {}", userId, ex.getMessage());
+            throw ex;
         }
     }
 }
