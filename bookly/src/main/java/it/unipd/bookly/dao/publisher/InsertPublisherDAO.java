@@ -17,10 +17,10 @@ public class InsertPublisherDAO extends AbstractDAO<Boolean> {
     private final Publisher publisher;
 
     /**
-     * Constructs a DAO to insert a new publisher.
+     * Constructs a DAO to insert a publisher.
      *
-     * @param con       the database connection.
-     * @param publisher the publisher object to insert.
+     * @param con        the database connection.
+     * @param publisher  the publisher object containing name, phone, and address.
      */
     public InsertPublisherDAO(final Connection con, final Publisher publisher) {
         super(con);
@@ -37,10 +37,10 @@ public class InsertPublisherDAO extends AbstractDAO<Boolean> {
             int rowsAffected = stmt.executeUpdate();
             this.outputParam = rowsAffected > 0;
 
-            if (outputParam) {
+            if (rowsAffected > 0) {
                 LOGGER.info("Publisher '{}' inserted successfully.", publisher.getPublisherName());
             } else {
-                LOGGER.warn("Insert returned no affected rows for publisher '{}'.", publisher.getPublisherName());
+                LOGGER.warn("No rows inserted for publisher '{}'.", publisher.getPublisherName());
             }
 
         } catch (SQLException ex) {
