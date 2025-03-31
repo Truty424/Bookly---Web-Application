@@ -6,7 +6,7 @@ public final class CartQueries {
 
     // --- CREATE ---
     public static final String CREATE_CART_FOR_USER =
-            "INSERT INTO booklySchema.shoppingcart (user_id, quantity, shipment_method) VALUES (?, 0, ?)";
+            "INSERT INTO booklySchema.shoppingcart (user_id, quantity, shipment_method) VALUES (?, 0, ?) RETURNING cart_id";
 
     public static final String ADD_BOOK_TO_CART =
             "INSERT INTO booklySchema.contains (book_id, cart_id) VALUES (?, ?)";
@@ -19,11 +19,13 @@ public final class CartQueries {
             "SELECT b.* FROM booklySchema.books b " +
             "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
             "WHERE c.cart_id = ?";
-            
+
     public static final String GET_CART_DETAILS =
-            "SELECT b.book_id, b.title, b.price FROM booklySchema.books b " +
-            "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
-            "WHERE c.cart_id = ?";
+            "SELECT b.book_id, b.title, b.price, c.quantity " +
+                    "FROM booklySchema.books b " +
+                    "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
+                    "WHERE c.cart_id = ?";
+
 
     // --- UPDATE ---
     public static final String UPDATE_CART_QUANTITY =
