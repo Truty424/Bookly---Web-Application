@@ -3,74 +3,69 @@ package it.unipd.bookly.services.discount;
 import it.unipd.bookly.Resource.Discount;
 import it.unipd.bookly.utilities.ErrorCode;
 import org.apache.commons.lang3.StringUtils;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.regex.Pattern;
 
-/**
- * Service for discount validation and business logic.
- */
-public class DiscountServices {  // Changed to instance-based
-
+public class DiscountServices {
     private static final Pattern DISCOUNT_CODE_PATTERN = 
         Pattern.compile("^[A-Z0-9]{5,20}$");
     private static final int MIN_DISCOUNT_DAYS = 1;
     private static final int MAX_DISCOUNT_DAYS = 365;
 
     /**
-     * Validates a discount for creation.
-     * @return ErrorCode indicating validation result
+     * Validates all discount fields
+     * @return true if valid, false otherwise (sets errorCode)
      */
-    public ErrorCode validateDiscount(Discount discount) {
+    public static boolean validateDiscount(Discount discount, ErrorCode errorCode) {
         if (discount == null) {
-            return ErrorCode.INVALID_DISCOUNT_OBJECT;
+            errorCode.setCode(ErrorCode.INVALID_DISCOUNT_OBJECT.getCode());
+            return false;
         }
 
-        ErrorCode codeValidation = validateDiscountCode(discount.getCode());
-        if (codeValidation != ErrorCode.SUCCESS) {
-            return codeValidation;
-        }
-
-        ErrorCode percentageValidation = validateDiscountPercentage(discount.getDiscountPercentage());
-        if (percentageValidation != ErrorCode.SUCCESS) {
-            return percentageValidation;
-        }
-
-        return validateExpirationDate(discount.getExpiredDate());
+        if (!validateDiscountCode(discount.getCode(), errorCode)) return false;
+        if (!validateDiscountPercentage(discount.getDiscountPercentage(), errorCode)) return false;
+        return validateExpirationDate(discount.getExpiredDate(), errorCode);
     }
 
     /**
-     * Validates discount code format.
+     * Validates discount code format
      */
-    public ErrorCode validateDiscountCode(String code) {
+    public static boolean validateDiscountCode(String code, ErrorCode errorCode) {
         if (StringUtils.isBlank(code)) {
-            return ErrorCode.INVALID_DISCOUNT_CODE;
+            errorCode.setCode(ErrorCode.INVALID_DISCOUNT_CODE.getCode());
+            return false;
         }
         if (!DISCOUNT_CODE_PATTERN.matcher(code).matches()) {
-            return ErrorCode.INVALID_DISCOUNT_FORMAT;
+            errorCode.setCode(ErrorCode.INVALID_DISCOUNT_FORMAT.getCode());
+            return false;
         }
-        return ErrorCode.SUCCESS;
+        return true;
     }
 
     /**
-     * Validates discount percentage.
+     * Validates percentage (0 < x ≤ 100)
      */
-    public ErrorCode validateDiscountPercentage(double percentage) {
+    public static boolean validateDiscountPercentage(double percentage, ErrorCode errorCode) {
         if (percentage <= 0) {
-            return ErrorCode.DISCOUNT_TOO_LOW;
+            errorCode.setCode(ErrorCode.DISCOUNT_TOO_LOW.getCode());
+            return false;
         }
         if (percentage > 100) {
-            return ErrorCode.DISCOUNT_TOO_HIGH;
+            errorCode.setCode(ErrorCode.DISCOUNT_TOO_HIGH.getCode());
+            return false;
         }
-        return ErrorCode.SUCCESS;
+        return true;
     }
 
     /**
-     * Validates expiration date is within allowed range.
+     * Validates expiration date is within 1-365 days
      */
-    public ErrorCode validateExpirationDate(Timestamp expiration) {
+    public static boolean validateExpirationDate(Timestamp expiration, ErrorCode errorCode) {
         if (expiration == null) {
-            return ErrorCode.MISSING_EXPIRATION_DATE;
+            errorCode.setCode(ErrorCode.MISSING_EXPIRATION_DATE.getCode());
+            return false;
         }
 
         Instant now = Instant.now();
@@ -78,31 +73,34 @@ public class DiscountServices {  // Changed to instance-based
         Instant maxDate = now.plus(MAX_DISCOUNT_DAYS, ChronoUnit.DAYS);
 
         if (expiration.before(Timestamp.from(now))) {
-            return ErrorCode.EXPIRED_DISCOUNT;
+            errorCode.setCode(ErrorCode.EXPIRED_DISCOUNT.getCode());
+            return false;
         }
         if (expiration.before(Timestamp.from(minDate))) {
-            return ErrorCode.DISCOUNT_PERIOD_TOO_SHORT;
+            errorCode.setCode(ErrorCode.DISCOUNT_PERIOD_TOO_SHORT.getCode());
+            return false;
         }
         if (expiration.after(Timestamp.from(maxDate))) {
-            return ErrorCode.DISCOUNT_PERIOD_TOO_LONG;
+            errorCode.setCode(ErrorCode.DISCOUNT_PERIOD_TOO_LONG.getCode());
+            return false;
         }
 
-        return ErrorCode.SUCCESS;
+        return true;
     }
 
     /**
-     * Validates discount for application to a cart.
+     * Validates discount is applicable (not expired)
      */
-    public ErrorCode validateForApplication(Discount discount) {
-        ErrorCode basicValidation = validateDiscount(discount);
-        if (basicValidation != ErrorCode.SUCCESS) {
-            return basicValidation;
+    public static boolean validateForApplication(Discount discount, ErrorCode errorCode) {
+        if (!validateDiscount(discount, errorCode)) {
+            return false;
         }
 
         if (discount.getExpiredDate().before(Timestamp.from(Instant.now()))) {
-            return ErrorCode.DISCOUNT_EXPIRED;
+            errorCode.setCode(ErrorCode.DISCOUNT_EXPIRED.getCode());
+            return false;
         }
 
-        return ErrorCode.SUCCESS;
+        return true;
     }
 }

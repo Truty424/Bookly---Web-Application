@@ -8,11 +8,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class OrderServices {
+
     // Valid order statuses from your business logic
     private static final List<String> VALID_STATUSES = Arrays.asList(
-        "pending", "processing", "shipped", "delivered", "cancelled"
+            "pending", "processing", "shipped", "delivered", "cancelled"
     );
-    
+
     // Valid shipment code pattern (e.g., "SHIP-12345")
     private static final String SHIPMENT_CODE_PATTERN = "^[A-Z]{3,5}-\\d{4,6}$";
 
@@ -42,22 +43,22 @@ public class OrderServices {
         }
 
         // Shipment code validation (optional but must match pattern if present)
-        if (order.getShipmentCode() != null && 
-            !order.getShipmentCode().matches(SHIPMENT_CODE_PATTERN)) {
+        if (order.getShipmentCode() != null
+                && !order.getShipmentCode().matches(SHIPMENT_CODE_PATTERN)) {
             errorCode.setCode(ErrorCode.INVALID_SHIPMENT_CODE.getCode());
             return false;
         }
 
         // Status validation
-        if (order.getStatus() == null || 
-            !VALID_STATUSES.contains(order.getStatus().toLowerCase())) {
+        if (order.getStatus() == null
+                || !VALID_STATUSES.contains(order.getStatus().toLowerCase())) {
             errorCode.setCode(ErrorCode.INVALID_ORDER_STATUS.getCode());
             return false;
         }
 
         // Date validation (cannot be in future)
-        if (order.getOrderDate() != null && 
-            order.getOrderDate().after(Timestamp.from(Instant.now()))) {
+        if (order.getOrderDate() != null
+                && order.getOrderDate().after(Timestamp.from(Instant.now()))) {
             errorCode.setCode(ErrorCode.INVALID_ORDER_DATE.getCode());
             return false;
         }
