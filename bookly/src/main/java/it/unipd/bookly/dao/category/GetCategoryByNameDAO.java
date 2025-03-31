@@ -16,7 +16,12 @@ public class GetCategoryByNameDAO extends AbstractDAO<Category> {
 
     private final String categoryName;
 
-
+    /**
+     * Constructor.
+     *
+     * @param con          the database connection.
+     * @param categoryName the name of the category to retrieve.
+     */
     public GetCategoryByNameDAO(final Connection con, final String categoryName) {
         super(con);
         this.categoryName = categoryName;
@@ -29,13 +34,18 @@ public class GetCategoryByNameDAO extends AbstractDAO<Category> {
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
+                    int id = rs.getInt("category_id");
+                    String name = rs.getString("category_name");
+                    String description = rs.getString("description");
+
                     Category category = new Category(
-                            rs.getInt("category_id"),
-                            rs.getString("category_name"),
-                            rs.getString("description")
+                            id,
+                            name != null ? name : "",
+                            description != null ? description : ""
                     );
+
                     this.outputParam = category;
-                    LOGGER.info("Category found by name '{}'.", categoryName);
+                    LOGGER.info("Category '{}' retrieved successfully by name.", categoryName);
                 } else {
                     this.outputParam = null;
                     LOGGER.warn("No category found with name '{}'.", categoryName);
@@ -43,7 +53,7 @@ public class GetCategoryByNameDAO extends AbstractDAO<Category> {
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving category with name '{}': {}", categoryName, ex.getMessage());
+            LOGGER.error("Failed to retrieve category with name '{}': {}", categoryName, ex.getMessage());
             throw ex;
         }
     }

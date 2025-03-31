@@ -38,7 +38,7 @@ public class GetAllCategoriesDAO extends AbstractDAO<List<Category>> {
             }
 
             this.outputParam = categories;
-            LOGGER.info("{} category(ies) retrieved from the database.", categories.size());
+            LOGGER.info("Retrieved {} categories from the database.", categories.size());
 
         } catch (Exception ex) {
             LOGGER.error("Error retrieving categories: {}", ex.getMessage());
