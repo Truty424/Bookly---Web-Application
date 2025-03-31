@@ -16,7 +16,12 @@ public class GetCategoryByIdDAO extends AbstractDAO<Category> {
 
     private final int categoryId;
 
-
+    /**
+     * Constructor to initialize the DAO with the given book ID.
+     *
+     * @param con        the database connection.
+     * @param categoryId the ID of the category to retrieve.
+     */
     public GetCategoryByIdDAO(final Connection con, final int categoryId) {
         super(con);
         this.categoryId = categoryId;
@@ -29,13 +34,18 @@ public class GetCategoryByIdDAO extends AbstractDAO<Category> {
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
+                    int id = rs.getInt("category_id");
+                    String name = rs.getString("category_name");
+                    String description = rs.getString("description");
+
                     Category category = new Category(
-                            rs.getInt("category_id"),
-                            rs.getString("category_name"),
-                            rs.getString("description")
+                            id,
+                            name != null ? name : "",
+                            description != null ? description : ""
                     );
+
                     this.outputParam = category;
-                    LOGGER.info("Category retrieved for ID {}.", categoryId);
+                    LOGGER.info("Category with ID {} retrieved successfully.", categoryId);
                 } else {
                     this.outputParam = null;
                     LOGGER.warn("No category found for ID {}.", categoryId);
@@ -43,7 +53,7 @@ public class GetCategoryByIdDAO extends AbstractDAO<Category> {
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving category with ID {}: {}", categoryId, ex.getMessage());
+            LOGGER.error("Failed to retrieve category with ID {}: {}", categoryId, ex.getMessage());
             throw ex;
         }
     }

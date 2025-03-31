@@ -1,7 +1,7 @@
 package it.unipd.bookly.rest.resource;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import it.unipd.bookly.resource.AbstractResource;
+import it.unipd.bookly.Resource.AbstractResource;
 
 import java.io.OutputStream;
 

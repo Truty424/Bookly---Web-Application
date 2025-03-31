@@ -12,13 +12,18 @@ import java.util.List;
 import static it.unipd.bookly.dao.category.CategoryQueries.GET_CATEGORIES_BY_BOOK;
 
 /**
- * DAO class to retrieve all categories for a given book.
+ * DAO class to retrieve all categories associated with a specific book.
  */
 public class GetCategoriesByBookDAO extends AbstractDAO<List<Category>> {
 
     private final int bookId;
 
-
+    /**
+     * Constructor to create the DAO instance.
+     *
+     * @param con    the database connection.
+     * @param bookId the ID of the book.
+     */
     public GetCategoriesByBookDAO(final Connection con, final int bookId) {
         super(con);
         this.bookId = bookId;
@@ -33,20 +38,25 @@ public class GetCategoriesByBookDAO extends AbstractDAO<List<Category>> {
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
+                    int categoryId = rs.getInt("category_id");
+                    String categoryName = rs.getString("category_name");
+                    String description = rs.getString("description");
+
                     Category category = new Category(
-                            rs.getInt("category_id"),
-                            rs.getString("category_name"),
-                            rs.getString("description")
+                            categoryId,
+                            categoryName != null ? categoryName : "",
+                            description != null ? description : ""
                     );
+
                     categories.add(category);
                 }
             }
 
             this.outputParam = categories;
-            LOGGER.info("{} category(ies) retrieved for book ID {}.", categories.size(), bookId);
+            LOGGER.info("Retrieved {} category(ies) for book ID {}.", categories.size(), bookId);
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving categories for book ID {}: {}", bookId, ex.getMessage());
+            LOGGER.error("Failed to retrieve categories for book ID {}: {}", bookId, ex.getMessage());
             throw ex;
         }
     }

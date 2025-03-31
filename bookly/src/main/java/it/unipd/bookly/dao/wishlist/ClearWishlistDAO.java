@@ -9,17 +9,17 @@ import java.sql.PreparedStatement;
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.CLEAR_WISHLIST;
 
 /**
- * DAO to remove all books from a given wishlist.
+ * DAO to remove all books from a specific wishlist.
  */
 public class ClearWishlistDAO extends AbstractDAO<Wishlist> {
 
     private final Wishlist wishlist;
 
     /**
-     * Creates a new DAO instance to clear all books from a wishlist.
+     * Constructor.
      *
-     * @param con      the DB connection to use.
-     * @param wishlist the wishlist to be cleared.
+     * @param con      the database connection
+     * @param wishlist the wishlist to be cleared
      */
     public ClearWishlistDAO(final Connection con, final Wishlist wishlist) {
         super(con);
@@ -28,20 +28,21 @@ public class ClearWishlistDAO extends AbstractDAO<Wishlist> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmt = con.prepareStatement(CLEAR_WISHLIST)) {
-            stmt.setInt(1, wishlist.getWishlistId());
-            int rows = stmt.executeUpdate();
+        try (PreparedStatement stmnt = con.prepareStatement(CLEAR_WISHLIST)) {
+            stmnt.setInt(1, wishlist.getWishlistId());
 
-            if (rows > 0) {
-                LOGGER.info("Wishlist ID {} successfully cleared. {} book(s) removed.", wishlist.getWishlistId(), rows);
+            int rowsAffected = stmnt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                LOGGER.info("Cleared wishlist ID {} — {} book(s) removed.", wishlist.getWishlistId(), rowsAffected);
                 this.outputParam = wishlist;
             } else {
-                LOGGER.warn("Wishlist ID {} was already empty or does not exist.", wishlist.getWishlistId());
+                LOGGER.warn("Wishlist ID {} is already empty or not found.", wishlist.getWishlistId());
                 this.outputParam = null;
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Error clearing wishlist ID {}: {}", wishlist.getWishlistId(), ex.getMessage());
+            LOGGER.error("Failed to clear wishlist ID {}: {}", wishlist.getWishlistId(), ex.getMessage());
             throw ex;
         }
     }
