@@ -26,5 +26,7 @@ public final class UserQueries {
     public static final String CHANGE_USER_PASSWORD= "UPDATE booklySchema.users SET password = ? WHERE user_id = ?";
 
     public static final String UPDATE_USER_IMAGE= "UPDATE booklySchema.user_images SET image = ?, image_type = ? WHERE user_id = ?";
+
+    public static final String AUTHENTICATE_USER = "SELECT id, username, email, password_hash, role FROM users WHERE username = ?"
 }
 
