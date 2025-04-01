@@ -25,6 +25,10 @@ public final class DiscountQueries {
     public static final String COUNT_DISCOUNT_USAGE =
             "SELECT COUNT(*) FROM booklySchema.shoppingcart WHERE discount_id = ?";
 
+    public static final String GET_DISCOUNT_PERCENTAGE =
+            "SELECT discount_percentage FROM booklySchema.discounts WHERE discount_id = ?";
+
+
     // --- DELETE ---
     public static final String DELETE_DISCOUNT =
             "DELETE FROM booklySchema.discounts WHERE discount_id = ?";

@@ -46,4 +46,11 @@ public final class CartQueries {
 
     public static final String DELETE_CART_BY_USER_ID =
             "DELETE FROM booklySchema.shoppingcart WHERE user_id = ?";
+
+    public static final String GET_CART_TOTAL =
+            "SELECT total_price FROM booklySchema.shoppingcart WHERE cart_id = ?";
+
+    public static final String APPLY_DISCOUNT =
+            "UPDATE booklySchema.shoppingcart SET discount_id = ? WHERE cart_id = ?";
+
 }
