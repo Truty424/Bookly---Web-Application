@@ -1,12 +1,11 @@
 package it.unipd.bookly.dao.order;
 
-import it.unipd.bookly.Resource.Order;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import it.unipd.bookly.Resource.Order;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.order.OrderQueries.GET_LATEST_ORDER_FOR_USER;
 
 /**
@@ -28,15 +27,27 @@ public class GetLatestOrderForUserDAO extends AbstractDAO<Order> {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
+                    int orderId = rs.getInt("order_id");
+                    double totalPrice = rs.getDouble("total_price");
+                    String paymentMethod = rs.getString("payment_method");
+                    java.sql.Timestamp orderDate = rs.getTimestamp("order_date");
+                    String address = rs.getString("address");
+                    String shipmentCode = rs.getString("shipment_code");
+                    String status = rs.getString("status");
+
                     this.outputParam = new Order(
-                        rs.getInt("order_id"),
-                        rs.getDouble("total_amount"),
-                        rs.getString("payment_method"),
-                        rs.getTimestamp("payment_date"),
-                        rs.getString("status")
+                        orderId,
+                        totalPrice,
+                        paymentMethod,
+                        orderDate,
+                        address,
+                        shipmentCode,
+                        status
                     );
                 }
             }
+        } catch (Exception e) {
+            LOGGER.error("Error retrieving the latest order for user {}: {}", userId, e.getMessage());
         }
     }
 }
