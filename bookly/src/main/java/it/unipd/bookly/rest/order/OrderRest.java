@@ -23,6 +23,7 @@ public class OrderRest extends AbstractRestResource {
     protected void doServe() throws IOException {
         final String method = req.getMethod();
         final String path = req.getRequestURI();
+        Message message = null;
 
         try {
             if ("GET".equals(method) && path.matches(".*/order/\\d+")) {
@@ -72,6 +73,7 @@ public class OrderRest extends AbstractRestResource {
         int id = new InsertOrderDAO(con, order).access().getOutputParam();
 
         res.setStatus(HttpServletResponse.SC_CREATED);
-        new Message("Order created with ID " + id, "201").toJSON(res.getOutputStream());
+        message = new Message("Order created with ID " + id, "201");
+        message.toJSON(res.getOutputStream());
     }
 }

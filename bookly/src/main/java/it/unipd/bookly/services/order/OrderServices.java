@@ -27,7 +27,7 @@ public class OrderServices {
         }
 
         // Required fields validation
-        if (order.getUserId() <= 0) {
+        if (order.getOrderId() <= 0) {
             errorCode.setCode(ErrorCode.INVALID_USER_ID.getCode());
             return false;
         }
