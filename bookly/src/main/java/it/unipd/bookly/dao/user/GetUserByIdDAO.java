@@ -1,12 +1,12 @@
 package it.unipd.bookly.dao.user;
 
-import it.unipd.bookly.model.User;
+import it.unipd.bookly.Resource.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDao {
+public class GetUserByIdDAO {
     private static final String GET_USER_BY_ID = 
         "SELECT user_id, username, first_name, last_name, email, phone, address, role " +
         "FROM booklySchema.users WHERE user_id = ?";

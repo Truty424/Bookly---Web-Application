@@ -16,7 +16,7 @@ import static it.unipd.bookly.dao.user.UserQueries.GET_USERS_BY_USERNAME;
 /**
  * DAO class to retrieve users whose usernames match a given string.
  */
-public class GetUsersByUsernameDAO extends AbstractDAO<List<User>> {
+public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
 
     private final String usernameLike;
 
@@ -26,7 +26,7 @@ public class GetUsersByUsernameDAO extends AbstractDAO<List<User>> {
      * @param con           the database connection
      * @param usernameLike  the username or partial match (e.g., "john%")
      */
-    public GetUsersByUsernameDAO(final Connection con, final String usernameLike) {
+    public GetUserByUsernameDAO(final Connection con, final String usernameLike) {
         super(con);
         this.usernameLike = usernameLike;
     }
