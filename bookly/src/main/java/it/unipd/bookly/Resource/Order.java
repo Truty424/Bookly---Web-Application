@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 public class Order {
 
     private int orderId;
-    private int totalPrice;
+    private double totalPrice;
     private String paymentMethod;
     private Timestamp orderDate;
     private String address;
@@ -20,7 +20,7 @@ public class Order {
     }
 
     // Constructor with all fields (for retrieval)
-    public Order(int orderId, int totalPrice, String paymentMethod, Timestamp orderDate, String address,
+    public Order(int orderId, double totalPrice, String paymentMethod, Timestamp orderDate, String address,
             String shipmentCode, String status) {
         this.orderId = orderId;
         this.totalPrice = totalPrice;
@@ -32,7 +32,7 @@ public class Order {
     }
 
     // Constructor without ID and orderDate (for creation)
-    public Order(int totalPrice, String paymentMethod, String address, String shipmentCode, String status) {
+    public Order(double totalPrice, String paymentMethod, String address, String shipmentCode, String status) {
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.address = address;
