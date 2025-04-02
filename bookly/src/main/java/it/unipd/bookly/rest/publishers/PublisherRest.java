@@ -63,7 +63,8 @@ public class PublisherRest extends AbstractRestResource {
             publisher.toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            message = new Message("Publisher not found", "404").toJSON(res.getOutputStream());
+            message = new Message("Publisher not found", "404");
+            message.toJSON(res.getOutputStream());
         }
     }
 

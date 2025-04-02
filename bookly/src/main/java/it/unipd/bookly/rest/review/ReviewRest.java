@@ -22,7 +22,7 @@ public class ReviewRest extends AbstractRestResource {
     protected void doServe() throws IOException {
         String method = req.getMethod();
         String path = req.getRequestURI();
-
+        Message message = null;
         try {
             if ("POST".equals(method)) {
                 Review review = Review.fromJSON(req.getInputStream());
@@ -33,7 +33,8 @@ public class ReviewRest extends AbstractRestResource {
                 int reviewId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
                 new DeleteReviewDAO(con, reviewId).access();
                 res.setStatus(HttpServletResponse.SC_OK);
-                new Message("Review deleted.", "200").toJSON(res.getOutputStream());
+                message = new Message("Review deleted.", "200");
+                message.toJSON(res.getOutputStream());
             } else if ("GET".equals(method) && path.matches(".*/review/\\d+")) {
                 int reviewId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
                 Review review = new GetReviewByIdDAO(con, reviewId).access().getOutputParam();
@@ -42,11 +43,13 @@ public class ReviewRest extends AbstractRestResource {
                     review.toJSON(res.getOutputStream());
                 } else {
                     res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    new Message("Review not found.", "404").toJSON(res.getOutputStream());
+                    message = new Message("Review not found.", "404");
+                    message.toJSON(res.getOutputStream());
                 }
             } else {
                 res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Unsupported operation.", "405").toJSON(res.getOutputStream());
+                message = new Message("Unsupported operation.", "405");
+                message.toJSON(res.getOutputStream());
             }
         } catch (Exception e) {
             LOGGER.error("ReviewRest error", e);
