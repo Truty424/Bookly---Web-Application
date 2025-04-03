@@ -1,5 +1,6 @@
 package it.unipd.bookly.dao.publisher;
 
+import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
@@ -14,7 +15,7 @@ import static it.unipd.bookly.dao.publisher.PublisherQueries.GET_BOOKS_BY_PUBLIS
 /**
  * DAO class to retrieve all book titles associated with a given publisher.
  */
-public class GetBooksByPublisherDAO extends AbstractDAO<List<String>> {
+public class GetBooksByPublisherDAO extends AbstractDAO<List<Book>> {
 
     private final int publisherId;
 
@@ -31,14 +32,26 @@ public class GetBooksByPublisherDAO extends AbstractDAO<List<String>> {
 
     @Override
     protected void doAccess() throws SQLException {
-        List<String> books = new ArrayList<>();
+        List<Book> books = new ArrayList<>();
 
         try (PreparedStatement stmt = con.prepareStatement(GET_BOOKS_BY_PUBLISHER)) {
             stmt.setInt(1, publisherId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    books.add(rs.getString("title"));
+                    books.add(new Book(
+                        rs.getInt("book_id"),
+                        rs.getString("title"),
+                        rs.getString("language"),
+                        rs.getString("isbn"),
+                        rs.getDouble("price"),
+                        rs.getString("edition"),
+                        rs.getInt("publication_year"),
+                        rs.getInt("number_of_pages"),
+                        rs.getInt("stock_quantity"),
+                        rs.getDouble("average_rate"),
+                        rs.getString("summary")
+                    ));
                 }
             }
 
