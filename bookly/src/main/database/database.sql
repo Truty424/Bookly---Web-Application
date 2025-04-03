@@ -127,6 +127,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.shoppingcart (
     user_id INTEGER UNIQUE NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     quantity INTEGER NOT NULL DEFAULT 0,
+    total_price NUMERIC(10,2) NOT NULL,
     discount_id INTEGER,
     order_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
@@ -176,9 +177,9 @@ CREATE TABLE IF NOT EXISTS booklySchema.discounts (
 
 CREATE TABLE IF NOT EXISTS booklySchema.orders (
     order_id SERIAL PRIMARY KEY,
-    total_amount NUMERIC(10,2) NOT NULL,
+    total_price NUMERIC(10,2) NOT NULL,
     payment_method booklySchema.payment_method NOT NULL,
-    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     address TEXT NOT NULL,
     shipment_code VARCHAR(50),
     status booklySchema.status NOT NULL,

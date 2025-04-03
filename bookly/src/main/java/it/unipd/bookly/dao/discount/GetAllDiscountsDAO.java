@@ -14,14 +14,14 @@ import static it.unipd.bookly.dao.discount.DiscountQueries.GET_ALL_DISCOUNTS;
 /**
  * DAO class to retrieve all discounts (expired and valid).
  */
-public class GetAllDiscountDAO extends AbstractDAO<List<Discount>> {
+public class GetAllDiscountsDAO extends AbstractDAO<List<Discount>> {
 
     /**
      * Constructor to create DAO instance.
      *
      * @param con the database connection.
      */
-    public GetAllDiscountDAO(final Connection con) {
+    public GetAllDiscountsDAO(final Connection con) {
         super(con);
     }
 

@@ -10,40 +10,40 @@ import java.sql.ResultSet;
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.COUNT_BOOKS_IN_WISHLIST;
 
 /**
- * DAO to count the number of books in a specific wishlist.
+ * DAO to count how many books exist in a specific wishlist.
  */
 public class CountBooksInWishlistDAO extends AbstractDAO<Integer> {
 
     private final Wishlist wishlist;
 
     /**
-     * Constructs a DAO to count books in the given wishlist.
+     * Constructor.
      *
-     * @param con      the database connection.
-     * @param wishlist the wishlist to count books from.
+     * @param con      the database connection
+     * @param wishlist the wishlist to count books in
      */
-    public CountBooksInWishlistDAO(Connection con, Wishlist wishlist) {
+    public CountBooksInWishlistDAO(final Connection con, final Wishlist wishlist) {
         super(con);
         this.wishlist = wishlist;
     }
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmt = con.prepareStatement(COUNT_BOOKS_IN_WISHLIST)) {
-            stmt.setInt(1, wishlist.getWishlistId());
+        try (PreparedStatement stmnt = con.prepareStatement(COUNT_BOOKS_IN_WISHLIST)) {
+            stmnt.setInt(1, wishlist.getWishlistId());
 
-            try (ResultSet rs = stmt.executeQuery()) {
+            try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
                     this.outputParam = rs.getInt(1);
                     LOGGER.info("Wishlist ID {} contains {} book(s).", wishlist.getWishlistId(), outputParam);
                 } else {
                     this.outputParam = 0;
-                    LOGGER.warn("Wishlist ID {} not found or empty.", wishlist.getWishlistId());
+                    LOGGER.warn("No records returned for wishlist ID {}.", wishlist.getWishlistId());
                 }
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Failed to count books in wishlist ID {}: {}", wishlist.getWishlistId(), ex.getMessage());
+            LOGGER.error("Error counting books in wishlist ID {}: {}", wishlist.getWishlistId(), ex.getMessage());
             throw ex;
         }
     }

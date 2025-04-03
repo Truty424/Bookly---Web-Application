@@ -1,8 +1,6 @@
 package it.unipd.bookly.Resource;
 
-
 import java.sql.Timestamp;
-import java.util.Objects;
 
 /**
  * Represents an order in the Bookly system.
@@ -10,9 +8,9 @@ import java.util.Objects;
 public class Order {
 
     private int orderId;
-    private int totalPrice;
+    private double totalPrice;
     private String paymentMethod;
-    private Timestamp paymentDate;
+    private Timestamp orderDate;
     private String address;
     private String shipmentCode;
     private String status;
@@ -22,19 +20,19 @@ public class Order {
     }
 
     // Constructor with all fields (for retrieval)
-    public Order(int orderId, int totalPrice, String paymentMethod, Timestamp paymentDate, String address,
+    public Order(int orderId, double totalPrice, String paymentMethod, Timestamp orderDate, String address,
             String shipmentCode, String status) {
         this.orderId = orderId;
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
-        this.paymentDate = paymentDate;
+        this.orderDate = orderDate;
         this.address = address;
         this.shipmentCode = shipmentCode;
         this.status = status;
     }
 
-    // Constructor without ID and paymentDate (for creation)
-    public Order(int totalPrice, String paymentMethod, String address, String shipmentCode, String status) {
+    // Constructor without ID and orderDate (for creation)
+    public Order(double totalPrice, String paymentMethod, String address, String shipmentCode, String status) {
         this.totalPrice = totalPrice;
         this.paymentMethod = paymentMethod;
         this.address = address;
@@ -55,8 +53,8 @@ public class Order {
         return paymentMethod;
     }
 
-    public Timestamp getPaymentDate() {
-        return paymentDate;
+    public Timestamp getOrderDate() {
+        return orderDate;
     }
 
     public String getAddress() {
@@ -84,8 +82,8 @@ public class Order {
         this.paymentMethod = paymentMethod;
     }
 
-    public void setPaymentDate(Timestamp paymentDate) {
-        this.paymentDate = paymentDate;
+    public void setorderDate(Timestamp orderDate) {
+        this.orderDate = orderDate;
     }
 
     public void setAddress(String address) {

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.IS_BOOK_IN_WISHLIST;
 
 /**
- * DAO class to check if a book already exists in a wishlist.
+ * DAO to check whether a book already exists in a given wishlist.
  */
 public class IsBookInWishlistDAO extends AbstractDAO<Boolean> {
 
@@ -19,15 +19,15 @@ public class IsBookInWishlistDAO extends AbstractDAO<Boolean> {
     private final int bookId;
 
     /**
-     * Constructs a DAO to verify if a book is in the wishlist.
+     * Constructor.
      *
-     * @param con      the database connection.
-     * @param wishlist the wishlist to check.
-     * @param book     the book to verify.
+     * @param con      the database connection
+     * @param wishlist the wishlist to check
+     * @param book     the book to verify
      */
     public IsBookInWishlistDAO(final Connection con, final Wishlist wishlist, final Book book) {
         super(con);
-        this.wishlistId = wishlist.getWishlist_id();
+        this.wishlistId = wishlist.getWishlistId();
         this.bookId = book.getBook_id();
     }
 
@@ -39,12 +39,14 @@ public class IsBookInWishlistDAO extends AbstractDAO<Boolean> {
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 this.outputParam = rs.next();
+
                 LOGGER.info("Book ID {} is {}in wishlist ID {}.",
-                        bookId, this.outputParam ? "" : "not ", wishlistId);
+                        bookId, (outputParam ? "" : "not "), wishlistId);
             }
+
         } catch (Exception ex) {
-            LOGGER.error("Error checking if book ID {} is in wishlist ID {}: {}",
-                    bookId, wishlistId, ex.getMessage());
+            LOGGER.error("Failed to check if book ID {} is in wishlist ID {}: {}", bookId, wishlistId, ex.getMessage());
+            throw ex;
         }
     }
 }

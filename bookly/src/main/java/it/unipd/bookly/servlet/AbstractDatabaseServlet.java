@@ -19,52 +19,82 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * Abstract servlet that manages database connection pooling via DataSource.
- * All Bookly servlets interacting with the DB should extend this.
+ * Gets the {@code DataSource} for managing the connection pool to the database.
+ *
+ * @author Nicola Ferro (ferro@dei.unipd.it)
+ * @version 1.00
+ * @since 1.00
  */
 public abstract class AbstractDatabaseServlet extends HttpServlet {
 
+    /**
+     * A LOGGER available for all the subclasses.
+     */
     protected static final Logger LOGGER = LogManager.getLogger(AbstractDatabaseServlet.class);
 
+    /**
+     * The connection pool to the database.
+     */
     private DataSource ds;
 
-    @Override
+    /**
+     * Gets the {@code DataSource} for managing the connection pool to the database.
+     *
+     * @param config a {@code ServletConfig} object containing the servlet's
+     *               configuration and initialization
+     *               parameters.
+     *
+     * @throws ServletException if an exception has occurred that interferes with
+     *                          the servlet's normal operation
+     */
     public void init(ServletConfig config) throws ServletException {
+
+        // the JNDI lookup context
+        InitialContext cxt;
+
         try {
-            InitialContext ctx = new InitialContext();
-            ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/booklyDB");
-            LOGGER.info("Successfully acquired the database connection pool.");
+            cxt = new InitialContext();
+            ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/yummyCenterDB");
+
+            LOGGER.info("Connection pool to the database pool successfully acquired.");
         } catch (NamingException e) {
             ds = null;
-            LOGGER.error("Failed to acquire database connection pool.", e);
+
+            LOGGER.error("Unable to acquire the connection pool to the database.", e);
+
             throw new ServletException("Unable to acquire the connection pool to the database", e);
         }
     }
 
-    @Override
+    /**
+     * Releases the {@code DataSource} for managing the connection pool to the
+     * database.
+     */
     public void destroy() {
         ds = null;
-        LOGGER.info("Database connection pool released.");
+        LOGGER.info("Connection pool to the database pool successfully released.");
     }
 
-    /**
-     * Helper method for writing a standardized error response.
-     */
     public void writeError(HttpServletResponse res, ErrorCode ec) throws IOException {
         res.setStatus(ec.getHTTPCode());
-        res.setContentType("application/json");
         res.getWriter().write(ec.toJSON().toString());
     }
 
     /**
-     * Returns a database connection from the pool.
+     * Returns a {@link Connection} for accessing the database.
+     *
+     * @return a {@link Connection} for accessing the database
+     *
+     * @throws java.sql.SQLException if anything goes wrong in obtaining the
+     *                               connection.
      */
     protected final Connection getConnection() throws SQLException {
         try {
             return ds.getConnection();
-        } catch (SQLException e) {
-            LOGGER.error("Unable to get connection from the pool.", e);
+        } catch (final SQLException e) {
+            LOGGER.error("Unable to acquire the connection from the pool.", e);
             throw e;
         }
     }
+
 }

@@ -11,17 +11,17 @@ import java.sql.Timestamp;
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.CREATE_WISHLIST;
 
 /**
- * DAO class to create a new wishlist for a user and return a Wishlist object.
+ * DAO class to create a new wishlist for a specific user.
  */
 public class CreateWishlistDAO extends AbstractDAO<Wishlist> {
 
     private final int userId;
 
     /**
-     * Constructs a DAO to create a new wishlist for the given user.
+     * Constructor.
      *
-     * @param con    the database connection.
-     * @param userId the ID of the user who will own the wishlist.
+     * @param con    the database connection
+     * @param userId the ID of the user for whom the wishlist is created
      */
     public CreateWishlistDAO(final Connection con, final int userId) {
         super(con);
@@ -32,17 +32,23 @@ public class CreateWishlistDAO extends AbstractDAO<Wishlist> {
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(CREATE_WISHLIST)) {
             stmnt.setInt(1, userId);
+
             try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
-                    int wishlistId = rs.getInt("wishlist_id");
-                    Timestamp createdAt = rs.getTimestamp("created_at");
+                    final int wishlistId = rs.getInt("wishlist_id");
+                    final Timestamp createdAt = rs.getTimestamp("created_at");
 
                     this.outputParam = new Wishlist(wishlistId, userId, createdAt);
-                    LOGGER.info("Wishlist created with ID {} for user ID {}.", wishlistId, userId);
+                    LOGGER.info("Created new wishlist (ID: {}) for user ID {}.", wishlistId, userId);
+                } else {
+                    this.outputParam = null;
+                    LOGGER.warn("Wishlist creation returned no result for user ID {}.", userId);
                 }
             }
+
         } catch (Exception ex) {
-            LOGGER.error("Error creating wishlist for user {}: {}", userId, ex.getMessage());
+            LOGGER.error("Failed to create wishlist for user ID {}: {}", userId, ex.getMessage());
+            throw ex;
         }
     }
 }

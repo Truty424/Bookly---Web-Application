@@ -6,7 +6,7 @@ public final class CartQueries {
 
     // --- CREATE ---
     public static final String CREATE_CART_FOR_USER =
-            "INSERT INTO booklySchema.shoppingcart (user_id, quantity, shipment_method) VALUES (?, 0, ?)";
+            "INSERT INTO booklySchema.shoppingcart (user_id, quantity, shipment_method) VALUES (?, 0, ?) RETURNING cart_id";
 
     public static final String ADD_BOOK_TO_CART =
             "INSERT INTO booklySchema.contains (book_id, cart_id) VALUES (?, ?)";
@@ -19,11 +19,13 @@ public final class CartQueries {
             "SELECT b.* FROM booklySchema.books b " +
             "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
             "WHERE c.cart_id = ?";
-            
+
     public static final String GET_CART_DETAILS =
-            "SELECT b.book_id, b.title, b.price FROM booklySchema.books b " +
-            "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
-            "WHERE c.cart_id = ?";
+            "SELECT b.book_id, b.title, b.price, c.quantity " +
+                    "FROM booklySchema.books b " +
+                    "JOIN booklySchema.contains c ON b.book_id = c.book_id " +
+                    "WHERE c.cart_id = ?";
+
 
     // --- UPDATE ---
     public static final String UPDATE_CART_QUANTITY =
@@ -44,4 +46,11 @@ public final class CartQueries {
 
     public static final String DELETE_CART_BY_USER_ID =
             "DELETE FROM booklySchema.shoppingcart WHERE user_id = ?";
+
+    public static final String GET_CART_TOTAL =
+            "SELECT total_price FROM booklySchema.shoppingcart WHERE cart_id = ?";
+
+    public static final String APPLY_DISCOUNT =
+            "UPDATE booklySchema.shoppingcart SET discount_id = ? WHERE cart_id = ?";
+
 }

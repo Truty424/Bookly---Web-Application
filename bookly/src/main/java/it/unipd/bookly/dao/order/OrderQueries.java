@@ -1,6 +1,6 @@
 package it.unipd.bookly.dao.order;
 
-public final class OrderQueries {
+public final class OrderQueries  {
 
     private OrderQueries() {
     }

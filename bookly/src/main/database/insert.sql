@@ -177,19 +177,19 @@ INSERT INTO booklySchema.discounts (code, discount_percentage, expired_date) VAL
 ('SPRING5', 5.0, '2025-09-01'),
 ('SUMMER25', 25.0, '2025-08-01');
 
-INSERT INTO booklySchema.orders (total_amount, payment_method, address, shipment_code, status) VALUES
+INSERT INTO booklySchema.orders (total_price,order_date, payment_method, address, shipment_code, status) VALUES
 (135.76, 'credit_card', '123 Ocean Drive, Lisbon, Portugal', 'SHIP123', 'paid'),
 (52.83, 'credit_card', '77 Sakura St, Kyoto, Japan', 'SHIP124', 'shipped'),
 (119.70, 'credit_card', '456 Maple Avenue, Toronto, Canada', 'SHIP125', 'placed'),
 (137.22, 'credit_card', '10 Rue de Rivoli, Paris, France', 'SHIP126', 'delivered'),
 (39.13, 'credit_card', '891 Green Lane, Cape Town, South Africa', 'SHIP127', 'cancelled');
 
-INSERT INTO booklySchema.shoppingcart (user_id, quantity, discount_id, order_id, shipment_method) VALUES
-(1, 2, 1, 1, 'in_person'),
-(2, 3, 2, 2, 'in_person'),
-(3, 1, 3, 3, 'in_person'),
-(4, 3, 4, 4, 'in_person'),
-(5, 5, 5, 5, 'credit_card');
+INSERT INTO booklySchema.shoppingcart (user_id, quantity, discount_id, order_id, total_price, shipment_method) VALUES
+(1, 2, 1, 1, 135.76, 'in_person'),
+(2, 3, 2, 2, 52.83, 'in_person'),
+(3, 1, 3, 3, 119.70, 'in_person'),
+(4, 3, 4, 4, 137.22, 'in_person'),
+(5, 5, 5, 5, 39.13, 'credit_card');
 
 INSERT INTO booklySchema.contains (book_id, cart_id) VALUES
 (1, 1),
