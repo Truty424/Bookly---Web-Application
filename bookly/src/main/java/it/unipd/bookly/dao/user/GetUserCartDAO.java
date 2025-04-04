@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class CartDao {
+public class GetUserCartDAO {
     private static final String GET_USER_BY_CART =
         "SELECT u.user_id, u.username, u.first_name, u.last_name, u.email, u.phone, u.address, u.role " +
         "FROM booklySchema.users u " +

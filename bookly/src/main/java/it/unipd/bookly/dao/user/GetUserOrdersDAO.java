@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDao {
+public class GetUserOrdersDAO {
     private static final String GET_USER_ORDERS =
         "SELECT order_id, total_price, payment_method, order_date, address, shipment_code, status " +
         "FROM booklySchema.orders WHERE order_id IN " +

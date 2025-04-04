@@ -1,18 +1,17 @@
 package it.unipd.bookly.dao.user;
 
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.user.UserQueries.INSERT_USER_IMAGE;
 
 /**
  * DAO class to insert a new profile image for a user.
  */
-public class InsertUserImageDAO extends AbstractDAO<Boolean> {
+public class GetUserImageDAO extends AbstractDAO<Boolean> {
 
     private final int userId;
     private final Image profileImage;
@@ -24,7 +23,7 @@ public class InsertUserImageDAO extends AbstractDAO<Boolean> {
      * @param userId        the user ID
      * @param profileImage  the image to insert
      */
-    public InsertUserImageDAO(final Connection con, final int userId, final Image profileImage) {
+    public GetUserImageDAO(final Connection con, final int userId, final Image profileImage) {
         super(con);
         this.userId = userId;
         this.profileImage = profileImage;

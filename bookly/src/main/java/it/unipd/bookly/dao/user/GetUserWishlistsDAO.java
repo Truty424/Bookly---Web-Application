@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WishlistDao {
+public class GetUserWishlistsDAO {
     private static final String GET_USER_WISHLIST =
         "SELECT b.book_id, b.title, b.author, b.price " +
         "FROM booklySchema.books b " +
