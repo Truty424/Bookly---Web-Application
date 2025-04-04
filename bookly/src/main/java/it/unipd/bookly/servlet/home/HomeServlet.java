@@ -22,13 +22,16 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
     LogContext.setIPAddress(req.getRemoteAddr());
     LogContext.setResource(req.getRequestURI());
     LogContext.setAction("HomeServlet");
+    double minRating = 4.0;
     
     try {
         // Fetch all categories
         List<Category> categories = new GetAllCategoriesDAO(getConnection()).access().getOutputParam();
         
         // Fetch top-rated books
-        List<Book> topRatedBooks = new GetTopRatedBooksDAO(getConnection()).access().getOutputParam();
+        List<Book> topRatedBooks = new GetTopRatedBooksDAO(getConnection(), minRating)
+                                        .access()
+                                        .getOutputParam();
         
         // Fetch all books (optional, if needed)
         List<Book> allBooks = new GetAllBooksDAO(getConnection()).access().getOutputParam();
