@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "UserImageLoaderServlet", value = "/load-user-img")
+@WebServlet(name = "BookImageLoaderServlet", value = "/load-book-img")
 public class BookImageLoaderServlet extends AbstractDatabaseServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
