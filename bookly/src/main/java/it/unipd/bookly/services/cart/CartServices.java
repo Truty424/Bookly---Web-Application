@@ -3,6 +3,7 @@ package it.unipd.bookly.services.cart;
 import it.unipd.bookly.Resource.Cart;
 import it.unipd.bookly.Resource.CartItem;
 import it.unipd.bookly.utilities.ErrorCode;
+
 import java.util.List;
 
 public class CartServices {
@@ -11,94 +12,89 @@ public class CartServices {
 
     /**
      * Validates all cart fields.
-     * @return true if valid, false otherwise (sets errorCode)
      */
     public static boolean validateCart(Cart cart, ErrorCode errorCode) {
+        boolean flag = true;
+
         if (cart == null) {
-            errorCode.setCode(ErrorCode.INVALID_CART_OBJECT.getCode());
-            return false;
+            errorCode = ErrorCode.INVALID_CART_OBJECT;
+            flag = false;
         }
 
-        if (!validateUserId(cart.getUserId(), errorCode)) {
-            return false;
-        }
+        if (!validateUserId(cart.getUserId(), errorCode)) flag = false;
+        if (!validateItems(cart.getItems(), errorCode)) flag = false;
+        if (!validateTotalAmount(cart.getTotalPrice(), errorCode)) flag = false;
 
-        if (!validateItems(cart.getItems(), errorCode)) {
-            return false;
-        }
-
-        return validateTotalAmount(cart.getTotalPrice(), errorCode);
+        return flag;
     }
 
     /**
      * Validates user ID is positive.
-     * @return true if valid, false otherwise (sets errorCode)
      */
     public static boolean validateUserId(int userId, ErrorCode errorCode) {
+        boolean flag = true;
+
         if (userId <= 0) {
-            errorCode.setCode(ErrorCode.INVALID_USER_ID.getCode());
-            return false;
+            errorCode = ErrorCode.INVALID_USER_ID;
+            flag = false;
         }
-        return true;
+
+        return flag;
     }
 
     /**
      * Validates cart items.
-     * @return true if valid, false otherwise (sets errorCode)
      */
     public static boolean validateItems(List<CartItem> items, ErrorCode errorCode) {
+        boolean flag = true;
+
         if (items == null || items.isEmpty()) {
-            errorCode.setCode(ErrorCode.EMPTY_CART.getCode());
-            return false;
-        }
-
-        if (items.size() > MAX_ITEMS_PER_CART) {
-            errorCode.setCode(ErrorCode.CART_LIMIT_EXCEEDED.getCode());
-            return false;
-        }
-
-        for (CartItem item : items) {
-            if (item.getQuantity() <= 0) {
-                errorCode.setCode(ErrorCode.INVALID_ITEM_QUANTITY.getCode());
-                return false;
+            errorCode = ErrorCode.CART_EMPTY;
+            flag = false;
+        } else if (items.size() > MAX_ITEMS_PER_CART) {
+            errorCode = ErrorCode.CART_LIMIT_EXCEEDED;
+            flag = false;
+        } else {
+            for (CartItem item : items) {
+                if (item.getQuantity() <= 0) {
+                    errorCode = ErrorCode.INVALID_ITEM_QUANTITY;
+                    flag = false;
+                    break;
+                }
             }
         }
 
-        return true;
+        return flag;
     }
 
     /**
      * Validates total amount is reasonable.
-     * @return true if valid, false otherwise (sets errorCode)
      */
     public static boolean validateTotalAmount(double total, ErrorCode errorCode) {
+        boolean flag = true;
+
         if (total <= 0) {
-            errorCode.setCode(ErrorCode.INVALID_CART_TOTAL.getCode());
-            return false;
+            errorCode = ErrorCode.INVALID_CART_TOTAL;
+            flag = false;
+        } else if (total > MAX_CART_TOTAL) {
+            errorCode = ErrorCode.CART_TOTAL_TOO_HIGH;
+            flag = false;
         }
 
-        if (total > MAX_CART_TOTAL) {
-            errorCode.setCode(ErrorCode.CART_TOTAL_TOO_HIGH.getCode());
-            return false;
-        }
-
-        return true;
+        return flag;
     }
 
     /**
      * Validates cart is ready for checkout.
-     * @return true if ready, false otherwise (sets errorCode)
      */
     public static boolean validateForCheckout(Cart cart, ErrorCode errorCode) {
-        if (!validateCart(cart, errorCode)) {
-            return false;
+        boolean flag = validateCart(cart, errorCode);
+
+        if (flag && (cart.getShipmentMethod() == null || cart.getShipmentMethod().isEmpty())) {
+            errorCode = ErrorCode.MISSING_SHIPPING_METHOD;
+            flag = false;
         }
 
-        if (cart.getShipmentMethod() == null || cart.getShipmentMethod().isEmpty()) {
-            errorCode.setCode(ErrorCode.MISSING_SHIPPING_METHOD.getCode());
-            return false;
-        }
-
-        return true;
+        return flag;
     }
 }
