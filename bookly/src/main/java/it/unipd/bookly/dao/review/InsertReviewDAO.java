@@ -1,7 +1,7 @@
 package it.unipd.bookly.dao.review;
 
 import it.unipd.bookly.dao.AbstractDAO;
-import it.unipd.bookly.model.Review;
+import it.unipd.bookly.Resource.Review;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import static it.unipd.bookly.dao.review.ReviewQueries.INSERT_REVIEW;
