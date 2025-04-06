@@ -1,57 +1,69 @@
 package it.unipd.bookly.rest.user;
 
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.List;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.user.UpdateUserImageDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Connection;
+import jakarta.servlet.http.Part;
 
 /**
+ * Handles user image management:
+ * - POST /api/user/image/{id}
+ */
+public class UserImageManagementRest extends AbstractRestResource {
 
-REST endpoint to manage user profile images.
+    public UserImageManagementRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
+        super("user-image-management", req, res, con);
+    }
 
-Endpoint: POST /api/user/image?id=123 */ public class UserImageRest extends AbstractRestResource {
+    @Override
+    protected void doServe() throws IOException {
+        String method = req.getMethod();
+        String path = req.getRequestURI();
 
-public UserImageRest(HttpServletRequest req, HttpServletResponse res, Connection con) { super("user-image", req, res, con); }
+        try {
+            if ("POST".equals(method) && path.matches(".*/user/image/\\d+$")) {
+                handleUploadImage(path);
+            } else {
+                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                new Message("Invalid user image management path.", "404", "Check supported routes.")
+                    .toJSON(res.getOutputStream());
+            }
 
-@Override protected void doServe() throws IOException { String userIdParam = req.getParameter("id");
+        } catch (Exception e) {
+            LOGGER.error("UserImageManagementRest error: ", e);
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            new Message("Internal server error.", "E500", e.getMessage()).toJSON(res.getOutputStream());
+        }
+    }
 
-if (userIdParam == null) {
-     Message message = new Message("Missing user ID parameter.", "E400", "User ID is required.");
-     res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-     message.toJSON(res.getOutputStream());
-     return;
- }
+    private void handleUploadImage(String path) throws Exception {
+        int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
+        Part filePart = req.getPart("image"); // Assuming image is passed as a part
 
- try {
-     int userId = Integer.parseInt(userIdParam);
-     InputStream imageStream = req.getInputStream();
-     String imageType = req.getContentType();
+        if (filePart == null) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            new Message("No image uploaded.", "400", "Please upload an image.").toJSON(res.getOutputStream());
+            return;
+        }
 
-     if (imageStream.available() == 0) {
-         Message message = new Message("No image provided.", "E400", "An image file must be uploaded.");
-         res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-         message.toJSON(res.getOutputStream());
-         return;
-     }
+        String filePath = "/path/to/upload/folder/" + userId + "_image.jpg"; // Replace with your actual file path
+        filePart.write(filePath);
 
-     new UpdateUserImageDAO(con, userId, imageStream, imageType).access();
+        UpdateUserImageDAO updateImageDAO = new UpdateUserImageDAO(con, userId, filePath);
+        boolean updated = updateImageDAO.updateUserImage();
 
-     Message message = new Message("User image updated successfully.", "200", "Image updated for user ID " + userId);
-     res.setStatus(HttpServletResponse.SC_OK);
-     message.toJSON(res.getOutputStream());
- } catch (NumberFormatException ex) {
-     Message message = new Message("Invalid ID format.", "E401", "User ID must be an integer.");
-     res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-     message.toJSON(res.getOutputStream());
- } catch (Exception ex) {
-     LOGGER.error("Error updating user image", ex);
-     Message message = new Message("Internal server error.", "E500", ex.getMessage());
-     res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-     message.toJSON(res.getOutputStream());
- }
-
-} }
+        if (updated) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("Image uploaded successfully.", "200", "User image uploaded").toJSON(res.getOutputStream());
+        } else {
+            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            new Message("User not found.", "404", "No user with ID " + userId).toJSON(res.getOutputStream());
+        }
+    }
+}
