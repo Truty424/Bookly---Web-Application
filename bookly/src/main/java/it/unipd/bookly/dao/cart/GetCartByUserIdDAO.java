@@ -6,7 +6,6 @@ import it.unipd.bookly.dao.AbstractDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.Collections;
 
 import static it.unipd.bookly.dao.cart.CartQueries.GET_CART_BY_USER_ID;

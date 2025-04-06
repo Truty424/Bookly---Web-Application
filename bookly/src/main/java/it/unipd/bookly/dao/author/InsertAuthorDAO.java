@@ -3,6 +3,7 @@ package it.unipd.bookly.dao.author;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import it.unipd.bookly.Resource.Author;
 import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.author.AuthorQueries.INSERT_AUTHOR;
 
@@ -16,12 +17,12 @@ public class InsertAuthorDAO extends AbstractDAO<Boolean> {
     private final String biography;
     private final String nationality;
 
-    public InsertAuthorDAO(Connection con, String firstName, String lastName, String biography, String nationality) {
+    public InsertAuthorDAO(Connection con, Author author) {
         super(con);
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.biography = biography;
-        this.nationality = nationality;
+        this.firstName = author.getFirstName();
+        this.lastName = author.getLastName();
+        this.biography = author.getBiography();
+        this.nationality = author.getNationality();
     }
 
     @Override

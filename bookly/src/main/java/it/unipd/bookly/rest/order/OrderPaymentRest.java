@@ -6,17 +6,17 @@ import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Timestamp;
 
 /**
  * Handles PUT requests to update payment info of an order.
  * 
  * Endpoint:
- * PUT /api/order/{orderId}/payment?value=PAID
+ * PUT /api/order/{orderId}/payment?value=PAID&amount=99.99
  */
-
-
 public class OrderPaymentRest extends AbstractRestResource {
 
     public OrderPaymentRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -28,6 +28,7 @@ public class OrderPaymentRest extends AbstractRestResource {
         final String method = req.getMethod();
         final String path = req.getRequestURI(); // e.g. /api/order/42/payment
         final String paymentStatus = req.getParameter("value");
+        final String amountParam = req.getParameter("amount");
 
         try {
             if (!"PUT".equalsIgnoreCase(method)) {
@@ -37,9 +38,9 @@ public class OrderPaymentRest extends AbstractRestResource {
                 return;
             }
 
-            if (paymentStatus == null || paymentStatus.isBlank()) {
+            if (paymentStatus == null || paymentStatus.isBlank() || amountParam == null) {
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                new Message("Missing value parameter.", "400", "Payment status value is required.")
+                new Message("Missing required parameters.", "400", "Provide both 'value' and 'amount'.")
                         .toJSON(res.getOutputStream());
                 return;
             }
@@ -52,12 +53,20 @@ public class OrderPaymentRest extends AbstractRestResource {
             }
 
             int orderId = extractOrderId(path);
-            new UpdateOrderPaymentInfoDAO(con, orderId, paymentStatus).access();
+            double amount = Double.parseDouble(amountParam);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+
+            new UpdateOrderPaymentInfoDAO(con, orderId, amount, paymentStatus, now).access();
 
             res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Order payment status updated.", "200", "Order ID " + orderId + " updated to: " + paymentStatus)
+            new Message("Order payment status updated.", "200",
+                    "Order ID " + orderId + " updated to: " + paymentStatus + " with amount: " + amount)
                     .toJSON(res.getOutputStream());
 
+        } catch (NumberFormatException e) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            new Message("Invalid amount format.", "E400", "Amount must be a numeric value.")
+                    .toJSON(res.getOutputStream());
         } catch (Exception e) {
             LOGGER.error("Error updating order payment", e);
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

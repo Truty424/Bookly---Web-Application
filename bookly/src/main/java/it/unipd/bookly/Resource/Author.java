@@ -61,4 +61,8 @@ public class Author {
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
+
+    public String getName() {
+        return first_name+ " " + last_name;
+    }
 }

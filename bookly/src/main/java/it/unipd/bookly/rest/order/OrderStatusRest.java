@@ -9,14 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Timestamp;
 
-/**
- * Handles PUT requests for updating order status or payment info.
- * 
- * Endpoints:
- * - PUT /api/order/{orderId}/status?value=SHIPPED
- * - PUT /api/order/{orderId}/payment?value=PAID
- */
 public class OrderStatusRest extends AbstractRestResource {
 
     public OrderStatusRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -26,13 +20,15 @@ public class OrderStatusRest extends AbstractRestResource {
     @Override
     protected void doServe() throws IOException {
         final String method = req.getMethod();
-        final String path = req.getRequestURI(); // e.g. /api/order/42/status
+        final String path = req.getRequestURI();
         final String value = req.getParameter("value");
+        final String amountParam = req.getParameter("amount");
+        final String methodParam = req.getParameter("method");
 
         try {
-            if (!"PUT".equals(method) || value == null || value.isBlank()) {
+            if (!"PUT".equalsIgnoreCase(method) || value == null || value.isBlank()) {
                 res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                new Message("Missing or invalid method/parameter.", "E400", "PUT method and value parameter are required.")
+                new Message("Missing or invalid method/parameter.", "E400", "PUT method and 'value' parameter are required.")
                         .toJSON(res.getOutputStream());
                 return;
             }
@@ -40,10 +36,17 @@ public class OrderStatusRest extends AbstractRestResource {
             if (path.matches(".*/order/\\d+/status$")) {
                 updateStatus(path, value);
             } else if (path.matches(".*/order/\\d+/payment$")) {
-                updatePayment(path, value);
+                if (amountParam == null || methodParam == null) {
+                    res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    new Message("Missing payment details.", "E400", "Both 'amount' and 'method' parameters are required for payment.")
+                            .toJSON(res.getOutputStream());
+                    return;
+                }
+                double amount = Double.parseDouble(amountParam);
+                updatePayment(path, amount, methodParam, value);
             } else {
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                new Message("Unsupported path.", "404", "Only /status or /payment paths are allowed.")
+                new Message("Unsupported path.", "404", "Only /status or /payment paths are supported.")
                         .toJSON(res.getOutputStream());
             }
 
@@ -60,21 +63,23 @@ public class OrderStatusRest extends AbstractRestResource {
         new UpdateOrderStatusDAO(con, orderId, newStatus).access();
 
         res.setStatus(HttpServletResponse.SC_OK);
-        new Message("Order status updated.", "200", "Order ID " + orderId + " set to " + newStatus)
+        new Message("Order status updated.", "200", "Order ID " + orderId + " set to: " + newStatus)
                 .toJSON(res.getOutputStream());
     }
 
-    private void updatePayment(String path, String newPaymentStatus) throws Exception {
+    private void updatePayment(String path, double amount, String paymentMethod, String paymentStatus) throws Exception {
         int orderId = extractOrderId(path);
-        new UpdateOrderPaymentInfoDAO(con, orderId, newPaymentStatus).access();
+        Timestamp paymentDate = new Timestamp(System.currentTimeMillis());
+
+        new UpdateOrderPaymentInfoDAO(con, orderId, amount, paymentMethod, paymentDate).access();
 
         res.setStatus(HttpServletResponse.SC_OK);
-        new Message("Order payment status updated.", "200", "Order ID " + orderId + " set to " + newPaymentStatus)
+        new Message("Order payment info updated.", "200",
+                "Order ID " + orderId + " paid " + amount + " via " + paymentMethod + " - status: " + paymentStatus)
                 .toJSON(res.getOutputStream());
     }
 
     private int extractOrderId(String path) {
-        // Extract order ID from path like /api/order/42/status
         String[] parts = path.split("/");
         return Integer.parseInt(parts[parts.length - 2]);
     }

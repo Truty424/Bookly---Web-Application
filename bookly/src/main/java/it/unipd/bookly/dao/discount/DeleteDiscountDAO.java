@@ -10,7 +10,7 @@ import static it.unipd.bookly.dao.discount.DiscountQueries.DELETE_DISCOUNT;
 /**
  * DAO class to delete a discount by its ID.
  */
-public class DeleteDiscountDAO extends AbstractDAO<Void> {
+public class DeleteDiscountDAO extends AbstractDAO<Boolean> {
 
     private final int discountId;
 

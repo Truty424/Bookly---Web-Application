@@ -1,5 +1,6 @@
 package it.unipd.bookly.rest.discount;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Discount;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.discount.GetDiscountByCodeDAO;
@@ -66,8 +67,11 @@ public class DiscountQueryRest extends AbstractRestResource {
             new Message("Discount code not found.", "E404", "No discount found for code: " + code)
                     .toJSON(res.getOutputStream());
         } else {
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(discount);
             res.setContentType("application/json;charset=UTF-8");
-            discount.toJSON(res.getOutputStream());
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("Discount retrieved.", "200", json).toJSON(res.getOutputStream());
         }
     }
 
@@ -79,8 +83,11 @@ public class DiscountQueryRest extends AbstractRestResource {
             new Message("No valid discount found.", "E404", "Code may be expired or invalid: " + code)
                     .toJSON(res.getOutputStream());
         } else {
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writeValueAsString(discount);
             res.setContentType("application/json;charset=UTF-8");
-            discount.toJSON(res.getOutputStream());
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("Valid discount retrieved.", "200", json).toJSON(res.getOutputStream());
         }
     }
 }

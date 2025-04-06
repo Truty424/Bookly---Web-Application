@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 
+import com.fasterxml.jackson.databind.ObjectMapper; 
+
 /**
  * REST endpoint to retrieve a user's cart.
  * Endpoint: GET /api/cart?userId=123
@@ -36,14 +38,16 @@ public class GetCartRest extends AbstractRestResource {
             int userId = Integer.parseInt(userIdParam);
 
             Cart cart = new GetCartByUserIdDAO(con, userId).access().getOutputParam();
-
+            ObjectMapper mapper = new ObjectMapper();
+            String cartJson = mapper.writeValueAsString(cart); 
             if (cart == null) {
                 message = new Message("Cart not found.", "E404", "No cart found for user ID " + userId);
                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                message.toJSON(res.getOutputStream());
             } else {
+                message = new Message("Cart retrieved successfully.", "200", cartJson);
                 res.setStatus(HttpServletResponse.SC_OK);
-                cart.toJSON(res.getOutputStream()); // Assuming Cart has a toJSON method
-                return;
+                message.toJSON(res.getOutputStream());
             }
 
         } catch (NumberFormatException ex) {
@@ -53,10 +57,6 @@ public class GetCartRest extends AbstractRestResource {
             LOGGER.error("Error retrieving cart for user", ex);
             message = new Message("Internal server error.", "E500", ex.getMessage());
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-
-        if (message != null) {
-            message.toJSON(res.getOutputStream());
         }
     }
 }

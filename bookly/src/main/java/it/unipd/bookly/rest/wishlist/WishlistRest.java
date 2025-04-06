@@ -11,11 +11,16 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 public class WishlistRest extends AbstractRestResource {
 
     public WishlistRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
         super("wishlist", req, res, con);
     }
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void doServe() throws IOException {
@@ -53,11 +58,10 @@ public class WishlistRest extends AbstractRestResource {
             new Message("Missing userId parameter.", "400", "Required to create wishlist").toJSON(res.getOutputStream());
             return;
         }
-
         int userId = Integer.parseInt(userIdParam);
         Wishlist wishlist = new CreateWishlistDAO(con, userId).access().getOutputParam();
         res.setStatus(HttpServletResponse.SC_CREATED);
-        wishlist.toJSON(res.getOutputStream());
+        mapper.writeValue(res.getOutputStream(), wishlist);
     }
 
     private void handleDeleteWishlist(String path) throws Exception {
@@ -66,18 +70,18 @@ public class WishlistRest extends AbstractRestResource {
         wishlist.setWishlistId(wishlistId);
         new DeleteWishlistDAO(con, wishlist).access();
         res.setStatus(HttpServletResponse.SC_OK);
-        message = new Message("Wishlist deleted successfully.", "200");
-        message.toJSON(res.getOutputStream());
+        new Message("Wishlist deleted successfully.", "200", null).toJSON(res.getOutputStream());
     }
 
     private void handleGetWishlistsByUser(String path) throws Exception {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
         List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
+        String wishlistJson = mapper.writeValueAsString(wishlists);
+
         res.setStatus(HttpServletResponse.SC_OK);
-        res.setContentType("application/json");
-        for (Wishlist w : wishlists) {
-            w.toJSON(res.getOutputStream());
-        }
+        res.setContentType("application/json;charset=UTF-8");
+
+        new Message("Wishlists fetched successfully.", "200", wishlistJson).toJSON(res.getOutputStream());
     }
 
     private void handleClearWishlist(String path) throws Exception {
@@ -86,7 +90,6 @@ public class WishlistRest extends AbstractRestResource {
         wishlist.setWishlistId(wishlistId);
         new ClearWishlistDAO(con, wishlist).access();
         res.setStatus(HttpServletResponse.SC_OK);
-        message = new Message("Wishlist cleared successfully.", "200");
-        message.toJSON(res.getOutputStream());
+        new Message("Wishlist cleared successfully.", "200", null).toJSON(res.getOutputStream());
     }
 }

@@ -8,17 +8,12 @@ import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-/**
- * Handles requests related to user-specific orders.
- * 
- * Supported endpoints:
- * - GET /api/order/user/{userId}
- * - GET /api/order/user/{userId}/latest
- */
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class UserOrderRest extends AbstractRestResource {
 
@@ -30,7 +25,7 @@ public class UserOrderRest extends AbstractRestResource {
     protected void doServe() throws IOException {
         final String method = req.getMethod();
         final String path = req.getRequestURI(); // e.g., /api/order/user/5 or /api/order/user/5/latest
-        Message message = null;
+        Message message;
 
         try {
             if ("GET".equals(method) && path.matches(".*/user/\\d+/latest$")) {
@@ -52,12 +47,14 @@ public class UserOrderRest extends AbstractRestResource {
     private void handleGetOrdersByUser(String path) throws Exception {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
         List<Order> orders = new GetOrdersByUserDAO(con, userId).access().getOutputParam();
-
+        
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        for (Order o : orders) {
-            o.toJSON(res.getOutputStream());
-        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(orders);
+        Message message = new Message("Orders retrieved successfully.", "200", json);
+        message.toJSON(res.getOutputStream());
     }
 
     private void handleGetLatestOrder(String path) throws Exception {
@@ -74,6 +71,11 @@ public class UserOrderRest extends AbstractRestResource {
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        latestOrder.toJSON(res.getOutputStream());
+
+
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(latestOrder);
+        Message message = new Message("Latest order retrieved successfully.", "200", json);
+        message.toJSON(res.getOutputStream());
     }
 }

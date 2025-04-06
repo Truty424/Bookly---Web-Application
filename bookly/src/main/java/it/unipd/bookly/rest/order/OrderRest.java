@@ -73,7 +73,7 @@ public class OrderRest extends AbstractRestResource {
         int id = new InsertOrderDAO(con, order).access().getOutputParam();
 
         res.setStatus(HttpServletResponse.SC_CREATED);
-        message = new Message("Order created with ID " + id, "201");
+        message = new Message("Order created", "201", "Order created with ID " + id);
         message.toJSON(res.getOutputStream());
     }
 }

@@ -2,10 +2,16 @@ package it.unipd.bookly.Resource;
 
 import java.util.Objects;
 
+import jakarta.servlet.ServletInputStream;
+
 /**
  * Represents a publisher entity in the Bookly system.
  */
 public class Publisher {
+
+    public static Publisher fromJSON(ServletInputStream inputStream) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
     
     private int publisherId;
     private String publisherName;

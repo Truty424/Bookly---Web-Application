@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Handles discount-related REST endpoints:
  * - GET    /api/discount/all
@@ -65,21 +67,24 @@ public class DiscountRest extends AbstractRestResource {
     private void handleGetAllDiscounts() throws Exception {
         List<Discount> discounts = new GetAllDiscountsDAO(con).access().getOutputParam();
         res.setContentType("application/json;charset=UTF-8");
-        for (Discount d : discounts) {
-            d.toJSON(res.getOutputStream());
-        }
+        ObjectMapper mapper = new ObjectMapper();
+        String discountjson = mapper.writeValueAsString(discounts);
+        Message message = new Message("All discounts retrieved.", "200", discountjson);
+        message.toJSON(res.getOutputStream());
     }
 
     private void handleGetActiveDiscounts() throws Exception {
         List<Discount> discounts = new GetAllActiveDiscountsDAO(con).access().getOutputParam();
+        ObjectMapper mapper = new ObjectMapper();
+        String discountjson = mapper.writeValueAsString(discounts);
         res.setContentType("application/json;charset=UTF-8");
-        for (Discount d : discounts) {
-            d.toJSON(res.getOutputStream());
-        }
+        Message message = new Message("Active discounts retrieved.", "200", discountjson);
+        message.toJSON(res.getOutputStream());
     }
 
     private void handleGetDiscountByCode(String code) throws Exception {
         Discount discount = new GetDiscountByCodeDAO(con, code).access().getOutputParam();
+        
         if (discount == null) {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             Message message = new Message("No discount found for code: " + code, "E404", "Discount not found.");
@@ -88,7 +93,8 @@ public class DiscountRest extends AbstractRestResource {
         }
 
         res.setContentType("application/json;charset=UTF-8");
-        discount.toJSON(res.getOutputStream());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(res.getOutputStream(), discount); // serialize the discount as JSON
     }
 
     private void handleDeleteDiscount(String idParam) throws Exception {
