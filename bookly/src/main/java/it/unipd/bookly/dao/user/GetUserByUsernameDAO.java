@@ -1,4 +1,3 @@
-
 package it.unipd.bookly.dao.user;
 
 import it.unipd.bookly.Resource.Image;
@@ -14,19 +13,19 @@ import java.util.List;
 import static it.unipd.bookly.dao.user.UserQueries.GET_USERS_BY_USERNAME;
 
 /**
- * DAO class to retrieve users whose usernames match a given string.
+ * DAO to retrieve users whose usernames match a given pattern.
  */
 public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
 
     private final String usernameLike;
 
     /**
-     * Constructor.
+     * Constructs the DAO with the connection and username pattern.
      *
-     * @param con           the database connection
-     * @param usernameLike  the username or partial match (e.g., "john%")
+     * @param con           the DB connection
+     * @param usernameLike  the username filter (e.g., "john%")
      */
-    public GetUserByUsernameDAO(final Connection con, final String usernameLike) {
+    public GetUserByUsernameDAO(Connection con, String usernameLike) {
         super(con);
         this.usernameLike = usernameLike;
     }
@@ -40,11 +39,12 @@ public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Image image = null;
-                    byte[] imgData = rs.getBytes("image");
-                    String imgType = rs.getString("image_type");
-                    if (imgData != null && imgType != null) {
-                        image = new Image(imgData, imgType);
+                    Image profileImage = null;
+                    byte[] imageBytes = rs.getBytes("image");
+                    String imageType = rs.getString("image_type");
+
+                    if (imageBytes != null && imageType != null) {
+                        profileImage = new Image(imageBytes, imageType);
                     }
 
                     User user = new User(
@@ -57,7 +57,7 @@ public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
                         rs.getString("phone"),
                         rs.getString("address"),
                         rs.getString("role"),
-                        image
+                        profileImage
                     );
                     users.add(user);
                 }
@@ -65,15 +65,11 @@ public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
 
             this.outputParam = users;
 
-            if (!users.isEmpty()) {
-                LOGGER.info("{} user(s) found matching '{}'.", users.size(), usernameLike);
-            } else {
-                LOGGER.info("No users found matching '{}'.", usernameLike);
-            }
+            LOGGER.info("Found {} user(s) matching username '{}'.", users.size(), usernameLike);
 
-        } catch (Exception ex) {
-            LOGGER.error("Error retrieving users by username '{}': {}", usernameLike, ex.getMessage());
-            throw ex;
+        } catch (Exception e) {
+            LOGGER.error("Failed to retrieve users by username '{}': {}", usernameLike, e.getMessage());
+            throw e;
         }
     }
 }

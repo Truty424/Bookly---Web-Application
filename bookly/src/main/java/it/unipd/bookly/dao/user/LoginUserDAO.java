@@ -7,11 +7,12 @@ import java.sql.ResultSet;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.AbstractDAO;
-import static it.unipd.bookly.dao.user.UserQueries.GET_USER_IMAGE;
+
 import static it.unipd.bookly.dao.user.UserQueries.LOGIN_USER;
+import static it.unipd.bookly.dao.user.UserQueries.GET_USER_IMAGE;
 
 /**
- * DAO to authenticate a user. Returns a full {@code User} object if credentials match.
+ * DAO to authenticate a user and retrieve full user data including profile image.
  */
 public class LoginUserDAO extends AbstractDAO<User> {
 
@@ -23,9 +24,9 @@ public class LoginUserDAO extends AbstractDAO<User> {
      *
      * @param con              the database connection
      * @param usernameOrEmail  the user's username or email
-     * @param password         the user's password
+     * @param password         the user's password (plain text or hashed, depending on backend)
      */
-    public LoginUserDAO(final Connection con, final String usernameOrEmail, final String password) {
+    public LoginUserDAO(Connection con, String usernameOrEmail, String password) {
         super(con);
         this.usernameOrEmail = usernameOrEmail;
         this.password = password;
@@ -34,50 +35,50 @@ public class LoginUserDAO extends AbstractDAO<User> {
     @Override
     protected void doAccess() throws Exception {
         try (
-            PreparedStatement userStmnt = con.prepareStatement(LOGIN_USER);
-            PreparedStatement imageStmnt = con.prepareStatement(GET_USER_IMAGE)
+            PreparedStatement userStmt = con.prepareStatement(LOGIN_USER);
+            PreparedStatement imageStmt = con.prepareStatement(GET_USER_IMAGE)
         ) {
-            userStmnt.setString(1, usernameOrEmail);
-            userStmnt.setString(2, password);
+            userStmt.setString(1, usernameOrEmail);
+            userStmt.setString(2, password);
 
-            try (ResultSet userRs = userStmnt.executeQuery()) {
+            try (ResultSet userRs = userStmt.executeQuery()) {
                 if (userRs.next()) {
-                    final int userId = userRs.getInt("user_id");
+                    int userId = userRs.getInt("user_id");
 
-                    Image userImage = null;
-                    imageStmnt.setInt(1, userId);
-
-                    try (ResultSet imageRs = imageStmnt.executeQuery()) {
+                    // Fetch user image if available
+                    Image profileImage = null;
+                    imageStmt.setInt(1, userId);
+                    try (ResultSet imageRs = imageStmt.executeQuery()) {
                         if (imageRs.next()) {
-                            userImage = new Image(
+                            profileImage = new Image(
                                 imageRs.getBytes("image"),
                                 imageRs.getString("image_type")
                             );
                         }
                     }
 
-                this.outputParam = new User(
-                    userId,
-                    userRs.getString("username"),
-                    userRs.getString("password"),
-                    userRs.getString("first_name"),
-                    userRs.getString("last_name"),
-                    userRs.getString("email"),
-                    userRs.getString("phone"),
-                    userRs.getString("address"),
-                    userRs.getString("role"),
-                    userImage
-                );
-                    LOGGER.info("Login successful for user '{}'.", this.outputParam.getUsername());
+                    this.outputParam = new User(
+                        userId,
+                        userRs.getString("username"),
+                        userRs.getString("password"),
+                        userRs.getString("first_name"),
+                        userRs.getString("last_name"),
+                        userRs.getString("email"),
+                        userRs.getString("phone"),
+                        userRs.getString("address"),
+                        userRs.getString("role"),
+                        profileImage
+                    );
+
+                    LOGGER.info("Login successful for user '{}'.", usernameOrEmail);
                 } else {
                     this.outputParam = null;
-                    LOGGER.warn("Login failed: No user found with the provided credentials.");
+                    LOGGER.warn("Login failed: No user found for '{}'.", usernameOrEmail);
                 }
             }
-
-        } catch (Exception ex) {
-            LOGGER.error("Login failed due to unexpected error: {}", ex.getMessage());
-            throw ex;
+        } catch (Exception e) {
+            LOGGER.error("LoginUserDAO error for '{}': {}", usernameOrEmail, e.getMessage());
+            throw e;
         }
     }
 }

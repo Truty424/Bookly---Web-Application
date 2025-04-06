@@ -6,42 +6,49 @@ import java.sql.SQLException;
 
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.user.UserQueries.INSERT_USER_IMAGE;
 
 /**
- * DAO class to insert a new profile image for a user.
+ * DAO to insert or update a user's profile image.
  */
 public class InsertUserImageDAO extends AbstractDAO<Boolean> {
 
     private final int userId;
-    private final Image profileImage;
+    private final Image image;
 
     /**
-     * Constructs a DAO to insert a user's profile image.
+     * Constructor.
      *
-     * @param con           the database connection
-     * @param userId        the user ID
-     * @param profileImage  the image to insert
+     * @param con     the database connection
+     * @param userId  the ID of the user
+     * @param image   the Image object containing photo data and type
      */
-    public InsertUserImageDAO(final Connection con, final int userId, final Image profileImage) {
+    public InsertUserImageDAO(Connection con, int userId, Image image) {
         super(con);
         this.userId = userId;
-        this.profileImage = profileImage;
+        this.image = image;
     }
 
     @Override
     protected void doAccess() throws SQLException {
         try (PreparedStatement stmt = con.prepareStatement(INSERT_USER_IMAGE)) {
             stmt.setInt(1, userId);
-            stmt.setBytes(2, profileImage.getPhoto());
-            stmt.setString(3, profileImage.getPhotoMediaType());
+            stmt.setBytes(2, image.getPhoto());
+            stmt.setString(3, image.getPhotoMediaType());
 
-            int rowsAffected = stmt.executeUpdate();
-            this.outputParam = rowsAffected > 0;
+            int rows = stmt.executeUpdate();
+            this.outputParam = rows > 0;
 
-        } catch (SQLException ex) {
-            LOGGER.error("Error inserting profile image for user ID {}: {}", userId, ex.getMessage());
-            throw ex;
+            if (outputParam) {
+                LOGGER.info("Profile image inserted for user ID {}", userId);
+            } else {
+                LOGGER.warn("No profile image inserted for user ID {}", userId);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.error("Failed to insert image for user ID {}: {}", userId, e.getMessage());
+            throw e;
         }
     }
 }

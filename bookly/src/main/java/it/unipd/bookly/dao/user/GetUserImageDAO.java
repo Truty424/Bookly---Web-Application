@@ -1,47 +1,51 @@
 package it.unipd.bookly.dao.user;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.dao.AbstractDAO;
-import static it.unipd.bookly.dao.user.UserQueries.INSERT_USER_IMAGE;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import static it.unipd.bookly.dao.user.UserQueries.GET_USER_IMAGE;
 
 /**
- * DAO class to insert a new profile image for a user.
+ * DAO to fetch a user's profile image from the database.
  */
-public class GetUserImageDAO extends AbstractDAO<Boolean> {
+public class GetUserImageDAO extends AbstractDAO<Image> {
 
     private final int userId;
-    private final Image profileImage;
 
     /**
-     * Constructs a DAO to insert a user's profile image.
+     * Constructor to get image for a given user ID.
      *
-     * @param con           the database connection
-     * @param userId        the user ID
-     * @param profileImage  the image to insert
+     * @param con    database connection
+     * @param userId user ID whose image is to be retrieved
      */
-    public GetUserImageDAO(final Connection con, final int userId, final Image profileImage) {
+    public GetUserImageDAO(Connection con, int userId) {
         super(con);
         this.userId = userId;
-        this.profileImage = profileImage;
     }
 
     @Override
-    protected void doAccess() throws SQLException {
-        try (PreparedStatement stmt = con.prepareStatement(INSERT_USER_IMAGE)) {
+    protected void doAccess() throws Exception {
+        try (PreparedStatement stmt = con.prepareStatement(GET_USER_IMAGE)) {
             stmt.setInt(1, userId);
-            stmt.setBytes(2, profileImage.getPhoto());
-            stmt.setString(3, profileImage.getPhotoMediaType());
 
-            int rowsAffected = stmt.executeUpdate();
-            this.outputParam = rowsAffected > 0;
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    byte[] imageData = rs.getBytes("image");
+                    String imageType = rs.getString("image_type");
 
-        } catch (SQLException ex) {
-            LOGGER.error("Error inserting profile image for user ID {}: {}", userId, ex.getMessage());
-            throw ex;
+                    if (imageData != null && imageType != null) {
+                        this.outputParam = new Image(imageData, imageType);
+                    } else {
+                        this.outputParam = null;
+                    }
+                } else {
+                    this.outputParam = null; // No image found
+                }
+            }
         }
     }
 }

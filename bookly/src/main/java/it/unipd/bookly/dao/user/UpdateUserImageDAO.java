@@ -11,7 +11,7 @@ import static it.unipd.bookly.dao.user.UserQueries.UPDATE_USER_IMAGE;
 /**
  * DAO class to update the profile image of a user.
  */
-public class UpdateUserImageDAO extends AbstractDAO<Void> {
+public class UpdateUserImageDAO extends AbstractDAO<Boolean> {
 
     private final int userId;
     private final Image profileImage;
@@ -21,7 +21,7 @@ public class UpdateUserImageDAO extends AbstractDAO<Void> {
      *
      * @param con           the database connection
      * @param userId        the ID of the user
-     * @param profileImage  the new profile image to set
+     * @param profileImage  the new profile image to set (must not be null)
      */
     public UpdateUserImageDAO(final Connection con, final int userId, final Image profileImage) {
         super(con);
@@ -31,23 +31,27 @@ public class UpdateUserImageDAO extends AbstractDAO<Void> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(UPDATE_USER_IMAGE)) {
-            stmnt.setBytes(1, profileImage.getPhoto());
-            stmnt.setString(2, profileImage.getPhotoMediaType());
-            stmnt.setInt(3, userId);
+        if (profileImage == null || profileImage.getPhoto() == null || profileImage.getPhotoMediaType() == null) {
+            LOGGER.warn("Attempted to update user image with null data for user ID {}", userId);
+            outputParam = false;
+            return;
+        }
 
-            int rowsAffected = stmnt.executeUpdate();
+        try (PreparedStatement stmt = con.prepareStatement(UPDATE_USER_IMAGE)) {
+            stmt.setBytes(1, profileImage.getPhoto());
+            stmt.setString(2, profileImage.getPhotoMediaType());
+            stmt.setInt(3, userId);
 
-            if (rowsAffected > 0) {
+            int rowsAffected = stmt.executeUpdate();
+            outputParam = rowsAffected > 0;
+
+            if (outputParam) {
                 LOGGER.info("Profile image updated for user ID {}.", userId);
             } else {
-                LOGGER.warn("No profile image updated for user ID {}. Row may not exist.", userId);
+                LOGGER.warn("No profile image was updated. User ID {} may not exist.", userId);
             }
-
-            this.outputParam = null;
-
         } catch (Exception ex) {
-            LOGGER.error("Error updating profile image for user ID {}: {}", userId, ex.getMessage());
+            LOGGER.error("Failed to update profile image for user ID {}: {}", userId, ex.getMessage());
             throw ex;
         }
     }

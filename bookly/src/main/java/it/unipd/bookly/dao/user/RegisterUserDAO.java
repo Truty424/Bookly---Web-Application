@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.user.UserQueries.INSERT_USER_IMAGE;
 import static it.unipd.bookly.dao.user.UserQueries.REGISTER_USER;
 
@@ -20,61 +21,64 @@ public class RegisterUserDAO extends AbstractDAO<User> {
     /**
      * Constructor.
      *
-     * @param con  the DB connection.
-     * @param user the user to register.
+     * @param con  the DB connection
+     * @param user the user to register
      */
-    public RegisterUserDAO(final Connection con, final User user) throws Exception {
+    public RegisterUserDAO(final Connection con, final User user) {
         super(con);
-        con.setAutoCommit(false);
         this.user = user;
     }
 
     @Override
     protected void doAccess() throws Exception {
+        boolean autoCommitState = con.getAutoCommit();
+        con.setAutoCommit(false); // Begin transaction
+
         try (
-            PreparedStatement userStmnt = con.prepareStatement(REGISTER_USER, PreparedStatement.RETURN_GENERATED_KEYS);
-            PreparedStatement imageStmnt = con.prepareStatement(INSERT_USER_IMAGE)
+            PreparedStatement userStmt = con.prepareStatement(REGISTER_USER, PreparedStatement.RETURN_GENERATED_KEYS);
+            PreparedStatement imageStmt = con.prepareStatement(INSERT_USER_IMAGE)
         ) {
-            userStmnt.setString(1, user.getUsername());
-            userStmnt.setString(2, user.getPassword()); // Should be hashed by DB or before this point
-            userStmnt.setString(3, user.getFirstName());
-            userStmnt.setString(4, user.getLastName());
-            userStmnt.setString(5, user.getEmail());
-            userStmnt.setString(6, user.getPhone());
-            userStmnt.setString(7, user.getAddress());
-            userStmnt.setString(8, user.getRole() != null ? user.getRole() : "user");
+            // Set user fields
+            userStmt.setString(1, user.getUsername());
+            userStmt.setString(2, user.getPassword()); // Assume already hashed
+            userStmt.setString(3, user.getFirstName());
+            userStmt.setString(4, user.getLastName());
+            userStmt.setString(5, user.getEmail());
+            userStmt.setString(6, user.getPhone());
+            userStmt.setString(7, user.getAddress());
+            userStmt.setString(8, user.getRole() != null ? user.getRole() : "user");
 
-            userStmnt.executeUpdate();
+            userStmt.executeUpdate();
 
-            try (ResultSet rs = userStmnt.getGeneratedKeys()) {
+            // Get the generated user ID
+            try (ResultSet rs = userStmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    final int userId = rs.getInt(1);
+                    int userId = rs.getInt(1);
                     user.setUserId(userId);
 
-                    // Insert profile image if available
-                    if (user.getProfileImage() != null) {
-                        Image img = user.getProfileImage();
-                        imageStmnt.setInt(1, userId);
-                        imageStmnt.setBytes(2, img.getPhoto());
-                        imageStmnt.setString(3, img.getPhotoMediaType());
-                        imageStmnt.executeUpdate();
+                    // If a profile image exists, insert it
+                    Image profileImage = user.getProfileImage();
+                    if (profileImage != null) {
+                        imageStmt.setInt(1, userId);
+                        imageStmt.setBytes(2, profileImage.getPhoto());
+                        imageStmt.setString(3, profileImage.getPhotoMediaType());
+                        imageStmt.executeUpdate();
                     }
 
-                    this.outputParam = user;
-                    LOGGER.info("User '{}' registered successfully with ID {}.", user.getUsername(), userId);
+                    outputParam = user;
+                    LOGGER.info("User '{}' registered successfully with ID {}", user.getUsername(), userId);
                 } else {
-                    throw new Exception("User registered but no ID returned.");
+                    throw new Exception("User registration failed: no ID returned.");
                 }
             }
 
-            con.commit();
-
+            con.commit(); // Commit transaction
         } catch (Exception ex) {
-            con.rollback();
-            LOGGER.error("Error during user registration for '{}': {}", user.getUsername(), ex.getMessage());
+            con.rollback(); // Rollback on error
+            LOGGER.error("Registration failed for user '{}': {}", user.getUsername(), ex.getMessage());
             throw ex;
         } finally {
-            con.setAutoCommit(true);
+            con.setAutoCommit(autoCommitState); // Restore original state
         }
     }
 }

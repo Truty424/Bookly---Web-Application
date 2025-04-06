@@ -1,50 +1,50 @@
 package it.unipd.bookly.dao.user;
 
+import it.unipd.bookly.dao.AbstractDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.user.UserQueries.CHANGE_USER_PASSWORD;
 
 /**
- * DAO class to update a user's password in the database.
+ * DAO to change the password for a specific user.
  */
 public class ChangeUserPasswordDAO extends AbstractDAO<Boolean> {
 
     private final int userId;
-    private final String newPassword;
+    private final String newHashedPassword;
 
     /**
-     * Constructor.
+     * Constructs a DAO to change the user's password.
      *
-     * @param con          the DB connection
-     * @param userId       the ID of the user
-     * @param newPassword  the new password (already hashed, if applicable)
+     * @param con               the database connection
+     * @param userId            the user ID
+     * @param newHashedPassword the new password (must already be hashed)
      */
-    public ChangeUserPasswordDAO(final Connection con, final int userId, final String newPassword) {
+    public ChangeUserPasswordDAO(Connection con, int userId, String newHashedPassword) {
         super(con);
         this.userId = userId;
-        this.newPassword = newPassword;
+        this.newHashedPassword = newHashedPassword;
     }
 
     @Override
     protected void doAccess() throws SQLException {
         try (PreparedStatement stmt = con.prepareStatement(CHANGE_USER_PASSWORD)) {
-            stmt.setString(1, newPassword);
+            stmt.setString(1, newHashedPassword);
             stmt.setInt(2, userId);
 
-            int rowsAffected = stmt.executeUpdate();
-            this.outputParam = rowsAffected > 0;
+            int rowsUpdated = stmt.executeUpdate();
+            this.outputParam = rowsUpdated > 0;
 
-            if (outputParam) {
-                LOGGER.info("Password updated successfully for user ID {}.", userId);
+            if (this.outputParam) {
+                LOGGER.info("Password successfully updated for user ID {}", userId);
             } else {
-                LOGGER.warn("Password not updated. User ID {} may not exist.", userId);
+                LOGGER.warn("Password update failed. No user found with ID {}", userId);
             }
-
         } catch (SQLException ex) {
-            LOGGER.error("Error updating password for user ID {}: {}", userId, ex.getMessage());
+            LOGGER.error("SQL error while updating password for user ID {}: {}", userId, ex.getMessage());
             throw ex;
         }
     }
