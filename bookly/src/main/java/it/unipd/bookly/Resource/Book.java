@@ -17,6 +17,10 @@ public class Book {
     private String summary;
     private Image book_pic;
 
+
+    public Book() {
+    }
+    
     public Book(int book_id, String title, String language, String isbn, double price, String edition,
             int publication_year, int number_of_pages, int stock_quantity, double average_rate, String summary) {
         this.book_id = book_id;

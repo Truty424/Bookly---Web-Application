@@ -39,8 +39,7 @@ public class WishlistRest extends AbstractRestResource {
                 handleClearWishlist(path);
             } else {
                 res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                message = new Message("Unsupported wishlist operation", "405", "Only POST, DELETE, and GET are supported");
-                message.toJSON(res.getOutputStream());
+                new Message("Unsupported wishlist operation", "405", "Only POST, DELETE, and GET are supported").toJSON(res.getOutputStream());
             }
 
         } catch (Exception e) {
