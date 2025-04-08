@@ -30,5 +30,6 @@ public final class UserQueries {
             + "FROM user_images "
             + "WHERE user_id = ?";
 
+
     public static final String AUTHENTICATE_USER = "SELECT user_id, username, email, password, role FROM booklySchema.users WHERE user_id = ?";
 }

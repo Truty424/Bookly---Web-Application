@@ -23,8 +23,9 @@ public class CancelOrderRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        Message message = null;
-        String path = req.getRequestURI(); // e.g. /api/order/42/cancel
+        String method = req.getMethod();
+        String path = req.getRequestURI();
+        Message message;
 
         try {
             if (!"DELETE".equalsIgnoreCase(req.getMethod())) {

@@ -32,7 +32,7 @@ public class PublisherAssignmentRest extends AbstractRestResource {
     protected void doServe() throws IOException {
         String method = req.getMethod();
         String path = req.getRequestURI();
-        Message message = null;
+        Message message;
 
         try {
             if ("GET".equals(method) && path.matches(".*/publishers/book/\\d+")) {

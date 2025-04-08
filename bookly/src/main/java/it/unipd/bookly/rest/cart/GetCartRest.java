@@ -24,7 +24,7 @@ public class GetCartRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        Message message = null;
+        Message message;
         String userIdParam = req.getParameter("userId");
 
         if (userIdParam == null || userIdParam.isBlank()) {

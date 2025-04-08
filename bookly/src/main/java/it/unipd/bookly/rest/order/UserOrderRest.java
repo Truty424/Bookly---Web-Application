@@ -1,19 +1,18 @@
 package it.unipd.bookly.rest.order;
 
-import it.unipd.bookly.Resource.Message;
-import it.unipd.bookly.Resource.Order;
-import it.unipd.bookly.dao.order.GetLatestOrderForUserDAO;
-import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
-import it.unipd.bookly.rest.AbstractRestResource;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import it.unipd.bookly.Resource.Message;
+import it.unipd.bookly.Resource.Order;
+import it.unipd.bookly.dao.order.GetLatestOrderForUserDAO;
+import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
+import it.unipd.bookly.rest.AbstractRestResource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class UserOrderRest extends AbstractRestResource {
 
@@ -24,7 +23,7 @@ public class UserOrderRest extends AbstractRestResource {
     @Override
     protected void doServe() throws IOException {
         final String method = req.getMethod();
-        final String path = req.getRequestURI(); // e.g., /api/order/user/5 or /api/order/user/5/latest
+        final String path = req.getRequestURI();
         Message message;
 
         try {
@@ -47,7 +46,7 @@ public class UserOrderRest extends AbstractRestResource {
     private void handleGetOrdersByUser(String path) throws Exception {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
         List<Order> orders = new GetOrdersByUserDAO(con, userId).access().getOutputParam();
-        
+
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
 
@@ -71,7 +70,6 @@ public class UserOrderRest extends AbstractRestResource {
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-
 
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(latestOrder);

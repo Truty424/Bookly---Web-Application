@@ -103,4 +103,8 @@ public enum ErrorCode {
         json.put("message", message);
         return json;
     }
+
+    public int getHTTPCode() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

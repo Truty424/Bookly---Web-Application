@@ -26,7 +26,7 @@ public class SearchBookRest extends AbstractRestResource {
     @Override
     protected void doServe() throws IOException {
         final String titleParam = req.getParameter("title");
-        Message message = null;
+        Message message;
 
         if (titleParam == null || titleParam.isBlank()) {
             message = new Message("Missing 'title' parameter.", "E400", "You must provide a title to search for books.");

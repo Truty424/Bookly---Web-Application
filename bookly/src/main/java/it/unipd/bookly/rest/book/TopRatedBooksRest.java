@@ -25,7 +25,7 @@ public class TopRatedBooksRest extends AbstractRestResource {
     @Override
     protected void doServe() throws IOException {
         final String minRatingParam = req.getParameter("minRating");
-        Message message = null;
+        Message message;
         double minRating;
 
         if (minRatingParam == null || minRatingParam.isBlank()) {

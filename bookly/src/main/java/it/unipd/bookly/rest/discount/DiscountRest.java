@@ -32,7 +32,7 @@ public class DiscountRest extends AbstractRestResource {
         final String path = req.getRequestURI();
         final String queryCode = req.getParameter("code");
         final String idParam = req.getParameter("id");
-        Message message = null;
+        Message message;
 
         try {
             if ("GET".equals(method)) {

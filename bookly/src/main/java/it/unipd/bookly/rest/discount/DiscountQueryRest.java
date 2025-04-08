@@ -28,7 +28,7 @@ public class DiscountQueryRest extends AbstractRestResource {
         final String method = req.getMethod();
         final String path = req.getRequestURI();
         final String code = req.getParameter("code");
-        Message message = null;
+        Message message;
 
         try {
             if (!"GET".equals(method)) {

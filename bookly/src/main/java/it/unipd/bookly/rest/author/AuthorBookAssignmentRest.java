@@ -30,7 +30,7 @@ public class AuthorBookAssignmentRest extends AbstractRestResource {
     protected void doServe() throws IOException {
         final String method = req.getMethod();
         final String path = req.getRequestURI();
-        Message message = null;
+        Message message;
 
         try {
             if ("POST".equals(method) && path.endsWith("/authors/book")) {
