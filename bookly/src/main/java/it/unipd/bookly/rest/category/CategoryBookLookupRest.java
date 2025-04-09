@@ -56,8 +56,8 @@ public class CategoryBookLookupRest extends AbstractRestResource {
     }
 
     private void handleGetBooksByCategory(String path) throws Exception {
-        int categoryId = extractId(path, "/category/", "/books");
-        List<Book> books = new GetBooksByCategoryDAO(con, categoryId).access().getOutputParam();
+        int category_id = extractId(path, "/category/", "/books");
+        List<Book> books = new GetBooksByCategoryDAO(con, category_id).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);

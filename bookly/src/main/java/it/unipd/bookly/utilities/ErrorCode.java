@@ -71,8 +71,9 @@ public enum ErrorCode {
     INVALID_SHIPMENT_CODE(-308, HttpServletResponse.SC_BAD_REQUEST, "Shipment code format is invalid."),
     INVALID_ORDER_STATUS(-309, HttpServletResponse.SC_BAD_REQUEST, "Order status is invalid."),
     INVALID_ORDER_DATE(-310, HttpServletResponse.SC_BAD_REQUEST, "Order date cannot be in the future."),
-    ORDER_ALREADY_SHIPPED(-311, HttpServletResponse.SC_CONFLICT, "Order has already been shipped or delivered and cannot be cancelled.");
+    ORDER_ALREADY_SHIPPED(-311, HttpServletResponse.SC_CONFLICT, "Order has already been shipped or delivered and cannot be cancelled."),
 
+    OPERATION_UNKNOWN(-999, HttpServletResponse.SC_BAD_REQUEST, "Unknown operation requested.");
 
 
     private final int code;

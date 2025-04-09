@@ -13,37 +13,37 @@ import static it.unipd.bookly.dao.category.CategoryQueries.REMOVE_CATEGORY_FROM_
 public class RemoveCategoryFromBookDAO extends AbstractDAO<Void> {
 
     private final int bookId;
-    private final int categoryId;
+    private final int category_id;
 
     /**
      * Constructs the DAO for removing a category from a book.
      *
      * @param con        the database connection
      * @param bookId     the ID of the book
-     * @param categoryId the ID of the category to remove
+     * @param category_id the ID of the category to remove
      */
-    public RemoveCategoryFromBookDAO(final Connection con, final int bookId, final int categoryId) {
+    public RemoveCategoryFromBookDAO(final Connection con, final int bookId, final int category_id) {
         super(con);
         this.bookId = bookId;
-        this.categoryId = categoryId;
+        this.category_id = category_id;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(REMOVE_CATEGORY_FROM_BOOK)) {
             stmnt.setInt(1, bookId);
-            stmnt.setInt(2, categoryId);
+            stmnt.setInt(2, category_id);
 
             int rowsAffected = stmnt.executeUpdate();
 
             if (rowsAffected > 0) {
-                LOGGER.info("Removed category {} from book {}.", categoryId, bookId);
+                LOGGER.info("Removed category {} from book {}.", category_id, bookId);
             } else {
-                LOGGER.warn("No category-book link found to remove (book ID: {}, category ID: {}).", bookId, categoryId);
+                LOGGER.warn("No category-book link found to remove (book ID: {}, category ID: {}).", bookId, category_id);
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Failed to remove category {} from book {}: {}", categoryId, bookId, ex.getMessage());
+            LOGGER.error("Failed to remove category {} from book {}: {}", category_id, bookId, ex.getMessage());
             throw ex;
         }
     }

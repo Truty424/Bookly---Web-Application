@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.AbstractDAO;
-
 import static it.unipd.bookly.dao.user.UserQueries.UPDATE_USER;
 
 /**
@@ -18,7 +17,7 @@ public class UpdateUserDAO extends AbstractDAO<User> {
     /**
      * Constructor.
      *
-     * @param con  the DB connection
+     * @param con the DB connection
      * @param user the user object with updated fields (must include userId)
      */
     public UpdateUserDAO(final Connection con, final User user) {
@@ -32,8 +31,8 @@ public class UpdateUserDAO extends AbstractDAO<User> {
         con.setAutoCommit(false); // Begin transaction
 
         try (PreparedStatement stmt = con.prepareStatement(UPDATE_USER)) {
-            stmt.setString(1, user.getFirstName());
-            stmt.setString(2, user.getLastName());
+            stmt.setString(1, user.getFirst_name());
+            stmt.setString(2, user.getLast_name());
             stmt.setString(3, user.getEmail());
             stmt.setString(4, user.getPhone());
             stmt.setString(5, user.getAddress());

@@ -41,7 +41,6 @@ public class AuthenticateUserDAO extends AbstractDAO<User> {
                             : null;
 
                     this.outputParam = new User(
-                        rs.getInt("user_id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("first_name"),

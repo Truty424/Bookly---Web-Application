@@ -26,7 +26,7 @@ public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
 
     @Override
     protected void doAccess() throws Exception {
-        List<Book> books = new ArrayList<>();
+        List<Book> topRatedBooks = new ArrayList<>();
 
         try (PreparedStatement stmnt = con.prepareStatement(GET_TOP_RATED_BOOKS)) {
             stmnt.setDouble(1, minRating);
@@ -59,14 +59,14 @@ public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
                     Book book = (bookImage == null)
                             ? new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary)
-                            : new Book(book_id, title, language, isbn, price, edition,
+                            : new Book(title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
-                    books.add(book);
+                    topRatedBooks.add(book);
                 }
             }
 
-            this.outputParam = books;
+            this.outputParam = topRatedBooks;
 
         } catch (Exception e) {
             LOGGER.error("Error retrieving top-rated books with min rating {}: {}", minRating, e.getMessage());

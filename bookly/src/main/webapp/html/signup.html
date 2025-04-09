@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+</head>
+<body>
+    <h1>REGISTRATION</h1>
+    <hr/>
+    <form method="post" enctype="multipart/form-data">
+        <label for="email">Enter your email:</label>
+        <input name="email" id="email" type="email" required placeholder="email"/><br/><br/><br/>
+        <label for="name">Enter your name:</label>
+        <input name="name" id="name" type="text" required placeholder="name"/><br/><br/><br/>
+        <label for="surname">Enter your surname:</label>
+        <input name="surname" id="surname" type="text" required placeholder="surname"/><br/><br/><br/>
+        <label for="username">Enter your Username:</label>
+        <input name="username" id="username" type="text" placeholder="username"/><br/><br/><br/>
+        <label for="password">Enter your password:</label>
+        <input name="password" id="password" type="password" oninput="this.setCustomValidity('')"
+               aria-describedby="pswhelp"
+               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+               oninvalid="this.setCustomValidity('Must contain at least one number and one uppercase ' +
+            'and lowercase letter, and at least 8 or more characters')" required
+               placeholder="password"/><br/><br/><br/>
+        <label for="password_check">Enter your password again:</label>
+        <input name="password_check" id="password_check" type="password" oninput="this.setCustomValidity('')"
+               aria-describedby="pswhelp"
+               pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+               oninvalid="this.setCustomValidity('Must contain at least one number and one uppercase ' +
+        'and lowercase letter, and at least 8 or more characters')" required
+               placeholder="password"/><br/><br/><br/>
+        <label for="about-me">Write about yourself:</label>
+        <input name="about-me" id="about-me" type="text" placeholder="about me"/><br/><br/><br/>
+        <label for="contact">Place your preferred contact link here:</label>
+        <input name="contact" id="contact" type="text" placeholder="contact link"/><br/><br/><br/>
+        <label for="profile">Set your profile picture:</label>
+        <input type="file"  id="profile" name="image" accept="image/png, image/jpeg, .jpg, .jpeg, .png"/>
+
+        <br/><br/>
+            <button type="submit">Register</button>
+        <br/><br/><br/>
+        <button type="reset">Reset</button>
+    </form>
+</body>
+</html>

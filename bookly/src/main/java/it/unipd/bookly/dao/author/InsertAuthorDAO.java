@@ -19,10 +19,10 @@ public class InsertAuthorDAO extends AbstractDAO<Boolean> {
 
     public InsertAuthorDAO(Connection con, Author author) {
         super(con);
-        this.firstName = author.getFirstName();
-        this.lastName = author.getLastName();
-        this.biography = author.getBiography();
-        this.nationality = author.getNationality();
+        this.firstName = author.getFirst_name();
+        this.lastName = author.getLast_name();
+        this.biography = author.get_biography();
+        this.nationality = author.get_nationality();
     }
 
     @Override

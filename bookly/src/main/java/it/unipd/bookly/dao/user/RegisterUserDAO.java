@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.AbstractDAO;
-
 import static it.unipd.bookly.dao.user.UserQueries.INSERT_USER_IMAGE;
 import static it.unipd.bookly.dao.user.UserQueries.REGISTER_USER;
 
@@ -21,7 +20,7 @@ public class RegisterUserDAO extends AbstractDAO<User> {
     /**
      * Constructor.
      *
-     * @param con  the DB connection
+     * @param con the DB connection
      * @param user the user to register
      */
     public RegisterUserDAO(final Connection con, final User user) {
@@ -35,14 +34,12 @@ public class RegisterUserDAO extends AbstractDAO<User> {
         con.setAutoCommit(false); // Begin transaction
 
         try (
-            PreparedStatement userStmt = con.prepareStatement(REGISTER_USER, PreparedStatement.RETURN_GENERATED_KEYS);
-            PreparedStatement imageStmt = con.prepareStatement(INSERT_USER_IMAGE)
-        ) {
+                PreparedStatement userStmt = con.prepareStatement(REGISTER_USER, PreparedStatement.RETURN_GENERATED_KEYS); PreparedStatement imageStmt = con.prepareStatement(INSERT_USER_IMAGE)) {
             // Set user fields
             userStmt.setString(1, user.getUsername());
             userStmt.setString(2, user.getPassword()); // Assume already hashed
-            userStmt.setString(3, user.getFirstName());
-            userStmt.setString(4, user.getLastName());
+            userStmt.setString(3, user.getFirst_name());
+            userStmt.setString(4, user.getLast_name());
             userStmt.setString(5, user.getEmail());
             userStmt.setString(6, user.getPhone());
             userStmt.setString(7, user.getAddress());

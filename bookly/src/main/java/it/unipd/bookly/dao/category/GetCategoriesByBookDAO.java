@@ -38,13 +38,13 @@ public class GetCategoriesByBookDAO extends AbstractDAO<List<Category>> {
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
-                    int categoryId = rs.getInt("category_id");
-                    String categoryName = rs.getString("category_name");
+                    int category_id = rs.getInt("category_id");
+                    String category_name = rs.getString("category_name");
                     String description = rs.getString("description");
 
                     Category category = new Category(
-                            categoryId,
-                            categoryName != null ? categoryName : "",
+                            category_id,
+                            category_name != null ? category_name : "",
                             description != null ? description : ""
                     );
 

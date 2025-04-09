@@ -65,7 +65,7 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
                     Book book = (bookImage == null)
                             ? new Book(bookId, title, language, isbn, price, edition,
                             publicationYear, numberOfPages, stockQuantity, averageRate, summary)
-                            : new Book(bookId, title, language, isbn, price, edition,
+                            : new Book(title, language, isbn, price, edition,
                             publicationYear, numberOfPages, stockQuantity, averageRate, summary, bookImage);
 
                     books.add(book);

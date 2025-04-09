@@ -62,12 +62,19 @@ public class RegisterServices {
     public static boolean registerValidation(User user, String rePassword, ErrorCode errorCode) {
         boolean flag = true;
 
-        if (!usernameValidation(user.getUsername(), errorCode)) flag = false;
-        else if (!firstNameValidation(user.getFirstName(), errorCode)) flag = false;
-        else if (!lastNameValidation(user.getLastName(), errorCode)) flag = false;
-        else if (!emailValidation(user.getEmail(), errorCode)) flag = false;
-        else if (!passwordValidation(user.getPassword(), errorCode)) flag = false;
-        else if (!passwordConfirmation(user.getPassword(), rePassword, errorCode)) flag = false;
+        if (!usernameValidation(user.getUsername(), errorCode)) {
+            flag = false;
+        } else if (!firstNameValidation(user.getFirst_name(), errorCode)) {
+            flag = false;
+        } else if (!lastNameValidation(user.getLast_name(), errorCode)) {
+            flag = false;
+        } else if (!emailValidation(user.getEmail(), errorCode)) {
+            flag = false;
+        } else if (!passwordValidation(user.getPassword(), errorCode)) {
+            flag = false;
+        } else if (!passwordConfirmation(user.getPassword(), rePassword, errorCode)) {
+            flag = false;
+        }
 
         if (!flag) {
             errorCode = ErrorCode.USER_REGISTRATION_INVALID;

@@ -35,7 +35,7 @@
         for (Wishlist wishlist : wishlists) {
 %>
             <div class="wishlist-item">
-                <a href="<%= request.getContextPath() %>/wishlist/<%= wishlist.getWishlistId() %>">Wishlist: <%= wishlist.getName() %></a>
+                <a href="<%= request.getContextPath() %>/wishlist/<%= wishlist.getWishlistId() %>">Wishlist: <%= wishlist.get_name() %></a>
             </div>
 <%
         }

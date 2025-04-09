@@ -28,16 +28,3 @@ services:
       interval: 5s
       timeout: 10s
       retries: 50
-
-#
-#      services:
-#          volumes:
-#            - ./HW2-frontend/target/yummy-center-1.00.war:/usr/local/tomcat/webapps/ROOT.war
-#            - ./logs:/usr/local/tomcat/webapps/logs
-#        db:
-#          image: postgres
-#          ports:
-#            - "5432:5432"
-#          volumes:
-#            - ./HW2-frontend/src/main/database/database.sql:/docker-entrypoint-initdb.d/01_database.sql
-#            - ./HW2-frontend/src/main/database/insert.sql:/docker-entrypoint-initdb.d/02_insert.sql

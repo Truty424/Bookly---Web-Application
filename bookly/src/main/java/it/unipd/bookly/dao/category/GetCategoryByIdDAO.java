@@ -14,23 +14,23 @@ import static it.unipd.bookly.dao.category.CategoryQueries.GET_CATEGORY_BY_ID;
  */
 public class GetCategoryByIdDAO extends AbstractDAO<Category> {
 
-    private final int categoryId;
+    private final int category_id;
 
     /**
      * Constructor to initialize the DAO with the given book ID.
      *
      * @param con        the database connection.
-     * @param categoryId the ID of the category to retrieve.
+     * @param category_id the ID of the category to retrieve.
      */
-    public GetCategoryByIdDAO(final Connection con, final int categoryId) {
+    public GetCategoryByIdDAO(final Connection con, final int category_id) {
         super(con);
-        this.categoryId = categoryId;
+        this.category_id = category_id;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(GET_CATEGORY_BY_ID)) {
-            stmnt.setInt(1, categoryId);
+            stmnt.setInt(1, category_id);
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
@@ -45,15 +45,15 @@ public class GetCategoryByIdDAO extends AbstractDAO<Category> {
                     );
 
                     this.outputParam = category;
-                    LOGGER.info("Category with ID {} retrieved successfully.", categoryId);
+                    LOGGER.info("Category with ID {} retrieved successfully.", category_id);
                 } else {
                     this.outputParam = null;
-                    LOGGER.warn("No category found for ID {}.", categoryId);
+                    LOGGER.warn("No category found for ID {}.", category_id);
                 }
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Failed to retrieve category with ID {}: {}", categoryId, ex.getMessage());
+            LOGGER.error("Failed to retrieve category with ID {}: {}", category_id, ex.getMessage());
             throw ex;
         }
     }

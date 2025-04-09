@@ -56,11 +56,11 @@ public class CategoryServlet extends AbstractDatabaseServlet {
 
     private void showBooksByCategory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String[] segments = req.getRequestURI().split("/");
-        int categoryId = Integer.parseInt(segments[segments.length - 1]);
+        int category_id = Integer.parseInt(segments[segments.length - 1]);
 
-        List<Book> books = new GetBooksByCategoryDAO(getConnection(), categoryId).access().getOutputParam();
+        List<Book> books = new GetBooksByCategoryDAO(getConnection(), category_id).access().getOutputParam();
         req.setAttribute("category_books", books);
-        req.setAttribute("category_id", categoryId);
+        req.setAttribute("category_id", category_id);
         req.getRequestDispatcher("/jsp/category/categoryBooks.jsp").forward(req, resp);
     }
 }

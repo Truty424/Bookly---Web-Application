@@ -56,7 +56,7 @@ public abstract class AbstractRestResource implements RestResource {
     protected final Connection con;
 
     /**
-     * The {@link it.unipd.yummycenter.Resource.RestActions} performed by this REST resource.
+     * The {@link it.unipd.bookly.Resource.RestActions} performed by this REST resource.
      */
     private final String action;
 

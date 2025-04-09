@@ -14,23 +14,23 @@ import static it.unipd.bookly.dao.category.CategoryQueries.GET_CATEGORY_BY_NAME;
  */
 public class GetCategoryByNameDAO extends AbstractDAO<Category> {
 
-    private final String categoryName;
+    private final String category_name;
 
     /**
      * Constructor.
      *
      * @param con          the database connection.
-     * @param categoryName the name of the category to retrieve.
+     * @param category_name the name of the category to retrieve.
      */
-    public GetCategoryByNameDAO(final Connection con, final String categoryName) {
+    public GetCategoryByNameDAO(final Connection con, final String category_name) {
         super(con);
-        this.categoryName = categoryName;
+        this.category_name = category_name;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(GET_CATEGORY_BY_NAME)) {
-            stmnt.setString(1, categoryName);
+            stmnt.setString(1, category_name);
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
@@ -45,15 +45,15 @@ public class GetCategoryByNameDAO extends AbstractDAO<Category> {
                     );
 
                     this.outputParam = category;
-                    LOGGER.info("Category '{}' retrieved successfully by name.", categoryName);
+                    LOGGER.info("Category '{}' retrieved successfully by name.", category_name);
                 } else {
                     this.outputParam = null;
-                    LOGGER.warn("No category found with name '{}'.", categoryName);
+                    LOGGER.warn("No category found with name '{}'.", category_name);
                 }
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Failed to retrieve category with name '{}': {}", categoryName, ex.getMessage());
+            LOGGER.error("Failed to retrieve category with name '{}': {}", category_name, ex.getMessage());
             throw ex;
         }
     }

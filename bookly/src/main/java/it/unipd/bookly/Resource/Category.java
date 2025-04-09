@@ -1,38 +1,31 @@
 package it.unipd.bookly.Resource;
 
-import java.util.Objects;
-
 public class Category {
-    private int categoryId;
-    private String categoryName;
+    private int category_id;
+    private String category_name;
     private String description;
 
     // Constructors
     public Category() {}
 
-    public Category(int categoryId, String categoryName, String description) {
-        this.categoryId = categoryId;
-        this.categoryName = categoryName;
+    public Category(int category_id, String category_name, String description) {
+        this.category_id = category_id;
+        this.category_name = category_name;
         this.description = description;
     }
 
-    public Category(String categoryName, String description) {
-        this.categoryName = categoryName;
+    public Category(String category_name, String description) {
+        this.category_name = category_name;
         this.description = description;
     }
 
     // Getters
-    public int getCategoryId() { return categoryId; }
-    public String getCategoryName() { return categoryName; }
+    public int getCategory_id() { return category_id; }
+    public String getCategory_name() { return category_name; }
     public String getDescription() { return description; }
 
     // Setters
-    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
-    public void setCategoryName(String categoryName) { this.categoryName = categoryName; }
+    public void setCategory_id(int category_id) { this.category_id = category_id; }
+    public void setCategory_name(String category_name) { this.category_name = category_name; }
     public void setDescription(String description) { this.description = description; }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(categoryId);
-    }
 }

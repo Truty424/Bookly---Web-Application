@@ -66,7 +66,7 @@ public class CategoryAssignmentRest extends AbstractRestResource {
         // /api/book/{bookId}/category/{categoryId}
         String[] parts = path.split("/");
         int bookId = Integer.parseInt(parts[parts.length - 3]);
-        int categoryId = Integer.parseInt(parts[parts.length - 1]);
-        return new int[]{bookId, categoryId};
+        int category_id = Integer.parseInt(parts[parts.length - 1]);
+        return new int[]{bookId, category_id};
     }
 }

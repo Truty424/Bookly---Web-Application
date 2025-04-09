@@ -54,7 +54,7 @@ public abstract class AbstractDatabaseServlet extends HttpServlet {
 
         try {
             cxt = new InitialContext();
-            ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/yummyCenterDB");
+            ds = (DataSource) cxt.lookup("java:/comp/env/jdbc/BooklyDB");
 
             LOGGER.info("Connection pool to the database pool successfully acquired.");
         } catch (NamingException e) {

@@ -17,11 +17,11 @@ import static it.unipd.bookly.dao.category.CategoryQueries.GET_BOOKS_BY_CATEGORY
  */
 public class GetBooksByCategoryDAO extends AbstractDAO<List<Book>> {
 
-    private final int categoryId;
+    private final int category_id;
 
-    public GetBooksByCategoryDAO(final Connection con, final int categoryId) {
+    public GetBooksByCategoryDAO(final Connection con, final int category_id) {
         super(con);
-        this.categoryId = categoryId;
+        this.category_id = category_id;
     }
 
     @Override
@@ -29,7 +29,7 @@ public class GetBooksByCategoryDAO extends AbstractDAO<List<Book>> {
         List<Book> books = new ArrayList<>();
 
         try (PreparedStatement stmnt = con.prepareStatement(GET_BOOKS_BY_CATEGORY)) {
-            stmnt.setInt(1, categoryId);
+            stmnt.setInt(1, category_id);
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
@@ -53,12 +53,12 @@ public class GetBooksByCategoryDAO extends AbstractDAO<List<Book>> {
                             bookImage = new Image(imageData, imageType);
                         }
                     } catch (Exception ignored) {
-                        LOGGER.debug("No image found for book ID {} in category {}", rs.getInt("book_id"), categoryId);
+                        LOGGER.debug("No image found for book ID {} in category {}", rs.getInt("book_id"), category_id);
                     }
                     Book book = (bookImage == null)
                         ? new Book(book_id, title, language, isbn, price, edition, publication_year,
                         number_of_pages, stock_quantity, average_rate, summary)
-                        : new Book(book_id, title, language, isbn, price, edition, publication_year,
+                        : new Book(title, language, isbn, price, edition, publication_year,
                         number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     books.add(book);
@@ -66,10 +66,10 @@ public class GetBooksByCategoryDAO extends AbstractDAO<List<Book>> {
             }
 
             this.outputParam = books;
-            LOGGER.info("{} book(s) retrieved for category ID {}.", books.size(), categoryId);
+            LOGGER.info("{} book(s) retrieved for category ID {}.", books.size(), category_id);
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving books for category ID {}: {}", categoryId, ex.getMessage());
+            LOGGER.error("Error retrieving books for category ID {}: {}", category_id, ex.getMessage());
             throw ex;
         }
     }

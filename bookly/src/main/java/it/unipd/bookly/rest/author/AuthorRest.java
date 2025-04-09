@@ -77,7 +77,7 @@ public class AuthorRest extends AbstractRestResource {
 
         if (success) {
             res.setStatus(HttpServletResponse.SC_CREATED);
-            new Message("Author inserted successfully.", "201", author.getName()).toJSON(res.getOutputStream());
+            new Message("Author inserted successfully.", "201", author.get_name()).toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             new Message("Failed to insert author.", "500", "Insert operation failed.").toJSON(res.getOutputStream());
@@ -93,7 +93,7 @@ public class AuthorRest extends AbstractRestResource {
 
         if (success) {
             res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Author updated successfully.", "200", author.getName()).toJSON(res.getOutputStream());
+            new Message("Author updated successfully.", "200", author.get_name()).toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             new Message("Update failed.", "404", "Author not found.").toJSON(res.getOutputStream());

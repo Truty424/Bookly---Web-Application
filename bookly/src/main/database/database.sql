@@ -1,5 +1,5 @@
 -- Database Creation
-CREATE DATABASE booklydb OWNER booklyTeam ENCODING 'UTF8';
+CREATE DATABASE BooklyDB OWNER postgres ENCODING 'UTF8';
 
 -- Create new Schema
 DROP SCHEMA IF EXISTS booklySchema CASCADE;
@@ -15,10 +15,13 @@ CREATE DOMAIN booklySchema.password_domain AS VARCHAR(255)
 CREATE DOMAIN booklySchema.phone_domain AS VARCHAR(20)
   CHECK (VALUE ~ '^\\+?[0-9\\-]{7,20}$');
 
+ALTER DOMAIN booklySchema.phone_domain
+DROP CONSTRAINT phone_domain_check;
+
 -- ENUM types
 CREATE TYPE booklySchema.user_role AS ENUM ('user', 'admin');
 CREATE TYPE booklySchema.payment_method AS ENUM ('in_person', 'credit_card');
-CREATE TYPE booklySchema.status AS ENUM ('placed', 'paid','cancelled','shipped','delivered');
+CREATE TYPE booklySchema.payment_status AS ENUM ('placed', 'paid','cancelled','shipped','delivered');
 
 -- Users
 CREATE TABLE IF NOT EXISTS booklySchema.users (
@@ -37,7 +40,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.user_image (
     user_id INTEGER PRIMARY KEY NOT NULL,
     image BYTEA NOT NULL,
     image_type VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES booklySchema.user(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id) ON DELETE CASCADE
 );
 
 
@@ -75,14 +78,79 @@ CREATE TABLE IF NOT EXISTS booklySchema.books (
     number_of_pages INTEGER CHECK (number_of_pages > 0),
     stock_quantity INTEGER DEFAULT 0 CHECK (stock_quantity >= 0),
     average_rate REAL,
-    summary TEXT,
+    summary TEXT
 );
 
 CREATE TABLE IF NOT EXISTS booklySchema.book_image (
     book_id INTEGER PRIMARY KEY NOT NULL,
     image BYTEA NOT NULL,
     image_type VARCHAR(255) NOT NULL,
-    FOREIGN KEY (book_id) REFERENCES booklySchema.book(book_id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id) ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE IF NOT EXISTS booklySchema.wishlists (
+    wishlist_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
+);
+
+
+CREATE TABLE IF NOT EXISTS booklySchema.orders (
+    order_id SERIAL PRIMARY KEY,
+    total_price NUMERIC(10,2) NOT NULL,
+    payment_method booklySchema.payment_method NOT NULL,
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    address TEXT NOT NULL,
+    shipment_code VARCHAR(50),
+    status booklySchema.payment_status NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS booklySchema.discounts (
+    discount_id SERIAL PRIMARY KEY,
+    code VARCHAR(50) UNIQUE NOT NULL,
+    discount_percentage NUMERIC(5,2) CHECK (discount_percentage >= 0 AND discount_percentage <= 100),
+    expired_date TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS booklySchema.reviews (
+    review_id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    book_id INTEGER NOT NULL,
+    comment TEXT,
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    number_of_likes INTEGER,
+    number_of_dislikes INTEGER,
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
+);
+
+CREATE TABLE IF NOT EXISTS booklySchema.shoppingcart (
+    cart_id SERIAL PRIMARY KEY,
+    shipment_method booklySchema.payment_method,
+    user_id INTEGER UNIQUE NOT NULL,
+    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    quantity INTEGER NOT NULL DEFAULT 0,
+    total_price NUMERIC(10,2) NOT NULL,
+    discount_id INTEGER,
+    order_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
+    FOREIGN KEY (discount_id) REFERENCES booklySchema.discounts(discount_id),
+    FOREIGN KEY (order_id) REFERENCES booklySchema.orders(order_id)
+);
+
+
+
+CREATE TABLE IF NOT EXISTS booklySchema.published_by (
+    book_id INTEGER NOT NULL,
+    publisher_id INTEGER NOT NULL,
+    PRIMARY KEY (book_id, publisher_id),
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id),
+    FOREIGN KEY (publisher_id) REFERENCES booklySchema.publishers(publisher_id)
 );
 
 
@@ -99,7 +167,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.contains (
     cart_id INTEGER NOT NULL,
     PRIMARY KEY (book_id, cart_id),
     FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id),
-    FOREIGN KEY (cart_id) REFERENCES booklySchema.cart(cart_id)
+    FOREIGN KEY (cart_id) REFERENCES booklySchema.shoppingcart(cart_id)
 );
 
 
@@ -111,76 +179,10 @@ CREATE TABLE IF NOT EXISTS booklySchema.category_belongs (
     FOREIGN KEY (category_id) REFERENCES booklySchema.categories(category_id)
 );
 
-
-CREATE TABLE IF NOT EXISTS booklySchema.published_by (
-    book_id INTEGER NOT NULL,
-    publisher_id INTEGER NOT NULL,
-    PRIMARY KEY (book_id, publisher_id),
-    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id),
-    FOREIGN KEY (publisher_id) REFERENCES booklySchema.publishers(publisher_id)
-);
-
--- Carts
-CREATE TABLE IF NOT EXISTS booklySchema.shoppingcart (
-    cart_id SERIAL PRIMARY KEY,
-    shipment_method booklySchema.shippment_method,
-    user_id INTEGER UNIQUE NOT NULL,
-    created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    quantity INTEGER NOT NULL DEFAULT 0,
-    total_price NUMERIC(10,2) NOT NULL,
-    discount_id INTEGER,
-    order_id INTEGER,
-    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
-    FOREIGN KEY (discount_id) REFERENCES booklySchema.discounts(discount_id),
-    FOREIGN KEY (order_id) REFERENCES booklySchema.orders(order_id)
-);
-
-CREATE TABLE IF NOT EXISTS booklySchema.wishlists (
-    wishlist_id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
-);
-
-
 CREATE TABLE IF NOT EXISTS booklySchema.contains_wishlist (
     wishlist_id INTEGER NOT NULL,
     book_id INTEGER UNIQUE, 
     PRIMARY KEY (wishlist_id, book_id),
     FOREIGN KEY (wishlist_id) REFERENCES booklySchema.wishlists(wishlist_id),
     FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
-);
-
-
--- Reviews
-CREATE TABLE IF NOT EXISTS booklySchema.reviews (
-    review_id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    book_id INTEGER NOT NULL,
-    comment TEXT,
-    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
-    review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    number_of_likes INTEGER,
-    number_of_dislikes INTEGER,
-    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
-    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
-);
-
-
-CREATE TABLE IF NOT EXISTS booklySchema.discounts (
-    discount_id SERIAL PRIMARY KEY,
-    code VARCHAR(50) UNIQUE NOT NULL,
-    discount_percentage NUMERIC(5,2) CHECK (discount_percentage >= 0 AND discount_percentage <= 100),
-    expired_date TIMESTAMP
-);
-
-
-CREATE TABLE IF NOT EXISTS booklySchema.orders (
-    order_id SERIAL PRIMARY KEY,
-    total_price NUMERIC(10,2) NOT NULL,
-    payment_method booklySchema.payment_method NOT NULL,
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    address TEXT NOT NULL,
-    shipment_code VARCHAR(50),
-    status booklySchema.status NOT NULL,
 );

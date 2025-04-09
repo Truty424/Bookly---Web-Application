@@ -48,7 +48,6 @@ public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
                     }
 
                     User user = new User(
-                        rs.getInt("user_id"),
                         rs.getString("username"),
                         rs.getString("password"),
                         rs.getString("first_name"),

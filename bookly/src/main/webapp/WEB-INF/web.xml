@@ -15,20 +15,6 @@
         <servlet-class>it.unipd.bookly.servlet.home.HomeServlet</servlet-class>
     </servlet>
 
-    <servlet>
-        <servlet-name>ProfileServlet</servlet-name>
-        <servlet-class>it.unipd.bookly.servlet.profile.ProfileServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>RestDispatcherServlet</servlet-name>
-        <servlet-class>it.unipd.bookly.servlet.RestDispatcherServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ProfileServlet</servlet-name>
-        <url-pattern>/profile/edit</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
@@ -45,26 +31,12 @@
         <url-pattern>/user/register</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/user/forgotPassword</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/user/otp</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>RestDispatcherServlet</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>
 
     <!--  URI Mappings  -->
 
     <resource-ref>
         <description>Connection pool to the database</description>
-        <res-ref-name>jdbc/booklyDB</res-ref-name>
+        <res-ref-name>jdbc/BooklyDB</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>

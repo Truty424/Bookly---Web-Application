@@ -1,6 +1,7 @@
 package it.unipd.bookly.Resource;
 
 public class Author {
+
     private int author_id;
     private String first_name;
     private String last_name;
@@ -30,39 +31,39 @@ public class Author {
         this.author_id = author_id;
     }
 
-    public String getFirstName() {
+    public String getFirst_name() {
         return first_name;
     }
 
-    public void setFirstName(String first_name) {
+    public void setFirst_name(String first_name) {
         this.first_name = first_name;
     }
 
-    public String getLastName() {
+    public String getLast_name() {
         return last_name;
     }
 
-    public void setLastName(String last_name) {
+    public void setLast_name(String last_name) {
         this.last_name = last_name;
     }
 
-    public String getBiography() {
+    public String get_biography() {
         return biography;
     }
 
-    public void setBiography(String biography) {
+    public void set_biography(String biography) {
         this.biography = biography;
     }
 
-    public String getNationality() {
+    public String get_nationality() {
         return nationality;
     }
 
-    public void setNationality(String nationality) {
+    public void set_nationality(String nationality) {
         this.nationality = nationality;
     }
 
-    public String getName() {
-        return first_name+ " " + last_name;
+    public String get_name() {
+        return first_name + " " + last_name;
     }
 }

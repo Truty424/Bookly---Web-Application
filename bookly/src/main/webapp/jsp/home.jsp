@@ -26,8 +26,7 @@
 <c:forEach var="book" items="${topRatedBooks}">
     <div>
         <h3>${book.title}</h3>
-        <p>Author: ${book.author_name}</p>
-        <p>Rating: ${book.average_rating}</p>
+        <p>Rating: ${book.average_rate}</p>
         <p>Price: €${book.price}</p>
     </div>
     <hr/>
@@ -38,8 +37,8 @@
 <c:forEach var="book" items="${allBooks}">
     <div>
         <h3>${book.title}</h3>
-        <p>Author: ${book.author_name}</p>
-        <p>Rating: ${book.average_rating}</p>
+        <!-- <p>Author: ${book.author_name}</p> -->
+        <p>Rating: ${book.average_rate}</p>
         <p>Price: €${book.price}</p>
     </div>
     <hr/>

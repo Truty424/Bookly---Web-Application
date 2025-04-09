@@ -8,9 +8,8 @@ import it.unipd.bookly.dao.user.LoginUserDAO;
 import it.unipd.bookly.dao.user.RegisterUserDAO;
 import it.unipd.bookly.services.user.LoginServices;
 import it.unipd.bookly.services.user.RegisterServices;
-import it.unipd.bookly.utilities.ErrorCode;
-import it.unipd.bookly.utilities.Util;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+import it.unipd.bookly.utilities.ErrorCode;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,25 +24,26 @@ import java.sql.SQLException;
 @MultipartConfig
 public class UserServlet extends AbstractDatabaseServlet {
 
-    final private ErrorCode errorCode = null;
+    private ErrorCode errorCode = null;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         LogContext.setIPAddress(req.getRemoteAddr());
         LogContext.setResource(req.getRequestURI());
-        LogContext.setAction("User");
+        LogContext.setAction("UserServlet");
 
         String operation = req.getRequestURI().substring(req.getRequestURI().lastIndexOf("user") + 4);
+        LOGGER.info("GET operation: {}", operation);
 
         try {
             switch (operation) {
                 case "/login" -> req.getRequestDispatcher("/html/login.html").forward(req, res);
                 case "/register" -> req.getRequestDispatcher("/html/signup.html").forward(req, res);
-                default -> Util.writeError(res, ErrorCode.OPERATION_UNKNOWN);
+                default -> writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
-        } catch (Exception e) {
-            Util.writeError(res, ErrorCode.INTERNAL_ERROR);
-            LOGGER.error("Exception in GET /user{}", operation, e);
+        } catch (IOException e) {
+            LOGGER.error("IOException during GET: ", e);
+            writeError(res, ErrorCode.INTERNAL_ERROR);
         }
     }
 
@@ -51,90 +51,81 @@ public class UserServlet extends AbstractDatabaseServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         LogContext.setIPAddress(req.getRemoteAddr());
         LogContext.setResource(req.getRequestURI());
-        LogContext.setAction("User");
+        LogContext.setAction("UserServlet");
 
         String operation = req.getRequestURI().substring(req.getRequestURI().lastIndexOf("user") + 4);
+        LOGGER.info("POST operation: {}", operation);
 
         switch (operation) {
-            case "/login" -> loginOperation(req, res);
-            case "/register" -> registerOperation(req, res);
-            default -> Util.writeError(res, ErrorCode.OPERATION_UNKNOWN);
+            case "/login" -> handleLogin(req, res);
+            case "/register" -> handleRegister(req, res);
+            default -> writeError(res, ErrorCode.OPERATION_UNKNOWN);
         }
     }
 
-    private void loginOperation(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+    private void handleLogin(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try {
-            String username = req.getParameter("username");
+            String usernameOrEmail = req.getParameter("username");
             String password = req.getParameter("password");
 
-            if (LoginServices.loginValidation(username, password, errorCode)) {
-                User user = new LoginUserDAO(getConnection(), username, password).access().getOutputParam();
-
+            if (LoginServices.loginValidation(usernameOrEmail, password, errorCode)) {
+                User user = new LoginUserDAO(getConnection(), usernameOrEmail, password).access().getOutputParam();
                 if (user != null) {
                     String jwt = JwtManager.createToken("username", user.getUsername());
-
                     HttpSession session = req.getSession();
                     session.setAttribute("user", user);
                     session.setAttribute("Authorization", jwt);
-
                     res.setHeader("Authorization", jwt);
                     res.sendRedirect(req.getContextPath() + "/profile/");
                 } else {
-                    Util.writeError(res, ErrorCode.INTERNAL_ERROR);
+                    writeError(res, ErrorCode.USER_NOT_FOUND);
                 }
             } else {
-                res.setStatus(errorCode.getHTTPCode());
+                res.setStatus(errorCode.getHttpCode());
                 req.getRequestDispatcher("/html/login.html").forward(req, res);
             }
-
         } catch (SQLException e) {
-            LOGGER.error("Login error:", e);
-            Util.writeError(res, ErrorCode.INTERNAL_ERROR);
+            LOGGER.error("SQLException during login: ", e);
+            writeError(res, ErrorCode.INTERNAL_ERROR);
         }
     }
 
-    private void registerOperation(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    private void handleRegister(HttpServletRequest req, HttpServletResponse res) throws IOException {
         try {
             String username = req.getParameter("username");
-            String password = req.getParameter("password");
-            String rePassword = req.getParameter("password_check");
             String firstName = req.getParameter("first_name");
             String lastName = req.getParameter("last_name");
+            String password = req.getParameter("password");
+            String rePassword = req.getParameter("password_check");
             String email = req.getParameter("email");
             String phone = req.getParameter("phone");
             String address = req.getParameter("address");
-            String role = req.getParameter("role") == null ? "user" : req.getParameter("role");
 
             byte[] imageData = req.getPart("image").getInputStream().readAllBytes();
-            String contentType = req.getPart("image").getContentType();
-            Image profileImage = new Image(imageData, contentType);
+            Image image = new Image(imageData, req.getPart("image").getContentType());
 
-            User newUser = new User(username, password, firstName, lastName, email, phone, address, role);
-            newUser.setProfileImage(profileImage);
+            User newUser = new User(username, password, firstName, lastName, email, phone, address, "user", image);
 
             if (RegisterServices.registerValidation(newUser, rePassword, errorCode)) {
-                User registeredUser = new RegisterUserDAO(getConnection(), newUser).access().getOutputParam();
-
-                if (registeredUser != null) {
-                    String jwt = JwtManager.createToken("username", registeredUser.getUsername());
-
+                User registered = new RegisterUserDAO(getConnection(), newUser).access().getOutputParam();
+                if (registered != null) {
+                    String jwt = JwtManager.createToken("username", registered.getUsername());
                     HttpSession session = req.getSession();
-                    session.setAttribute("user", registeredUser);
+                    session.setAttribute("user", registered);
                     session.setAttribute("Authorization", jwt);
-
                     res.setHeader("Authorization", jwt);
                     res.sendRedirect(req.getContextPath() + "/profile/");
                 } else {
-                    Util.writeError(res, ErrorCode.INTERNAL_ERROR);
+                    writeError(res, ErrorCode.INTERNAL_ERROR);
                 }
             } else {
-                res.setStatus(errorCode.getHTTPCode());
+                res.setStatus(errorCode.getHttpCode());
                 req.getRequestDispatcher("/html/signup.html").forward(req, res);
             }
 
-        } catch (Exception e) {
-            LOGGER.error("Registration error:", e);
-            Util.writeError(res, ErrorCode.INTERNAL_ERROR);
+        } catch (SQLException | ServletException e) {
+            LOGGER.error("Registration error: ", e);
+            writeError(res, ErrorCode.INTERNAL_ERROR);
         }
     }
 }
