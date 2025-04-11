@@ -1,76 +1,96 @@
-// package it.unipd.bookly.rest.user;
+package it.unipd.bookly.rest.user;
 
-// import java.io.IOException;
-// import java.sql.Connection;
-// import com.fasterxml.jackson.databind.ObjectMapper;
-// import it.unipd.bookly.Resource.Message;
-// import it.unipd.bookly.dao.user.LoginUserDAO;
-// import it.unipd.bookly.rest.AbstractRestResource;
-// import it.unipd.bookly.utilities.JWTUtil;
-// import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.Connection;
 
-// /**
-//  * Handles user authentication:
-//  * - POST /api/auth
-//  */
-// public class AuthenticationUserRest extends AbstractRestResource {
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-//     public AuthenticationUserRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
-//         super("user-authentication", req, res, con);
-//     }
+import it.unipd.bookly.Resource.Message;
+import it.unipd.bookly.Resource.User;
+import it.unipd.bookly.dao.user.LoginUserDAO;
+import it.unipd.bookly.rest.AbstractRestResource;
+import it.unipd.bookly.utilities.JWTUtil;
 
-//     @Override
-//     protected void doServe() throws IOException {
-//         String method = req.getMethod();
-//         String path = req.getRequestURI();
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-//         try {
-//             if (!"POST".equals(method)) {
-//                 res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-//                 new Message("Only POST method supported for this endpoint.", "405", "Use POST for user authentication.")
-//                     .toJSON(res.getOutputStream());
-//                 return;
-//             }
+/**
+ * Handles user authentication:
+ * - POST /api/auth
+ */
+public class AuthenticationUserRest extends AbstractRestResource {
 
-//             if (path.endsWith("/auth")) {
-//                 handleAuthentication();
-//             } else {
-//                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//                 new Message("Invalid authentication query path.", "404", "Check supported routes.")
-//                     .toJSON(res.getOutputStream());
-//             }
+    private final ObjectMapper mapper = new ObjectMapper();
 
-//         } catch (Exception e) {
-//             LOGGER.error("AuthenticationUserRest error: ", e);
-//             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//             new Message("Internal server error.", "E500", e.getMessage()).toJSON(res.getOutputStream());
-//         }
-//     }
+    public AuthenticationUserRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
+        super("user-authentication", req, res, con);
+    }
 
-//     private void handleAuthentication() throws Exception {
-//         String username = req.getParameter("username");
-//         String password = req.getParameter("password");
+    @Override
+    protected void doServe() throws IOException {
+        final String method = req.getMethod();
+        final String path = req.getRequestURI();
 
-//         if (username == null || password == null) {
-//             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-//             new Message("Missing username or password.", "400", "Username and password are required.")
-//                 .toJSON(res.getOutputStream());
-//             return;
-//         }
+        try {
+            switch (method) {
+                case "POST" -> {
+                    if (path.endsWith("/auth")) {
+                        handleAuthentication();
+                    } else {
+                        sendNotFound("Invalid authentication path. Expected: /api/auth");
+                    }
+                }
+                default -> {
+                    sendMethodNotAllowed("Only POST is supported for user authentication.");
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("AuthenticationUserRest error", e);
+            sendServerError("Internal server error during authentication.", e.getMessage());
+        }
+    }
 
-//         LoginUserDAO loginDAO = new LoginUserDAO(con);
-//         boolean authenticated = loginDAO.authenticateUser(username, password);
+    private void handleAuthentication() throws Exception {
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
 
-//         if (authenticated) {
-//             String token = JWTUtil.generateToken(username);
-//             res.setStatus(HttpServletResponse.SC_OK);
-//             res.setContentType("application/json;charset=UTF-8");
-//             new ObjectMapper().writeValue(res.getOutputStream(), new Message("Authentication successful.", "200", token));
-//         } else {
-//             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-//             new Message("Invalid username or password.", "401", "Authentication failed.")
-//                 .toJSON(res.getOutputStream());
-//         }
-//     }
-// }
+        if (username == null || password == null) {
+            sendBadRequest("Missing credentials.", "Both username and password are required.");
+            return;
+        }
+
+        User authenticated = new LoginUserDAO(con).authenticateUser(username, password);
+
+        if (authenticated) {
+            String token = JWTUtil.generateToken(username);
+            res.setStatus(HttpServletResponse.SC_OK);
+            res.setContentType("application/json;charset=UTF-8");
+            mapper.writeValue(res.getOutputStream(), new Message("Authentication successful.", "200", token));
+        } else {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            new Message("Invalid credentials.", "401", "Authentication failed.")
+                .toJSON(res.getOutputStream());
+        }
+    }
+
+    // Utility methods
+    private void sendBadRequest(String title, String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        new Message(title, "400", detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendNotFound(String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        new Message("Not Found", "404", detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendMethodNotAllowed(String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        new Message("Method Not Allowed", "405", detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendServerError(String title, String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        new Message(title, "E500", detail).toJSON(res.getOutputStream());
+    }
+}

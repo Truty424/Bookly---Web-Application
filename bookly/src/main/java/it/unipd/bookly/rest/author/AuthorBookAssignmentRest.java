@@ -1,11 +1,6 @@
 package it.unipd.bookly.rest.author;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import it.unipd.bookly.Resource.Author;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.author.AddAuthorToBookDAO;
@@ -14,12 +9,13 @@ import it.unipd.bookly.rest.AbstractRestResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Handles book-author relationships: - POST /api/authors/book → assign an
- * author to a book (expects authorId and book_id in params) - GET
- * /api/authors/book/{book_id} → retrieve authors by book ID
- */
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.List;
+
 public class AuthorBookAssignmentRest extends AbstractRestResource {
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public AuthorBookAssignmentRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
         super("author-book-assignment", req, res, con);
@@ -32,15 +28,22 @@ public class AuthorBookAssignmentRest extends AbstractRestResource {
         Message message;
 
         try {
-            if ("POST".equals(method) && path.endsWith("/authors/book")) {
-                handleAddAuthorToBook();
-            } else if ("GET".equals(method) && path.matches(".*/authors/book/\\d+$")) {
-                handleGetAuthorsByBook(path);
-            } else {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                message = new Message("Unsupported operation.", "405",
-                        "Only POST and GET are supported for author-book relationships.");
-                message.toJSON(res.getOutputStream());
+            switch (method) {
+                case "POST" -> {
+                    if (path.endsWith("/authors/book")) {
+                        handleAddAuthorToBook();
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                case "GET" -> {
+                    if (path.matches(".*/authors/book/\\d+$")) {
+                        handleGetAuthorsByBook(path);
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                default -> sendMethodNotAllowed();
             }
         } catch (Exception e) {
             LOGGER.error("AuthorBookAssignmentRest error: ", e);
@@ -80,9 +83,15 @@ public class AuthorBookAssignmentRest extends AbstractRestResource {
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/json;charset=UTF-8");
 
-        ObjectMapper mapper = new ObjectMapper();
-        String authorsjson = mapper.writeValueAsString(authors);
-        Message message = new Message("Authors retrieved successfully", "200", authorsjson);
-        message.toJSON(res.getOutputStream());
+        String authorsJson = mapper.writeValueAsString(authors);
+        new Message("Authors retrieved successfully", "200", authorsJson)
+                .toJSON(res.getOutputStream());
+    }
+
+    private void sendMethodNotAllowed() throws IOException {
+        res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        new Message("Unsupported operation.", "405",
+                "Only GET and POST are supported for author-book relationships.")
+                .toJSON(res.getOutputStream());
     }
 }

@@ -1,6 +1,11 @@
 package it.unipd.bookly.Resource;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Timestamp;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Represents an order in the Bookly system.
@@ -98,4 +103,13 @@ public class Order {
         this.status = status;
     }
 
+    @SuppressWarnings("CallToPrintStackTrace")
+    public void toJSON(OutputStream out) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(out, this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

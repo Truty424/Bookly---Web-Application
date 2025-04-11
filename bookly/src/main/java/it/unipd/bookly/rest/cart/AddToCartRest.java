@@ -3,17 +3,12 @@ package it.unipd.bookly.rest.cart;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.cart.AddBookToCartDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.sql.Connection;
 
-/**
- * REST endpoint to add a book to the shopping cart.
- * 
- * Endpoint: POST /api/cart/add?cartId=123&bookId=456
- */
 public class AddToCartRest extends AbstractRestResource {
 
     public AddToCartRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -22,15 +17,22 @@ public class AddToCartRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
+        final String method = req.getMethod();
+
+        switch (method) {
+            case "POST" -> handleAddToCart();
+            default -> sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+                    "Unsupported method", "E405", "Only POST is allowed for this endpoint.");
+        }
+    }
+
+    private void handleAddToCart() throws IOException {
         String cartIdParam = req.getParameter("cartId");
         String bookIdParam = req.getParameter("bookId");
 
-        Message message;
-
         if (cartIdParam == null || bookIdParam == null) {
-            message = new Message("Missing 'cartId' or 'bookId' parameter.", "E400", "Both parameters are required.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400",
+                    "'cartId' and 'bookId' are required.");
             return;
         }
 
@@ -38,22 +40,24 @@ public class AddToCartRest extends AbstractRestResource {
             int cartId = Integer.parseInt(cartIdParam);
             int bookId = Integer.parseInt(bookIdParam);
 
-            // DAO call to add book to cart
             new AddBookToCartDAO(con, bookId, cartId).access();
 
-            message = new Message("Book added to cart successfully.", "200", "Book ID " + bookId + " added to cart " + cartId);
             res.setStatus(HttpServletResponse.SC_OK);
-            message.toJSON(res.getOutputStream());
+            new Message("Book added to cart successfully", "200",
+                    "Book ID " + bookId + " was added to cart ID " + cartId).toJSON(res.getOutputStream());
 
-        } catch (NumberFormatException ex) {
-            message = new Message("Invalid 'cartId' or 'bookId' format.", "E401", "Both parameters must be integers.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
-        } catch (Exception ex) {
-            LOGGER.error("Error adding book to cart", ex);
-            message = new Message("Internal server error while adding book to cart.", "E500", ex.getMessage());
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            message.toJSON(res.getOutputStream());
+        } catch (NumberFormatException e) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format", "E401",
+                    "'cartId' and 'bookId' must be valid integers.");
+        } catch (Exception e) {
+            LOGGER.error("Error adding book to cart", e);
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500",
+                    "Error adding book to cart: " + e.getMessage());
         }
+    }
+
+    private void sendError(int status, String title, String code, String detail) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }

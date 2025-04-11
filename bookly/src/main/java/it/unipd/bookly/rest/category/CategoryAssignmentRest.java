@@ -24,18 +24,26 @@ public class CategoryAssignmentRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        String method = req.getMethod();
-        String path = req.getRequestURI();
+        final String method = req.getMethod();
+        final String path = req.getRequestURI();
 
         try {
-            if (method.equals("POST") && path.matches(".*/book/\\d+/category/\\d+$")) {
-                handleAddCategory(path);
-            } else if (method.equals("DELETE") && path.matches(".*/book/\\d+/category/\\d+$")) {
-                handleRemoveCategory(path);
-            } else {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Unsupported operation.", "405", "Only POST and DELETE are supported for category-book assignment.")
-                    .toJSON(res.getOutputStream());
+            switch (method) {
+                case "POST" -> {
+                    if (path.matches(".*/book/\\d+/category/\\d+$")) {
+                        handleAddCategory(path);
+                    } else {
+                        sendUnsupportedPath();
+                    }
+                }
+                case "DELETE" -> {
+                    if (path.matches(".*/book/\\d+/category/\\d+$")) {
+                        handleRemoveCategory(path);
+                    } else {
+                        sendUnsupportedPath();
+                    }
+                }
+                default -> sendUnsupportedMethod();
             }
         } catch (Exception e) {
             LOGGER.error("CategoryAssignmentRest error: ", e);
@@ -49,7 +57,8 @@ public class CategoryAssignmentRest extends AbstractRestResource {
         new AddCategoryToBookDAO(con, ids[0], ids[1]).access();
 
         res.setStatus(HttpServletResponse.SC_CREATED);
-        new Message("Category assigned to book successfully.", "201", "Category ID " + ids[1] + " -> Book ID " + ids[0])
+        new Message("Category assigned to book successfully.", "201", 
+                    "Category ID " + ids[1] + " -> Book ID " + ids[0])
             .toJSON(res.getOutputStream());
     }
 
@@ -58,15 +67,27 @@ public class CategoryAssignmentRest extends AbstractRestResource {
         new RemoveCategoryFromBookDAO(con, ids[0], ids[1]).access();
 
         res.setStatus(HttpServletResponse.SC_OK);
-        new Message("Category removed from book.", "200", "Category ID " + ids[1] + " removed from Book ID " + ids[0])
+        new Message("Category removed from book.", "200", 
+                    "Category ID " + ids[1] + " removed from Book ID " + ids[0])
             .toJSON(res.getOutputStream());
     }
 
     private int[] extractIds(String path) {
-        // /api/book/{bookId}/category/{categoryId}
         String[] parts = path.split("/");
         int bookId = Integer.parseInt(parts[parts.length - 3]);
-        int category_id = Integer.parseInt(parts[parts.length - 1]);
-        return new int[]{bookId, category_id};
+        int categoryId = Integer.parseInt(parts[parts.length - 1]);
+        return new int[]{bookId, categoryId};
+    }
+
+    private void sendUnsupportedMethod() throws IOException {
+        res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        new Message("Unsupported HTTP method.", "405", "Only POST and DELETE are supported.")
+            .toJSON(res.getOutputStream());
+    }
+
+    private void sendUnsupportedPath() throws IOException {
+        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        new Message("Invalid path format.", "404", "Expected /api/book/{bookId}/category/{categoryId}.")
+            .toJSON(res.getOutputStream());
     }
 }

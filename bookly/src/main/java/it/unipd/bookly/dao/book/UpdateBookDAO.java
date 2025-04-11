@@ -1,16 +1,15 @@
 package it.unipd.bookly.dao.book;
 
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.UPDATE_BOOK;
 
 /**
  * DAO to update book information.
  */
-public class UpdateBookDAO extends AbstractDAO<Void> {
+public class UpdateBookDAO extends AbstractDAO<Boolean> {
 
     private final int book_id;
     private final String title;
@@ -27,22 +26,22 @@ public class UpdateBookDAO extends AbstractDAO<Void> {
     /**
      * Constructor for book update.
      *
-     * @param con                DB connection
-     * @param book_id            Book ID to update
-     * @param title              Updated title
-     * @param language           Updated language
-     * @param isbn               Updated ISBN
-     * @param price              Updated price
-     * @param edition            Updated edition
-     * @param publication_year   Updated publication year
-     * @param number_of_pages    Updated page count
-     * @param stock_quantity     Updated stock
-     * @param average_rate       Updated average rating
-     * @param summary            Updated summary
+     * @param con DB connection
+     * @param book_id Book ID to update
+     * @param title Updated title
+     * @param language Updated language
+     * @param isbn Updated ISBN
+     * @param price Updated price
+     * @param edition Updated edition
+     * @param publication_year Updated publication year
+     * @param number_of_pages Updated page count
+     * @param stock_quantity Updated stock
+     * @param average_rate Updated average rating
+     * @param summary Updated summary
      */
     public UpdateBookDAO(final Connection con, int book_id, String title, String language, String isbn,
-                         double price, String edition, int publication_year, int number_of_pages,
-                         int stock_quantity, double average_rate, String summary) {
+            double price, String edition, int publication_year, int number_of_pages,
+            int stock_quantity, double average_rate, String summary) {
         super(con);
         this.book_id = book_id;
         this.title = title;
@@ -56,6 +55,7 @@ public class UpdateBookDAO extends AbstractDAO<Void> {
         this.average_rate = average_rate;
         this.summary = summary;
     }
+
 
     @Override
     protected void doAccess() throws Exception {

@@ -1,5 +1,11 @@
 package it.unipd.bookly.Resource;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.unipd.bookly.Resource.Image;
 
 public class Book {
@@ -34,6 +40,23 @@ public class Book {
         this.stock_quantity = stock_quantity;
         this.average_rate = average_rate;
         this.summary = summary;
+    }
+
+        public Book(int book_id, String title, String language, String isbn, double price, String edition,
+            int publication_year, int number_of_pages, int stock_quantity, double average_rate, String summary,Image book_pic) {
+        this.book_id = book_id;
+        this.title = title;
+        this.language = language;
+        this.isbn = isbn;
+        this.price = price;
+        this.edition = edition;
+        this.publication_year = publication_year;
+        this.number_of_pages = number_of_pages;
+        this.stock_quantity = stock_quantity;
+        this.average_rate = average_rate;
+        this.summary = summary;
+        this.book_pic = book_pic;
+
     }
 
     public Book(String title, String language, String isbn, double price, String edition,

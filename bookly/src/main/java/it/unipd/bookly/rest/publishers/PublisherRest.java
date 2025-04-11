@@ -12,6 +12,14 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+/**
+ * Handles:
+ * - GET    /api/publishers          → get all publishers
+ * - GET    /api/publishers/{id}     → get a specific publisher by ID
+ * - POST   /api/publishers          → insert a new publisher
+ * - PUT    /api/publishers/{id}     → update an existing publisher
+ * - DELETE /api/publishers/{id}     → delete a publisher by ID
+ */
 public class PublisherRest extends AbstractRestResource {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -22,73 +30,90 @@ public class PublisherRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        String method = req.getMethod();
-        String path = req.getRequestURI();
+        final String method = req.getMethod();
+        final String path = req.getRequestURI();
+        Message message;
 
         try {
-            if ("GET".equals(method) && path.matches(".*/publishers/\\d+")) {
-                handleGetById(path);
-            } else if ("GET".equals(method)) {
-                handleGetAll();
-            } else if ("POST".equals(method)) {
-                handleInsert();
-            } else if ("PUT".equals(method)) {
-                handleUpdate();
-            } else if ("DELETE".equals(method) && path.matches(".*/publishers/\\d+")) {
-                handleDelete(path);
-            } else {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Unsupported method or path", "405", "Check endpoint syntax.")
-                        .toJSON(res.getOutputStream());
+            switch (method) {
+                case "GET" -> {
+                    if (path.matches(".*/publishers/?$")) {
+                        handleGetAllPublishers();
+                    } else if (path.matches(".*/publishers/\\d+$")) {
+                        handleGetPublisherById(path);
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                case "POST" -> {
+                    if (path.matches(".*/publishers/?$")) {
+                        handleInsertPublisher();
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                case "PUT" -> {
+                    if (path.matches(".*/publishers/\\d+$")) {
+                        handleUpdatePublisher(path);
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                case "DELETE" -> {
+                    if (path.matches(".*/publishers/\\d+$")) {
+                        handleDeletePublisher(path);
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                default -> sendMethodNotAllowed();
             }
         } catch (Exception e) {
-            LOGGER.error("PublisherRest exception", e);
+            LOGGER.error("PublisherRest error", e);
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            new Message("Internal error", "500", e.getMessage()).toJSON(res.getOutputStream());
+            message = new Message("Internal server error", "500", e.getMessage());
+            message.toJSON(res.getOutputStream());
         }
     }
 
-    private void handleGetAll() throws Exception {
+    private void handleGetAllPublishers() throws Exception {
         List<Publisher> publishers = new GetAllPublishersDAO(con).access().getOutputParam();
-        String json = mapper.writeValueAsString(publishers);
-
-        res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        new Message("Publishers retrieved successfully", "200", json).toJSON(res.getOutputStream());
+        res.setContentType("application/json;charset=UTF-8");
+        mapper.writeValue(res.getOutputStream(), publishers);
     }
 
-    private void handleGetById(String path) throws Exception {
-        int id = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-        Publisher publisher = new GetPublisherByIdDAO(con, id).access().getOutputParam();
+    private void handleGetPublisherById(String path) throws Exception {
+        int publisherId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
+        Publisher publisher = new GetPublisherByIdDAO(con, publisherId).access().getOutputParam();
 
-        res.setContentType("application/json;charset=UTF-8");
-
-        if (publisher != null) {
-            String json = mapper.writeValueAsString(publisher);
-            res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Publisher retrieved", "200", json).toJSON(res.getOutputStream());
-        } else {
+        if (publisher == null) {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Publisher not found", "404", "ID " + id + " not found.")
-                    .toJSON(res.getOutputStream());
+            new Message("Publisher not found.", "404", "No publisher with ID " + publisherId).toJSON(res.getOutputStream());
+        } else {
+            res.setStatus(HttpServletResponse.SC_OK);
+            res.setContentType("application/json;charset=UTF-8");
+            mapper.writeValue(res.getOutputStream(), publisher);
         }
     }
 
-    private void handleInsert() throws Exception {
-        Publisher publisher = Publisher.fromJSON(req.getInputStream());
-
+    private void handleInsertPublisher() throws Exception {
+        Publisher publisher = mapper.readValue(req.getInputStream(), Publisher.class);
         boolean inserted = new InsertPublisherDAO(con, publisher).access().getOutputParam();
 
-        res.setStatus(inserted ? HttpServletResponse.SC_CREATED : HttpServletResponse.SC_BAD_REQUEST);
-        new Message(
-                inserted ? "Publisher created" : "Insertion failed",
-                inserted ? "201" : "400",
-                inserted ? mapper.writeValueAsString(publisher) : null
-        ).toJSON(res.getOutputStream());
+        if (inserted) {
+            res.setStatus(HttpServletResponse.SC_CREATED);
+            new Message("Publisher inserted successfully.", "201", publisher.getPublisherName()).toJSON(res.getOutputStream());
+        } else {
+            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            new Message("Failed to insert publisher.", "500", "Insert operation failed.").toJSON(res.getOutputStream());
+        }
     }
 
-    private void handleUpdate() throws Exception {
-        Publisher publisher = Publisher.fromJSON(req.getInputStream());
+    private void handleUpdatePublisher(String path) throws Exception {
+        int publisherId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
+        Publisher publisher = mapper.readValue(req.getInputStream(), Publisher.class);
+        publisher.setPublisherId(publisherId);
 
         boolean updated = new UpdatePublisherDAO(con,
                 publisher.getPublisherId(),
@@ -97,23 +122,30 @@ public class PublisherRest extends AbstractRestResource {
                 publisher.getAddress()
         ).access().getOutputParam();
 
-        res.setStatus(updated ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
-        new Message(
-                updated ? "Publisher updated" : "Update failed",
-                updated ? "200" : "404",
-                updated ? mapper.writeValueAsString(publisher) : null
-        ).toJSON(res.getOutputStream());
+        if (updated) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("Publisher updated successfully.", "200", publisher.getPublisherName()).toJSON(res.getOutputStream());
+        } else {
+            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            new Message("Update failed.", "404", "Publisher not found.").toJSON(res.getOutputStream());
+        }
     }
 
-    private void handleDelete(String path) throws Exception {
-        int id = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-        boolean deleted = new DeletePublisherDAO(con, id).access().getOutputParam();
+    private void handleDeletePublisher(String path) throws Exception {
+        int publisherId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
+        boolean deleted = new DeletePublisherDAO(con, publisherId).access().getOutputParam();
 
-        res.setStatus(deleted ? HttpServletResponse.SC_OK : HttpServletResponse.SC_NOT_FOUND);
-        new Message(
-                deleted ? "Publisher deleted" : "Deletion failed",
-                deleted ? "200" : "404",
-                "Publisher ID: " + id
-        ).toJSON(res.getOutputStream());
+        if (deleted) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("Publisher deleted successfully.", "200", "Deleted ID: " + publisherId).toJSON(res.getOutputStream());
+        } else {
+            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            new Message("Delete failed.", "404", "Publisher not found.").toJSON(res.getOutputStream());
+        }
+    }
+
+    private void sendMethodNotAllowed() throws IOException {
+        res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        new Message("Unsupported method or path.", "405", "Allowed: GET, POST, PUT, DELETE.").toJSON(res.getOutputStream());
     }
 }

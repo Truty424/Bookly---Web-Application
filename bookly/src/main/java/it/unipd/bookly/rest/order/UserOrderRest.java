@@ -14,6 +14,11 @@ import it.unipd.bookly.rest.AbstractRestResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * @Handles:
+ * - GET /api/order/user/{userId}
+ * - GET /api/order/user/{userId}/latest
+ */
 public class UserOrderRest extends AbstractRestResource {
 
     public UserOrderRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -24,22 +29,23 @@ public class UserOrderRest extends AbstractRestResource {
     protected void doServe() throws IOException {
         final String method = req.getMethod();
         final String path = req.getRequestURI();
-        Message message;
 
         try {
-            if ("GET".equals(method) && path.matches(".*/user/\\d+/latest$")) {
-                handleGetLatestOrder(path);
-            } else if ("GET".equals(method) && path.matches(".*/user/\\d+$")) {
-                handleGetOrdersByUser(path);
-            } else {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                message = new Message("Unsupported HTTP method or path.", "405", "Only GET is supported for user orders.");
-                message.toJSON(res.getOutputStream());
+            switch (method) {
+                case "GET" -> {
+                    if (path.matches(".*/user/\\d+/latest$")) {
+                        handleGetLatestOrder(path);
+                    } else if (path.matches(".*/user/\\d+$")) {
+                        handleGetOrdersByUser(path);
+                    } else {
+                        sendError("Unsupported path", "404", "Expected /user/{id} or /user/{id}/latest", HttpServletResponse.SC_NOT_FOUND);
+                    }
+                }
+                default -> sendError("Method not allowed", "405", "Only GET is supported for user orders.", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
         } catch (Exception e) {
             LOGGER.error("UserOrderRest exception", e);
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            new Message("Internal server error", "E500", e.getMessage()).toJSON(res.getOutputStream());
+            sendError("Internal server error", "E500", e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -47,13 +53,7 @@ public class UserOrderRest extends AbstractRestResource {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
         List<Order> orders = new GetOrdersByUserDAO(con, userId).access().getOutputParam();
 
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(orders);
-        Message message = new Message("Orders retrieved successfully.", "200", json);
-        message.toJSON(res.getOutputStream());
+        sendJsonResponse(orders, "Orders retrieved successfully.", "200");
     }
 
     private void handleGetLatestOrder(String path) throws Exception {
@@ -63,17 +63,22 @@ public class UserOrderRest extends AbstractRestResource {
         Order latestOrder = new GetLatestOrderForUserDAO(con, userId).access().getOutputParam();
 
         if (latestOrder == null) {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("No latest order found for user.", "404", "User ID: " + userId).toJSON(res.getOutputStream());
-            return;
+            sendError("No latest order found for user.", "404", "User ID: " + userId, HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            sendJsonResponse(latestOrder, "Latest order retrieved successfully.", "200");
         }
+    }
 
+    private void sendJsonResponse(Object data, String msg, String code) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(data);
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
+        new Message(msg, code, json).toJSON(res.getOutputStream());
+    }
 
-        ObjectMapper mapper = new ObjectMapper();
-        String json = mapper.writeValueAsString(latestOrder);
-        Message message = new Message("Latest order retrieved successfully.", "200", json);
-        message.toJSON(res.getOutputStream());
+    private void sendError(String title, String code, String detail, int status) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }

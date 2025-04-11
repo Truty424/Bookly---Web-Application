@@ -10,9 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * REST endpoint to update the stock quantity of a book.
- * 
- * Endpoint: PUT /api/book/stock?id=123&quantity=10
+ * Handles book stock updates:
+ * PUT /api/book/stock?id=123&quantity=10
  */
 public class BookStockRest extends AbstractRestResource {
 
@@ -22,16 +21,25 @@ public class BookStockRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        String bookIdParam = req.getParameter("id");
-        String quantityParam = req.getParameter("quantity");
+        final String method = req.getMethod();
 
-        Message message;
+        switch (method) {
+            case "PUT" -> handleUpdateStock();
+            default -> {
+                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+                new Message("Method not allowed", "E405", "Only PUT is supported for stock updates.")
+                        .toJSON(res.getOutputStream());
+            }
+        }
+    }
 
-        // Validate parameters
+    private void handleUpdateStock() throws IOException {
+        final String bookIdParam = req.getParameter("id");
+        final String quantityParam = req.getParameter("quantity");
+
         if (bookIdParam == null || quantityParam == null) {
-            message = new Message("Missing 'id' or 'quantity' parameter.", "E400", "Both 'id' and 'quantity' query parameters are required.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400",
+                    "Both 'id' and 'quantity' query parameters are required.");
             return;
         }
 
@@ -39,22 +47,24 @@ public class BookStockRest extends AbstractRestResource {
             int bookId = Integer.parseInt(bookIdParam);
             int quantity = Integer.parseInt(quantityParam);
 
-            // DAO access
             new UpdateBookStockDAO(con, bookId, quantity).access();
 
-            message = new Message("Book stock updated successfully.", "200", "Stock updated for book ID " + bookId);
             res.setStatus(HttpServletResponse.SC_OK);
-            message.toJSON(res.getOutputStream());
+            new Message("Book stock updated successfully", "200", "Stock updated for book ID: " + bookId)
+                    .toJSON(res.getOutputStream());
 
-        } catch (NumberFormatException ex) {
-            message = new Message("Invalid ID or quantity format.", "E401", "Both 'id' and 'quantity' must be integers.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
-        } catch (Exception ex) {
-            LOGGER.error("Error updating stock for book", ex);
-            message = new Message("Internal server error while updating book stock.", "E500", ex.getMessage());
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            message.toJSON(res.getOutputStream());
+        } catch (NumberFormatException e) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid format", "E401",
+                    "'id' and 'quantity' must be valid integers.");
+        } catch (Exception e) {
+            LOGGER.error("Error updating book stock", e);
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500",
+                    "Internal error while updating stock: " + e.getMessage());
         }
+    }
+
+    private void sendError(int status, String title, String code, String details) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, details).toJSON(res.getOutputStream());
     }
 }

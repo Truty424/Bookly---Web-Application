@@ -1,14 +1,15 @@
 package it.unipd.bookly.rest.category;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Category;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.category.GetBooksByCategoryDAO;
 import it.unipd.bookly.dao.category.GetCategoriesByBookDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -27,27 +28,22 @@ public class CategoryBookLookupRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        String method = req.getMethod();
-        String path = req.getRequestURI();
+        final String method = req.getMethod();
+        final String path = req.getRequestURI();
 
         try {
-            if (!"GET".equals(method)) {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Only GET method supported.", "405", "Use GET for retrieving books/categories.")
-                    .toJSON(res.getOutputStream());
-                return;
+            switch (method) {
+                case "GET" -> {
+                    if (path.matches(".*/category/\\d+/books$")) {
+                        handleGetBooksByCategory(path);
+                    } else if (path.matches(".*/book/\\d+/categories$")) {
+                        handleGetCategoriesByBook(path);
+                    } else {
+                        sendNotFound();
+                    }
+                }
+                default -> sendMethodNotAllowed();
             }
-
-            if (path.matches(".*/category/\\d+/books$")) {
-                handleGetBooksByCategory(path);
-            } else if (path.matches(".*/book/\\d+/categories$")) {
-                handleGetCategoriesByBook(path);
-            } else {
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                new Message("Invalid lookup path.", "404", "Expected /category/{id}/books or /book/{id}/categories.")
-                    .toJSON(res.getOutputStream());
-            }
-
         } catch (Exception e) {
             LOGGER.error("CategoryBookLookupRest error: ", e);
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -56,8 +52,8 @@ public class CategoryBookLookupRest extends AbstractRestResource {
     }
 
     private void handleGetBooksByCategory(String path) throws Exception {
-        int category_id = extractId(path, "/category/", "/books");
-        List<Book> books = new GetBooksByCategoryDAO(con, category_id).access().getOutputParam();
+        int categoryId = extractId(path, "/category/", "/books");
+        List<Book> books = new GetBooksByCategoryDAO(con, categoryId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
@@ -78,5 +74,19 @@ public class CategoryBookLookupRest extends AbstractRestResource {
                 path.indexOf(prefix) + prefix.length(),
                 path.indexOf(suffix)
         ));
+    }
+
+    private void sendNotFound() throws IOException {
+        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        new Message("Invalid lookup path.", "404",
+                "Expected /category/{id}/books or /book/{id}/categories.")
+                .toJSON(res.getOutputStream());
+    }
+
+    private void sendMethodNotAllowed() throws IOException {
+        res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        new Message("Only GET method supported.", "405",
+                "Use GET for retrieving books/categories.")
+                .toJSON(res.getOutputStream());
     }
 }

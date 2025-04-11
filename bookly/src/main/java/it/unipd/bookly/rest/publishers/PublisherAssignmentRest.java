@@ -1,8 +1,8 @@
 package it.unipd.bookly.rest.publishers;
 
+import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.Publisher;
-import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.dao.publisher.*;
 import it.unipd.bookly.rest.AbstractRestResource;
 
@@ -14,7 +14,6 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * REST endpoints to manage publisher-book relationships.
  * Handles:
  * - GET    /api/publishers/book/{bookId} → get publishers for a book
  * - GET    /api/publishers/{publisherId}/books → get books by publisher
@@ -30,79 +29,68 @@ public class PublisherAssignmentRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        String method = req.getMethod();
-        String path = req.getRequestURI();
-        Message message;
+        final String method = req.getMethod();
+        final String path = req.getRequestURI();
 
         try {
-            if ("GET".equals(method) && path.matches(".*/publishers/book/\\d+")) {
-                handleGetPublishersByBook(path);
-            } else if ("GET".equals(method) && path.matches(".*/publishers/\\d+/books$")) {
-                handleGetBooksByPublisher(path);
-            } else if ("GET".equals(method) && path.matches(".*/publishers/\\d+/books/count$")) {
-                handleCountBooksByPublisher(path);
-            } else if ("POST".equals(method)) {
-                handleAssignPublisherToBook();
-            } else if ("DELETE".equals(method)) {
-                handleRemovePublisherFromBook();
-            } else {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                message = new Message("Invalid method or path", "405", "Review the endpoint URL.");
-                message.toJSON(res.getOutputStream());
+            switch (method) {
+                case "GET" -> {
+                    if (path.matches(".*/publishers/book/\\d+$")) {
+                        handleGetPublishersByBook(path);
+                    } else if (path.matches(".*/publishers/\\d+/books$")) {
+                        handleGetBooksByPublisher(path);
+                    } else if (path.matches(".*/publishers/\\d+/books/count$")) {
+                        handleCountBooksByPublisher(path);
+                    } else {
+                        sendError("Invalid GET path.", "404", "Unsupported GET endpoint.");
+                    }
+                }
+
+                case "POST" -> handleAssignPublisherToBook();
+
+                case "DELETE" -> handleRemovePublisherFromBook();
+
+                default -> sendError("Unsupported HTTP method.", "405", "Allowed methods: GET, POST, DELETE.");
             }
 
         } catch (Exception e) {
-            LOGGER.error("PublisherAssignmentRest exception", e);
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            message = new Message("Server error", "500", e.getMessage());
-            message.toJSON(res.getOutputStream());
+            LOGGER.error("PublisherAssignmentRest error", e);
+            sendError("Internal server error", "500", e.getMessage());
         }
     }
 
     private void handleGetPublishersByBook(String path) throws Exception {
-        int bookId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
+        int bookId = extractIdFromPath(path);
         List<Publisher> publishers = new GetPublishersByBookDAO(con, bookId).access().getOutputParam();
 
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-
-        StringBuilder json = new StringBuilder();
-        json.append("[");
+        StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < publishers.size(); i++) {
-            Publisher p = publishers.get(i);
-            json.append("\"").append(p.getPublisherName()).append("\"");
+            json.append("\"").append(publishers.get(i).getPublisherName()).append("\"");
             if (i < publishers.size() - 1) json.append(", ");
         }
         json.append("]");
 
-        res.getWriter().write(json.toString());
+        sendJson(json.toString());
     }
 
     private void handleGetBooksByPublisher(String path) throws Exception {
         int publisherId = extractIdFromPath(path);
         List<Book> books = new GetBooksByPublisherDAO(con, publisherId).access().getOutputParam();
 
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-
-        StringBuilder json = new StringBuilder();
-        json.append("[");
+        StringBuilder json = new StringBuilder("[");
         for (int i = 0; i < books.size(); i++) {
             json.append("\"").append(books.get(i)).append("\"");
             if (i < books.size() - 1) json.append(", ");
         }
         json.append("]");
 
-        res.getWriter().write(json.toString());
+        sendJson(json.toString());
     }
 
     private void handleCountBooksByPublisher(String path) throws Exception {
         int publisherId = extractIdFromPath(path);
         int count = new CountBooksByPublisherDAO(con, publisherId).access().getOutputParam();
-
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-        res.getWriter().write("{\"bookCount\": " + count + "}");
+        sendJson("{\"bookCount\": " + count + "}");
     }
 
     private void handleAssignPublisherToBook() throws Exception {
@@ -110,9 +98,7 @@ public class PublisherAssignmentRest extends AbstractRestResource {
         int publisherId = Integer.parseInt(req.getParameter("publisherId"));
 
         boolean success = new AddPublisherToBookDAO(con, bookId, publisherId).access().getOutputParam();
-        res.setStatus(success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST);
-        new Message(success ? "Assigned" : "Failed to assign", success ? "200" : "400", null)
-                .toJSON(res.getOutputStream());
+        sendMessage(success ? "Assigned" : "Failed to assign", success ? "200" : "400", null, success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST);
     }
 
     private void handleRemovePublisherFromBook() throws Exception {
@@ -120,9 +106,7 @@ public class PublisherAssignmentRest extends AbstractRestResource {
         int publisherId = Integer.parseInt(req.getParameter("publisherId"));
 
         boolean success = new RemovePublisherFromBookDAO(con, bookId, publisherId).access().getOutputParam();
-        res.setStatus(success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST);
-        new Message(success ? "Removed" : "Failed to remove", success ? "200" : "400", null)
-                .toJSON(res.getOutputStream());
+        sendMessage(success ? "Removed" : "Failed to remove", success ? "200" : "400", null, success ? HttpServletResponse.SC_OK : HttpServletResponse.SC_BAD_REQUEST);
     }
 
     private int extractIdFromPath(String path) {
@@ -130,9 +114,23 @@ public class PublisherAssignmentRest extends AbstractRestResource {
         for (int i = parts.length - 1; i >= 0; i--) {
             try {
                 return Integer.parseInt(parts[i]);
-            } catch (NumberFormatException ignored) {
-            }
+            } catch (NumberFormatException ignored) {}
         }
         return -1;
+    }
+
+    private void sendJson(String body) throws IOException {
+        res.setStatus(HttpServletResponse.SC_OK);
+        res.setContentType("application/json;charset=UTF-8");
+        res.getWriter().write(body);
+    }
+
+    private void sendMessage(String title, String code, String detail, int status) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendError(String title, String code, String detail) throws IOException {
+        sendMessage(title, code, detail, HttpServletResponse.SC_BAD_REQUEST);
     }
 }

@@ -44,9 +44,8 @@ public class UpdatePublisherDAO extends AbstractDAO<Boolean> {
             stmt.setInt(4, publisherId);
 
             int rowsAffected = stmt.executeUpdate();
-            this.outputParam = rowsAffected > 0;
 
-            if (outputParam) {
+            if (rowsAffected > 0) {
                 LOGGER.info("Publisher ID {} updated successfully.", publisherId);
             } else {
                 LOGGER.warn("No publisher updated. ID {} may not exist.", publisherId);
