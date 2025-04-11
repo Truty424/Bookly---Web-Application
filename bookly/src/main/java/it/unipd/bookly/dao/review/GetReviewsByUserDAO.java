@@ -1,8 +1,5 @@
 package it.unipd.bookly.dao.review;
 
-import it.unipd.bookly.Resource.Review;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +7,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Review;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.review.ReviewQueries.GET_REVIEWS_BY_USER;
 
 /**
@@ -34,7 +33,7 @@ public class GetReviewsByUserDAO extends AbstractDAO<List<Review>> {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int reviewId = rs.getInt("review_id");
-                    int bookId = rs.getInt("book_id");
+                    int book_id = rs.getInt("book_id");
                     String content = rs.getString("review_content");
                     int plotRating = rs.getInt("plot_rating");
                     int styleRating = rs.getInt("style_rating");
@@ -42,14 +41,14 @@ public class GetReviewsByUserDAO extends AbstractDAO<List<Review>> {
                     Timestamp reviewDate = rs.getTimestamp("review_date");
 
                     Review review = new Review(
-                        reviewId,
-                        userId,
-                        bookId,
-                        content,
-                        plotRating,
-                        styleRating,
-                        themeRating,
-                        reviewDate
+                            reviewId,
+                            userId,
+                            book_id,
+                            content,
+                            plotRating,
+                            styleRating,
+                            themeRating,
+                            reviewDate
                     );
 
                     reviews.add(review);

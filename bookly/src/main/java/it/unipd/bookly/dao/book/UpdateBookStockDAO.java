@@ -1,10 +1,9 @@
 package it.unipd.bookly.dao.book;
 
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.UPDATE_BOOK_STOCK;
 
 /**
@@ -12,19 +11,19 @@ import static it.unipd.bookly.dao.book.BookQueries.UPDATE_BOOK_STOCK;
  */
 public class UpdateBookStockDAO extends AbstractDAO<Void> {
 
-    private final int bookId;
+    private final int book_id;
     private final int stockQuantity;
 
     /**
      * Constructor.
      *
-     * @param con           Database connection
-     * @param bookId        Book ID to update
+     * @param con Database connection
+     * @param book_id Book ID to update
      * @param stockQuantity New stock quantity
      */
-    public UpdateBookStockDAO(final Connection con, int bookId, int stockQuantity) {
+    public UpdateBookStockDAO(final Connection con, int book_id, int stockQuantity) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
         this.stockQuantity = stockQuantity;
     }
 
@@ -32,12 +31,12 @@ public class UpdateBookStockDAO extends AbstractDAO<Void> {
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(UPDATE_BOOK_STOCK)) {
             stmnt.setInt(1, stockQuantity);
-            stmnt.setInt(2, bookId);
+            stmnt.setInt(2, book_id);
             stmnt.execute();
 
-            LOGGER.info("Stock quantity for book ID {} updated to {}.", bookId, stockQuantity);
+            LOGGER.info("Stock quantity for book ID {} updated to {}.", book_id, stockQuantity);
         } catch (Exception ex) {
-            LOGGER.error("Failed to update stock for book ID {}: {}", bookId, ex.getMessage());
+            LOGGER.error("Failed to update stock for book ID {}: {}", book_id, ex.getMessage());
         }
     }
 }

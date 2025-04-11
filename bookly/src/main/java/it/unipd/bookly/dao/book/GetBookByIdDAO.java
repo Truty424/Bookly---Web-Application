@@ -12,17 +12,17 @@ import static it.unipd.bookly.dao.book.BookQueries.GET_BOOK_BY_ID;
 
 public class GetBookByIdDAO extends AbstractDAO<Book> {
 
-    private final int bookId;
+    private final int book_id;
 
-    public GetBookByIdDAO(final Connection con, final int bookId) {
+    public GetBookByIdDAO(final Connection con, final int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(GET_BOOK_BY_ID)) {
-            stmnt.setInt(1, bookId);
+            stmnt.setInt(1, book_id);
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 if (rs.next()) {
@@ -49,16 +49,17 @@ public class GetBookByIdDAO extends AbstractDAO<Book> {
                         LOGGER.debug("No image for book {}", book_id);
                     }
 
-                    if (bookImage == null)
+                    if (bookImage == null) {
                         this.outputParam = new Book(book_id, title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary);
-                    else
+                    } else {
                         this.outputParam = new Book(book_id, title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
+                    }
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error retrieving book {}: {}", bookId, e.getMessage());
+            LOGGER.error("Error retrieving book {}: {}", book_id, e.getMessage());
         }
     }
 }

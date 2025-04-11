@@ -1,11 +1,10 @@
 package it.unipd.bookly.dao.review;
 
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.review.ReviewQueries.COUNT_REVIEWS_FOR_BOOK;
 
 /**
@@ -14,17 +13,17 @@ import static it.unipd.bookly.dao.review.ReviewQueries.COUNT_REVIEWS_FOR_BOOK;
  */
 public class CountReviewsForBookDAO extends AbstractDAO<Integer> {
 
-    private final int bookId;
+    private final int book_id;
 
     /**
      * Constructs the DAO with a DB connection and target book ID.
-     * 
-     * @param con     Active database connection
-     * @param bookId  ID of the book to count reviews for
+     *
+     * @param con Active database connection
+     * @param book_id ID of the book to count reviews for
      */
-    public CountReviewsForBookDAO(Connection con, int bookId) {
+    public CountReviewsForBookDAO(Connection con, int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     /**
@@ -33,7 +32,7 @@ public class CountReviewsForBookDAO extends AbstractDAO<Integer> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(COUNT_REVIEWS_FOR_BOOK)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -43,7 +42,7 @@ public class CountReviewsForBookDAO extends AbstractDAO<Integer> {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to count reviews for book ID {}: {}", bookId, e.getMessage());
+            LOGGER.error("Failed to count reviews for book ID {}: {}", book_id, e.getMessage());
             throw e;
         }
     }

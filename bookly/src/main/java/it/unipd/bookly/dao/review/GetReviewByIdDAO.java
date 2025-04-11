@@ -1,13 +1,12 @@
 package it.unipd.bookly.dao.review;
 
-import it.unipd.bookly.Resource.Review;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
 
+import it.unipd.bookly.Resource.Review;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.review.ReviewQueries.GET_REVIEW_BY_ID;
 
 /**
@@ -30,7 +29,7 @@ public class GetReviewByIdDAO extends AbstractDAO<Review> {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     int userId = rs.getInt("user_id");
-                    int bookId = rs.getInt("book_id");
+                    int book_id = rs.getInt("book_id");
                     String content = rs.getString("review_content");
                     int plotRating = rs.getInt("plot_rating");
                     int styleRating = rs.getInt("style_rating");
@@ -40,7 +39,7 @@ public class GetReviewByIdDAO extends AbstractDAO<Review> {
                     Review review = new Review(
                             reviewId,
                             userId,
-                            bookId,
+                            book_id,
                             content,
                             plotRating,
                             styleRating,

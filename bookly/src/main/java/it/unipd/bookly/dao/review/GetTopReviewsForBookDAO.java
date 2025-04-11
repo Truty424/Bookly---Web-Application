@@ -1,8 +1,5 @@
 package it.unipd.bookly.dao.review;
 
-import it.unipd.bookly.Resource.Review;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +7,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Review;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.review.ReviewQueries.GET_TOP_REVIEWS_FOR_BOOK;
 
 /**
@@ -17,12 +16,12 @@ import static it.unipd.bookly.dao.review.ReviewQueries.GET_TOP_REVIEWS_FOR_BOOK;
  */
 public class GetTopReviewsForBookDAO extends AbstractDAO<List<Review>> {
 
-    private final int bookId;
+    private final int book_id;
     private final int limit;
 
-    public GetTopReviewsForBookDAO(Connection con, int bookId, int limit) {
+    public GetTopReviewsForBookDAO(Connection con, int book_id, int limit) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
         this.limit = limit;
     }
 
@@ -31,7 +30,7 @@ public class GetTopReviewsForBookDAO extends AbstractDAO<List<Review>> {
         List<Review> reviews = new ArrayList<>();
 
         try (PreparedStatement stmt = con.prepareStatement(GET_TOP_REVIEWS_FOR_BOOK)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
             stmt.setInt(2, limit);
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -45,14 +44,14 @@ public class GetTopReviewsForBookDAO extends AbstractDAO<List<Review>> {
                     Timestamp reviewDate = rs.getTimestamp("review_date");
 
                     Review review = new Review(
-                        reviewId,
-                        userId,
-                        bookId,
-                        content,
-                        plotRating,
-                        styleRating,
-                        themeRating,
-                        reviewDate
+                            reviewId,
+                            userId,
+                            book_id,
+                            content,
+                            plotRating,
+                            styleRating,
+                            themeRating,
+                            reviewDate
                     );
 
                     reviews.add(review);
@@ -60,7 +59,7 @@ public class GetTopReviewsForBookDAO extends AbstractDAO<List<Review>> {
             }
 
         } catch (Exception e) {
-            LOGGER.error("Failed to retrieve top reviews for book ID {}: {}", bookId, e.getMessage(), e);
+            LOGGER.error("Failed to retrieve top reviews for book ID {}: {}", book_id, e.getMessage(), e);
             throw e;
         }
 

@@ -11,19 +11,19 @@ import static it.unipd.bookly.dao.author.AuthorQueries.ADD_AUTHOR_TO_BOOK;
  */
 public class AddAuthorToBookDAO extends AbstractDAO<Boolean> {
 
-    private final int bookId;
+    private final int book_id;
     private final int authorId;
 
-    public AddAuthorToBookDAO(Connection con, int bookId, int authorId) {
+    public AddAuthorToBookDAO(Connection con, int book_id, int authorId) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
         this.authorId = authorId;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(ADD_AUTHOR_TO_BOOK)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
             stmt.setInt(2, authorId);
 
             int rowsInserted = stmt.executeUpdate();

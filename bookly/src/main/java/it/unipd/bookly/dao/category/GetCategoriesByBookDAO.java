@@ -1,14 +1,13 @@
 package it.unipd.bookly.dao.category;
 
-import it.unipd.bookly.Resource.Category;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Category;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.category.CategoryQueries.GET_CATEGORIES_BY_BOOK;
 
 /**
@@ -16,17 +15,17 @@ import static it.unipd.bookly.dao.category.CategoryQueries.GET_CATEGORIES_BY_BOO
  */
 public class GetCategoriesByBookDAO extends AbstractDAO<List<Category>> {
 
-    private final int bookId;
+    private final int book_id;
 
     /**
      * Constructor to create the DAO instance.
      *
-     * @param con    the database connection.
-     * @param bookId the ID of the book.
+     * @param con the database connection.
+     * @param book_id the ID of the book.
      */
-    public GetCategoriesByBookDAO(final Connection con, final int bookId) {
+    public GetCategoriesByBookDAO(final Connection con, final int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     @Override
@@ -34,7 +33,7 @@ public class GetCategoriesByBookDAO extends AbstractDAO<List<Category>> {
         List<Category> categories = new ArrayList<>();
 
         try (PreparedStatement stmnt = con.prepareStatement(GET_CATEGORIES_BY_BOOK)) {
-            stmnt.setInt(1, bookId);
+            stmnt.setInt(1, book_id);
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
@@ -53,10 +52,10 @@ public class GetCategoriesByBookDAO extends AbstractDAO<List<Category>> {
             }
 
             this.outputParam = categories;
-            LOGGER.info("Retrieved {} category(ies) for book ID {}.", categories.size(), bookId);
+            LOGGER.info("Retrieved {} category(ies) for book ID {}.", categories.size(), book_id);
 
         } catch (Exception ex) {
-            LOGGER.error("Failed to retrieve categories for book ID {}: {}", bookId, ex.getMessage());
+            LOGGER.error("Failed to retrieve categories for book ID {}: {}", book_id, ex.getMessage());
             throw ex;
         }
     }

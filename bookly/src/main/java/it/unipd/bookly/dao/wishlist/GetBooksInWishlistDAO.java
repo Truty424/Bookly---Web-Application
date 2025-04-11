@@ -1,15 +1,14 @@
 package it.unipd.bookly.dao.wishlist;
 
-import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.wishlist.WishlistQueries.GET_BOOKS_IN_WISHLIST;
 
 /**
@@ -22,7 +21,7 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
     /**
      * Constructor.
      *
-     * @param con        the database connection
+     * @param con the database connection
      * @param wishlistId the wishlist ID to query
      */
     public GetBooksInWishlistDAO(final Connection con, final int wishlistId) {
@@ -39,7 +38,7 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
 
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
-                    final int bookId = rs.getInt("book_id");
+                    final int book_id = rs.getInt("book_id");
                     final String title = rs.getString("title");
                     final String language = rs.getString("language");
                     final String isbn = rs.getString("isbn");
@@ -59,14 +58,14 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
                             bookImage = new Image(imageData, imageType);
                         }
                     } catch (Exception ignored) {
-                        LOGGER.debug("Optional image not found for book ID {} (wishlist ID {}).", bookId, wishlistId);
+                        LOGGER.debug("Optional image not found for book ID {} (wishlist ID {}).", book_id, wishlistId);
                     }
 
                     Book book = (bookImage == null)
-                            ? new Book(bookId, title, language, isbn, price, edition,
-                            publicationYear, numberOfPages, stockQuantity, averageRate, summary)
+                            ? new Book(book_id, title, language, isbn, price, edition,
+                                    publicationYear, numberOfPages, stockQuantity, averageRate, summary)
                             : new Book(title, language, isbn, price, edition,
-                            publicationYear, numberOfPages, stockQuantity, averageRate, summary, bookImage);
+                                    publicationYear, numberOfPages, stockQuantity, averageRate, summary, bookImage);
 
                     books.add(book);
                 }

@@ -12,17 +12,17 @@ import static it.unipd.bookly.dao.review.ReviewQueries.GET_AVG_RATING_FOR_BOOK;
  */
 public class GetAvgRatingForBookDAO extends AbstractDAO<Double> {
 
-    private final int bookId;
+    private final int book_id;
 
-    public GetAvgRatingForBookDAO(Connection con, int bookId) {
+    public GetAvgRatingForBookDAO(Connection con, int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(GET_AVG_RATING_FOR_BOOK)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
