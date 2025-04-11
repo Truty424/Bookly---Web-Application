@@ -15,8 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Handles user authentication:
- * - POST /api/auth
+ * Handles user authentication: - POST /api/auth
  */
 public class AuthenticationUserRest extends AbstractRestResource {
 
@@ -59,17 +58,18 @@ public class AuthenticationUserRest extends AbstractRestResource {
             return;
         }
 
-        User authenticated = new LoginUserDAO(con).authenticateUser(username, password);
+        User authenticated = new LoginUserDAO(con, username, password).access().getOutputParam();
 
-        if (authenticated) {
+        if (authenticated != null) {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            new Message("Invalid credentials.", "401", "Authentication failed.")
+                    .toJSON(res.getOutputStream());
+
+        } else {
             String token = JWTUtil.generateToken(username);
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
             mapper.writeValue(res.getOutputStream(), new Message("Authentication successful.", "200", token));
-        } else {
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            new Message("Invalid credentials.", "401", "Authentication failed.")
-                .toJSON(res.getOutputStream());
         }
     }
 

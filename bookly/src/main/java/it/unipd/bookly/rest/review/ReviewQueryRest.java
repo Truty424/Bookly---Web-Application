@@ -17,11 +17,8 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * Handles:
- * - GET /api/review/book/{bookId}
- * - GET /api/review/user/{userId}
- * - GET /api/review/top/book/{bookId}
- * - GET /api/reviews
+ * Handles: - GET /api/review/book/{bookId} - GET /api/review/user/{userId} -
+ * GET /api/review/top/book/{bookId} - GET /api/reviews
  */
 public class ReviewQueryRest extends AbstractRestResource {
 
@@ -38,8 +35,10 @@ public class ReviewQueryRest extends AbstractRestResource {
 
         try {
             switch (method) {
-                case "GET" -> handleGet(path);
-                default -> respondMethodNotAllowed("Only GET is supported for review queries.");
+                case "GET" ->
+                    handleGet(path);
+                default ->
+                    respondMethodNotAllowed("Only GET is supported for review queries.");
             }
         } catch (Exception e) {
             LOGGER.error("ReviewQueryRest error", e);
@@ -75,7 +74,8 @@ public class ReviewQueryRest extends AbstractRestResource {
 
     private void handleGetTopReviewsForBook(String path) throws Exception {
         int bookId = extractIdFromPath(path);
-        List<Review> reviews = new GetTopReviewsForBookDAO(con, bookId).access().getOutputParam();
+        int limit = 5;
+        List<Review> reviews = new GetTopReviewsForBookDAO(con, bookId, limit).access().getOutputParam();
         writeJsonResponse(reviews);
     }
 

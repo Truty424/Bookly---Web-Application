@@ -32,7 +32,6 @@ public class GetUserByUsernameDAO extends AbstractDAO<User> {
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(GET_USERS_BY_USERNAME)) {
             stmt.setString(1, username);
-
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Image profileImage = null;

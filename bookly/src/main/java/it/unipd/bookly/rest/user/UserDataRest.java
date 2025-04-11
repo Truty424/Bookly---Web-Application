@@ -16,9 +16,8 @@ import java.sql.Connection;
 import it.unipd.bookly.dao.user.GetUserByUsernameDAO;
 
 /**
- * Handles user data retrieval and updates:
- * - GET /api/user/{id}
- * - PUT /api/user/{id}
+ * Handles user data retrieval and updates: - GET /api/user/{id} - PUT
+ * /api/user/{id}
  */
 public class UserDataRest extends AbstractRestResource {
 
@@ -49,7 +48,8 @@ public class UserDataRest extends AbstractRestResource {
                         sendNotFound("Invalid path for PUT request.");
                     }
                 }
-                default -> sendMethodNotAllowed("Only GET and PUT are supported.");
+                default ->
+                    sendMethodNotAllowed("Only GET and PUT are supported.");
             }
         } catch (Exception e) {
             LOGGER.error("UserDataRest error: ", e);
@@ -58,7 +58,8 @@ public class UserDataRest extends AbstractRestResource {
     }
 
     private void handleGetUserByUsername() throws Exception {
-        User username = new GetUserByUsernameDAO(con, username).access().getOutputParam();
+        String usernameParam = req.getParameter("username");
+        User username = new GetUserByUsernameDAO(con, usernameParam).access().getOutputParam();
 
         if (username != null) {
             res.setStatus(HttpServletResponse.SC_OK);
@@ -73,20 +74,33 @@ public class UserDataRest extends AbstractRestResource {
         int userId = extractIdFromPath(path);
         String newEmail = req.getParameter("email");
         String newPhone = req.getParameter("phone");
+        String firstName = req.getParameter("firstName");
+        String lastName = req.getParameter("lastName");
+        String address = req.getParameter("address");
+        String role = req.getParameter("role");
 
-        if (newEmail == null || newPhone == null) {
+        if (newEmail == null || newPhone == null || firstName == null || lastName == null || address == null || role == null) {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            new Message("Missing parameters", "400", "Both 'email' and 'phone' are required.")
-                .toJSON(res.getOutputStream());
+            new Message("Missing parameters", "400", "All fields (email, phone, firstName, lastName, address, role) are required.")
+                    .toJSON(res.getOutputStream());
             return;
         }
 
-        boolean updated = new UpdateUserDAO(con, userId, newEmail, newPhone).updateUser();
+        Boolean updated = new UpdateUserDAO(
+                con,
+                userId,
+                firstName,
+                lastName,
+                newEmail,
+                newPhone,
+                address,
+                role
+        ).access().getOutputParam();
 
-        if (updated) {
+        if (Boolean.TRUE.equals(updated)) {
             res.setStatus(HttpServletResponse.SC_OK);
             new Message("User updated successfully.", "200", "User ID " + userId + " updated.")
-                .toJSON(res.getOutputStream());
+                    .toJSON(res.getOutputStream());
         } else {
             sendNotFound("User with ID " + userId + " not found.");
         }

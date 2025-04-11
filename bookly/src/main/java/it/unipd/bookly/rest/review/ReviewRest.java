@@ -15,13 +15,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 
-import it.unipd.bookly.Resource.Book;
 
 /**
- * Handles:
- * - POST   /api/review           → insert a review
- * - GET    /api/review/{id}      → get review by ID
- * - DELETE /api/review/{id}      → delete review by ID
+ * Handles: - POST /api/review → insert a review - GET /api/review/{id} → get
+ * review by ID - DELETE /api/review/{id} → delete review by ID
  */
 public class ReviewRest extends AbstractRestResource {
 
@@ -38,7 +35,8 @@ public class ReviewRest extends AbstractRestResource {
 
         try {
             switch (method) {
-                case "POST" -> handleInsertReview();
+                case "POST" ->
+                    handleInsertReview();
                 case "GET" -> {
                     if (path.matches(".*/review/\\d+$")) {
                         handleGetReviewById(path);
@@ -53,7 +51,8 @@ public class ReviewRest extends AbstractRestResource {
                         respondMethodNotAllowed("Invalid DELETE path for review.");
                     }
                 }
-                default -> respondMethodNotAllowed("Only POST, GET, DELETE supported for /review endpoint.");
+                default ->
+                    respondMethodNotAllowed("Only POST, GET, DELETE supported for /review endpoint.");
             }
         } catch (Exception e) {
             LOGGER.error("ReviewRest error", e);
@@ -68,17 +67,17 @@ public class ReviewRest extends AbstractRestResource {
         mapper.writeValue(res.getOutputStream(), inserted);
     }
 
-
     private void handleGetReviewById(String path) throws Exception {
-        int reviewId = extractIdFromPath(path);
+        int reviewId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
         Review review = new GetReviewByIdDAO(con, reviewId).access().getOutputParam();
 
-        if (review != null) {
-            res.setContentType("application/json;charset=UTF-8");
-            res.setStatus(HttpServletResponse.SC_OK);
-            review.toJSON(res.getOutputStream());
+        if (review == null) {
+            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            new Message("Review not found.", "404", "No review with ID " + reviewId).toJSON(res.getOutputStream());
         } else {
-            respondNotFound("Review not found with ID " + reviewId);
+            res.setStatus(HttpServletResponse.SC_OK);
+            res.setContentType("application/json;charset=UTF-8");
+            mapper.writeValue(res.getOutputStream(), review);
         }
     }
 
