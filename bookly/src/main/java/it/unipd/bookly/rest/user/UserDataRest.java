@@ -1,64 +1,113 @@
-// package it.unipd.bookly.rest.user;
+package it.unipd.bookly.rest.user;
 
-// import java.io.IOException;
-// import java.sql.Connection;
-// import java.util.List;
-// import com.fasterxml.jackson.databind.ObjectMapper;
-// import it.unipd.bookly.Resource.Message;
-// import it.unipd.bookly.dao.user.UpdateUserDAO;
-// import it.unipd.bookly.rest.AbstractRestResource;
-// import jakarta.servlet.http.HttpServletRequest;
-// import jakarta.servlet.http.HttpServletResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-// /**
-//  * Handles user data retrieval and updates:
-//  * - GET /api/user/{id}
-//  * - PUT /api/user/{id}
-//  */
-// public class UserDataRest extends AbstractRestResource {
+import it.unipd.bookly.Resource.Message;
+import it.unipd.bookly.Resource.User;
+import it.unipd.bookly.dao.user.UpdateUserDAO;
+import it.unipd.bookly.rest.AbstractRestResource;
 
-//     public UserDataRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
-//         super("user-data", req, res, con);
-//     }
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-//     @Override
-//     protected void doServe() throws IOException {
-//         String method = req.getMethod();
-//         String path = req.getRequestURI();
+import java.io.IOException;
+import java.sql.Connection;
 
-//         try {
-//             if ("GET".equals(method) && path.matches(".*/user/\\d+$")) {
-//                 handleGetById(path);
-//             } else if ("PUT".equals(method) && path.matches(".*/user/\\d+$")) {
-//                 handleUpdate(path);
-//             } else {
-//                 res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//                 new Message("Invalid user query path.", "404", "Check supported routes.")
-//                     .toJSON(res.getOutputStream());
-//             }
+import it.unipd.bookly.dao.user.GetUserByUsernameDAO;
 
-//         } catch (Exception e) {
-//             LOGGER.error("UserDataRest error: ", e);
-//             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-//             new Message("Internal server error.", "E500", e.getMessage()).toJSON(res.getOutputStream());
-//         }
-//     }
+/**
+ * Handles user data retrieval and updates:
+ * - GET /api/user/{id}
+ * - PUT /api/user/{id}
+ */
+public class UserDataRest extends AbstractRestResource {
 
+    private final ObjectMapper mapper = new ObjectMapper();
 
-//     private void handleUpdate(String path) throws Exception {
-//         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-//         String newEmail = req.getParameter("email");
-//         String newPhone = req.getParameter("phone");
+    public UserDataRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
+        super("user-data", req, res, con);
+    }
 
-//         UpdateUserDAO updateUserDAO = new UpdateUserDAO(con, userId, newEmail, newPhone);
-//         boolean updated = updateUserDAO.updateUser();
+    @Override
+    protected void doServe() throws IOException {
+        final String method = req.getMethod();
+        final String path = req.getRequestURI();
 
-//         if (updated) {
-//             res.setStatus(HttpServletResponse.SC_OK);
-//             new Message("User updated successfully.", "200", "User data updated").toJSON(res.getOutputStream());
-//         } else {
-//             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-//             new Message("User not found.", "404", "No user with ID " + userId).toJSON(res.getOutputStream());
-//         }
-//     }
-// }
+        try {
+            switch (method) {
+                case "GET" -> {
+                    if (path.matches(".*/user/\\d+$")) {
+                        handleGetUserByUsername();
+                    } else {
+                        sendNotFound("Invalid path for GET request.");
+                    }
+                }
+                case "PUT" -> {
+                    if (path.matches(".*/user/\\d+$")) {
+                        handleUpdateUser(path);
+                    } else {
+                        sendNotFound("Invalid path for PUT request.");
+                    }
+                }
+                default -> sendMethodNotAllowed("Only GET and PUT are supported.");
+            }
+        } catch (Exception e) {
+            LOGGER.error("UserDataRest error: ", e);
+            sendServerError("Internal server error: " + e.getMessage());
+        }
+    }
+
+    private void handleGetUserByUsername() throws Exception {
+        User username = new GetUserByUsernameDAO(con, username).access().getOutputParam();
+
+        if (username != null) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            res.setContentType("application/json;charset=UTF-8");
+            mapper.writeValue(res.getOutputStream(), username);
+        } else {
+            sendNotFound("User with username " + username + " not found.");
+        }
+    }
+
+    private void handleUpdateUser(String path) throws Exception {
+        int userId = extractIdFromPath(path);
+        String newEmail = req.getParameter("email");
+        String newPhone = req.getParameter("phone");
+
+        if (newEmail == null || newPhone == null) {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            new Message("Missing parameters", "400", "Both 'email' and 'phone' are required.")
+                .toJSON(res.getOutputStream());
+            return;
+        }
+
+        boolean updated = new UpdateUserDAO(con, userId, newEmail, newPhone).updateUser();
+
+        if (updated) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("User updated successfully.", "200", "User ID " + userId + " updated.")
+                .toJSON(res.getOutputStream());
+        } else {
+            sendNotFound("User with ID " + userId + " not found.");
+        }
+    }
+
+    private int extractIdFromPath(String path) {
+        return Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
+    }
+
+    private void sendNotFound(String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        new Message("Not Found", "404", detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendMethodNotAllowed(String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        new Message("Method Not Allowed", "405", detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendServerError(String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        new Message("Internal Server Error", "500", detail).toJSON(res.getOutputStream());
+    }
+}

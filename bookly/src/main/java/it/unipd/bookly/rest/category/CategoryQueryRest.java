@@ -1,26 +1,22 @@
 package it.unipd.bookly.rest.category;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import it.unipd.bookly.Resource.Category;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.category.GetAllCategoriesDAO;
 import it.unipd.bookly.dao.category.GetCategoryByIdDAO;
 import it.unipd.bookly.dao.category.GetCategoryByNameDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * Handles category information retrieval:
- * - GET /api/category
- * - GET /api/category/{id}
- * - GET /api/category/name/{name}
- */
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.List;
+
+
+
 public class CategoryQueryRest extends AbstractRestResource {
 
     public CategoryQueryRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -29,29 +25,24 @@ public class CategoryQueryRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        String method = req.getMethod();
-        String path = req.getRequestURI();
+        final String method = req.getMethod();
+        final String path = req.getRequestURI();
 
         try {
-            if (!"GET".equals(method)) {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Only GET method supported for this endpoint.", "405", "Use GET for category queries.")
-                    .toJSON(res.getOutputStream());
-                return;
+            switch (method) {
+                case "GET" -> {
+                    if (path.matches(".*/category/\\d+$")) {
+                        handleGetById(path);
+                    } else if (path.matches(".*/category/name/.+$")) {
+                        handleGetByName(path);
+                    } else if (path.endsWith("/category")) {
+                        handleGetAll();
+                    } else {
+                        sendNotFound();
+                    }
+                }
+                default -> sendMethodNotAllowed();
             }
-
-            if (path.matches(".*/category/\\d+$")) {
-                handleGetById(path);
-            } else if (path.matches(".*/category/name/.+$")) {
-                handleGetByName(path);
-            } else if (path.endsWith("/category")) {
-                handleGetAll();
-            } else {
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                new Message("Invalid category query path.", "404", "Check supported routes.")
-                    .toJSON(res.getOutputStream());
-            }
-
         } catch (Exception e) {
             LOGGER.error("CategoryQueryRest error: ", e);
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -61,9 +52,7 @@ public class CategoryQueryRest extends AbstractRestResource {
 
     private void handleGetAll() throws Exception {
         List<Category> categories = new GetAllCategoriesDAO(con).access().getOutputParam();
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-        new ObjectMapper().writeValue(res.getOutputStream(), categories);
+        sendJson(categories, HttpServletResponse.SC_OK);
     }
 
     private void handleGetById(String path) throws Exception {
@@ -71,12 +60,9 @@ public class CategoryQueryRest extends AbstractRestResource {
         Category category = new GetCategoryByIdDAO(con, id).access().getOutputParam();
 
         if (category == null) {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Category not found.", "404", "No category with ID " + id).toJSON(res.getOutputStream());
+            sendMessage("Category not found.", "404", "No category with ID " + id, HttpServletResponse.SC_NOT_FOUND);
         } else {
-            res.setContentType("application/json;charset=UTF-8");
-            res.setStatus(HttpServletResponse.SC_OK);
-            new ObjectMapper().writeValue(res.getOutputStream(), category);
+            sendJson(category, HttpServletResponse.SC_OK);
         }
     }
 
@@ -85,13 +71,28 @@ public class CategoryQueryRest extends AbstractRestResource {
         Category category = new GetCategoryByNameDAO(con, name).access().getOutputParam();
 
         if (category == null) {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Category not found.", "404", "No category named '" + name + "'")
-                .toJSON(res.getOutputStream());
+            sendMessage("Category not found.", "404", "No category named '" + name + "'", HttpServletResponse.SC_NOT_FOUND);
         } else {
-            res.setContentType("application/json;charset=UTF-8");
-            res.setStatus(HttpServletResponse.SC_OK);
-            new ObjectMapper().writeValue(res.getOutputStream(), category);
+            sendJson(category, HttpServletResponse.SC_OK);
         }
+    }
+
+    private void sendJson(Object data, int statusCode) throws IOException {
+        res.setContentType("application/json;charset=UTF-8");
+        res.setStatus(statusCode);
+        new ObjectMapper().writeValue(res.getOutputStream(), data);
+    }
+
+    private void sendMessage(String title, String code, String detail, int status) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendNotFound() throws IOException {
+        sendMessage("Invalid category query path.", "404", "Check supported routes.", HttpServletResponse.SC_NOT_FOUND);
+    }
+
+    private void sendMethodNotAllowed() throws IOException {
+        sendMessage("Only GET method supported for this endpoint.", "405", "Use GET for category queries.", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
     }
 }

@@ -1,5 +1,6 @@
 package it.unipd.bookly.rest.discount;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Discount;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.discount.*;
@@ -11,14 +12,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 /**
- * Handles discount-related REST endpoints:
- * - GET    /api/discount/all
- * - GET    /api/discount/active
- * - GET    /api/discount/code?code=SPRING10
- * - DELETE /api/discount?id=123
+ * @Handles: - GET /api/discount/all → Retrieve all discounts. - GET
+ * /api/discount/active → Retrieve active (non-expired) discounts. - GET
+ * /api/discount/code?code=... → Retrieve a discount by code. - DELETE
+ * /api/discount?id=123 → Delete a discount by ID.
  */
 public class DiscountRest extends AbstractRestResource {
 
@@ -30,87 +28,84 @@ public class DiscountRest extends AbstractRestResource {
     protected void doServe() throws IOException {
         final String method = req.getMethod();
         final String path = req.getRequestURI();
-        final String queryCode = req.getParameter("code");
+        final String codeParam = req.getParameter("code");
         final String idParam = req.getParameter("id");
-        Message message;
 
         try {
-            if ("GET".equals(method)) {
-                if (path.endsWith("/all")) {
-                    handleGetAllDiscounts();
-                } else if (path.endsWith("/active")) {
-                    handleGetActiveDiscounts();
-                } else if (path.contains("/code") && queryCode != null) {
-                    handleGetDiscountByCode(queryCode);
-                } else {
-                    res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    message = new Message("Invalid GET endpoint for discount.", "E400", "Specify /all, /active or /code?code=XXX");
-                    message.toJSON(res.getOutputStream());
+            switch (method) {
+                case "GET" -> {
+                    if (path.endsWith("/all")) {
+                        handleGetAllDiscounts();
+                    } else if (path.endsWith("/active")) {
+                        handleGetActiveDiscounts();
+                    } else if (path.contains("/code") && codeParam != null) {
+                        handleGetDiscountByCode(codeParam);
+                    } else {
+                        sendError("Invalid GET endpoint.", "E400", "Expected /all, /active, or /code?code=...", HttpServletResponse.SC_BAD_REQUEST);
+                    }
                 }
-
-            } else if ("DELETE".equals(method) && idParam != null) {
-                handleDeleteDiscount(idParam);
-            } else {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                message = new Message("Unsupported HTTP method for discount.", "405", "Only GET and DELETE are supported.");
-                message.toJSON(res.getOutputStream());
+                case "DELETE" -> {
+                    if (idParam != null) {
+                        handleDeleteDiscount(idParam);
+                    } else {
+                        sendError("Missing discount ID.", "E400", "You must specify 'id' to delete a discount.", HttpServletResponse.SC_BAD_REQUEST);
+                    }
+                }
+                default ->
+                    sendError("Unsupported method.", "405", "Only GET and DELETE methods are supported.", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
-
         } catch (Exception e) {
-            LOGGER.error("DiscountRest - Error processing request", e);
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            message = new Message("Internal error in DiscountRest", "E500", e.getMessage());
-            message.toJSON(res.getOutputStream());
+            LOGGER.error("DiscountRest - Unexpected error", e);
+            sendError("Internal server error", "E500", e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
     private void handleGetAllDiscounts() throws Exception {
         List<Discount> discounts = new GetAllDiscountsDAO(con).access().getOutputParam();
-        res.setContentType("application/json;charset=UTF-8");
-        ObjectMapper mapper = new ObjectMapper();
-        String discountjson = mapper.writeValueAsString(discounts);
-        Message message = new Message("All discounts retrieved.", "200", discountjson);
-        message.toJSON(res.getOutputStream());
+        sendJsonResponse(discounts, "All discounts retrieved.", "200");
     }
 
     private void handleGetActiveDiscounts() throws Exception {
         List<Discount> discounts = new GetAllActiveDiscountsDAO(con).access().getOutputParam();
-        ObjectMapper mapper = new ObjectMapper();
-        String discountjson = mapper.writeValueAsString(discounts);
-        res.setContentType("application/json;charset=UTF-8");
-        Message message = new Message("Active discounts retrieved.", "200", discountjson);
-        message.toJSON(res.getOutputStream());
+        sendJsonResponse(discounts, "Active discounts retrieved.", "200");
     }
 
     private void handleGetDiscountByCode(String code) throws Exception {
         Discount discount = new GetDiscountByCodeDAO(con, code).access().getOutputParam();
-        
         if (discount == null) {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            Message message = new Message("No discount found for code: " + code, "E404", "Discount not found.");
-            message.toJSON(res.getOutputStream());
-            return;
+            sendError("Discount not found", "E404", "No discount found for code: " + code, HttpServletResponse.SC_NOT_FOUND);
+        } else {
+            sendJsonResponse(discount, "Discount retrieved.", "200");
         }
-
-        res.setContentType("application/json;charset=UTF-8");
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(res.getOutputStream(), discount); // serialize the discount as JSON
     }
 
     private void handleDeleteDiscount(String idParam) throws Exception {
         try {
-            int discountId = Integer.parseInt(idParam);
-            boolean success = new DeleteDiscountDAO(con, discountId).access().getOutputParam();
+            int id = Integer.parseInt(idParam);
+            boolean success = new DeleteDiscountDAO(con, id).access().getOutputParam();
+
             if (success) {
-                res.setStatus(HttpServletResponse.SC_OK);
                 new Message("Discount deleted successfully.", "200", null).toJSON(res.getOutputStream());
+                res.setStatus(HttpServletResponse.SC_OK);
             } else {
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                new Message("No discount found to delete.", "E404", null).toJSON(res.getOutputStream());
+                sendError("Discount not found.", "E404", "No discount with ID " + id, HttpServletResponse.SC_NOT_FOUND);
             }
+
         } catch (NumberFormatException ex) {
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            new Message("Invalid discount ID format.", "E400", "ID must be numeric.").toJSON(res.getOutputStream());
+            sendError("Invalid ID format.", "E400", "Discount ID must be an integer.", HttpServletResponse.SC_BAD_REQUEST);
         }
+    }
+
+    private void sendJsonResponse(Object data, String msg, String code) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(data);
+        res.setContentType("application/json;charset=UTF-8");
+        res.setStatus(HttpServletResponse.SC_OK);
+        new Message(msg, code, json).toJSON(res.getOutputStream());
+    }
+
+    private void sendError(String title, String code, String detail, int status) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }

@@ -4,13 +4,13 @@ import it.unipd.bookly.Resource.Cart;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.cart.GetCartByUserIdDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-
-import com.fasterxml.jackson.databind.ObjectMapper; 
 
 /**
  * REST endpoint to retrieve a user's cart.
@@ -24,39 +24,49 @@ public class GetCartRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        Message message;
+        final String method = req.getMethod();
+
+        switch (method) {
+            case "GET" -> handleGetCart();
+            default -> sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+                    "Unsupported HTTP method", "E405", "Only GET is supported.");
+        }
+    }
+
+    private void handleGetCart() throws IOException {
         String userIdParam = req.getParameter("userId");
 
         if (userIdParam == null || userIdParam.isBlank()) {
-            message = new Message("Missing 'userId' parameter.", "E400", "User ID is required.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Missing 'userId' parameter", "E400", "User ID is required.");
             return;
         }
 
         try {
             int userId = Integer.parseInt(userIdParam);
-
             Cart cart = new GetCartByUserIdDAO(con, userId).access().getOutputParam();
-            ObjectMapper mapper = new ObjectMapper();
-            String cartJson = mapper.writeValueAsString(cart); 
+
             if (cart == null) {
-                message = new Message("Cart not found.", "E404", "No cart found for user ID " + userId);
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                message.toJSON(res.getOutputStream());
+                sendError(HttpServletResponse.SC_NOT_FOUND,
+                        "Cart not found", "E404", "No cart found for user ID " + userId);
             } else {
-                message = new Message("Cart retrieved successfully.", "200", cartJson);
                 res.setStatus(HttpServletResponse.SC_OK);
-                message.toJSON(res.getOutputStream());
+                res.setContentType("application/json;charset=UTF-8");
+                new ObjectMapper().writeValue(res.getOutputStream(), cart);
             }
 
         } catch (NumberFormatException ex) {
-            message = new Message("Invalid 'userId' format.", "E401", "User ID must be an integer.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid userId format", "E401", "'userId' must be a valid integer.");
         } catch (Exception ex) {
             LOGGER.error("Error retrieving cart for user", ex);
-            message = new Message("Internal server error.", "E500", ex.getMessage());
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Internal server error", "E500", ex.getMessage());
         }
+    }
+
+    private void sendError(int status, String title, String code, String detail) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }

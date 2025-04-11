@@ -22,15 +22,22 @@ public class RemoveFromCartRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
+        final String method = req.getMethod();
+
+        switch (method) {
+            case "DELETE" -> handleRemoveFromCart();
+            default -> sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+                    "Unsupported HTTP method", "E405", "Only DELETE is supported.");
+        }
+    }
+
+    private void handleRemoveFromCart() throws IOException {
         String cartIdParam = req.getParameter("cartId");
         String bookIdParam = req.getParameter("bookId");
 
-        Message message;
-
         if (cartIdParam == null || bookIdParam == null) {
-            message = new Message("Missing 'cartId' or 'bookId' parameter.", "E400", "Both parameters are required.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Missing parameters", "E400", "Both 'cartId' and 'bookId' must be provided.");
             return;
         }
 
@@ -38,22 +45,26 @@ public class RemoveFromCartRest extends AbstractRestResource {
             int cartId = Integer.parseInt(cartIdParam);
             int bookId = Integer.parseInt(bookIdParam);
 
-            // DAO call to remove book from cart
+            // DAO to remove book from cart
             new RemoveBookFromCartDAO(con, bookId, cartId).access();
 
-            message = new Message("Book removed from cart successfully.", "200", "Book ID " + bookId + " removed from cart " + cartId);
+            Message success = new Message("Book removed from cart successfully.", "200",
+                    "Book ID " + bookId + " removed from cart " + cartId);
             res.setStatus(HttpServletResponse.SC_OK);
-            message.toJSON(res.getOutputStream());
+            success.toJSON(res.getOutputStream());
 
         } catch (NumberFormatException ex) {
-            message = new Message("Invalid 'cartId' or 'bookId' format.", "E401", "Both parameters must be integers.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    "Invalid parameter format", "E401", "'cartId' and 'bookId' must be valid integers.");
         } catch (Exception ex) {
             LOGGER.error("Error removing book from cart", ex);
-            message = new Message("Internal server error while removing book from cart.", "E500", ex.getMessage());
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
+                    "Internal server error", "E500", ex.getMessage());
         }
+    }
+
+    private void sendError(int status, String title, String code, String detail) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }

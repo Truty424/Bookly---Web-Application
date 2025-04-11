@@ -15,12 +15,6 @@ import it.unipd.bookly.rest.AbstractRestResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-/**
- * REST endpoint for retrieving books by author, category, or publisher.
- *
- * Supported endpoints: - /api/books/author?id=1 - /api/books/category?id=2 -
- * /api/books/publisher?id=3
- */
 public class BooksByRelationRest extends AbstractRestResource {
 
     public BooksByRelationRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -29,55 +23,57 @@ public class BooksByRelationRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
-        String path = req.getRequestURI();  // e.g., /api/books/author?id=1
-        String idParam = req.getParameter("id");
-        Message message;
+        final String path = req.getRequestURI(); // e.g. /api/books/author?id=1
+        final String idParam = req.getParameter("id");
 
         if (idParam == null || idParam.isBlank()) {
-            message = new Message("Missing 'id' parameter.", "E400", "Query parameter 'id' is required.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendMessage(HttpServletResponse.SC_BAD_REQUEST, "Missing 'id' parameter.", "E400", "Query parameter 'id' is required.");
             return;
         }
 
         try {
             int id = Integer.parseInt(idParam);
-            List<Book> books = null;
+            String relationType = extractRelationType(path);
 
-            if (path.contains("/author")) {
-                books = new GetBooksByAuthorIdDAO(con, id).access().getOutputParam();
-            } else if (path.contains("/category")) {
-                books = new GetBooksByCategoryIdDAO(con, id).access().getOutputParam();
-            } else if (path.contains("/publisher")) {
-                books = new GetBooksByPublisherIdDAO(con, id).access().getOutputParam();
-            } else {
-                message = new Message("Invalid endpoint.", "E404", "Path must contain /author, /category, or /publisher.");
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                message.toJSON(res.getOutputStream());
-                return;
+            List<Book> books;
+            switch (relationType) {
+                case "author" -> books = new GetBooksByAuthorIdDAO(con, id).access().getOutputParam();
+                case "category" -> books = new GetBooksByCategoryIdDAO(con, id).access().getOutputParam();
+                case "publisher" -> books = new GetBooksByPublisherIdDAO(con, id).access().getOutputParam();
+                default -> {
+                    sendMessage(HttpServletResponse.SC_NOT_FOUND, "Invalid endpoint.", "E404",
+                            "Path must contain /author, /category, or /publisher.");
+                    return;
+                }
             }
 
             if (books == null || books.isEmpty()) {
-                message = new Message("No books found", "E404", "No books found for the given ID: " + id);
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                message.toJSON(res.getOutputStream());
+                sendMessage(HttpServletResponse.SC_NOT_FOUND, "No books found", "E404",
+                        "No books found for the given ID: " + id);
                 return;
             }
 
-            // Respond with book list in JSON
             res.setContentType("application/json;charset=UTF-8");
             res.setStatus(HttpServletResponse.SC_OK);
             new ObjectMapper().writeValue(res.getOutputStream(), books);
 
         } catch (NumberFormatException e) {
-            message = new Message("Invalid 'id' format.", "E401", "'id' must be a valid integer.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendMessage(HttpServletResponse.SC_BAD_REQUEST, "Invalid 'id' format.", "E401", "'id' must be a valid integer.");
         } catch (Exception e) {
-            LOGGER.error("Error fetching books by relation", e);
-            message = new Message("Server error while retrieving books.", "E500", e.getMessage());
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            message.toJSON(res.getOutputStream());
+            LOGGER.error("BooksByRelationRest error", e);
+            sendMessage(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error while retrieving books.", "E500", e.getMessage());
         }
+    }
+
+    private String extractRelationType(String path) {
+        if (path.contains("/author")) return "author";
+        if (path.contains("/category")) return "category";
+        if (path.contains("/publisher")) return "publisher";
+        return "unknown";
+    }
+
+    private void sendMessage(int status, String title, String code, String detail) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }

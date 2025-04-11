@@ -7,38 +7,34 @@ import it.unipd.bookly.dao.AbstractDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 import static it.unipd.bookly.dao.user.UserQueries.GET_USERS_BY_USERNAME;
 
 /**
  * DAO to retrieve users whose usernames match a given pattern.
  */
-public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
+public class GetUserByUsernameDAO extends AbstractDAO<User> {
 
-    private final String usernameLike;
+    private final String username;
 
     /**
      * Constructs the DAO with the connection and username pattern.
      *
-     * @param con           the DB connection
-     * @param usernameLike  the username filter (e.g., "john%")
+     * @param con the DB connection
+     * @param usernameLike the username filter (e.g., "john%")
      */
-    public GetUserByUsernameDAO(Connection con, String usernameLike) {
+    public GetUserByUsernameDAO(Connection con, String username) {
         super(con);
-        this.usernameLike = usernameLike;
+        this.username = username;
     }
 
     @Override
     protected void doAccess() throws Exception {
-        List<User> users = new ArrayList<>();
-
         try (PreparedStatement stmt = con.prepareStatement(GET_USERS_BY_USERNAME)) {
-            stmt.setString(1, usernameLike);
+            stmt.setString(1, username);
 
             try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
+                if (rs.next()) {
                     Image profileImage = null;
                     byte[] imageBytes = rs.getBytes("image");
                     String imageType = rs.getString("image_type");
@@ -48,26 +44,27 @@ public class GetUserByUsernameDAO extends AbstractDAO<List<User>> {
                     }
 
                     User user = new User(
-                        rs.getString("username"),
-                        rs.getString("password"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
-                        rs.getString("email"),
-                        rs.getString("phone"),
-                        rs.getString("address"),
-                        rs.getString("role"),
-                        profileImage
+                            rs.getString("username"),
+                            rs.getString("password"),
+                            rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            rs.getString("email"),
+                            rs.getString("phone"),
+                            rs.getString("address"),
+                            rs.getString("role"),
+                            profileImage
                     );
-                    users.add(user);
+
+                    this.outputParam = user;
+                    LOGGER.info("Found user matching username '{}'.", username);
+                } else {
+                    this.outputParam = null;
+                    LOGGER.info("No user found matching username '{}'.", username);
                 }
             }
 
-            this.outputParam = users;
-
-            LOGGER.info("Found {} user(s) matching username '{}'.", users.size(), usernameLike);
-
         } catch (Exception e) {
-            LOGGER.error("Failed to retrieve users by username '{}': {}", usernameLike, e.getMessage());
+            LOGGER.error("Failed to retrieve user by username '{}': {}", username, e.getMessage());
             throw e;
         }
     }

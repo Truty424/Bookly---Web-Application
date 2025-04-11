@@ -14,11 +14,11 @@ import java.util.List;
 
 public class AuthorRest extends AbstractRestResource {
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     public AuthorRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
         super("author", req, res, con);
     }
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void doServe() throws IOException {
@@ -27,21 +27,39 @@ public class AuthorRest extends AbstractRestResource {
         Message message;
 
         try {
-            if ("GET".equals(method) && path.matches(".*/authors/?$")) {
-                handleGetAllAuthors();
-            } else if ("GET".equals(method) && path.matches(".*/authors/\\d+")) {
-                handleGetAuthorById(path);
-            } else if ("POST".equals(method) && path.matches(".*/authors/?$")) {
-                handleInsertAuthor();
-            } else if ("PUT".equals(method) && path.matches(".*/authors/\\d+")) {
-                handleUpdateAuthor(path);
-            } else if ("DELETE".equals(method) && path.matches(".*/authors/\\d+")) {
-                handleDeleteAuthor(path);
-            } else {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Unsupported method or path.", "405", "Allowed: GET, POST, PUT, DELETE.").toJSON(res.getOutputStream());
+            switch (method) {
+                case "GET" -> {
+                    if (path.matches(".*/authors/?$")) {
+                        handleGetAllAuthors();
+                    } else if (path.matches(".*/authors/\\d+$")) {
+                        handleGetAuthorById(path);
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                case "POST" -> {
+                    if (path.matches(".*/authors/?$")) {
+                        handleInsertAuthor();
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                case "PUT" -> {
+                    if (path.matches(".*/authors/\\d+$")) {
+                        handleUpdateAuthor(path);
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                case "DELETE" -> {
+                    if (path.matches(".*/authors/\\d+$")) {
+                        handleDeleteAuthor(path);
+                    } else {
+                        sendMethodNotAllowed();
+                    }
+                }
+                default -> sendMethodNotAllowed();
             }
-
         } catch (Exception e) {
             LOGGER.error("AuthorRest error", e);
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -111,5 +129,10 @@ public class AuthorRest extends AbstractRestResource {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             new Message("Delete failed.", "404", "Author not found.").toJSON(res.getOutputStream());
         }
+    }
+
+    private void sendMethodNotAllowed() throws IOException {
+        res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+        new Message("Unsupported method or path.", "405", "Allowed: GET, POST, PUT, DELETE.").toJSON(res.getOutputStream());
     }
 }

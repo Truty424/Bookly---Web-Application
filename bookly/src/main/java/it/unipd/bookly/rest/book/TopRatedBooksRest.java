@@ -13,8 +13,8 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * Handles GET requests to retrieve top-rated books.
- * Endpoint: /api/book/top-rated?minRating=4.5
+ * REST endpoint to retrieve top-rated books.
+ * Supported: GET /api/book/top-rated?minRating=4.5
  */
 public class TopRatedBooksRest extends AbstractRestResource {
 
@@ -24,23 +24,30 @@ public class TopRatedBooksRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
+        final String method = req.getMethod();
+
+        switch (method) {
+            case "GET" -> handleGetTopRatedBooks();
+            default -> sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+                    "Method not allowed", "E405", "Only GET is supported for top-rated books.");
+        }
+    }
+
+    private void handleGetTopRatedBooks() throws IOException {
         final String minRatingParam = req.getParameter("minRating");
-        Message message;
-        double minRating;
 
         if (minRatingParam == null || minRatingParam.isBlank()) {
-            message = new Message("Missing 'minRating' parameter.", "E400", "You must provide a minimum rating.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing 'minRating'", "E400",
+                    "You must provide a 'minRating' query parameter.");
             return;
         }
 
+        double minRating;
         try {
             minRating = Double.parseDouble(minRatingParam);
         } catch (NumberFormatException e) {
-            message = new Message("Invalid rating format.", "E401", "'minRating' must be a valid number.");
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            message.toJSON(res.getOutputStream());
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid rating format", "E401",
+                    "'minRating' must be a valid number.");
             return;
         }
 
@@ -48,23 +55,23 @@ public class TopRatedBooksRest extends AbstractRestResource {
             List<Book> books = new GetTopRatedBooksDAO(con, minRating).access().getOutputParam();
 
             if (books == null || books.isEmpty()) {
-                message = new Message("No top-rated books found.", "E404", "Try lowering the rating threshold.");
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                message.toJSON(res.getOutputStream());
+                sendError(HttpServletResponse.SC_NOT_FOUND, "No top-rated books", "E404",
+                        "No books found with rating ≥ " + minRating);
                 return;
             }
 
             res.setContentType("application/json;charset=UTF-8");
             res.setStatus(HttpServletResponse.SC_OK);
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.writeValue(res.getOutputStream(), books);
+            new ObjectMapper().writeValue(res.getOutputStream(), books);
 
         } catch (Exception e) {
-            LOGGER.error("Error while retrieving top-rated books (minRating={}): {}", minRating, e.getMessage());
-            message = new Message("Internal server error while retrieving top-rated books.", "E500", e.getMessage());
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            message.toJSON(res.getOutputStream());
+            LOGGER.error("Error fetching top-rated books (minRating={}): {}", minRating, e.getMessage());
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500", e.getMessage());
         }
+    }
+
+    private void sendError(int status, String title, String code, String detail) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }

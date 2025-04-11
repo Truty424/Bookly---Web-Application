@@ -13,7 +13,7 @@ import static it.unipd.bookly.dao.order.OrderQueries.INSERT_ORDER;
 /**
  * DAO to insert a new order into the database.
  */
-public class InsertOrderDAO extends AbstractDAO<Integer> {
+public class InsertOrderDAO extends AbstractDAO<Boolean> {
 
     private final Order order;
 
@@ -30,12 +30,11 @@ public class InsertOrderDAO extends AbstractDAO<Integer> {
             stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
             stmt.setString(4, order.getStatus());
 
-            var rs = stmt.executeQuery();
-            if (rs.next()) {
-                this.outputParam = rs.getInt("order_id");
-            } else {
-                throw new SQLException("Failed to insert order, no ID obtained.");
-            }
+            int affectedRows = stmt.executeUpdate();
+            this.outputParam = affectedRows > 0;
+        } catch (SQLException e) {
+            LOGGER.error("InsertOrderDAO - Error inserting order: {}", e.getMessage());
+            throw e;
         }
     }
 }

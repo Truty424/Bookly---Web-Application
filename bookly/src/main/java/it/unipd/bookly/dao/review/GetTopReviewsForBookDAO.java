@@ -1,5 +1,8 @@
 package it.unipd.bookly.dao.review;
 
+import it.unipd.bookly.Resource.Review;
+import it.unipd.bookly.dao.AbstractDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,8 +10,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.unipd.bookly.Resource.Review;
-import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.review.ReviewQueries.GET_TOP_REVIEWS_FOR_BOOK;
 
 /**
@@ -24,6 +25,7 @@ public class GetTopReviewsForBookDAO extends AbstractDAO<List<Review>> {
         this.book_id = book_id;
         this.limit = limit;
     }
+
 
     @Override
     protected void doAccess() throws Exception {

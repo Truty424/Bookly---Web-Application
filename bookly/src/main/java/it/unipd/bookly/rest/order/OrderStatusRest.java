@@ -1,8 +1,8 @@
 package it.unipd.bookly.rest.order;
 
 import it.unipd.bookly.Resource.Message;
-import it.unipd.bookly.dao.order.UpdateOrderStatusDAO;
 import it.unipd.bookly.dao.order.UpdateOrderPaymentInfoDAO;
+import it.unipd.bookly.dao.order.UpdateOrderStatusDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.Timestamp;
 
+/**
+ * @Handles:
+ * - PUT /api/order/{orderId}/status?value=STATUS
+ * - PUT /api/order/{orderId}/payment?value=PAID&amount=99.99&method=CARD
+ */
 public class OrderStatusRest extends AbstractRestResource {
 
     public OrderStatusRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -26,61 +31,56 @@ public class OrderStatusRest extends AbstractRestResource {
         final String methodParam = req.getParameter("method");
 
         try {
-            if (!"PUT".equalsIgnoreCase(method) || value == null || value.isBlank()) {
-                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                new Message("Missing or invalid method/parameter.", "E400", "PUT method and 'value' parameter are required.")
-                        .toJSON(res.getOutputStream());
-                return;
-            }
+            switch (method) {
+                case "PUT" -> {
+                    if (value == null || value.isBlank()) {
+                        sendError("Missing value parameter.", "E400", "'value' is required for status/payment updates.", HttpServletResponse.SC_BAD_REQUEST);
+                        return;
+                    }
 
-            if (path.matches(".*/order/\\d+/status$")) {
-                updateStatus(path, value);
-            } else if (path.matches(".*/order/\\d+/payment$")) {
-                if (amountParam == null || methodParam == null) {
-                    res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    new Message("Missing payment details.", "E400", "Both 'amount' and 'method' parameters are required for payment.")
-                            .toJSON(res.getOutputStream());
-                    return;
+                    if (path.matches(".*/order/\\d+/status$")) {
+                        int orderId = extractOrderId(path);
+                        new UpdateOrderStatusDAO(con, orderId, value).access();
+                        sendMessage("Order status updated.", "200", "Order ID " + orderId + " set to: " + value);
+                    } else if (path.matches(".*/order/\\d+/payment$")) {
+                        if (amountParam == null || methodParam == null) {
+                            sendError("Missing payment details.", "E400", "Both 'amount' and 'method' parameters are required.", HttpServletResponse.SC_BAD_REQUEST);
+                            return;
+                        }
+                        int orderId = extractOrderId(path);
+                        double amount = Double.parseDouble(amountParam);
+                        Timestamp now = new Timestamp(System.currentTimeMillis());
+                        new UpdateOrderPaymentInfoDAO(con, orderId, amount, methodParam, now).access();
+
+                        sendMessage("Order payment info updated.", "200",
+                                "Order ID " + orderId + " paid " + amount + " via " + methodParam + " - status: " + value);
+                    } else {
+                        sendError("Unsupported path.", "404", "Only /status or /payment paths are supported.", HttpServletResponse.SC_NOT_FOUND);
+                    }
                 }
-                double amount = Double.parseDouble(amountParam);
-                updatePayment(path, amount, methodParam, value);
-            } else {
-                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                new Message("Unsupported path.", "404", "Only /status or /payment paths are supported.")
-                        .toJSON(res.getOutputStream());
+                default -> sendError("Method not allowed", "405", "Only PUT is supported for this endpoint.", HttpServletResponse.SC_METHOD_NOT_ALLOWED);
             }
 
+        } catch (NumberFormatException e) {
+            sendError("Invalid number format.", "E400", "'amount' must be a valid number.", HttpServletResponse.SC_BAD_REQUEST);
         } catch (Exception e) {
             LOGGER.error("OrderStatusRest error", e);
-            res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            new Message("Internal server error", "E500", e.getMessage())
-                    .toJSON(res.getOutputStream());
+            sendError("Internal server error", "E500", e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    private void updateStatus(String path, String newStatus) throws Exception {
-        int orderId = extractOrderId(path);
-        new UpdateOrderStatusDAO(con, orderId, newStatus).access();
-
-        res.setStatus(HttpServletResponse.SC_OK);
-        new Message("Order status updated.", "200", "Order ID " + orderId + " set to: " + newStatus)
-                .toJSON(res.getOutputStream());
-    }
-
-    private void updatePayment(String path, double amount, String paymentMethod, String paymentStatus) throws Exception {
-        int orderId = extractOrderId(path);
-        Timestamp paymentDate = new Timestamp(System.currentTimeMillis());
-
-        new UpdateOrderPaymentInfoDAO(con, orderId, amount, paymentMethod, paymentDate).access();
-
-        res.setStatus(HttpServletResponse.SC_OK);
-        new Message("Order payment info updated.", "200",
-                "Order ID " + orderId + " paid " + amount + " via " + paymentMethod + " - status: " + paymentStatus)
-                .toJSON(res.getOutputStream());
     }
 
     private int extractOrderId(String path) {
         String[] parts = path.split("/");
         return Integer.parseInt(parts[parts.length - 2]);
+    }
+
+    private void sendMessage(String title, String code, String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_OK);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendError(String title, String code, String detail, int status) throws IOException {
+        res.setStatus(status);
+        new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 }
