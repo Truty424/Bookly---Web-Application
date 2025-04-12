@@ -9,1005 +9,1196 @@
 A REST API (Representational State Transfer Application Programming Interface) allows communication between a client and a server over the HTTP protocol. It defines a set of standards and conventions to access and manipulate resources (data) via endpoints, typically using CRUD operations (Create, Read, Update, Delete).
 
 
+\subsubsection*{Users}
 
+\subsubsection*{Sign Up}
+
 \begin{itemize}
+    \item URL: \texttt{/auth/signup}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
 
+    \textbf{Required:} \\
+    username: \{String\}, \\
+    email: \{String\}, \\
+    password: \{String\} \\
+    
+    \textbf{Optional:} \\
+    first\_name, last\_name, phone, address, role
 
+    \item Success Response: \newline
 
-  \item[\textbf{Users}] --------------------------------------------------
-
-  \item[\textit{Sign Up}]
-  \item URL: \texttt{/auth/signup}  
-  \item Method: \texttt{POST}  
-  \item URL Parameters: None  
-  \item Data Parameters:
-  \begin{itemize}
-    \item \texttt{username} (string, required)
-    \item \texttt{email} (string, required)
-    \item \texttt{password} (string, required)
-    \item \texttt{first\_name} (string, optional)
-    \item \texttt{last\_name} (string, optional)
-    \item \texttt{phone} (string, optional)
-    \item \texttt{address} (string, optional)
-    \item \texttt{role} (string, optional)
-  \end{itemize}
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 201 Created}  
-    \item \texttt{Content:} \{"message": "User created successfully.", "201", "username"\}
-  \end{itemize}
-  \item Error Response:
-  \begin{itemize}
-    \item \texttt{Code: 400 Bad Request}  
-    \item \texttt{Content:} \{"error": "Missing required fields"\}
-    \item \texttt{Code: 409 Conflict}  
-    \item \texttt{Content:} \{"error": "Username or email already exists."\}
-  \end{itemize}
-  
-  \item[\textit{Login}]
-  \item URL: \texttt{/auth/login}  
-  \item Method: \texttt{POST}  
-  \item URL Parameters: None  
-  \item Data Parameters:
-  \begin{itemize}
-    \item \texttt{username} (string, required)
-    \item \texttt{password} (string, required)
-  \end{itemize}
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 200 OK}  
-    \item \texttt{Content:} \{"message": "Authentication successful.", "token": "jwtToken"\}
-  \end{itemize}
-  \item Error Response:
-  \begin{itemize}
-    \item \texttt{Code: 400 Bad Request}  
-    \item \texttt{Content:} \{"error": "Missing credentials"\}
-    \item \texttt{Code: 401 Unauthorized}  
-    \item \texttt{Content:} \{"error": "Authentication failed."\}
-  \end{itemize}
-  
-  \item[\textit{Get User by Username}]
-  \item URL: \texttt{/user?username=\{username\}}  
-  \item Method: \texttt{GET}  
-  \item URL Parameters:
-  \begin{itemize}
-    \item \texttt{username} (string, required)
-  \end{itemize}
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 200 OK}  
-    \item \texttt{Content:} \{user details in JSON format\}
-  \end{itemize}
-  \item Error Response:
-  \begin{itemize}
-    \item \texttt{Code: 404 Not Found}  
-    \item \texttt{Content:} \{"error": "User not found."\}
-  \end{itemize}
-
-\item[\textbf{Cart}] --------------------------------------------------
-
-\item[\textit{Retrieve Cart by User ID}]
-\item URL: \texttt{/cart?userId=\{user\_id\}}  
-\item Method: \texttt{GET}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{userId} (int, required) — ID of the user whose cart is being retrieved
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{cart\_details\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 400 Bad Request} — if \texttt{userId} is missing or invalid  
-  \item \texttt{Code: 404 Not Found} — if no cart found for the given user ID
-\end{itemize}
-
-\item[\textit{Add Book to Cart}] 
-\item URL: \texttt{/cart/add?cartId=\{cart\_id\}&bookId=\{book\_id\}}  
-\item Method: \texttt{POST}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{cartId} (int, required) — ID of the cart
-  \item \texttt{bookId} (int, required) — ID of the book to add
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{"message": "Book ID X was added to cart ID Y"\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 400 Bad Request} — if required parameters are missing or malformed  
-  \item \texttt{Code: 500 Internal Server Error} — on database or server failure
-\end{itemize}
+    \textbf{Code}: 201 Created \\
+    \textbf{Content}: \{"message": "User created successfully.", "201", "username"\}
 
-\item[\textit{Remove Book from Cart}]
-\item URL: \texttt{/cart/remove?cartId=\{cart\_id\}&bookId=\{book\_id\}}  
-\item Method: \texttt{DELETE}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{cartId} (int, required) — ID of the cart
-  \item \texttt{bookId} (int, required) — ID of the book to remove
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{"message": "Book ID X was removed from cart ID Y"\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 400 Bad Request} — if parameters are missing or invalid  
-  \item \texttt{Code: 500 Internal Server Error} — on failure to remove
-\end{itemize}
+    \item Error Response: \newline
 
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing required fields"\}
 
-\item[\textbf{Reviews}] --------------------------------------------------
+    \textbf{When}: Required data fields are missing \newline
 
-\item[\textit{Create Review}]
-\begin{itemize}
-  \item \texttt{URL:} /review  
-  \item \texttt{Method:} POST  
-  \item \texttt{Data Parameters:} JSON body with:
-  \begin{itemize}
-    \item \texttt{user\_id} (int, required)
-    \item \texttt{book\_id} (int, required)
-    \item \texttt{review\_content} (string, required)
-    \item \texttt{plot\_rating, style\_rating, theme\_rating} (int, optional)
-  \end{itemize}
-  \item \texttt{Success Response:}
-  \begin{itemize}
-    \item Code: 201 Created  
-    \item Content: \{... inserted review details ...\}
-  \end{itemize}
-  \item \texttt{Error Response:}
-  \begin{itemize}
-    \item Code: 400 Bad Request  
-    \item Content: \{"error": "Invalid review payload."\}
-  \end{itemize}
-\end{itemize}
+    \textbf{Code}: 409 Conflict \\
+    \textbf{Content}: \{"error": "Username or email already exists."\}
 
-\item[\textit{Get Review by ID}]
-\begin{itemize}
-  \item \texttt{URL:} /review/\{review\_id\}  
-  \item \texttt{Method:} GET  
-  \item \texttt{Success Response:}
-  \begin{itemize}
-    \item Code: 200 OK  
-    \item Content: \{... review object ...\}
-  \end{itemize}
-  \item \texttt{Error Response:}
-  \begin{itemize}
-    \item Code: 404 Not Found  
-    \item Content: \{"error": "Review not found."\}
-  \end{itemize}
+    \textbf{When}: Username or email is not unique
 \end{itemize}
 
-\item[\textit{Delete Review}]
-\begin{itemize}
-  \item \texttt{URL:} /review/\{review\_id\}  
-  \item \texttt{Method:} DELETE  
-  \item \texttt{Success Response:}
-  \begin{itemize}
-    \item Code: 200 OK  
-    \item Content: \{"message": "Review deleted", "id": review\_id\}
-  \end{itemize}
-  \item \texttt{Error Response:}
-  \begin{itemize}
-    \item Code: 404 Not Found  
-    \item Content: \{"error": "Review not found."\}
-  \end{itemize}
-\end{itemize}
+\subsubsection*{Login}
 
-\item[\textit{Get All Reviews}]
 \begin{itemize}
-  \item \texttt{URL:} /reviews  
-  \item \texttt{Method:} GET  
-  \item \texttt{Success Response:}
-  \begin{itemize}
-    \item Code: 200 OK  
-    \item Content: \texttt{[ \{review\_details\}, ... ]}
-  \end{itemize}
-\end{itemize}
+    \item URL: \texttt{/auth/login}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
 
-\item[\textit{Get Reviews by Book ID}]
-\begin{itemize}
-  \item \texttt{URL:} /review/book/\{book\_id\}  
-  \item \texttt{Method:} GET  
-  \item \texttt{Success Response:}
-  \begin{itemize}
-    \item Code: 200 OK  
-    \item Content: \texttt{[ \{review\_details\}, ... ]}
-  \end{itemize}
-\end{itemize}
+    \textbf{Required:} \\
+    username: \{String\}, \\
+    password: \{String\}
 
-\item[\textit{Get Reviews by User ID}]
-\begin{itemize}
-  \item \texttt{URL:} /review/user/\{user\_id\}  
-  \item \texttt{Method:} GET  
-  \item \texttt{Success Response:}
-  \begin{itemize}
-    \item Code: 200 OK  
-    \item Content: \texttt{[ \{review\_details\}, ... ]}
-  \end{itemize}
-\end{itemize}
+    \item Success Response: \newline
 
-\item[\textit{Top Reviews for a Book}]
-\begin{itemize}
-  \item \texttt{URL:} /review/top/book/\{book\_id\}  
-  \item \texttt{Method:} GET  
-  \item \texttt{Success Response:}
-  \begin{itemize}
-    \item Code: 200 OK  
-    \item Content: \texttt{[ \{top\_rated\_review\_details\}, ... ]}
-  \end{itemize}
-\end{itemize}
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Authentication successful.", "token": "jwtToken"\}
 
+    \item Error Response: \newline
 
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing credentials"\}
 
-\item[\textbf{Authors}] --------------------------------------------------
+    \textbf{When}: username or password is not provided \newline
 
-\item[\textit{Create Author}]
-\item URL: \texttt{/authors}  
-\item Method: \texttt{POST}  
-\item Data Parameters:
-\begin{itemize}
-  \item \texttt{name} (string, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 201 Created}  
-  \item \texttt{Content:} \{"message": "Author inserted successfully.", "author\_name": "John Doe"\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 500 Internal Server Error}  
-  \item \texttt{Content:} \{"error": "Failed to insert author."\}
-\end{itemize}
+    \textbf{Code}: 401 Unauthorized \\
+    \textbf{Content}: \{"error": "Authentication failed."\}
 
-\item[\textit{Get All Authors}] 
-\item URL: \texttt{/authors}  
-\item Method: \texttt{GET}  
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \texttt{[ \{author\_details\}, ... ]}
+    \textbf{When}: Invalid username or password
 \end{itemize}
 
-\item[\textit{Get Author by ID}] 
-\item URL: \texttt{/authors/\{id\}}  
-\item Method: \texttt{GET}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{id} (int, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{author\_details\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "Author not found."\}
-\end{itemize}
+\subsubsection*{Get User by Username}
 
-\item[\textbf{Update Author}]
-\item URL: \texttt{/authors/\{id\}}  
-\item Method: \texttt{PUT}  
-\item Data Parameters:
-\begin{itemize}
-  \item \texttt{name} (string, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Author updated successfully."\}
-\end{itemize}
-\item Error Response:
 \begin{itemize}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "Author not found."\}
-\end{itemize}
+    \item URL: \texttt{/user?username=\{username\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
 
-\item[\textit{Delete Author}] 
-\item URL: \texttt{/authors/\{id\}}  
-\item Method: \texttt{DELETE}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{id} (int, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Author deleted successfully."\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "Author not found."\}
-\end{itemize}
+    username: \{String\} — required
 
-\item[\textit{Assign Author to Book}] 
-\item URL: \texttt{/authors/assign}  
-\item Method: \texttt{POST}  
-\item Data Parameters:
-\begin{itemize}
-  \item \texttt{bookId} (int, required)
-  \item \texttt{authorId} (int, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Author assigned to book."\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 400 Bad Request}  
-  \item \texttt{Content:} \{"error": "Missing or invalid parameters."\}
-\end{itemize}
+    \item Data Parameters: NONE
 
-\item[\textit{Remove Author from Book}] 
-\item URL: \texttt{/authors/remove}  
-\item Method: \texttt{DELETE}  
-\item Data Parameters:
-\begin{itemize}
-  \item \texttt{bookId} (int, required)
-  \item \texttt{authorId} (int, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Author removed from book."\}
-\end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 400 Bad Request}  
-  \item \texttt{Content:} \{"error": "Missing or invalid parameters."\}
-\end{itemize}
+    \item Success Response: \newline
 
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{user details in JSON format\}
 
-\item[\textbf{Wishlist}] --------------------------------------------------
+    \item Error Response: \newline
 
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "User not found."\}
 
-\item[\textit{Create Wishlist}] 
-\item URL: \texttt{/wishlist?userId=\{user\_id\}}  
-\item Method: \texttt{POST}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{userId} (int, required) — ID of the user to create a wishlist for
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 201 Created}  
-  \item \texttt{Content:} \{ "wishlistId": 6789, "userId": 123, ... \}
+    \textbf{When}: No user with the given username exists
 \end{itemize}
-\item Error Response:
-\begin{itemize}
-  \item \texttt{Code: 400 Bad Request}  
-  \item \texttt{Content:} \{"error": "Missing userId parameter."\}
-\end{itemize}
 
-\item[\textit{Delete Wishlist}] 
-\item URL: \texttt{/wishlist/\{wishlistId\}}  
-\item Method: \texttt{DELETE}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{wishlistId} (int, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Wishlist deleted successfully."\}
-\end{itemize}
+\subsubsection*{Cart}
 
-\item[\textit{Get Wishlists by User}] 
-\item URL: \texttt{/wishlist/user/\{userId\}}  
-\item Method: \texttt{GET}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{userId} (int, required)
-\end{itemize}
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{ "wishlists": [ ... ] \}
-\end{itemize}
+\subsubsection*{Retrieve Cart by User ID}
 
-\item[\textit{Clear Wishlist}] 
-\item URL: \texttt{/wishlist/clear/\{wishlistId\}}  
-\item Method: \texttt{POST}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{wishlistId} (int, required)
-\end{itemize}
-\item Success Response:
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Wishlist cleared successfully."\}
-\end{itemize}
+    \item URL: \texttt{/cart?userId=\{user\_id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
 
-\item[\textit{Add Book to Wishlist}]
-\item URL: \texttt{/wishlist/books/add}  
-\item Method: \texttt{POST}  
-\item Data Parameters:
-\begin{itemize}
-  \item \texttt{wishlistId} (int, required)  
-  \item \texttt{bookId} (int, required)
+    userId: \{Integer\} — ID of the user whose cart is being retrieved
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{cart\_details\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid userId"\}
+
+    \textbf{When}: userId is missing or not a valid integer \newline
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "No cart found for the given user ID"\}
+
+    \textbf{When}: The user has no associated cart
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Add Book to Cart}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Book ID: X added to Wishlist ID: Y"\}
+    \item URL: \texttt{/cart/add?cartId=\{cart\_id\}&bookId=\{book\_id\}}
+    \item Method: \texttt{POST}
+    \item URL Parameters:
+
+    cartId: \{Integer\} — required \\
+    bookId: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Book ID X was added to cart ID Y"\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or malformed parameters"\}
+
+    \textbf{When}: cartId or bookId is missing or incorrectly formatted \newline
+
+    \textbf{Code}: 500 Internal Server Error \\
+    \textbf{Content}: \{"error": "Database failure or unexpected error"\}
+
+    \textbf{When}: Server error during addition
 \end{itemize}
+
+\subsubsection*{Remove Book from Cart}
 
-\item[\textit{Remove Book from Wishlist}] 
-\item URL: \texttt{/wishlist/books/remove}  
-\item Method: \texttt{DELETE}  
-\item Data Parameters:
 \begin{itemize}
-  \item \texttt{wishlistId} (int, required)  
-  \item \texttt{bookId} (int, required)
+    \item URL: \texttt{/cart/remove?cartId=\{cart\_id\}&bookId=\{book\_id\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters:
+
+    cartId: \{Integer\} — required \\
+    bookId: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Book ID X was removed from cart ID Y"\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid parameters"\}
+
+    \textbf{When}: cartId or bookId is missing or invalid \newline
+
+    \textbf{Code}: 500 Internal Server Error \\
+    \textbf{Content}: \{"error": "Failed to remove book from cart"\}
+
+    \textbf{When}: Database error or removal operation failed
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Reviews}
+
+\subsubsection*{Create Review}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Book ID: X removed from Wishlist ID: Y"\}
+    \item URL: \texttt{/review}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    user\_id: \{Integer\}, \\
+    book\_id: \{Integer\}, \\
+    review\_content: \{String\}
+
+    \textbf{Optional:} \\
+    plot\_rating, style\_rating, theme\_rating: \{Integer\}
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 201 Created \\
+    \textbf{Content}: \{... inserted review details ...\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Invalid review payload."\}
+
+    \textbf{When}: Missing required fields or incorrect data types
 \end{itemize}
+
+\subsubsection*{Get Review by ID}
 
-\item[\textit{Get Books in Wishlist}]
-\item URL: \texttt{/wishlist/books/\{wishlistId\}}  
-\item Method: \texttt{GET}  
-\item URL Parameters:
 \begin{itemize}
-  \item \texttt{wishlistId} (int, required)
+    \item URL: \texttt{/review/\{review\_id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
+
+    review\_id: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{... review object ...\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Review not found."\}
+
+    \textbf{When}: No review exists with the given ID
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Delete Review}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \texttt{[ \{book\_details\}, ... ]}
+    \item URL: \texttt{/review/\{review\_id\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters:
+
+    review\_id: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Review deleted", "id": review\_id\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Review not found."\}
+
+    \textbf{When}: The review to delete does not exist
 \end{itemize}
 
-\item[\textit{Check Book in Wishlist}]
-\item URL: \texttt{/wishlist/books/contains}  
-\item Method: \texttt{GET}  
-\item Query Parameters:
+\subsubsection*{Get All Reviews}
+
 \begin{itemize}
-  \item \texttt{wishlistId} (int, required)  
-  \item \texttt{bookId} (int, required)
+    \item URL: \texttt{/reviews}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{review\_details\}, ... ]}
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Get Reviews by Book ID}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"exists": true/false\}
+    \item URL: \texttt{/review/book/\{book\_id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
+
+    book\_id: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{review\_details\}, ... ]}
 \end{itemize}
+
+\subsubsection*{Get Reviews by User ID}
 
-\item[\textit{Count Books in Wishlist}] 
-\item URL: \texttt{/wishlist/books/count}  
-\item Method: \texttt{GET}  
-\item Query Parameters:
 \begin{itemize}
-  \item \texttt{wishlistId} (int, required)
+    \item URL: \texttt{/review/user/\{user\_id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
+
+    user\_id: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{review\_details\}, ... ]}
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Top Reviews for a Book}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"count": N\}
-\end{itemize}
+    \item URL: \texttt{/review/top/book/\{book\_id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
 
+    book\_id: \{Integer\} — required
 
-\item[\textbf{Publishers}] --------------------------------------------------
+    \item Data Parameters: NONE
 
-\item[\textit{Get All Publishers}]
-\item URL: \texttt{/publishers}  
-\item Method: \texttt{GET}  
-\item Description: Retrieves all publishers.
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \texttt{[ \{publisher\_details\}, ... ]}
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{top\_rated\_review\_details\}, ... ]}
 \end{itemize}
 
+\subsubsection*{Authors}
 
-\item[\textit{Get Publisher by ID}] 
-\item URL: \texttt{/publishers/\{id\}}  
-\item Method: \texttt{GET}  
-\item Description: Retrieves a specific publisher by ID.
-\item URL Parameters:
+\subsubsection*{Create Author}
+
 \begin{itemize}
-  \item \texttt{id} (int, required)
+    \item URL: \texttt{/authors}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    name: \{String\}
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 201 Created \\
+    \textbf{Content}: \{"message": "Author inserted successfully.", "author\_name": "John Doe"\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 500 Internal Server Error \\
+    \textbf{Content}: \{"error": "Failed to insert author."\}
+
+    \textbf{When}: Database or server failure
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Get All Authors}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{publisher\_details\}
+    \item URL: \texttt{/authors}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{author\_details\}, ... ]}
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Get Author by ID}
+
 \begin{itemize}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "Publisher not found."\}
+    \item URL: \texttt{/authors/\{id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
+
+    id: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{author\_details\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Author not found."\}
+
+    \textbf{When}: The specified author does not exist
 \end{itemize}
 
+\subsubsection*{Update Author}
 
-\item[\textit{Insert Publisher}]
-\item URL: \texttt{/publishers}  
-\item Method: \texttt{POST}  
-\item Description: Inserts a new publisher.
-\item Data Parameters:
 \begin{itemize}
-  \item \texttt{publisherName} (string, required)
-  \item \texttt{phone} (string, optional)
-  \item \texttt{address} (string, optional)
+    \item URL: \texttt{/authors/\{id\}}
+    \item Method: \texttt{PUT}
+    \item URL Parameters:
+
+    id: \{Integer\} — required
+
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    name: \{String\}
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Author updated successfully."\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Author not found."\}
+
+    \textbf{When}: No author with the given ID exists
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Delete Author}
+
 \begin{itemize}
-  \item \texttt{Code: 201 Created}
-  \item \texttt{Content:} \{"message": "Publisher inserted successfully."\}
+    \item URL: \texttt{/authors/\{id\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters:
+
+    id: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Author deleted successfully."\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Author not found."\}
+
+    \textbf{When}: The specified author could not be found
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Assign Author to Book}
+
 \begin{itemize}
-  \item \texttt{Code: 500 Internal Server Error}
+    \item URL: \texttt{/authors/assign}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    bookId: \{Integer\}, \\
+    authorId: \{Integer\}
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Author assigned to book."\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid parameters."\}
+
+    \textbf{When}: bookId or authorId is missing or invalid
 \end{itemize}
 
+\subsubsection*{Remove Author from Book}
 
-\item[\textit{Update Publisher}] 
-\item URL: \texttt{/publishers/\{id\}}  
-\item Method: \texttt{PUT}  
-\item Description: Updates an existing publisher.
-\item Data Parameters:
 \begin{itemize}
-  \item \texttt{publisherName} (string, required)
-  \item \texttt{phone} (string, optional)
-  \item \texttt{address} (string, optional)
+    \item URL: \texttt{/authors/remove}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    bookId: \{Integer\}, \\
+    authorId: \{Integer\}
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Author removed from book."\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid parameters."\}
+
+    \textbf{When}: bookId or authorId is missing or invalid
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Wishlist}
+
+\subsubsection*{Create Wishlist}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{"message": "Publisher updated successfully."\}
+    \item URL: \texttt{/wishlist?userId=\{user\_id\}}
+    \item Method: \texttt{POST}
+    \item URL Parameters:
+
+    userId: \{Integer\} — ID of the user
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 201 Created \\
+    \textbf{Content}: \{"wishlistId": 6789, "userId": 123, ...\}
+
+    \item Error Response: \newline
+
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing userId parameter."\}
+
+    \textbf{When}: userId is not provided
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Delete Wishlist}
+
 \begin{itemize}
-  \item \texttt{Code: 404 Not Found}
+    \item URL: \texttt{/wishlist/\{wishlistId\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters:
+
+    wishlistId: \{Integer\} — ID of the wishlist
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Wishlist deleted successfully."\}
 \end{itemize}
 
+\subsubsection*{Get Wishlists by User}
 
-\item[\textit{Delete Publisher}]
-\item URL: \texttt{/publishers/\{id\}}  
-\item Method: \texttt{DELETE}  
-\item Description: Deletes a publisher by ID.
-\item Success Response:
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{"message": "Publisher deleted successfully."\}
+    \item URL: \texttt{/wishlist/user/\{userId\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
+
+    userId: \{Integer\} — ID of the user
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"wishlists": [ ... ]\}
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Clear Wishlist}
+
 \begin{itemize}
-  \item \texttt{Code: 404 Not Found}
+    \item URL: \texttt{/wishlist/clear/\{wishlistId\}}
+    \item Method: \texttt{POST}
+    \item URL Parameters:
+
+    wishlistId: \{Integer\} — ID of the wishlist
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Wishlist cleared successfully."\}
 \end{itemize}
 
+\subsubsection*{Add Book to Wishlist}
 
-\item[\textit{Get Publishers by Book}]
-\item URL: \texttt{/publishers/book/\{bookId\}}  
-\item Method: \texttt{GET}  
-\item Description: Gets all publishers assigned to a book.
-\item URL Parameters:
 \begin{itemize}
-  \item \texttt{bookId} (int, required)
+    \item URL: \texttt{/wishlist/books/add}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    wishlistId: \{Integer\} — required \\
+    bookId: \{Integer\} — required
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Book ID: X added to Wishlist ID: Y"\}
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Remove Book from Wishlist}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \texttt{[ "Publisher A", "Publisher B" ]}
+    \item URL: \texttt{/wishlist/books/remove}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    wishlistId: \{Integer\} — required \\
+    bookId: \{Integer\} — required
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Book ID: X removed from Wishlist ID: Y"\}
 \end{itemize}
 
+\subsubsection*{Get Books in Wishlist}
 
-\item[\textit{Get Books by Publisher}] 
-\item URL: \texttt{/publishers/\{publisherId\}/books}  
-\item Method: \texttt{GET}  
-\item Description: Gets all books published by a given publisher.
-\item URL Parameters:
 \begin{itemize}
-  \item \texttt{publisherId} (int, required)
+    \item URL: \texttt{/wishlist/books/\{wishlistId\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters:
+
+    wishlistId: \{Integer\} — ID of the wishlist
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{book\_details\}, ... ]}
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Check Book in Wishlist}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \texttt{[ \{book\_details\}, ... ]}
+    \item URL: \texttt{/wishlist/books/contains}
+    \item Method: \texttt{GET}
+    \item Query Parameters:
+
+    wishlistId: \{Integer\} — required \\
+    bookId: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"exists": true/false\}
 \end{itemize}
 
+\subsubsection*{Count Books in Wishlist}
 
-\item[\textit{Count Books by Publisher}] 
-\item URL: \texttt{/publishers/\{publisherId\}/books/count}  
-\item Method: \texttt{GET}  
-\item Description: Returns the number of books published by a given publisher.
-\item Success Response:
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{"bookCount": 10\}
+    \item URL: \texttt{/wishlist/books/count}
+    \item Method: \texttt{GET}
+    \item Query Parameters:
+
+    wishlistId: \{Integer\} — ID of the wishlist
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"count": N\}
 \end{itemize}
 
+\subsubsection*{Publishers}
 
-\item[\textit{Assign Publisher to Book}]
-\item URL: \texttt{/publishers?bookId=\{bookId\}&publisherId=\{publisherId\}}  
-\item Method: \texttt{POST} 
-\item Data Parameters:
-\begin{itemize}
-  \item \texttt{publisherId} (int, required)  
-  \item \texttt{book\_id} (int, required)  
-\end{itemize} 
-\item Description: Assigns a publisher to a book.
-\item Success Response:
+\subsubsection*{Get All Publishers}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{"message": "Assigned"\}
+    \item URL: \texttt{/publishers}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+    \item Description: Retrieves all publishers.
+    
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{publisher\_details\}, ... ]}
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Get Publisher by ID}
+
 \begin{itemize}
-  \item \texttt{Code: 400 Bad Request}
+    \item URL: \texttt{/publishers/\{id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: id: \{Integer\} — required
+    \item Data Parameters: NONE
+    \item Description: Retrieves a specific publisher by ID.
+    
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{publisher\_details\}
+    
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Publisher not found."\}
 \end{itemize}
 
+\subsubsection*{Insert Publisher}
 
-\item[\textit{Remove Publisher from Book}] 
-\item URL: \texttt{/publishers?bookId=\{bookId\}&publisherId=\{publisherId\}}  
-\item Method: \texttt{DELETE}  
-\item Description: Removes a publisher assignment from a book.
-\item Success Response:
 \begin{itemize}
-  \item \texttt{Code: 200 OK}
-  \item \texttt{Content:} \{"message": "Removed"\}
+    \item URL: \texttt{/publishers}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    publisherName: \{String\} \\
+    
+    \textbf{Optional:} \\
+    phone: \{String\}, \\
+    address: \{String\}
+
+    \item Description: Inserts a new publisher.
+
+    \item Success Response: \newline
+    \textbf{Code}: 201 Created \\
+    \textbf{Content}: \{"message": "Publisher inserted successfully."\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 500 Internal Server Error
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Update Publisher}
+
 \begin{itemize}
-  \item \texttt{Code: 400 Bad Request}
+    \item URL: \texttt{/publishers/\{id\}}
+    \item Method: \texttt{PUT}
+    \item URL Parameters: id: \{Integer\} — required
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    publisherName: \{String\} \\
+    
+    \textbf{Optional:} \\
+    phone: \{String\}, \\
+    address: \{String\}
+
+    \item Description: Updates an existing publisher.
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Publisher updated successfully."\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found
 \end{itemize}
 
-\item[\textbf{Books}] --------------------------------------------------
+\subsubsection*{Delete Publisher}
 
-\item[\textit{All Books}] 
-\item URL: \texttt{/books}  
-\item Method: \texttt{GET}  
-\item Success Response:
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \texttt{[ \{"book\_id": "1", "title": "Title", ...\}, ... ]}
+    \item URL: \texttt{/publishers/\{id\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters: id: \{Integer\} — required
+    \item Data Parameters: NONE
+    \item Description: Deletes a publisher by ID.
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Publisher deleted successfully."\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found
 \end{itemize}
-\item Error Response: None  
 
-\item[\textit{Book by ID}] 
-\item URL: \texttt{/book?id=\{book\_id\}}  
-\item Method: \texttt{GET}  
-\item URL Parameters:
+\subsubsection*{Get Publishers by Book}
+
 \begin{itemize}
-  \item \texttt{book\_id} (string, required)
+    \item URL: \texttt{/publishers/book/\{bookId\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: bookId: \{Integer\} — required
+    \item Data Parameters: NONE
+    \item Description: Gets all publishers assigned to a book.
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ "Publisher A", "Publisher B" ]}
 \end{itemize}
-\item Data Parameters: None  
-\item Success Response:
+
+\subsubsection*{Get Books by Publisher}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{ "book\_id": "1", "title": "Book Title", ... \}
+    \item URL: \texttt{/publishers/\{publisherId\}/books}
+    \item Method: \texttt{GET}
+    \item URL Parameters: publisherId: \{Integer\} — required
+    \item Data Parameters: NONE
+    \item Description: Gets all books published by a given publisher.
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{book\_details\}, ... ]}
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Count Books by Publisher}
+
 \begin{itemize}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "Book not found."\}
+    \item URL: \texttt{/publishers/\{publisherId\}/books/count}
+    \item Method: \texttt{GET}
+    \item URL Parameters: publisherId: \{Integer\} — required
+    \item Data Parameters: NONE
+    \item Description: Returns the number of books published by a given publisher.
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"bookCount": 10\}
 \end{itemize}
+
+\subsubsection*{Assign Publisher to Book}
 
-\item[\textit{Insert Book}] 
-\item URL: \texttt{/book}  
-\item Method: \texttt{POST}  
-\item Data Parameters:
 \begin{itemize}
-  \item \texttt{title} (string, required)  
-  \item \texttt{author\_id} (int, required)  
-  \item \texttt{publisher\_id} (int, required)  
-  \item \texttt{language} (string, optional)  
-  \item \texttt{isbn} (string, optional)  
-  \item \texttt{price} (float, required)  
-  \item \texttt{edition} (string, optional)  
-  \item \texttt{publication\_year} (int, optional)  
-  \item \texttt{number\_of\_pages} (int, optional)  
-  \item \texttt{stock\_quantity} (int, optional)  
-  \item \texttt{average\_rate} (float, optional)  
-  \item \texttt{summary} (string, optional)  
+    \item URL: \texttt{/publishers?bookId=\{bookId\}&publisherId=\{publisherId\}}
+    \item Method: \texttt{POST}
+    \item URL Parameters:
+
+    bookId: \{Integer\}, \\
+    publisherId: \{Integer\}
+
+    \item Data Parameters: NONE
+    \item Description: Assigns a publisher to a book.
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Assigned"\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Remove Publisher from Book}
+
 \begin{itemize}
-  \item \texttt{Code: 201 Created}  
-  \item \texttt{Content:} \{ "book\_id": "12345",  
-  "title": "New Book Title",  
-  "author": "Author Name",  
-  "publisher": "Publisher Name" \}
+    \item URL: \texttt{/publishers?bookId=\{bookId\}&publisherId=\{publisherId\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters:
+
+    bookId: \{Integer\}, \\
+    publisherId: \{Integer\}
+
+    \item Data Parameters: NONE
+    \item Description: Removes a publisher assignment from a book.
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Removed"\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Books}
+
+\subsubsection*{All Books}
+
 \begin{itemize}
-  \item \texttt{Code: 400 Bad Request}  
-  \item \texttt{Content:} \{"error": "Missing or invalid book details."\}
+    \item URL: \texttt{/books}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{"book\_id": "1", "title": "Title", ...\}, ... ]}
+
+    \item Error Response: NONE
 \end{itemize}
 
-\item[\textit{Update Book}] 
-\item URL: \texttt{/book}  
-\item Method: \texttt{PUT}  
-\item Data Parameters: 
-\begin{itemize}
-  \item \texttt{title} (string, required)  
-  \item \texttt{author\_id} (int, required)  
-  \item \texttt{publisher\_id} (int, required)  
-  \item \texttt{language} (string, optional)  
-  \item \texttt{isbn} (string, optional)  
-  \item \texttt{price} (float, required)  
-  \item \texttt{edition} (string, optional)  
-  \item \texttt{publication\_year} (int, optional)  
-  \item \texttt{number\_of\_pages} (int, optional)  
-  \item \texttt{stock\_quantity} (int, optional)  
-  \item \texttt{average\_rate} (float, optional)  
-  \item \texttt{summary} (string, optional)  
-\end{itemize} 
-\item Success Response:
+\subsubsection*{Get Book by ID}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Book updated successfully."\}
+    \item URL: \texttt{/book?id=\{book\_id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: book\_id: \{String\} — required
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{ "book\_id": "1", "title": "Book Title", ... \}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Book not found."\}
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Insert Book}
+
 \begin{itemize}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "Book not found."\}
+    \item URL: \texttt{/book}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    title: \{String\}, \\
+    author\_id: \{Integer\}, \\
+    publisher\_id: \{Integer\}, \\
+    price: \{Float\}
+
+    \textbf{Optional:} \\
+    language, isbn, edition, publication\_year, number\_of\_pages, stock\_quantity, average\_rate, summary
+
+    \item Success Response: \newline
+    \textbf{Code}: 201 Created \\
+    \textbf{Content}: \{ "book\_id": "12345", "title": "New Book Title", "author": "Author Name", "publisher": "Publisher Name" \}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid book details."\}
 \end{itemize}
 
-\item[\textit{Update Stock}] 
-\item URL: \texttt{/book/stock?id=\{book\_id\}&quantity=\{qty\}}  
-\item Method: \texttt{PUT}  
-\item Success Response:
+\subsubsection*{Update Book}
+
 \begin{itemize}
-  \item \texttt{id} (int, required) — ID of the book to update
-  \item \texttt{stock\_quantity} (int, required) — New stock quantity to set
+    \item URL: \texttt{/book}
+    \item Method: \texttt{PUT}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    \textbf{Required:} \\
+    title: \{String\}, \\
+    author\_id: \{Integer\}, \\
+    publisher\_id: \{Integer\}, \\
+    price: \{Float\}
+
+    \textbf{Optional:} \\
+    language, isbn, edition, publication\_year, number\_of\_pages, stock\_quantity, average\_rate, summary
+
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Book updated successfully."\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Book not found."\}
 \end{itemize}
-\item Data Parameters: None  
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Stock updated"\}
-\item Error Response:
+
+\subsubsection*{Update Stock Quantity}
+
 \begin{itemize}
-  \item \texttt{Code: 400 Bad Request}  
-  \item \texttt{Content:} \{"error": "Missing parameters"\}
+    \item URL: \texttt{/book/stock?id=\{book\_id\}&quantity=\{qty\}}
+    \item Method: \texttt{PUT}
+    \item URL Parameters:
+
+    id: \{Integer\} — ID of the book \\
+    quantity: \{Integer\} — new stock quantity
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Stock updated"\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing parameters"\}
 \end{itemize}
 
-\item[\textit{Delete Book}]
-\item URL: \texttt{/book?id=\{book\_id\}}  
-\item Method: \texttt{DELETE}  
-\item URL Parameters:
-\begin{itemize}
-  \item \texttt{id} (int, required) — ID of the book to delete
-\item Success Response:
+\subsubsection*{Delete Book}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \{"message": "Book deleted"\}
+    \item URL: \texttt{/book?id=\{book\_id\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters: id: \{Integer\} — ID of the book
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Book deleted"\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Book with ID not found."\}
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Top Rated Books}
+
 \begin{itemize}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "Book with ID not found."\}
+    \item URL: \texttt{/books/top-rated}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{ "book\_id": 1, "title": "Title", "average\_rate": 4.5, ... \}, ... ]}
+
+    \item Error Response: \newline
+    \textbf{Code}: 500 Internal Server Error \\
+    \textbf{Content}: \{"error": "Unable to fetch top rated books."\}
 \end{itemize}
 
-\item[\textit{Top Rated Books}] 
-\item URL: \texttt{/books/top-rated}  
-\item Method: \texttt{GET} 
-\item Success Response:
-\begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \texttt{[ \{ "book\_id": 1, "title": "Title", "average\_rate": 4.5, ... \}, ... ]}
-  \item Error Response:
+\subsubsection*{Search by Title}
+
 \begin{itemize}
-  \item \texttt{Code: 500 Internal Server Error}  
-  \item \texttt{Content:} \{"error": "Unable to fetch top rated books."\}
+    \item URL: \texttt{/books/search?title=\{query\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: title: \{String\} — required
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{ "book\_id": 1, "title": "Book Title", "author": "Author Name", ... \}, ... ]}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing 'title' query parameter."\}
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "No books found matching title query."\}
 \end{itemize}
 
-\item[\textit{Search by Title}]
-\item URL: \texttt{/books/search?title=\{query\}}  
-\item Method: \texttt{GET}  
-\item URL Parameters:
+\subsubsection*{Books by Author, Category, or Publisher}
+
 \begin{itemize}
-  \item \texttt{title} (string, required) — Title or partial title of the book to search.
+    \item URL: \texttt{/books/author?id=\{author\_id\}}, \texttt{/books/category?id=\{category\_id\}}, \texttt{/books/publisher?id=\{publisher\_id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: id: \{Integer\} — required
+
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{ "book\_id": 1, "title": "Book Title", "author": "Author Name", ... \}, ... ]}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid 'id' parameter."\}
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "No books found for the specified ID."\}
 \end{itemize}
-\item Data Parameters: None  
-\item Success Response:
+
+\subsubsection*{Orders}
+
+\subsubsection*{Get All Orders}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \texttt{[ \{ "book\_id": 1, "title": "Book Title", "author": "Author Name", ... \}, ... ]}
+    \item URL: \texttt{/orders}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{order\_details\}, ... ]}
+
+    \item Error Response: \newline
+    \textbf{Code}: 500 Internal Server Error
 \end{itemize}
-\item Error Response:
+
+\subsubsection*{Get Order by ID}
+
 \begin{itemize}
-  \item \texttt{Code: 400 Bad Request}  
-  \item \texttt{Content:} \{"error": "Missing 'title' query parameter."\}
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "No books found matching title query."\}
+    \item URL: \texttt{/order/\{id\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: id: \{Integer\} — required
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{order\_details\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found
 \end{itemize}
+
+\subsubsection*{Insert New Order}
 
-\item[\textit{Books by Author/Category/Publisher}] 
-\item URL: \texttt{/books/author?id=\{author\_id\}}, \texttt{/books/category?id=\{category\_id\}}, \texttt{/books/publisher?id=\{publisher\_id\}}  
-\item Method: \texttt{GET}  
-\item URL Parameters:
 \begin{itemize}
-  \item \texttt{id} (int, required) — ID of the author, category, or publisher.
+    \item URL: \texttt{/order}
+    \item Method: \texttt{POST}
+    \item URL Parameters: NONE
+    \item Data Parameters:
+
+    JSON body containing order details
+
+    \item Success Response: \newline
+    \textbf{Code}: 201 Created \\
+    \textbf{Content}: \{"message": "Order inserted successfully."\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 500 Internal Server Error
 \end{itemize}
-\item Success Response:
+
+\subsubsection*{Get All Orders for User}
+
 \begin{itemize}
-  \item \texttt{Code: 200 OK}  
-  \item \texttt{Content:} \texttt{[ \{ "book\_id": 1, "title": "Book Title", "author": "Author Name", ... \}, ... ]}
+    \item URL: \texttt{/order/user/\{userId\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: userId: \{Integer\} — required
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{order\_details\}, ... ]}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found
 \end{itemize}
+
+\subsubsection*{Get Latest Order for User}
 
-\item Error Response:
 \begin{itemize}
-  \item \texttt{Code: 400 Bad Request}  
-  \item \texttt{Content:} \{"error": "Missing or invalid 'id' parameter."\}
-  
-  \item \texttt{Code: 404 Not Found}  
-  \item \texttt{Content:} \{"error": "No books found for the specified ID."\}
+    \item URL: \texttt{/order/user/\{userId\}/latest}
+    \item Method: \texttt{GET}
+    \item URL Parameters: userId: \{Integer\} — required
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{order\_details\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 404 Not Found
 \end{itemize}
+
+\subsubsection*{Discounts}
 
-  \item[\textbf{Orders}] --------------------------------------------------
+\subsubsection*{Retrieve All Discounts}
 
-\item[\textit{Get All Orders}]
 \begin{itemize}
-  \item \texttt{URL: /orders}
-  \item \texttt{Method: GET}
-  \item \texttt{Success Response:}
-    \begin{itemize}
-      \item \texttt{Code: 200 OK}
-      \item \texttt{Content: [ \{order\_details\}, ... ]}
-    \end{itemize}
-  \item \texttt{Error Response:}
-    \begin{itemize}
-      \item \texttt{Code: 500 Internal Server Error}
-    \end{itemize}
+    \item URL: \texttt{/discount/all}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{discount\_details\}, ... ]}
 \end{itemize}
 
-\item[\textit{Get Order By ID}]
+\subsubsection*{Retrieve Active Discounts}
+
 \begin{itemize}
-  \item \texttt{URL: /order/\{id\}}
-  \item \texttt{Method: GET}
-  \item \texttt{URL Params:}
-    \begin{itemize}
-      \item \texttt{id} (int, required) — ID of the order
-    \end{itemize}
-  \item \texttt{Success Response:}
-    \begin{itemize}
-      \item \texttt{Code: 200 OK}
-      \item \texttt{Content: \{order\_details\}}
-    \end{itemize}
-  \item \texttt{Error Response:}
-    \begin{itemize}
-      \item \texttt{Code: 404 Not Found}
-    \end{itemize}
+    \item URL: \texttt{/discount/active}
+    \item Method: \texttt{GET}
+    \item URL Parameters: NONE
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \texttt{[ \{discount\_details\}, ... ]}
 \end{itemize}
 
-\item[\textit{Insert New Order}]
+\subsubsection*{Retrieve Discount by Code}
+
 \begin{itemize}
-  \item \texttt{URL: /order}
-  \item \texttt{Method: POST}
-  \item \texttt{Data Params:}
-    \begin{itemize}
-      \item JSON body containing order details
-    \end{itemize}
-  \item \texttt{Success Response:}
-    \begin{itemize}
-      \item \texttt{Code: 201 Created}
-      \item \texttt{Content: \{"message": "Order inserted successfully."\}}
-    \end{itemize}
-  \item \texttt{Error Response:}
-    \begin{itemize}
-      \item \texttt{Code: 500 Internal Server Error}
-    \end{itemize}
+    \item URL: \texttt{/discount/code?code=\{discount\_code\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: code: \{String\} — required
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{discount\_details\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing code."\}
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Discount not found."\}
 \end{itemize}
 
-\item[\textit{Get All Orders for User}]
+\subsubsection*{Retrieve Valid Discount by Code}
+
 \begin{itemize}
-  \item \texttt{URL: /order/user/\{userId\}}
-  \item \texttt{Method: GET}
-  \item \texttt{URL Params:}
-    \begin{itemize}
-      \item \texttt{userId} (int, required)
-    \end{itemize}
-  \item \texttt{Success Response:}
-    \begin{itemize}
-      \item \texttt{Code: 200 OK}
-      \item \texttt{Content: [ \{order\_details\}, ... ]}
-    \end{itemize}
-  \item \texttt{Error Response:}
-    \begin{itemize}
-      \item \texttt{Code: 404 Not Found}
-    \end{itemize}
+    \item URL: \texttt{/discount/query/valid?code=\{discount\_code\}}
+    \item Method: \texttt{GET}
+    \item URL Parameters: code: \{String\} — required
+    \item Data Parameters: NONE
+
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{discount\_details\}
+
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid discount code."\}
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Valid discount not found."\}
 \end{itemize}
+
+\subsubsection*{Delete Discount}
 
-\item[\textit{Get Latest Order for User}]
 \begin{itemize}
-  \item \texttt{URL: /order/user/\{userId\}/latest}
-  \item \texttt{Method: GET}
-  \item \texttt{URL Params:}
-    \begin{itemize}
-      \item \texttt{userId} (int, required)
-    \end{itemize}
-  \item \texttt{Success Response:}
-    \begin{itemize}
-      \item \texttt{Code: 200 OK}
-      \item \texttt{Content: \{order\_details\}}
-    \end{itemize}
-  \item \texttt{Error Response:}
-    \begin{itemize}
-      \item \texttt{Code: 404 Not Found}
-    \end{itemize}
-\end{itemize}
+    \item URL: \texttt{/discount?id=\{discount\_id\}}
+    \item Method: \texttt{DELETE}
+    \item URL Parameters: id: \{Integer\} — required
+    \item Data Parameters: NONE
 
+    \item Success Response: \newline
+    \textbf{Code}: 200 OK \\
+    \textbf{Content}: \{"message": "Discount deleted successfully."\}
 
-  \item[\textbf{Discounts}] --------------------------------------------------
+    \item Error Response: \newline
+    \textbf{Code}: 400 Bad Request \\
+    \textbf{Content}: \{"error": "Missing or invalid discount ID."\}
+
+    \textbf{Code}: 404 Not Found \\
+    \textbf{Content}: \{"error": "Discount not found."\}
+\end{itemize}
 
-  \item[\textit{Retrieve All Discounts}]
-  \item URL: \texttt{/discount/all}  
-  \item Method: \texttt{GET}  
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 200 OK}  
-    \item \texttt{Content:} \texttt{[ \{discount\_details\}, ... ]}
-  \end{itemize}
-  
-  \item[\textit{Retrieve Active Discounts}]
-  \item URL: \texttt{/discount/active}  
-  \item Method: \texttt{GET}  
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 200 OK}  
-    \item \texttt{Content:} \texttt{[ \{discount\_details\}, ... ]}
-  \end{itemize}
-  
-  \item[\textit{Retrieve Discount by Code}]
-  \item URL: \texttt{/discount/code?code=\{discount\_code\}}  
-  \item Method: \texttt{GET}  
-  \item URL Parameters:
-  \begin{itemize}
-    \item \texttt{code} (string, required)
-  \end{itemize}
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 200 OK}  
-    \item \texttt{Content:} \{ \texttt{discount\_details} \}
-  \end{itemize}
-  \item Error Response:
-  \begin{itemize}
-    \item \texttt{Code: 404 Not Found}, 400 if missing code
-  \end{itemize}
-  
-  \item[\textit{Retrieve Valid Discount by Code}]
-  \item URL: \texttt{/discount/query/valid?code=\{discount\_code\}}  
-  \item Method: \texttt{GET}  
-  \item URL Parameters:
-  \begin{itemize}
-    \item \texttt{code} (string, required)
-  \end{itemize}
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 200 OK}  
-    \item \texttt{Content:} \{ \texttt{discount\_details} \}
-  \end{itemize}
-  \item Error Response:
-  \begin{itemize}
-    \item \texttt{Code: 404 Not Found}, 400 if missing or invalid
-  \end{itemize}
-  
-  \item[\textit{Delete Discount}]
-  \item URL: \texttt{/discount?id=\{discount\_id\}}  
-  \item Method: \texttt{DELETE}  
-  \item URL Parameters:
-  \begin{itemize}
-    \item \texttt{id} (int, required)
-  \end{itemize}
-  \item Success Response:
-  \begin{itemize}
-    \item \texttt{Code: 200 OK}  
-    \item \texttt{Content:} \{"message": "Discount deleted successfully."\}
-  \end{itemize}
-  \item Error Response:
-  \begin{itemize}
-    \item \texttt{Code: 404 Not Found}, 400 if ID is missing or invalid
-  \end{itemize}
-  
