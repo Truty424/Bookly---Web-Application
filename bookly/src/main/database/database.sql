@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.user_image (
     user_id INTEGER PRIMARY KEY NOT NULL,
     image BYTEA NOT NULL,
     image_type VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
 );
 
 
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.book_image (
     book_id INTEGER PRIMARY KEY NOT NULL,
     image BYTEA NOT NULL,
     image_type VARCHAR(255) NOT NULL,
-    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id) ON DELETE CASCADE
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id) 
 );
 
 

@@ -1,79 +1,135 @@
 \subsection{REST Error Codes}
 
-%If needed, add few lines of text, describing the error codes table
-
-Here is the list of errors defined in the application. Application-specific errors have the application error, which follows a progressive numeration starting from 400. METHOD NOT ALLOWED errors are identified with the error code 405. Internal errors, which correspond to server issues, database failures, or problems with the input/output streams, are identified with the Error Code 500. User, Wishlist, Review, Order, Book, Publisher, Author: Each of these entities and their relationships has been considered, ensuring all relevant errors related to user actions (e.g., login, wishlist updates) and entity-specific operations (e.g., book reviews, order placements) are covered.
-
+The table below documents all REST error codes implemented in the Bookly platform. These codes are categorized into general HTTP errors and entity-specific errors such as users, carts, discounts, and orders. Each entry consists of the application-specific error code, the corresponding HTTP status code, and a description for clarity.
 
 \begin{longtable}{|p{.15\columnwidth}|p{.2\columnwidth} |p{.6\columnwidth}|} 
 \hline
-\textbf{Error Code} & \textbf{HTTP Status Code} & \textbf{Description} \\\hline
+\textbf{Error Code} & \textbf{HTTP Status Code} & \textbf{Description} \\
+\hline
 
-\hline 
-200 & OK & This status code indicates that the request was successful, and the server is returning the requested data or that the request was successfully processed \\
-\hline 
-202 & Accepted & This status code means that the request has been accepted for processing, but the processing is not yet complete. \\
-\hline 
-400 & Bad Request & Required fields (e.g., username, email, password) are missing or invalid. \\
-\hline 
-409 & Conflict & A user with the same email or username already exists. \\
-\hline 
-401 & Unauthorized & Login credentials are incorrect. \\
+0 & 200 & Request successful. \\
 \hline
-400 & Bad Request & The login payload is incomplete. \\
+1 & 201 & Resource created successfully. \\
 \hline
-404 & Not Found & User with the specified user\_id does not exist. \\
+2 & 202 & Request accepted but not yet processed. \\
 \hline
-404 & Not Found & The specified user\_id does not have a wishlist. \\
+3 & 204 & No content available. \\
 \hline
-401 & Unauthorized & The request is made by a user who is not authenticated. \\
+-1 & 500 & Internal server error. \\
 \hline
-400 & Bad Request & Wishlist data provided is invalid or incomplete. \\
+-2 & 405 & HTTP method not allowed. \\
 \hline
-401 & Unauthorized & The user is not logged in. \\
+-3 & 400 & Bad request. \\
 \hline
-404 & Not Found & The requested book does not exist. \\
+-4 & 401 & Unauthorized access. \\
 \hline
-400 & Bad Request & The review data is incomplete or invalid. \\
+-5 & 403 & Forbidden action. \\
 \hline
-401 & Unauthorized & The user is not logged in to write a review. \\
+-6 & 404 & Resource not found. \\
 \hline
-404 & Not Found & The specified category or publisher does not exist. \\
+-7 & 409 & Request conflict. \\
 \hline
-404 & Not Found & The author of the book does not exist. \\
+-8 & 415 & Unsupported media type. \\
 \hline
-409 & Conflict & A conflict occurred when trying to add a book or wishlist item. \\
+
+% --- User Errors ---
+-100 & 404 & User not found. \\
 \hline
-500 & Internal Server Error & An unexpected error occurred on the server. \\
+-101 & 400 & Username is required. \\
 \hline
-403 & Forbidden & The user is not authorized to perform this action. \\
+-102 & 400 & First name is required. \\
 \hline
-415 & Unsupported Media Type & The server does not support the media type of the request (e.g., trying to upload a .bmp file when only .jpg or .png are allowed). \\
+-103 & 400 & Last name is required. \\
 \hline
-400 & Bad Request & The request body is malformed or contains invalid data (e.g., invalid email format or missing required fields). \\
+-104 & 400 & Email is required. \\
 \hline
-401 & Unauthorized & User is not logged in or the session has expired. \\
+-105 & 400 & Invalid email format. \\
 \hline
-403 & Forbidden & The user does not have permission to access the requested resource (e.g., trying to access another user's wishlist). \\
+-106 & 400 & Password is required. \\
 \hline
-404 & Not Found & The requested resource (e.g., book, user, wishlist) does not exist. \\
+-107 & 400 & Password is too weak. \\
 \hline
-405 & Method Not Allowed & The HTTP method used is not allowed for the requested resource (e.g., using POST instead of GET). \\
+-108 & 409 & Passwords do not match. \\
 \hline
-406 & Not Acceptable & The requested resource is not available in a format acceptable by the client (e.g., requesting XML when the API only supports JSON). \\
+-109 & 400 & Username or email is required. \\
 \hline
-408 & Request Timeout & The server timed out waiting for the request. This could happen if the operation takes too long. \\
+-110 & 400 & Invalid username format. \\
 \hline
-409 & Conflict & A conflict occurred during a request (e.g., trying to add the same book to a wishlist that already exists). \\
+-111 & 409 & User already exists. \\
 \hline
-500 & Internal Server Error & An unexpected error occurred on the server, typically related to server malfunctions or database failures. \\
+-112 & 400 & User registration input is invalid. \\
 \hline
-502 & Bad Gateway & The server received an invalid response from an upstream server while processing the request. \\
+-113 & 401 & Session expired or user not logged in. \\
 \hline
-503 & Service Unavailable & The server is currently unable to handle the request due to temporary overload or maintenance. \\
+-114 & 401 & Invalid login credentials. \\
 \hline
-504 & Gateway Timeout & The server did not receive a timely response from an upstream server while processing the request.
-\\\hline
-\caption{Describe in this table your REST API}
-\label{tab:termGlossary}
+
+% --- Discount Errors ---
+-100 & 400 & Invalid discount object. \\
+\hline
+-101 & 400 & Discount code is required. \\
+\hline
+-102 & 400 & Discount code format is invalid. \\
+\hline
+-103 & 400 & Discount must be greater than 0\%. \\
+\hline
+-104 & 400 & Discount cannot exceed 100\%. \\
+\hline
+-105 & 400 & Discount expiration date is required. \\
+\hline
+-106 & 400 & Discount has already expired. \\
+\hline
+-107 & 400 & Discount must last at least 1 day. \\
+\hline
+-108 & 400 & Discount must not exceed 365 days. \\
+\hline
+-109 & 400 & This discount is expired and cannot be used. \\
+\hline
+
+% --- Cart Errors ---
+-200 & 404 & Cart not found. \\
+\hline
+-201 & 400 & Cart operation failed. \\
+\hline
+-202 & 400 & Cart is empty. \\
+\hline
+-203 & 409 & Item already in cart. \\
+\hline
+-204 & 400 & Cart object is null or invalid. \\
+\hline
+-205 & 400 & User ID is invalid. \\
+\hline
+-206 & 400 & Cart has too many items. \\
+\hline
+-207 & 400 & Item quantity must be greater than 0. \\
+\hline
+-208 & 400 & Cart total must be greater than 0. \\
+\hline
+-209 & 400 & Cart total exceeds maximum allowed value. \\
+\hline
+-210 & 400 & Shipping method is missing or empty. \\
+\hline
+
+% --- Order Errors ---
+-305 & 400 & Invalid or null order object. \\
+\hline
+-306 & 400 & Order total must be greater than 0. \\
+\hline
+-307 & 400 & Shipping address is required. \\
+\hline
+-308 & 400 & Shipment code format is invalid. \\
+\hline
+-309 & 400 & Order status is invalid. \\
+\hline
+-310 & 400 & Order date cannot be in the future. \\
+\hline
+-311 & 409 & Order has already been shipped or delivered and cannot be cancelled. \\
+\hline
+
+% --- Misc ---
+-999 & 400 & Unknown operation requested. \\
+
+\hline
+\caption{List of defined REST API error codes}
+\label{tab:restErrors}
 \end{longtable}

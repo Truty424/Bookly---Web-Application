@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.user.LoginUserDAO;
+import it.unipd.bookly.dao.user.RegisterUserDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 import it.unipd.bookly.utilities.JWTUtil;
 
@@ -33,15 +34,16 @@ public class AuthenticationUserRest extends AbstractRestResource {
         try {
             switch (method) {
                 case "POST" -> {
-                    if (path.endsWith("/auth")) {
-                        handleAuthentication();
+                    if (path.endsWith("/auth/login")) {
+                        handleLogin();
+                    } else if (path.endsWith("/auth/signup")) {
+                        handleSignup();
                     } else {
-                        sendNotFound("Invalid authentication path. Expected: /api/auth");
+                        sendNotFound("Invalid authentication path. Use /auth/login or /auth/signup.");
                     }
                 }
-                default -> {
-                    sendMethodNotAllowed("Only POST is supported for user authentication.");
-                }
+                default ->
+                    sendMethodNotAllowed("Only POST is supported for authentication.");
             }
         } catch (Exception e) {
             LOGGER.error("AuthenticationUserRest error", e);
@@ -49,7 +51,7 @@ public class AuthenticationUserRest extends AbstractRestResource {
         }
     }
 
-    private void handleAuthentication() throws Exception {
+    private void handleLogin() throws Exception {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
@@ -61,15 +63,36 @@ public class AuthenticationUserRest extends AbstractRestResource {
         User authenticated = new LoginUserDAO(con, username, password).access().getOutputParam();
 
         if (authenticated != null) {
-            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            new Message("Invalid credentials.", "401", "Authentication failed.")
-                    .toJSON(res.getOutputStream());
-
-        } else {
             String token = JWTUtil.generateToken(username);
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
-            mapper.writeValue(res.getOutputStream(), new Message("Authentication successful.", "200", token));
+            mapper.writeValue(res.getOutputStream(),
+                    new Message("Authentication successful.", "200", token));
+        } else {
+            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            new Message("Invalid credentials.", "401", "Authentication failed.")
+                    .toJSON(res.getOutputStream());
+        }
+    }
+
+    private void handleSignup() throws Exception {
+        User newUser = mapper.readValue(req.getInputStream(), User.class);
+
+        if (newUser.getUsername() == null || newUser.getEmail() == null || newUser.getPassword() == null) {
+            sendBadRequest("Missing required fields", "Username, email, and password are required.");
+            return;
+        }
+
+        User userCreated = new RegisterUserDAO(con, newUser).access().getOutputParam();
+
+        if (userCreated != null) {
+            res.setStatus(HttpServletResponse.SC_CREATED);
+            mapper.writeValue(res.getOutputStream(),
+                    new Message("User created successfully.", "201", newUser.getUsername()));
+        } else {
+            res.setStatus(HttpServletResponse.SC_CONFLICT);
+            new Message("Conflict", "409", "Username or email already exists.")
+                    .toJSON(res.getOutputStream());
         }
     }
 

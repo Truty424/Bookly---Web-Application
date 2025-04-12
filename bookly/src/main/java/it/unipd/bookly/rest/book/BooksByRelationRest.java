@@ -15,6 +15,13 @@ import it.unipd.bookly.rest.AbstractRestResource;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+/**
+ * Handles book retrieval by relationship:
+ * 
+ * - GET /api/books/author?id={authorId}     → Books by a specific author
+ * - GET /api/books/category?id={categoryId} → Books in a specific category
+ * - GET /api/books/publisher?id={publisherId} → Books by a specific publisher
+ */
 public class BooksByRelationRest extends AbstractRestResource {
 
     public BooksByRelationRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
@@ -37,9 +44,12 @@ public class BooksByRelationRest extends AbstractRestResource {
 
             List<Book> books;
             switch (relationType) {
-                case "author" -> books = new GetBooksByAuthorIdDAO(con, id).access().getOutputParam();
-                case "category" -> books = new GetBooksByCategoryIdDAO(con, id).access().getOutputParam();
-                case "publisher" -> books = new GetBooksByPublisherIdDAO(con, id).access().getOutputParam();
+                case "author" ->
+                    books = new GetBooksByAuthorIdDAO(con, id).access().getOutputParam();
+                case "category" ->
+                    books = new GetBooksByCategoryIdDAO(con, id).access().getOutputParam();
+                case "publisher" ->
+                    books = new GetBooksByPublisherIdDAO(con, id).access().getOutputParam();
                 default -> {
                     sendMessage(HttpServletResponse.SC_NOT_FOUND, "Invalid endpoint.", "E404",
                             "Path must contain /author, /category, or /publisher.");
@@ -66,9 +76,15 @@ public class BooksByRelationRest extends AbstractRestResource {
     }
 
     private String extractRelationType(String path) {
-        if (path.contains("/author")) return "author";
-        if (path.contains("/category")) return "category";
-        if (path.contains("/publisher")) return "publisher";
+        if (path.contains("/author")) {
+            return "author";
+        }
+        if (path.contains("/category")) {
+            return "category";
+        }
+        if (path.contains("/publisher")) {
+            return "publisher";
+        }
         return "unknown";
     }
 

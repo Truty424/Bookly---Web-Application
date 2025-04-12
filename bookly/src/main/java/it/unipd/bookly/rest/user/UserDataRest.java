@@ -41,13 +41,7 @@ public class UserDataRest extends AbstractRestResource {
                         sendNotFound("Invalid path for GET request.");
                     }
                 }
-                case "PUT" -> {
-                    if (path.matches(".*/user/\\d+$")) {
-                        handleUpdateUser(path);
-                    } else {
-                        sendNotFound("Invalid path for PUT request.");
-                    }
-                }
+
                 default ->
                     sendMethodNotAllowed("Only GET and PUT are supported.");
             }
@@ -68,46 +62,6 @@ public class UserDataRest extends AbstractRestResource {
         } else {
             sendNotFound("User with username " + username + " not found.");
         }
-    }
-
-    private void handleUpdateUser(String path) throws Exception {
-        int userId = extractIdFromPath(path);
-        String newEmail = req.getParameter("email");
-        String newPhone = req.getParameter("phone");
-        String firstName = req.getParameter("firstName");
-        String lastName = req.getParameter("lastName");
-        String address = req.getParameter("address");
-        String role = req.getParameter("role");
-
-        if (newEmail == null || newPhone == null || firstName == null || lastName == null || address == null || role == null) {
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            new Message("Missing parameters", "400", "All fields (email, phone, firstName, lastName, address, role) are required.")
-                    .toJSON(res.getOutputStream());
-            return;
-        }
-
-        Boolean updated = new UpdateUserDAO(
-                con,
-                userId,
-                firstName,
-                lastName,
-                newEmail,
-                newPhone,
-                address,
-                role
-        ).access().getOutputParam();
-
-        if (Boolean.TRUE.equals(updated)) {
-            res.setStatus(HttpServletResponse.SC_OK);
-            new Message("User updated successfully.", "200", "User ID " + userId + " updated.")
-                    .toJSON(res.getOutputStream());
-        } else {
-            sendNotFound("User with ID " + userId + " not found.");
-        }
-    }
-
-    private int extractIdFromPath(String path) {
-        return Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
     }
 
     private void sendNotFound(String detail) throws IOException {
