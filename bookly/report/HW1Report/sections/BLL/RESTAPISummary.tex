@@ -1,87 +1,138 @@
 \subsection{REST API Summary}
 
-%describe the REST API. If needed, add a few lines of text here, describing the content of the table.
+This API structure is aligned with the entities in the ER diagram, covering user management, book management, orders, reviews, discounts, and the relationships between them.
 
-This API structure is aligned with the entities in the ER diagram, covering user management, book management, orders, and discounts, as well as the relationships between them.
-Explanation:
-URI: The specific endpoint for each action.
-Method: The HTTP method used (GET, POST, PUT, DELETE).
-Description: A brief explanation of what the endpoint does.
-Filter: Categories for filtering:
-A: User-related endpoints (such as registration, login, orders).
-B: Book, category, review, author, and publisher-related endpoints.
-M: Discount-related endpoints (such as managing and applying discounts).
-Key Relationships Considered from ER Diagram:
-User can manage wishlists and orders.
-Book is linked to reviews, categories, authors, and publishers.
-Order allows the user to interact with the cart and apply discounts.
+\textbf{URI}: The specific endpoint for each action. \\
+\textbf{Method}: The HTTP method used (GET, POST, PUT, DELETE). \\
+\textbf{Description}: A brief explanation of what the endpoint does. \\
+\textbf{Filter}: \textbf{A} — User-related \quad \textbf{B} — Book, author, publisher, review \quad \textbf{M} — Discount-related
 
-
-\begin{longtable}{|p{.305\columnwidth}|p{.1\columnwidth} |p{.42\columnwidth}|p{.1\columnwidth}|} 
+\begin{longtable}{|p{.3\columnwidth}|p{.5\columnwidth} |p{.45\columnwidth}|p{.05\columnwidth}|} 
 \hline
-\textbf{URI} & \textbf{Method} & \textbf{Description} & \textbf{Filter} 
-
-% Data rows:
-\hline 
-/users & POST & Allows users to register by providing their username, email, password, and other personal details. & A \\ 
-\hline 
-/users/login & POST & Allows users to log in by providing their username and password. & A \\
-\hline
-/users/user\_id & GET & Returns the details of a specific user based on their user\_id. & A \\
-\hline 
-/users/user\_id/wishlists & GET & Returns the wishlist of a specific user. & A \\
-\hline 
-/users/user\_id/wishlists & POST & Allows a user to add a book to their wishlist. & A \\
-\hline 
-/users/user\_id/wishlists/book\_id & DELETE & Allows a user to remove a book from their wishlist. & A \\
-\hline 
-/books & GET & Returns a list of all books available in the bookstore database. & B \\
-\hline 
-/books/book\_id & GET & Returns the details of a specific book based on the book\_id. & B \\
-\hline 
-/books & POST & Allows to insert a new book into the database with the necessary details (title, price, etc.). & B \\
-\hline 
-/books/book\_id & PUT & Allows to update an existing book's details (price, title, etc.). & B \\
-\hline 
-/books/book\_id & DELETE & Allows to delete a specific book from the database. & B \\
-\hline 
-/categories & GET & Returns a list of all book categories available in the bookstore. & B \\
-\hline 
-/categories/category\_id/books & GET & Returns a list of books from a specific category. & B \\
-\hline 
-/reviews & GET & Returns all reviews of books written by users. & B \\
-\hline 
-/reviews/book\_id & GET & Returns all reviews for a specific book based on book\_id. & B \\
-\hline 
-/reviews/book\_id & POST & Allows a user to submit a review for a specific book with rating, text, and other details. & B \\
-\hline 
-/orders & GET & Returns all orders placed by a specific user. & A \\
-\hline 
-/orders & POST & Allows a user to place a new order by providing the cart items, address, and total price. & A \\
-\hline 
-/orders/order\_id & GET & Returns details of a specific order (order status, total price, etc.). & A \\
-\hline 
-/orders/order\_id/status & PUT & Allows to update the delivery status of an existing order. & A \\
-\hline 
-/orders/order\_id/checkout & POST & Finalizes the checkout process for an order, including payment and shipping information. & A \\
-\hline 
-/discounts & GET & Returns all available discount codes and their details. & M \\
-\hline 
-/discounts/discount\_id & GET & Returns details of a specific discount code. & M \\
-\hline 
-/discounts/discount\_id/apply & POST & Allows a user to apply a discount code to their order or shopping cart. & M \\
-\hline 
-/publishers & GET & Returns a list of all publishers in the system. & B \\
-\hline 
-/publishers/publisher\_id & GET & Returns details of a specific publisher. & B \\
-\hline 
-/authors & GET & Returns a list of all authors who have written books in the bookstore. & B \\
-\hline 
-/authors/author\_id & GET & Returns details of a specific author. & B \\
-\hline 
-/authors/author\_id/books & GET & Returns the list of books written by a specific author. & B
+\textbf{URI} & \textbf{Method} & \textbf{Description} & \textbf{F} 
 \\\hline
 
-\caption{Describe in this table your REST API}
-\label{tab:termGlossary}
+/auth/signup & POST & Register a new user with credentials and optional profile info. & A \\
+\hline
+/auth/login & POST & Login a user and return authentication token. & A \\
+\hline
+/user?username=\{username\} & GET & Get user information by username. & A \\
+\hline
+/cart?userId=\{user\_id\} & GET & Retrieve a user's cart. & A \\
+\hline
+/cart/add?cartId=\{cart\_id\}&bookId=\{book\_id\} & POST & Add a book to a specific cart. & A \\
+\hline
+/cart/remove?cartId=\{cart\_id\}&bookId=\{book\_id\} & DELETE & Remove a book from a specific cart. & A \\
+\hline
+/review & POST & Create a new review for a book. & B \\
+\hline
+/review/\{review\_id\} & GET & Get a specific review by ID. & B \\
+\hline
+/review/\{review\_id\} & DELETE & Delete a review by its ID. & B \\
+\hline
+/reviews & GET & Retrieve all reviews in the system. & B \\
+\hline
+/review/book/\{book\_id\} & GET & Get all reviews for a specific book. & B \\
+\hline
+/review/user/\{user\_id\} & GET & Get all reviews written by a specific user. & B \\
+\hline
+/review/top/book/\{book\_id\} & GET & Get top-rated reviews for a book. & B \\
+\hline
+/authors & GET & Retrieve all authors. & B \\
+\hline
+/authors/\{id\} & GET & Get details for a specific author. & B \\
+\hline
+/authors & POST & Create a new author. & B \\
+\hline
+/authors/\{id\} & PUT & Update an existing author. & B \\
+\hline
+/authors/\{id\} & DELETE & Delete an author by ID. & B \\
+\hline
+/authors/assign & POST & Assign an author to a book. & B \\
+\hline
+/authors/remove & DELETE & Remove an author from a book. & B \\
+\hline
+/wishlist?userId=\{user\_id\} & POST & Create a wishlist for a user. & A \\
+\hline
+/wishlist/\{wishlistId\} & DELETE & Delete a wishlist. & A \\
+\hline
+/wishlist/user/\{userId\} & GET & Get all wishlists for a user. & A \\
+\hline
+/wishlist/clear/\{wishlistId\} & POST & Clear all books in a wishlist. & A \\
+\hline
+/wishlist/books/add & POST & Add a book to a wishlist. & A \\
+\hline
+/wishlist/books/remove & DELETE & Remove a book from a wishlist. & A \\
+\hline
+/wishlist/books/\{wishlistId\} & GET & Get all books in a wishlist. & A \\
+\hline
+/wishlist/books/contains & GET & Check if a book exists in a wishlist. & A \\
+\hline
+/wishlist/books/count & GET & Get the number of books in a wishlist. & A \\
+\hline
+/publishers & GET & Get all publishers. & B \\
+\hline
+/publishers/\{id\} & GET & Get a publisher by ID. & B \\
+\hline
+/publishers & POST & Insert a new publisher. & B \\
+\hline
+/publishers/\{id\} & PUT & Update a publisher. & B \\
+\hline
+/publishers/\{id\} & DELETE & Delete a publisher. & B \\
+\hline
+/publishers/book/\{bookId\} & GET & Get publishers of a book. & B \\
+\hline
+/publishers/\{publisherId\}/books & GET & Get books by publisher. & B \\
+\hline
+/publishers/\{publisherId\}/books/count & GET & Count books by a publisher. & B \\
+\hline
+/publishers?bookId=\{bookId\}&publisherId=\{publisherId\} & POST & Assign publisher to a book. & B \\
+\hline
+/publishers?bookId=\{bookId\}&publisherId=\{publisherId\} & DELETE & Remove publisher from a book. & B \\
+\hline
+/books & GET & Get all books. & B \\
+\hline
+/book?id=\{book\_id\} & GET & Get a book by ID. & B \\
+\hline
+/book & POST & Insert a new book. & B \\
+\hline
+/book & PUT & Update book details. & B \\
+\hline
+/book/stock?id=\{book\_id\}&quantity=\{qty\} & PUT & Update book stock. & B \\
+\hline
+/book?id=\{book\_id\} & DELETE & Delete a book. & B \\
+\hline
+/books/top-rated & GET & Get top-rated books. & B \\
+\hline
+/books/search?title=\{query\} & GET & Search books by title. & B \\
+\hline
+/books/author?id=\{author\_id\} & GET & Books by author. & B \\
+\hline
+/books/category?id=\{category\_id\} & GET & Books by category. & B \\
+\hline
+/books/publisher?id=\{publisher\_id\} & GET & Books by publisher. & B \\
+\hline
+/orders & GET & Get all orders. & A \\
+\hline
+/order/\{id\} & GET & Get an order by ID. & A \\
+\hline
+/order & POST & Place a new order. & A \\
+\hline
+/order/user/\{userId\} & GET & Get all orders for a user. & A \\
+\hline
+/order/user/\{userId\}/latest & GET & Get latest order for a user. & A \\
+\hline
+/discount/all & GET & Retrieve all discounts. & M \\
+\hline
+/discount/active & GET & Get all active discounts. & M \\
+\hline
+/discount/code?code=\{discount\_code\} & GET & Get a discount by code. & M \\
+\hline
+/discount/query/valid?code=\{discount\_code\} & GET & Get valid discount by code. & M \\
+\hline
+/discount?id=\{discount\_id\} & DELETE & Delete a discount. & M \\
+\hline
+
+\caption{Summary of REST API Endpoints categorized by entity and functionality}
+\label{tab:apiSummary}
 \end{longtable}
