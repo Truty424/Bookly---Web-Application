@@ -1,16 +1,21 @@
 package it.unipd.bookly.rest.author;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import it.unipd.bookly.Resource.Author;
-import it.unipd.bookly.Resource.Message;
-import it.unipd.bookly.dao.author.*;
-import it.unipd.bookly.rest.AbstractRestResource;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import it.unipd.bookly.Resource.Author;
+import it.unipd.bookly.Resource.Message;
+import it.unipd.bookly.dao.author.DeleteAuthorDAO;
+import it.unipd.bookly.dao.author.GetAllAuthorsDAO;
+import it.unipd.bookly.dao.author.GetAuthorByIdDAO;
+import it.unipd.bookly.dao.author.InsertAuthorDAO;
+import it.unipd.bookly.dao.author.UpdateAuthorDAO;
+import it.unipd.bookly.rest.AbstractRestResource;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 public class AuthorRest extends AbstractRestResource {
 
@@ -58,7 +63,8 @@ public class AuthorRest extends AbstractRestResource {
                         sendMethodNotAllowed();
                     }
                 }
-                default -> sendMethodNotAllowed();
+                default ->
+                    sendMethodNotAllowed();
             }
         } catch (Exception e) {
             LOGGER.error("AuthorRest error", e);
@@ -95,7 +101,7 @@ public class AuthorRest extends AbstractRestResource {
 
         if (success) {
             res.setStatus(HttpServletResponse.SC_CREATED);
-            new Message("Author inserted successfully.", "201", author.get_name()).toJSON(res.getOutputStream());
+            new Message("Author inserted successfully.", "201", author.getName()).toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             new Message("Failed to insert author.", "500", "Insert operation failed.").toJSON(res.getOutputStream());
@@ -111,7 +117,7 @@ public class AuthorRest extends AbstractRestResource {
 
         if (success) {
             res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Author updated successfully.", "200", author.get_name()).toJSON(res.getOutputStream());
+            new Message("Author updated successfully.", "200", author.getName()).toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             new Message("Update failed.", "404", "Author not found.").toJSON(res.getOutputStream());

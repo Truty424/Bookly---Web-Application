@@ -79,7 +79,7 @@ public class Order {
         this.orderId = orderId;
     }
 
-    public void setTotalPrice(int totalPrice) {
+    public void setTotalPrice(double totalPrice) {
         this.totalPrice = totalPrice;
     }
 

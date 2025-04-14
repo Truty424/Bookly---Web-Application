@@ -63,7 +63,7 @@ public class Author {
         this.nationality = nationality;
     }
 
-    public String get_name() {
+    public String getName() {
         return first_name + " " + last_name;
     }
 }

@@ -17,7 +17,7 @@ public final class BookQueries {
     public static final String GET_BOOK_BY_ID
             = "SELECT * FROM booklySchema.books WHERE book_id = ?";
 
-    public static final String GET_ALL_BOOKS_WITH_AUTHORS
+    public static final String GET_ALL_BOOKS
             = "SELECT * FROM booklySchema.books";
 
     public static final String SEARCH_BOOK_BY_TITLE

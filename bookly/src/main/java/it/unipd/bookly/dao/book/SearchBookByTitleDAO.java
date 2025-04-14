@@ -60,7 +60,7 @@ public class SearchBookByTitleDAO extends AbstractDAO<List<Book>> {
                     Book book = (bookImage == null)
                             ? new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary)
-                            : new Book(title, language, isbn, price, edition,
+                            : new Book(book_id,title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     books.add(book);

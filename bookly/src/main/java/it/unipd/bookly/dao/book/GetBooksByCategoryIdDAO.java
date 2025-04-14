@@ -61,7 +61,7 @@ public class GetBooksByCategoryIdDAO extends AbstractDAO<List<Book>> {
                         book = new Book(book_id, title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary);
                     } else {
-                        book = new Book(title, language, isbn, price, edition,
+                        book = new Book(book_id,title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
                     }
 

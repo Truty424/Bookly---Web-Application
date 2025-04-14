@@ -9,7 +9,7 @@ public class Cart {
     private int cartId;
     private int userId;
     private int quantity;
-    private int totalPrice;
+    private double totalPrice;
     private String shipmentMethod;
     private Integer discountId;
     private Integer orderId;
@@ -21,7 +21,7 @@ public class Cart {
 
     public Cart(int cartId, int userId, int quantity, String shipmentMethod,
                Integer discountId, Integer orderId, Timestamp createdDate, 
-               int totalPrice, List<CartItem> items) {
+               double totalPrice, List<CartItem> items) {
         this.cartId = cartId;
         this.userId = userId;
         this.quantity = quantity;
@@ -33,7 +33,7 @@ public class Cart {
         this.items = items != null ? items : new ArrayList<>();
     }
 
-    public Cart(int userId, String shipmentMethod, int totalPrice) {
+    public Cart(int userId, String shipmentMethod, double totalPrice) {
         this.userId = userId;
         this.shipmentMethod = shipmentMethod;
         this.totalPrice = totalPrice;
@@ -47,7 +47,7 @@ public class Cart {
     public String getShipmentMethod() { return shipmentMethod; }
     public Integer getDiscountId() { return discountId; }
     public Integer getOrderId() { return orderId; }
-    public int getTotalPrice() { return totalPrice; }
+    public double getTotalPrice() { return totalPrice; }
     public Timestamp getCreatedDate() { return createdDate; }
     public List<CartItem> getItems() { return new ArrayList<>(items); } // Defensive copy
 
@@ -61,7 +61,7 @@ public class Cart {
     public void setDiscountId(Integer discountId) { this.discountId = discountId; }
     public void setOrderId(Integer orderId) { this.orderId = orderId; }
     public void setCreatedDate(Timestamp createdDate) { this.createdDate = createdDate; }
-    public void setTotalPrice(int totalPrice) { 
+    public void setTotalPrice(double totalPrice) { 
         this.totalPrice = Math.max(0, totalPrice); // Prevent negative totals
     }
     public void setItems(List<CartItem> items) {
@@ -78,7 +78,7 @@ public class Cart {
     }
 
     public void removeItem(int bookId) {
-        items.removeIf(item -> item.getBookId() == bookId);
+        items.removeIf(item -> item.getbook_id() == bookId);
         updateDerivedFields();
     }
 

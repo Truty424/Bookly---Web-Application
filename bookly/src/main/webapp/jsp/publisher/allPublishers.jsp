@@ -41,7 +41,7 @@
         %>
                     <li>
                         <a href="<%= request.getContextPath() %>/publisher/<%= publisher.getId() %>">
-                            <%= publisher.get_name() %>
+                            <%= publisher.getName() %>
                         </a>
                     </li>
         <%
