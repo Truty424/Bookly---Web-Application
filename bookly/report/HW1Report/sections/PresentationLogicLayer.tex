@@ -7,6 +7,10 @@ When a user accesses the website, they will be directed to the home page without
     \item \hyperref[sec:book]{Book Page} : Provides details about a specific book.
     \item \hyperref[sec:basket]{Basket Page} : Shows the user's selected books for purchase.
     \item \hyperref[sec:search]{Search Results Page} : Displays books based on the user’s search query.
+    \item \hyperref[sec:author]{Author Page} : Displays information about a specific author.
+    \item \hyperref[sec:cart]{Cart Page} : Shows the current user's shopping carts and theirs contents.
+    \item \hyperref[sec:wishlist]{Wishlist Page} : Displays all the books the user has saved for later.
+
 \end{itemize}
 
 %For the main pages put a mockup and describe it in detail.
@@ -26,7 +30,24 @@ Additionally, the homepage will include:
 
 
 \subsection{Sign In/Sign Up Page} \label{sec:signin}
-This page allows users to register or log in to their accounts. It includes fields for username, password, an option for password recovery, and a button leading to the Sign-up Page.
+This page allows users to either sign in to an existing account or register for a new one.
+
+The \textbf{Sign In section} includes:
+\begin{itemize}
+    \item Input fields for \textbf{username} and \textbf{password}.
+    \item A link for \textbf{password recovery} in case the user forgets their credentials.
+    \item A button redirecting new users to the \textbf{Sign Up section}.
+\end{itemize}
+
+The \textbf{Sign Up section} provides a registration form with the following input fields:
+\begin{itemize}
+    \item \textbf{First Name} and \textbf{Last Name}
+    \item A unique \textbf{Username}
+    \item \textbf{Password}
+    \item \textbf{Phone Number}
+    \item \textbf{Address}
+\end{itemize}
+
 
 
 \subsection{User Profile Page} \label{sec:profile}
@@ -86,3 +107,12 @@ For each book displayed in the search results, the following details will be sho
     \item The \textbf{average rating}, displayed as a star rating out of 5, based on user reviews.
     \item A \textbf{"Add to Basket"} button along with the corresponding price of the book, allowing users to quickly add the book to their shopping cart.
 \end{itemize}
+
+\subsection{Author Page} \label{sec:author}
+Each author will have its own dedicated page displaying their fullname, biography and literary background. This page will help users explore more books from the same author by displaying their best-sellers.
+
+\subsection{Cart Page} \label{sec:cart}
+This page will present the contents of all the user's current shopping carts. It will include all books that the user has added, even if they haven't proceeded to checkout. The cart will persist between sessions for logged-in users. This page will also display the complete user's history order containing all the books the user has already ordered and the dates corresponding. 
+
+\subsection{Wishlist Page} \label{sec:wishlist}
+The wishlist page displays all the books that the user has chosen to save for future reference. From this page, users can  move them directly into their basket to initiate a purchase.

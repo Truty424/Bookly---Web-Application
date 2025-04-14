@@ -11,6 +11,9 @@ Figure~\ref{fig:addtocartsequencediagram} shows the sequence diagram for adding 
 
 Next, the servlet calls the \textit{getOrCreateCartId(userId)} method. It creates a \textit{GetCartByUserIdDAO} to get the user's cart from the database. In this version, we assume the cart already exists and use its \textit{cartId}. Then, the servlet creates an \textit{AddBookToCartDAO} with the connection, \textit{bookId}, and \textit{cartId}. The DAO adds the book to the cart using an SQL \texttt{INSERT} query. Finally, the user is redirected to the \texttt{/cart} page.
 
+Figure~\ref{fig:registerusersequencediagram} describes the user registration flow in the web application. When a user submits the registration form, the \texttt{UserServlet}  is initialized by the web server and processes the request through its \texttt{doPost()} method. It extracts user data from the request, generates a JWT token via \textit{JwtManager}, and stores it in the session. The servlet then creates a \textit{RegisterUserDAO} instance to interact with the database, where it performs an SQL \textit{INSERT} to save the new user. Once the user is successfully registered, the servlet saves the user object in the session and forwards the client to the \textit{userProfile.jsp} page, completing the registration process.
+
+
 \clearpage
 \begin{figure}[h!]
     \centering
@@ -26,4 +29,12 @@ Next, the servlet calls the \textit{getOrCreateCartId(userId)} method. It create
     \includegraphics[width=\textwidth]{photos/SequenceDiagram_CartServlet_AddBookToCart.png}
     \caption{Sequence Diagram for adding a book to the cart}
     \label{fig:addtocartsequencediagram}
+\end{figure}
+
+\clearpage
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{photos/registeruser-sequence-diagram.png}
+    \caption{Sequence Diagram for user registration}
+    \label{fig:registerusersequencediagram}
 \end{figure}
