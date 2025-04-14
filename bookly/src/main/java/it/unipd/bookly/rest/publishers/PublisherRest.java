@@ -13,12 +13,10 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * Handles:
- * - GET    /api/publishers          → get all publishers
- * - GET    /api/publishers/{id}     → get a specific publisher by ID
- * - POST   /api/publishers          → insert a new publisher
- * - PUT    /api/publishers/{id}     → update an existing publisher
- * - DELETE /api/publishers/{id}     → delete a publisher by ID
+ * Handles: - GET /api/publishers → get all publishers - GET
+ * /api/publishers/{id} → get a specific publisher by ID - POST /api/publishers
+ * → insert a new publisher - PUT /api/publishers/{id} → update an existing
+ * publisher - DELETE /api/publishers/{id} → delete a publisher by ID
  */
 public class PublisherRest extends AbstractRestResource {
 
@@ -66,7 +64,8 @@ public class PublisherRest extends AbstractRestResource {
                         sendMethodNotAllowed();
                     }
                 }
-                default -> sendMethodNotAllowed();
+                default ->
+                    sendMethodNotAllowed();
             }
         } catch (Exception e) {
             LOGGER.error("PublisherRest error", e);
@@ -112,22 +111,22 @@ public class PublisherRest extends AbstractRestResource {
 
     private void handleUpdatePublisher(String path) throws Exception {
         int publisherId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-        Publisher publisher = mapper.readValue(req.getInputStream(), Publisher.class);
-        publisher.setPublisherId(publisherId);
 
-        boolean updated = new UpdatePublisherDAO(con,
-                publisher.getPublisherId(),
-                publisher.getPublisherName(),
-                publisher.getPhone(),
-                publisher.getAddress()
-        ).access().getOutputParam();
+        // Read updated data from request body
+        Publisher publisher = mapper.readValue(req.getInputStream(), Publisher.class);
+        publisher.setPublisherId(publisherId); // Ensure the ID from path is used
+
+        // Call DAO using updated Publisher object
+        boolean updated = new UpdatePublisherDAO(con, publisher).access().getOutputParam();
 
         if (updated) {
             res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Publisher updated successfully.", "200", publisher.getPublisherName()).toJSON(res.getOutputStream());
+            new Message("Publisher updated successfully.", "200", publisher.getPublisherName())
+                    .toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Update failed.", "404", "Publisher not found.").toJSON(res.getOutputStream());
+            new Message("Update failed.", "404", "Publisher not found.")
+                    .toJSON(res.getOutputStream());
         }
     }
 

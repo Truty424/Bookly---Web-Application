@@ -1,15 +1,14 @@
 package it.unipd.bookly.dao.book;
 
-import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.GET_BOOKS_BY_AUTHOR_ID;
 
 /**
@@ -61,7 +60,7 @@ public class GetBooksByAuthorIdDAO extends AbstractDAO<List<Book>> {
                         book = new Book(book_id, title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary);
                     } else {
-                        book = new Book(title, language, isbn, price, edition,
+                        book = new Book(book_id, title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
                     }
 

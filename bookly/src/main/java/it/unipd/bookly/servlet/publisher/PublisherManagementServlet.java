@@ -63,9 +63,10 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
         String phone = req.getParameter("phone");
         String address = req.getParameter("address");
 
-        boolean created = new InsertPublisherDAO(getConnection(), new Publisher(name, phone, address)).access().getOutputParam();
-        LOGGER.info("Publisher created: {}", created);
+        Publisher newPublisher = new Publisher(name, phone, address);
+        boolean created = new InsertPublisherDAO(getConnection(), newPublisher).access().getOutputParam();
 
+        LOGGER.info("Publisher created: {}", created);
         resp.sendRedirect(req.getContextPath() + "/admin/publishers");
     }
 
@@ -75,17 +76,20 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
         String phone = req.getParameter("phone");
         String address = req.getParameter("address");
 
-        boolean updated = new UpdatePublisherDAO(getConnection(), id, name, phone, address).access().getOutputParam();
-        LOGGER.info("Publisher updated: {}", updated);
+        Publisher updatedPublisher = new Publisher(name, phone, address);
+        updatedPublisher.setPublisherId(id); // attach ID from request
 
+        boolean updated = new UpdatePublisherDAO(getConnection(), updatedPublisher).access().getOutputParam();
+
+        LOGGER.info("Publisher updated: {}", updated);
         resp.sendRedirect(req.getContextPath() + "/admin/publishers");
     }
 
     private void deletePublisher(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         int id = Integer.parseInt(req.getParameter("publisherId"));
         boolean deleted = new DeletePublisherDAO(getConnection(), id).access().getOutputParam();
-        LOGGER.info("Publisher deleted: {}", deleted);
 
+        LOGGER.info("Publisher deleted: {}", deleted);
         resp.sendRedirect(req.getContextPath() + "/admin/publishers");
     }
 }

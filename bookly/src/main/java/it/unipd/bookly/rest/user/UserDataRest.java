@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.User;
-import it.unipd.bookly.dao.user.UpdateUserDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;

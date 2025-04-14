@@ -1,7 +1,6 @@
 package it.unipd.bookly.Resource;
 
 import java.sql.Timestamp;
-import java.util.Objects;
 
 public class Discount {
 
@@ -40,9 +39,4 @@ public class Discount {
     public void setDiscountPercentage(double discountPercentage) { this.discountPercentage = discountPercentage; }
     public void setExpiredDate(Timestamp expiredDate) { this.expiredDate = expiredDate; }
 
-    // equals and hashCode
-    @Override
-    public int hashCode() {
-        return Objects.hash(discountId);
-    }
 }

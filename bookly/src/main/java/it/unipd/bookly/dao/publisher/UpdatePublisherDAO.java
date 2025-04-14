@@ -1,10 +1,13 @@
 package it.unipd.bookly.dao.publisher;
 
+import it.unipd.bookly.Resource.Publisher;
 import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static it.unipd.bookly.dao.publisher.PublisherQueries.UPDATE_PUBLISHER;
 
@@ -13,47 +16,40 @@ import static it.unipd.bookly.dao.publisher.PublisherQueries.UPDATE_PUBLISHER;
  */
 public class UpdatePublisherDAO extends AbstractDAO<Boolean> {
 
-    private final int publisherId;
-    private final String publisherName;
-    private final String phone;
-    private final String address;
+    private static final Logger LOGGER = LogManager.getLogger(UpdatePublisherDAO.class);
+
+    private final Publisher publisher;
 
     /**
      * Constructor.
      *
-     * @param con           the database connection
-     * @param publisherId   ID of the publisher to update
-     * @param publisherName new name for the publisher
-     * @param phone         new phone number
-     * @param address       new address
+     * @param con       The database connection
+     * @param publisher The Publisher object containing updated values
      */
-    public UpdatePublisherDAO(final Connection con, final int publisherId, final String publisherName, final String phone, final String address) {
+    public UpdatePublisherDAO(final Connection con, final Publisher publisher) {
         super(con);
-        this.publisherId = publisherId;
-        this.publisherName = publisherName;
-        this.phone = phone;
-        this.address = address;
+        this.publisher = publisher;
     }
 
+    /**
+     * Executes the update query using values from the Publisher object.
+     */
     @Override
-    protected void doAccess() throws SQLException {
+    protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(UPDATE_PUBLISHER)) {
-            stmt.setString(1, publisherName);
-            stmt.setString(2, phone);
-            stmt.setString(3, address);
-            stmt.setInt(4, publisherId);
+            stmt.setInt(1, publisher.getPublisherId());
+            stmt.setString(2, publisher.getPublisherName());
+            stmt.setString(3, publisher.getPhone());
+            stmt.setString(4, publisher.getAddress());
 
-            int rowsAffected = stmt.executeUpdate();
+            int affectedRows = stmt.executeUpdate();
+            this.outputParam = affectedRows > 0;
 
-            if (rowsAffected > 0) {
-                LOGGER.info("Publisher ID {} updated successfully.", publisherId);
+            if (this.outputParam) {
+                LOGGER.info("Publisher ID {} updated successfully.", publisher.getPublisherId());
             } else {
-                LOGGER.warn("No publisher updated. ID {} may not exist.", publisherId);
+                LOGGER.warn("No publisher updated. ID {} may not exist.", publisher.getPublisherId());
             }
-
-        } catch (SQLException ex) {
-            LOGGER.error("Error updating publisher ID {}: {}", publisherId, ex.getMessage());
-            throw ex;
         }
     }
 }
