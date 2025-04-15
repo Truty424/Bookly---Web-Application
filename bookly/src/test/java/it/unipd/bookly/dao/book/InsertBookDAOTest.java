@@ -1,34 +1,42 @@
 package it.unipd.bookly.dao.book;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import it.unipd.bookly.Resource.Book;
-import org.junit.jupiter.api.*;
-
-import java.sql.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InsertBookDAOTest {
+
     private Connection connection;
     private Book testBook;
 
     @BeforeEach
     void setUp() throws Exception {
         connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/bookly", "postgres", "postgres");
+                "jdbc:postgresql://localhost:5434/BooklyDB", "postgres", "postgres");
 
         // Create a test book object (without author/publisher bindings here)
         testBook = new Book(
                 1,
-                "Test Book",        // title
-                "English",          // language
-                "1234567890",       // ISBN
-                9.99,               // price
-                "1st",              // edition
-                2024,               // publication year
-                100,                // number of pages
-                10,                 // stock quantity
-                4.5,                // average rating
-                "Sample book"       // summary
+                "Test Book", // title
+                "English", // language
+                "1234567890", // ISBN
+                9.99, // price
+                "1st", // edition
+                2024, // publication year
+                100, // number of pages
+                10, // stock quantity
+                4.5, // average rating
+                "Sample book" // summary
         );
     }
 

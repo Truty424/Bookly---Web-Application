@@ -76,7 +76,7 @@ public class WishlistBookRest extends AbstractRestResource {
         wishlist.setWishlistId(wishlistId);
 
         Book book = new Book();
-        book.setBook_id(bookId);
+        book.setBookId(bookId);
 
         new AddBookToWishlistDAO(con, wishlist, book).access();
         sendMessage("Book added to wishlist", "200", "Book ID: " + bookId + " added to Wishlist ID: " + wishlistId);
@@ -107,7 +107,7 @@ public class WishlistBookRest extends AbstractRestResource {
         wishlist.setWishlistId(wishlistId);
 
         Book book = new Book();
-        book.setBook_id(bookId);
+        book.setBookId(bookId);
 
         boolean exists = new IsBookInWishlistDAO(con, wishlist, book).access().getOutputParam();
         res.setContentType("application/json;charset=UTF-8");

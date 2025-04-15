@@ -1,11 +1,17 @@
 package it.unipd.bookly.dao.order;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import it.unipd.bookly.Resource.Order;
-import org.junit.jupiter.api.*;
-
-import java.sql.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InsertOrderDAOTest {
 
@@ -18,7 +24,7 @@ class InsertOrderDAOTest {
     @BeforeEach
     void setUp() throws Exception {
         connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/bookly", "postgres", "postgres");
+                "jdbc:postgresql://localhost:5434/BooklyDB", "postgres", "postgres");
 
         Order order = new Order();
         order.setTotalPrice(testTotalPrice);

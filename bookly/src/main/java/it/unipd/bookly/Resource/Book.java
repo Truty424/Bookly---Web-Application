@@ -101,7 +101,7 @@ public class Book {
         return book_pic;
     }
 
-    public void setBook_id(int book_id) {
+    public void setBookId(int book_id) {
         this.book_id = book_id;
     }
 

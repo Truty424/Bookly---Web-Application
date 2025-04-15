@@ -1,12 +1,18 @@
 package it.unipd.bookly.dao.order;
 
-import it.unipd.bookly.Resource.Order;
-import org.junit.jupiter.api.*;
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import it.unipd.bookly.Resource.Order;
 
 class GetOrdersByUserDAOTest {
 
@@ -16,7 +22,7 @@ class GetOrdersByUserDAOTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bookly", "postgres", "postgres");
+        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5434/BooklyDB", "postgres", "postgres");
 
         try (PreparedStatement stmt = connection.prepareStatement(
                 "INSERT INTO orders (user_id, total_price, payment_method, order_date, status) VALUES (?, ?, ?, NOW(), ?) RETURNING order_id")) {
@@ -25,7 +31,9 @@ class GetOrdersByUserDAOTest {
             stmt.setString(3, "ByUserTest");
             stmt.setString(4, "pending");
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) orderId = rs.getInt("order_id");
+            if (rs.next()) {
+                orderId = rs.getInt("order_id");
+            }
         }
     }
 

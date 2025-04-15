@@ -1,10 +1,15 @@
 package it.unipd.bookly.dao.order;
 
-import org.junit.jupiter.api.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-import java.sql.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class UpdateOrderStatusDAOTest {
 
@@ -13,7 +18,7 @@ class UpdateOrderStatusDAOTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/bookly", "postgres", "postgres");
+        connection = DriverManager.getConnection("jdbc:postgresql://localhost:5434/BooklyDB", "postgres", "postgres");
 
         try (PreparedStatement stmt = connection.prepareStatement(
                 "INSERT INTO orders (total_price, payment_method, order_date, status) VALUES (?, ?, NOW(), ?) RETURNING order_id")) {
@@ -21,7 +26,9 @@ class UpdateOrderStatusDAOTest {
             stmt.setString(2, "Test");
             stmt.setString(3, "pending");
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) orderId = rs.getInt("order_id");
+            if (rs.next()) {
+                orderId = rs.getInt("order_id");
+            }
         }
     }
 

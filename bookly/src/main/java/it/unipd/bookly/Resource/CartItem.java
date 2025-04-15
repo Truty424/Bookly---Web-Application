@@ -34,7 +34,7 @@ public class CartItem {
         return unitPrice;
     }
 
-    public void setbook_id(int book_id) {
+    public void setbookId(int book_id) {
         this.book_id = book_id;
     }
 

@@ -1,14 +1,17 @@
 package it.unipd.bookly.dao.author;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
 import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.sql.*;
-
-import static org.junit.jupiter.api.Assertions.*;
-
 class AddAuthorToBookDAOTest {
+
     private Connection connection;
     private AddAuthorToBookDAO dao;
     private int bookId = 1;  // You should replace with valid test data
@@ -17,10 +20,9 @@ class AddAuthorToBookDAOTest {
     @BeforeEach
     void setUp() throws Exception {
         connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5432/bookly", "postgres", "postgres");
+                "jdbc:postgresql://localhost:5434/BooklyDB", "postgres", "postgres");
 
         // Insert dummy book and author if needed for testing
-
         dao = new AddAuthorToBookDAO(connection, bookId, authorId);
     }
 

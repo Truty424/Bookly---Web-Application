@@ -16,7 +16,7 @@ class DeleteAuthorDAOTest {
     @BeforeEach
     void setUp() throws Exception {
         connection = DriverManager.getConnection(
-                "jdbc:postgresql://localhost:5434/bookly", "postgres", "postgres");
+                "jdbc:postgresql://localhost:5434/BooklyDB", "postgres", "postgres");
 
         // Insert a test author
         try (PreparedStatement stmt = connection.prepareStatement(
