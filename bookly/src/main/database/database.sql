@@ -6,7 +6,7 @@ DROP SCHEMA IF EXISTS booklySchema CASCADE;
 CREATE SCHEMA booklySchema;
 
 -- Create new domains
-CREATE DOMAIN booklySchema.username_domain AS VARCHAR(50)
+CREATE DOMAIN booklySchema.username_domain AS VARCHAR(255)
   CHECK (VALUE ~ '^[a-zA-Z0-9_]{5,50}$');
 
 CREATE DOMAIN booklySchema.password_domain AS VARCHAR(255)
