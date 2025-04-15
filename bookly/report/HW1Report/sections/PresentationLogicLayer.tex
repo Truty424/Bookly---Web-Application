@@ -8,7 +8,7 @@ When a user accesses the website, they will be directed to the home page without
     \item \hyperref[sec:basket]{Basket Page} : Shows the user's selected books for purchase.
     \item \hyperref[sec:search]{Search Results Page} : Displays books based on the user’s search query.
     \item \hyperref[sec:author]{Author Page} : Displays information about a specific author.
-    \item \hyperref[sec:cart]{Cart Page}: Shows the current user's shopping carts and theirs contents.
+    \item \hyperref[sec:cart]{Order Page}: Shows the current user's shopping carts and theirs contents.
     \item \hyperref[sec:wishlist]{Wishlist Page}: Displays all the books the user has saved for later.
 
 \end{itemize}
@@ -31,7 +31,8 @@ The Home Page serves as the central hub where all users (whether signed in or no
     \item \textbf{New Arrivals}: Displaying the latest books added to our stock.
     \item \textbf{Best Sellers} : Highlighting books with the highest sales.
 \end{itemize}
-Additionally, the homepage will include:
+Each section will include a \textbf{"Show More"} link that redirects users to the corresponding full section, displaying all books it contains.
+Additionally, the homepage will also include:
 \begin{itemize}
     \item A \textbf{search bar} allowing users to find books by title, author, or genre within the store's catalog.
     \item A \textbf{basket icon} that provides quick access to the user's shopping cart. Users can click on it to navigate directly to the \hyperref[sec:basket]{Basket Page}.
@@ -113,17 +114,18 @@ The page will also provide:
     \caption{book page}
     \label{fig:enter-label}
 \end{figure}
-Each book will have its own dedicated page containing the following details: \textbf{Title}, \textbf{Author}, \textbf{Price}, \textbf{Edition}, \textbf{Genre}, \textbf{Summary} and a \textbf{cover image} of the book.
+Each book will have its own dedicated page containing the following details: \textbf{Title}, \textbf{Author}, \textbf{Price}, \textbf{Edition}, \textbf{Genre}, \textbf{Summary}, and a \textbf{cover image} of the book.
 
-In top of that, the page will also have:
+The page will also include:
 \begin{itemize}
+    \item An \textbf{"Add to Basket"} button, allowing users to add the book to their shopping cart.
+    \item An \textbf{Edition picker}, allowing users to choose the edition of the book they are interested in.
+    \item An \textbf{"Add to Wishlist"} button, allowing users to save the book to their \hyperref[sec:wishlist]{Wishlist Page}.
     \item A \textbf{Review Section}, where users can:
     \begin{itemize}
-        \item Like or dislike existing reviews.
+        \item Like or dislike existing reviews from other users.
         \item Add their own review by writing a comment and rating the book on a scale from \textbf{0 to 5 stars}.
     \end{itemize}
-    \item A \textbf{"Add to basket"} button, allowing users to purchase the book.
-    \item A \textbf{"Add to wishlist"} button, allowing users to save the book on their wishlist.
 \end{itemize}
 
 
@@ -141,17 +143,19 @@ In top of that, the page will also have:
 This page will display the books added on the basket by the user, along with options to update quantities. It will also include the following features:
 
 \begin{itemize}
-    \item A \textbf{recap of all selected books}, displaying their titles, prices, and quantities.
-    \item The \textbf{total price}, dynamically updated based on the selected books, their quantities, and the shipping price.
+    \item A \textbf{recap of all selected books}, displaying their titles, authors, editions, prices, and quantities. Quantities will be editable.
+    \item An optional input field for entering a \textbf{discount code} if the user has one.
+    \item The \textbf{total price}, dynamically updated based on the selected books, their quantities and the shipping price.
     \item Several input fields for the user to enter their \textbf{billing address}.
     \item A \textbf{payment method selection}, offering the choice between:
     \begin{itemize}
         \item \textbf{Credit/Debit Card Payment}.
         \item \textbf{Cash on Delivery}.
     \end{itemize}
-    \item An optional input field for entering a \textbf{discount code} if the user has one.
+    
     \item A \textbf{"Confirm Order"} button that finalizes the payment and processes the order once all required fields are completed.
 \end{itemize}
+
 
 
 \subsection{Search Results Page} \label{sec:search}
@@ -182,10 +186,9 @@ For each book displayed in the search results, the following details will be sho
     \label{fig:enter-label}
 \end{figure}
 
-Each author will have his own dedicated page displaying their full name, biography, and literary background. This page will help users explore more books from the same author by displaying their best-sellers.
+Each author will have their own dedicated page displaying their full name, picture, and a description containing their biography and literary style. The page will also help users to explore more books from the same author by displaying their best-sellers. If a user clicks on one of the book icons, they will be redirected to the corresponding \hyperref[sec:book]{Book Page}.
 
-
-\subsection{order Page} \label{sec:cart}
+\subsection{Order Page} \label{sec:cart}
 \includegraphics[width=0.6\linewidth]{HW1Report/photos/cartPage.png}
 
 \begin{figure}[h!]
@@ -193,8 +196,12 @@ Each author will have his own dedicated page displaying their full name, biograp
     \caption{order page}
     \label{fig:enter-label}
 \end{figure}
-This page will present the contents of all the user's current shopping carts. It will include all books that the user has added, even if they haven't proceeded to checkout. The cart will persist between sessions for logged-in users. This page will also display the complete user's history order containing all the books the user has already ordered and the dates corresponding. 
 
+This page will present the contents of the user's current shopping carts. It will include all books that the user has added, even if they haven't proceeded to checkout. The carts are valid only for the current session of the logged-in user.
+
+Each cart will include a \textbf{"Check Out"} button, allowing the user to directly proceed with the purchase of the corresponding cart.
+
+Also, this page will display the user's complete order history, including all the previously ordered books and their corresponding order dates.
 
 \subsection{Wishlist Page} \label{sec:wishlist}
 \includegraphics[width=0.6\linewidth]{HW1Report/photos/wishlist.png}
