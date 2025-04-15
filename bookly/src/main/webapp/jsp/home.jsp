@@ -14,6 +14,25 @@
 
 <h1>Welcome to Bookly</h1>
 
+<c:choose>
+    <c:when test="${not empty sessionScope.user}">
+        <p>Welcome, <strong>${sessionScope.user.firstName}</strong>!</p>
+        <form action="${pageContext.request.contextPath}/user/profile" method="get" style="display: inline;">
+            <button type="submit">My Profile</button>
+        </form>
+    </c:when>
+    <c:otherwise>
+        <form action="${pageContext.request.contextPath}/user/login" method="get" style="display: inline;">
+            <button type="submit">Login</button>
+        </form>
+
+        <form action="${pageContext.request.contextPath}/user/register" method="get" style="display: inline;">
+            <button type="submit">Register</button>
+        </form>
+    </c:otherwise>
+</c:choose>
+
+
 <!-- Categories -->
 <h2>Categories</h2>
 <ul>
@@ -24,14 +43,35 @@
 
 <!-- Top Rated Books -->
 <h2>Top Rated Books (4+ stars)</h2>
-<c:forEach var="book" items="${topRatedBooks}">
+<c:forEach var="book" items="${allBooks}">
     <div>
-        <h3>${book.title}</h3>
+        <h3>
+            <a href="${pageContext.request.contextPath}/book/${book.bookId}">
+                ${book.title}
+            </a>
+        </h3>
+
+        <p><strong>Author(s):</strong>
+            <c:choose>
+                <c:when test="${not empty bookAuthors[book.bookId]}">
+                    <c:forEach var="author" items="${bookAuthors[book.bookId]}" varStatus="loop">
+                        ${author.first_name} ${author.last_name}<c:if test="${!loop.last}">, </c:if>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>Unknown</c:otherwise>
+            </c:choose>
+        </p>
+
         <p>Rating: ${book.average_rate}</p>
         <p>Price: €${book.price}</p>
+
+        <form action="${pageContext.request.contextPath}/book/${book.bookId}" method="get">
+            <button type="submit">View Details</button>
+        </form>
     </div>
     <hr/>
 </c:forEach>
+
 
 <!-- All Books -->
 <h2>All Books</h2>

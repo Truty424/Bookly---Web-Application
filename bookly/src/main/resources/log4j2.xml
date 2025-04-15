@@ -7,10 +7,25 @@
             <PatternLayout pattern = "%date{DEFAULT} %level [%thread] %class{1}.%method(%file:%line)%n\tIP = %MDC{IP};
              nUSER = %MDC{USER}; ACTION = %MDC{ACTION}; RESOURCE = %MDC{RESOURCE}%n\t%message%n\t%throwable%n" />
         </Console>
-    </Appenders>
+    </Appenders><?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="WARN">
+        <Appenders>
+            <Console name="STDOUT" target="SYSTEM_OUT">
+                <PatternLayout pattern="%date{DEFAULT} %level [%thread] %class{1}.%method(%file:%line)%n\tIP = %MDC{IP};
+                USER = %MDC{USER}; ACTION = %MDC{ACTION}; RESOURCE = %MDC{RESOURCE}%n\t%message%n\t%throwable%n"/>
+            </Console>
+        </Appenders>
+
+        <Loggers>
+            <Root level="trace">
+                <AppenderRef ref="STDOUT"/>
+            </Root>
+        </Loggers>
+    </Configuration>
+
     <Loggers>
         <Root level="trace"> <!-- levels: trace, debug, info, warn, error, fatal -->
-            <Append erRef ref="STDOUT"/>
+            <AppenderRef ref="STDOUT"/>
         </Root>
     </Loggers>
 </Configuration>

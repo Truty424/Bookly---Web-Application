@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.*;
 
 public class HomeServlet extends AbstractDatabaseServlet {
@@ -26,20 +27,20 @@ public class HomeServlet extends AbstractDatabaseServlet {
 
         double minRating = 4.0;
 
-        try {
-            // Fetch data
-            List<Category> categories = new GetAllCategoriesDAO(getConnection()).access().getOutputParam();
-            List<Book> topRatedBooks = new GetTopRatedBooksDAO(getConnection(), minRating).access().getOutputParam();
-            List<Book> allBooks = new GetAllBooksDAO(getConnection()).access().getOutputParam();
+        try (Connection con = getConnection()) {
+            // Fetch data using a single shared connection
+            List<Category> categories = new GetAllCategoriesDAO(con).access().getOutputParam();
+            List<Book> topRatedBooks = new GetTopRatedBooksDAO(con, minRating).access().getOutputParam();
+            List<Book> allBooks = new GetAllBooksDAO(con).access().getOutputParam();
 
-            // Build map: bookId → authors
+            // Build map: bookId → authors using the same connection
             Map<Integer, List<Author>> bookAuthors = new HashMap<>();
             for (Book book : allBooks) {
-                List<Author> authors = new GetAuthorsByBookDAO(getConnection(), book.getBookId()).access().getOutputParam();
+                List<Author> authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
                 bookAuthors.put(book.getBookId(), authors);
             }
 
-            // Pass to JSP
+            // Set attributes
             req.setAttribute("categories", categories);
             req.setAttribute("topRatedBooks", topRatedBooks);
             req.setAttribute("allBooks", allBooks);
