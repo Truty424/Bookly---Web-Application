@@ -1,7 +1,9 @@
 package it.unipd.bookly.servlet.cart;
 
 import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Discount;
 import it.unipd.bookly.dao.cart.*;
+import it.unipd.bookly.dao.discount.GetValidDiscountByCodeDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.LogContext;
 import jakarta.servlet.ServletException;
@@ -10,9 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
-
-import it.unipd.bookly.dao.discount.GetValidDiscountByCodeDAO;
 
 @WebServlet(name = "CartServlet", value = "/cart/*")
 public class CartServlet extends AbstractDatabaseServlet {
@@ -27,7 +28,7 @@ public class CartServlet extends AbstractDatabaseServlet {
             Integer userId = (Integer) req.getSession().getAttribute("userId");
 
             if (userId == null) {
-                resp.sendRedirect("/html/login.html"); // redirect to log in if user not logged in
+                resp.sendRedirect("/html/login.html");
                 return;
             }
 
@@ -74,8 +75,25 @@ public class CartServlet extends AbstractDatabaseServlet {
                 int bookId = extractBookIdFromPath(path);
                 new RemoveBookFromCartDAO(getConnection(), bookId, cartId).access();
                 resp.sendRedirect("/cart");
+
             } else if (path.matches(".*/cart/clear/?")) {
                 new ClearCartDAO(getConnection(), cartId).access();
+                resp.sendRedirect("/cart");
+
+            } else if (path.matches(".*/cart/apply-discount/?")) {
+                String discountCode = req.getParameter("discount_code");
+
+                var discountDAO = new GetValidDiscountByCodeDAO(getConnection(), discountCode);
+                discountDAO.access();
+                Discount discount = discountDAO.getOutputParam();
+
+                if (discount != null) {
+                    req.getSession().setAttribute("discountId", discount.getDiscountId());
+                    req.getSession().setAttribute("appliedDiscount", discount);
+                } else {
+                    req.getSession().setAttribute("discountError", "Invalid or expired discount.");
+                }
+
                 resp.sendRedirect("/cart");
             } else {
                 resp.sendRedirect("/html/error.html");
@@ -102,36 +120,29 @@ public class CartServlet extends AbstractDatabaseServlet {
         List<Book> cartBooks = new GetBooksInCartDAO(getConnection(), cartId).access().getOutputParam();
 
         double totalPrice = cartBooks.stream().mapToDouble(Book::getPrice).sum();
-        double discountAmount = 0;
-        String discountCode = req.getParameter("discount"); // or use session attribute
+        BigDecimal discountedTotal = BigDecimal.valueOf(totalPrice);
+        Discount appliedDiscount = (Discount) req.getSession().getAttribute("appliedDiscount");
 
-        if (discountCode != null && !discountCode.isBlank()) {
-            var discountDAO = new GetValidDiscountByCodeDAO(getConnection(), discountCode);
-            discountDAO.access();
-            var discount = discountDAO.getOutputParam();
-
-            if (discount != null) {
-                discountAmount = totalPrice * (discount.getDiscountPercentage() / 100); // assuming rate is 0.10 for 10%
-                req.setAttribute("applied_discount", discount);
-            } else {
-                req.setAttribute("discount_error", "Invalid or expired discount code.");
-            }
+        if (appliedDiscount != null) {
+            var applyDiscountDAO = new ApplyDiscountToCartDAO(getConnection(), cartId, appliedDiscount.getDiscountId());
+            applyDiscountDAO.access();
+            discountedTotal = applyDiscountDAO.getOutputParam();
+            req.setAttribute("applied_discount", appliedDiscount);
+        } else if (req.getSession().getAttribute("discountError") != null) {
+            req.setAttribute("discount_error", req.getSession().getAttribute("discountError"));
+            req.getSession().removeAttribute("discountError");
         }
-
-        double finalTotal = totalPrice - discountAmount;
 
         req.setAttribute("cart_books", cartBooks);
         req.setAttribute("total_price", totalPrice);
-        req.setAttribute("discount_amount", discountAmount);
-        req.setAttribute("final_total", finalTotal);
+        req.setAttribute("final_total", discountedTotal);
 
         req.getRequestDispatcher("/jsp/cart/viewCart.jsp").forward(req, resp);
     }
 
-    private int extractBookIdFromPath(String path) throws NumberFormatException {
+    private int extractBookIdFromPath(String path) {
         String[] segments = path.split("/");
-        String last = segments[segments.length - 1];
-        return Integer.parseInt(last.trim());
+        return Integer.parseInt(segments[segments.length - 1].trim());
     }
 
     private int getOrCreateCartId(int userId) throws Exception {
@@ -141,5 +152,4 @@ public class CartServlet extends AbstractDatabaseServlet {
         }
         return cart.getCartId();
     }
-
 }
