@@ -16,19 +16,19 @@ import static it.unipd.bookly.dao.user.UserQueries.GET_USER_IMAGE;
  */
 public class LoginUserDAO extends AbstractDAO<User> {
 
-    private final String usernameOrEmail;
+    private final String username;
     private final String password;
 
     /**
      * Constructor.
      *
-     * @param con              the database connection
-     * @param usernameOrEmail  the user's username or email
-     * @param password         the user's password (plain text or hashed, depending on backend)
+     * @param con       the database connection
+     * @param username  the user's username
+     * @param password  the user's password (in plain text, will be hashed by query)
      */
-    public LoginUserDAO(Connection con, String usernameOrEmail, String password) {
+    public LoginUserDAO(Connection con, String username, String password) {
         super(con);
-        this.usernameOrEmail = usernameOrEmail;
+        this.username = username;
         this.password = password;
     }
 
@@ -38,8 +38,8 @@ public class LoginUserDAO extends AbstractDAO<User> {
             PreparedStatement userStmt = con.prepareStatement(LOGIN_USER);
             PreparedStatement imageStmt = con.prepareStatement(GET_USER_IMAGE)
         ) {
-            userStmt.setString(1, usernameOrEmail);
-            userStmt.setString(2, password);
+            userStmt.setString(1, username);
+            userStmt.setString(2, password); // will be hashed via md5(?) in SQL
 
             try (ResultSet userRs = userStmt.executeQuery()) {
                 if (userRs.next()) {
@@ -57,6 +57,7 @@ public class LoginUserDAO extends AbstractDAO<User> {
                         }
                     }
 
+                    // Create and return the User object
                     this.outputParam = new User(
                         userRs.getString("username"),
                         userRs.getString("password"),
@@ -69,14 +70,15 @@ public class LoginUserDAO extends AbstractDAO<User> {
                         profileImage
                     );
 
-                    LOGGER.info("Login successful for user '{}'.", usernameOrEmail);
+                    LOGGER.info("Login successful for user '{}'.", username);
                 } else {
                     this.outputParam = null;
-                    LOGGER.warn("Login failed: No user found for '{}'.", usernameOrEmail);
+                    LOGGER.warn("Login failed: No user found for '{}'.", username);
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("LoginUserDAO error for '{}': {}", usernameOrEmail, e.getMessage());
+            this.outputParam = null;  // Ensure it's always set
+            LOGGER.error("LoginUserDAO error for '{}': {}", username, e.getMessage());
             throw e;
         }
     }

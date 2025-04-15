@@ -10,6 +10,7 @@
 // import org.junit.jupiter.api.Test;
 
 // import it.unipd.bookly.Resource.User;
+// import org.apache.commons.codec.digest.DigestUtils; // 🔑
 
 // class LoginUserDAOTest {
 
@@ -25,15 +26,24 @@
 //         // Set correct schema
 //         connection.prepareStatement("SET search_path TO booklySchema").execute();
 
+//         // Clean up in case user already exists
 //         try (PreparedStatement stmt = connection.prepareStatement(
-//                 "INSERT INTO booklySchema.users (username, password, email, first_name, last_name, phone, address, role) " +
-//                         "VALUES (?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT DO NOTHING")) {
+//                 "DELETE FROM booklySchema.users WHERE username = ?")) {
 //             stmt.setString(1, testUsername);
-//             stmt.setString(2, testPassword);  // assume plain text or hashed appropriately
+//             stmt.executeUpdate();
+//         }
+
+//         // Insert user with hashed password
+//         try (PreparedStatement stmt = connection.prepareStatement(
+//                 "INSERT INTO booklySchema.users " +
+//                 "(username, password, email, first_name, last_name, phone, address, role) " +
+//                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?::booklySchema.user_role)")) {
+//             stmt.setString(1, testUsername);
+//             stmt.setString(2, DigestUtils.md5Hex(testPassword));  // ✅ hashed password
 //             stmt.setString(3, testEmail);
 //             stmt.setString(4, "Login");
 //             stmt.setString(5, "Tester");
-//             stmt.setString(6, "+1112223333"); // must match phone domain
+//             stmt.setString(6, "+1112223333");
 //             stmt.setString(7, "Login Street 5");
 //             stmt.setString(8, "user");
 //             stmt.executeUpdate();

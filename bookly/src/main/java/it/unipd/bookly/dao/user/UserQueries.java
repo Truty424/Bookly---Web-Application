@@ -13,9 +13,9 @@ public final class UserQueries {
             + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     public static final String UPDATE_USER
-            = "UPDATE booklySchema.users SET first_name = ?, last_name = ?, password = md5(?), email = ?, phone = ?, address = ? "
-            + "WHERE username = ?";
-
+            = "UPDATE booklySchema.users "
+            + "SET first_name = ?, last_name = ?, email = ?, phone = ?, address = ?, role = ?::booklySchema.user_role "
+            + "WHERE user_id = ?";
     public static final String GET_USERS_BY_USERNAME = "SELECT * FROM booklySchema.users WHERE username = ?";
 
     public static final String INSERT_USER_IMAGE = "INSERT INTO booklySchema.user_image (user_id, image, image_type) VALUES (?, ?, ?)";
@@ -26,10 +26,7 @@ public final class UserQueries {
     public static final String CHANGE_USER_PASSWORD = "UPDATE booklySchema.users SET password = ? WHERE user_id = ?";
 
     public static final String UPDATE_USER_IMAGE = "UPDATE booklySchema.user_images SET image = ?, image_type = ? WHERE user_id = ?";
-    public static final String GET_USER_IMAGE = "SELECT image, image_type "
-            + "FROM user_images "
-            + "WHERE user_id = ?";
-
+    public static final String GET_USER_IMAGE = "SELECT image, image_type FROM booklySchema.user_image WHERE user_id = ?";
 
     public static final String AUTHENTICATE_USER = "SELECT user_id, username, email, password, role FROM booklySchema.users WHERE user_id = ?";
 }
