@@ -40,8 +40,8 @@
                 for (Publisher publisher : publishers) {
         %>
                     <li>
-                        <a href="<%= request.getContextPath() %>/publisher/<%= publisher.getId() %>">
-                            <%= publisher.getName() %>
+                        <a href="<%= request.getContextPath() %>/publisher/<%= publisher.getPublisherId() %>">
+                            <%= publisher.getPublisherName() %>
                         </a>
                     </li>
         <%

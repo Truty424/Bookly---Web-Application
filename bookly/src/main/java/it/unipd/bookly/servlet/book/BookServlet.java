@@ -12,6 +12,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import it.unipd.bookly.Resource.Author;
+import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
+
 
 /**
  * Handles GET requests for:
@@ -57,8 +60,11 @@ public class BookServlet extends AbstractDatabaseServlet {
         int bookId = Integer.parseInt(segments[segments.length - 1]);
 
         Book book = new GetBookByIdDAO(getConnection(), bookId).access().getOutputParam();
+        List<Author> authors = new GetAuthorsByBookDAO(getConnection(), bookId).access().getOutputParam(); // 💡
+
         if (book != null) {
             req.setAttribute("book_details", book);
+            req.setAttribute("authors", authors); // 💡 pass list
             req.getRequestDispatcher("/jsp/book/bookDetails.jsp").forward(req, resp);
         } else {
             resp.sendRedirect("/html/error.html");

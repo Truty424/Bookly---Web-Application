@@ -55,7 +55,7 @@ public class AuthorServlet extends AbstractDatabaseServlet {
         List<Book> books = new GetBooksByAuthorIdDAO(getConnection(), authorId).access().getOutputParam();
         req.setAttribute("author_books", books);
         req.setAttribute("author_id", authorId);
-        req.getRequestDispatcher("/jsp/author/authorBook.jsp").forward(req, resp);
+        req.getRequestDispatcher("/jsp/author/authorBooks.jsp").forward(req, resp);
     }
 
     private int extractAuthorIdFromPath(String path) {

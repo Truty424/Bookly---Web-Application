@@ -16,7 +16,7 @@
         %>
                     <li>
                         <a href="<%= request.getContextPath() %>/author/<%= author.getAuthor_id() %>">
-                            <%= author.getAuthor_name() %>
+                            <%= author.getName() %>
                         </a>
                     </li>
         <%
