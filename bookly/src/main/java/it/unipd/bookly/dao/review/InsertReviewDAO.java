@@ -22,7 +22,7 @@ public class InsertReviewDAO extends AbstractDAO<Boolean> {
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(INSERT_REVIEW)) {
             stmt.setInt(1, review.getUserId());
-            stmt.setInt(2, review.getbook_id());
+            stmt.setInt(2, review.getBookId());
             stmt.setString(3, review.getReviewText());
             stmt.setInt(4, review.getRating());
             stmt.setInt(5, review.getNumberOfLikes());

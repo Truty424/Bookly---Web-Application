@@ -27,7 +27,7 @@ public class IsBookInWishlistDAO extends AbstractDAO<Boolean> {
     public IsBookInWishlistDAO(final Connection con, final Wishlist wishlist, final Book book) {
         super(con);
         this.wishlistId = wishlist.getWishlistId();
-        this.book_id = book.getBook_id();
+        this.book_id = book.getBookId();
     }
 
     @Override

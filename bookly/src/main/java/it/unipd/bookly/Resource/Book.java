@@ -53,7 +53,7 @@ public class Book {
 
     }
 
-    public int getBook_id() {
+    public int getBookId() {
         return book_id;
     }
 

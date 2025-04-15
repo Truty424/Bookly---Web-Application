@@ -50,7 +50,7 @@ public class Review {
         return userId;
     }
 
-    public int getbook_id() {
+    public int getBookId() {
         return book_id;
     }
 

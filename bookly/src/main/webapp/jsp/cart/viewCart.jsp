@@ -19,7 +19,7 @@
                         ISBN: <%= book.getIsbn() %><br/>
                         Price: €<%= book.getPrice() %><br/>
                         Language: <%= book.getLanguage() %><br/>
-                        <form action="<%= request.getContextPath() %>/cart/remove/<%= book.getBook_id() %>" method="post" style="display:inline;">
+                        <form action="<%= request.getContextPath() %>/cart/remove/<%= book.getBookId() %>" method="post" style="display:inline;">
                             <button type="submit">Remove from cart</button>
                         </form>
                     </li>

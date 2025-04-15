@@ -78,7 +78,7 @@ public class Cart {
     }
 
     public void removeItem(int bookId) {
-        items.removeIf(item -> item.getbook_id() == bookId);
+        items.removeIf(item -> item.getBookId() == bookId);
         updateDerivedFields();
     }
 

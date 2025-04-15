@@ -34,20 +34,20 @@ public class AddBookToWishlistDAO extends AbstractDAO<Wishlist> {
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(ADD_BOOK_TO_WISHLIST)) {
             stmnt.setInt(1, wishlist.getWishlistId());
-            stmnt.setInt(2, book.getBook_id());
+            stmnt.setInt(2, book.getBookId());
 
             int rowsAffected = stmnt.executeUpdate();
 
             if (rowsAffected > 0) {
-                LOGGER.info("Added book ID {} to wishlist ID {}.", book.getBook_id(), wishlist.getWishlistId());
+                LOGGER.info("Added book ID {} to wishlist ID {}.", book.getBookId(), wishlist.getWishlistId());
                 this.outputParam = wishlist;
             } else {
-                LOGGER.warn("No book was added — book ID {} and wishlist ID {} may already be linked.", book.getBook_id(), wishlist.getWishlistId());
+                LOGGER.warn("No book was added — book ID {} and wishlist ID {} may already be linked.", book.getBookId(), wishlist.getWishlistId());
                 this.outputParam = null;
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Error adding book ID {} to wishlist ID {}: {}", book.getBook_id(), wishlist.getWishlistId(), ex.getMessage());
+            LOGGER.error("Error adding book ID {} to wishlist ID {}: {}", book.getBookId(), wishlist.getWishlistId(), ex.getMessage());
             throw ex;
         }
     }

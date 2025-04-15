@@ -18,7 +18,7 @@ public class CartItem {
     }
 
     // Getters and setters
-    public int getbook_id() {
+    public int getBookId() {
         return book_id;
     }
 

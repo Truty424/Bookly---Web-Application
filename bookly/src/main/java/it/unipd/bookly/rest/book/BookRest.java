@@ -113,7 +113,7 @@ public class BookRest extends AbstractRestResource {
 
         boolean updated = new UpdateBookDAO(
                 con,
-                book.getBook_id(),
+                book.getBookId(),
                 book.getTitle(),
                 book.getLanguage(),
                 book.getIsbn(),
