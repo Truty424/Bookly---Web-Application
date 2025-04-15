@@ -64,7 +64,7 @@ public class BookServlet extends AbstractDatabaseServlet {
 
         if (book != null) {
             req.setAttribute("book_details", book);
-            req.setAttribute("authors", authors); // 💡 pass list
+            req.setAttribute("authors", authors);
             req.getRequestDispatcher("/jsp/book/bookDetails.jsp").forward(req, resp);
         } else {
             resp.sendRedirect("/html/error.html");

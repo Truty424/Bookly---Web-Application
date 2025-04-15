@@ -39,6 +39,7 @@ public class UserServlet extends AbstractDatabaseServlet {
             switch (operation) {
                 case "/login" -> req.getRequestDispatcher("/html/login.html").forward(req, res);
                 case "/register" -> req.getRequestDispatcher("/html/signup.html").forward(req, res);
+                case "/profile" -> showUserProfile(req, res);
                 default -> writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
         } catch (IOException e) {
@@ -76,7 +77,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                     session.setAttribute("user", user);
                     session.setAttribute("Authorization", jwt);
                     res.setHeader("Authorization", jwt);
-                    res.sendRedirect(req.getContextPath() + "/profile/");
+                    res.sendRedirect(req.getContextPath() + "/user/profile");
                 } else {
                     writeError(res, ErrorCode.USER_NOT_FOUND);
                 }
@@ -126,6 +127,18 @@ public class UserServlet extends AbstractDatabaseServlet {
         } catch (SQLException | ServletException e) {
             LOGGER.error("Registration error: ", e);
             writeError(res, ErrorCode.INTERNAL_ERROR);
+        }
+    }
+
+
+    private void showUserProfile(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            req.setAttribute("user", user);
+            req.getRequestDispatcher("/jsp/user/userProfile.jsp").forward(req, res);
+        } else {
+            res.sendRedirect(req.getContextPath() + "/user/login"); // not logged in
         }
     }
 }
