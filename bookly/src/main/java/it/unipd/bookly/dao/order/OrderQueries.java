@@ -7,7 +7,7 @@ public final class OrderQueries  {
 
     // Create
     public static final String INSERT_ORDER =
-            "INSERT INTO booklySchema.orders (total_amount, payment_method, payment_date, status) " +
+            "INSERT INTO booklySchema.orders (total_price, payment_method, payment_date, status) " +
             "VALUES (?, ?, ?, ?) RETURNING order_id";
 
     // Read
@@ -35,7 +35,7 @@ public final class OrderQueries  {
             "UPDATE booklySchema.orders SET status = ? WHERE order_id = ?";
 
     public static final String UPDATE_ORDER_PAYMENT_INFO =
-            "UPDATE booklySchema.orders SET total_amount = ?, payment_method = ?, payment_date = ? " +
+            "UPDATE booklySchema.orders SET total_price = ?, payment_method = ?, payment_date = ? " +
             "WHERE order_id = ?";
 
     // "Soft delete" (optional): Cancel instead of delete

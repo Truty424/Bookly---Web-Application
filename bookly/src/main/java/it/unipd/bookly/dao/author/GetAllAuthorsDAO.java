@@ -29,29 +29,28 @@ public class GetAllAuthorsDAO extends AbstractDAO<List<Author>> {
         try (PreparedStatement stmnt = con.prepareStatement(GET_ALL_AUTHORS)) {
             try (ResultSet rs = stmnt.executeQuery()) {
                 while (rs.next()) {
-                    int authorId = rs.getInt("author_id");
-                    String firstName = rs.getString("first_name");
-                    String lastName = rs.getString("last_name");
-                    String biography = rs.getString("biography");
-                    String nationality = rs.getString("nationality");
-
-                    authors.add(new Author(authorId, firstName, lastName, biography, nationality));
+                    authors.add(new Author(
+                            rs.getInt("author_id"),
+                            rs.getString("first_name"),
+                            rs.getString("last_name"),
+                            rs.getString("biography"),
+                            rs.getString("nationality")
+                    ));
                 }
             }
 
+            // ✅ Always set outputParam — even if empty
             this.outputParam = authors;
 
             if (!authors.isEmpty()) {
-                LOGGER.info("First Author loaded: {} {}", authors.get(0).getFirst_name(), authors.get(0).
-                getLast_name())
-                  
-            ;
+                LOGGER.info("First Author loaded: {} {}", authors.get(0).getFirst_name(), authors.get(0).getLast_name());
             } else {
                 LOGGER.info("No authors found in the database.");
             }
 
         } catch (Exception ex) {
             LOGGER.error("Error retrieving authors: {}", ex.getMessage());
+            this.outputParam = new ArrayList<>();  // ✅ fail-safe in case of an exception
         }
     }
 }
