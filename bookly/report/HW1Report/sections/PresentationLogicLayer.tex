@@ -1,5 +1,5 @@
 \section{Presentation Logic Layer}
-%What pages will be present in your project? briefly indicate how your web site will be organized
+%What pages will be present in your project? briefly indicate how your website will be organized
 When a user accesses the website, they will be directed to the home page without needing to sign in. From there, they can navigate to various other sections, including:
 \begin{itemize}
     \item \hyperref[sec:signin]{Sign In/Sign Up Page} : For user authentication.
@@ -8,17 +8,27 @@ When a user accesses the website, they will be directed to the home page without
     \item \hyperref[sec:basket]{Basket Page} : Shows the user's selected books for purchase.
     \item \hyperref[sec:search]{Search Results Page} : Displays books based on the user’s search query.
     \item \hyperref[sec:author]{Author Page} : Displays information about a specific author.
-    \item \hyperref[sec:cart]{Cart Page} : Shows the current user's shopping carts and theirs contents.
-    \item \hyperref[sec:wishlist]{Wishlist Page} : Displays all the books the user has saved for later.
+    \item \hyperref[sec:cart]{Cart Page}: Shows the current user's shopping carts and theirs contents.
+    \item \hyperref[sec:wishlist]{Wishlist Page}: Displays all the books the user has saved for later.
 
 \end{itemize}
 
 %For the main pages put a mockup and describe it in detail.
+
+
 \subsection{Home Page}
+
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/homepage.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{home page}
+    \label{fig:enter-label}
+\end{figure}
 The Home Page serves as the central hub where all users (whether signed in or not) can browse through the book catalog. It will feature several sections, such as:
 \begin{itemize}
-    \item \textbf{Most Popular} : Showcasing books with the highest reviews from our users.
-    \item \textbf{New Arrivals} : Displaying the latest books added to our stock.
+    \item \textbf{Most Popular}: Showcasing books with the highest reviews from our users.
+    \item \textbf{New Arrivals}: Displaying the latest books added to our stock.
     \item \textbf{Best Sellers} : Highlighting books with the highest sales.
 \end{itemize}
 Additionally, the homepage will include:
@@ -29,7 +39,16 @@ Additionally, the homepage will include:
 \end{itemize}
 
 
-\subsection{Sign In/Sign Up Page} \label{sec:signin}
+\subsection{Sign In/Sign Up Page} 
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/signin.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{sign in page}
+    \label{fig:enter-label}
+\end{figure}
+
+\label{sec:signin}
 This page allows users to either sign in to an existing account or register for a new one.
 
 The \textbf{Sign In section} includes:
@@ -39,6 +58,13 @@ The \textbf{Sign In section} includes:
     \item A button redirecting new users to the \textbf{Sign Up section}.
 \end{itemize}
 
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/signup.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{sign up page}
+    \label{fig:enter-label}
+\end{figure}
 The \textbf{Sign Up section} provides a registration form with the following input fields:
 \begin{itemize}
     \item \textbf{First Name} and \textbf{Last Name}
@@ -49,8 +75,17 @@ The \textbf{Sign Up section} provides a registration form with the following inp
 \end{itemize}
 
 
+\subsection{User Profile Page} 
 
-\subsection{User Profile Page} \label{sec:profile}
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/profilepage2.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{profile page}
+    \label{fig:enter-label}
+\end{figure}
+
+\label{sec:profile}
 Users can also access their profile page, which displays their personal details and order history. The page will include the following information:
 
 \begin{itemize}
@@ -68,7 +103,16 @@ The page will also provide:
     \item \textbf{Change Password Link}: A dynamic text link labeled \textit{"Change my password"} that, when clicked, redirects users to a dedicated password update page.
 \end{itemize}
 
+
 \subsection{Book Page} \label{sec:book}
+
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/bookpage2.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{book page}
+    \label{fig:enter-label}
+\end{figure}
 Each book will have its own dedicated page containing the following details: \textbf{Title}, \textbf{Author}, \textbf{Price}, \textbf{Edition}, \textbf{Genre}, \textbf{Summary} and a \textbf{cover image} of the book.
 
 In top of that, the page will also have:
@@ -82,12 +126,23 @@ In top of that, the page will also have:
     \item A \textbf{"Add to wishlist"} button, allowing users to save the book on their wishlist.
 \end{itemize}
 
+
+
 \subsection{Basket Page} \label{sec:basket}
+
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/checkout2.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{basket page}
+    \label{fig:enter-label}
+\end{figure}
+
 This page will display the books added on the basket by the user, along with options to update quantities. It will also include the following features:
 
 \begin{itemize}
     \item A \textbf{recap of all selected books}, displaying their titles, prices, and quantities.
-    \item The \textbf{total price}, dynamically updated based on the selected books, their quantities and the shipping price.
+    \item The \textbf{total price}, dynamically updated based on the selected books, their quantities, and the shipping price.
     \item Several input fields for the user to enter their \textbf{billing address}.
     \item A \textbf{payment method selection}, offering the choice between:
     \begin{itemize}
@@ -98,7 +153,17 @@ This page will display the books added on the basket by the user, along with opt
     \item A \textbf{"Confirm Order"} button that finalizes the payment and processes the order once all required fields are completed.
 \end{itemize}
 
+
 \subsection{Search Results Page} \label{sec:search}
+
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/searchpage.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{search page}
+    \label{fig:enter-label}
+\end{figure}
+
 When a user enters a query in the search bar, they will be redirected to this page, where relevant books will be displayed based on title, author, or genre.
 
 For each book displayed in the search results, the following details will be shown:
@@ -109,10 +174,34 @@ For each book displayed in the search results, the following details will be sho
 \end{itemize}
 
 \subsection{Author Page} \label{sec:author}
-Each author will have its own dedicated page displaying their fullname, biography and literary background. This page will help users explore more books from the same author by displaying their best-sellers.
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/AuthorPage.png}
 
-\subsection{Cart Page} \label{sec:cart}
+\begin{figure}[h!]
+    \centering
+    \caption{author page}
+    \label{fig:enter-label}
+\end{figure}
+
+Each author will have his own dedicated page displaying their full name, biography, and literary background. This page will help users explore more books from the same author by displaying their best-sellers.
+
+
+\subsection{order Page} \label{sec:cart}
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/cartPage.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{order page}
+    \label{fig:enter-label}
+\end{figure}
 This page will present the contents of all the user's current shopping carts. It will include all books that the user has added, even if they haven't proceeded to checkout. The cart will persist between sessions for logged-in users. This page will also display the complete user's history order containing all the books the user has already ordered and the dates corresponding. 
 
+
 \subsection{Wishlist Page} \label{sec:wishlist}
-The wishlist page displays all the books that the user has chosen to save for future reference. From this page, users can  move them directly into their basket to initiate a purchase.
+\includegraphics[width=0.6\linewidth]{HW1Report/photos/wishlist.png}
+
+\begin{figure}[h!]
+    \centering
+    \caption{wishlist page}
+    \label{fig:enter-label}
+\end{figure}
+The wishlist page displays all the books that the user has chosen to save for future reference. Users can move them directly into their basket from this page to initiate a purchase.

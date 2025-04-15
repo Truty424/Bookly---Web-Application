@@ -7,7 +7,7 @@ This API structure is aligned with the entities in the ER diagram, covering user
 \textbf{Description}: A brief explanation of what the endpoint does. \\
 \textbf{Filter}: \textbf{A} — User-related \quad \textbf{B} — Book, author, publisher, review \quad \textbf{M} — Discount-related
 
-\begin{longtable}{|p{.3\columnwidth}|p{.5\columnwidth} |p{.45\columnwidth}|p{.05\columnwidth}|} 
+\begin{longtable}{|p{.5\columnwidth}|p{.1\columnwidth} |p{.25\columnwidth}|p{.05\columnwidth}|} 
 \hline
 \textbf{URI} & \textbf{Method} & \textbf{Description} & \textbf{F} 
 \\\hline
@@ -20,9 +20,9 @@ This API structure is aligned with the entities in the ER diagram, covering user
 \hline
 /cart?userId=\{user\_id\} & GET & Retrieve a user's cart. & A \\
 \hline
-/cart/add?cartId=\{cart\_id\}&bookId=\{book\_id\} & POST & Add a book to a specific cart. & A \\
+/cart/add?cartId=\{cart\_id\}\&bookId=\{book\_id\} & POST & Add a book to a specific cart. & A \\
 \hline
-/cart/remove?cartId=\{cart\_id\}&bookId=\{book\_id\} & DELETE & Remove a book from a specific cart. & A \\
+/cart/remove?cartId=\{cart\_id\}\&bookId=\{book\_id\} & DELETE & Remove a book from a specific cart. & A \\
 \hline
 /review & POST & Create a new review for a book. & B \\
 \hline
@@ -86,9 +86,9 @@ This API structure is aligned with the entities in the ER diagram, covering user
 \hline
 /publishers/\{publisherId\}/books/count & GET & Count books by a publisher. & B \\
 \hline
-/publishers?bookId=\{bookId\}&publisherId=\{publisherId\} & POST & Assign publisher to a book. & B \\
+/publishers?bookId=\{bookId\}\&publisherId=\{publisherId\} & POST & Assign publisher to a book. & B \\
 \hline
-/publishers?bookId=\{bookId\}&publisherId=\{publisherId\} & DELETE & Remove publisher from a book. & B \\
+/publishers?bookId=\{bookId\}\&publisherId=\{publisherId\} & DELETE & Remove publisher from a book. & B \\
 \hline
 /books & GET & Get all books. & B \\
 \hline
@@ -98,7 +98,7 @@ This API structure is aligned with the entities in the ER diagram, covering user
 \hline
 /book & PUT & Update book details. & B \\
 \hline
-/book/stock?id=\{book\_id\}&quantity=\{qty\} & PUT & Update book stock. & B \\
+/book/stock?id=\{book\_id\}\&quantity=\{qty\} & PUT & Update book stock. & B \\
 \hline
 /book?id=\{book\_id\} & DELETE & Delete a book. & B \\
 \hline
