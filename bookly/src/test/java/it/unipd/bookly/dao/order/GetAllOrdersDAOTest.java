@@ -40,4 +40,11 @@ class GetAllOrdersDAOTest {
     @AfterEach
     void tearDown() throws Exception {
         try (PreparedStatement stmt = connection.prepareStatement("DELETE FROM orders WHERE order_id = ?")) {
-            stmt.setInt(
+            stmt.setInt(1, orderId);
+            stmt.executeUpdate();
+        }
+        if (connection != null && !connection.isClosed()) {
+            connection.close();
+        }
+    }
+}
