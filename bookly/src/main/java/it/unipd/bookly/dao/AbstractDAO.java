@@ -84,14 +84,14 @@ public abstract class AbstractDAO<T> implements DataAccessObject<T> {
 
         try {
             doAccess();
-
-            try {
-                con.close();
                 LOGGER.debug("Connection successfully closed.");
-            } catch (final SQLException e) {
-                LOGGER.error("Unable to close the connection to the database.", e);
-                throw e;
-            }
+
+            // try {
+            //     // con.close();
+            // } catch (final SQLException e) {
+            //     LOGGER.error("Unable to close the connection to the database.", e);
+            //     throw e;
+            // }
 
         } catch (final Throwable t) {
             LOGGER.error("Unable to perform the requested database access operation.", t);

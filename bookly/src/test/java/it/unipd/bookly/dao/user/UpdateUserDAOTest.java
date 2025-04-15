@@ -20,21 +20,29 @@ class UpdateUserDAOTest {
     void setUp() throws Exception {
         connection = DriverManager.getConnection("jdbc:postgresql://localhost:5434/BooklyDB", "postgres", "postgres");
 
-        // Use the correct schema
+        // Set schema
         connection.prepareStatement("SET search_path TO booklySchema").execute();
 
+        // Clean up in case user already exists
+        try (PreparedStatement deleteStmt = connection.prepareStatement(
+                "DELETE FROM booklySchema.users WHERE username = ?")) {
+            deleteStmt.setString(1, originalUsername);
+            deleteStmt.executeUpdate();
+        }
+
+        // Now insert the test user
         try (PreparedStatement stmt = connection.prepareStatement(
-                "INSERT INTO booklySchema.users " +
-                        "(username, password, email, first_name, last_name, phone, address, role) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?::booklySchema.user_role) RETURNING user_id")) {
+                "INSERT INTO booklySchema.users "
+                + "(username, password, email, first_name, last_name, phone, address, role) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?::booklySchema.user_role) RETURNING user_id")) {
             stmt.setString(1, originalUsername);
-            stmt.setString(2, "updatepass123");  // Must meet domain rule (≥8 chars)
+            stmt.setString(2, "updatepass123");
             stmt.setString(3, "update@example.com");
             stmt.setString(4, "Original");
             stmt.setString(5, "User");
-            stmt.setString(6, "+1234567890");  // Must meet phone domain
+            stmt.setString(6, "+1234567890");
             stmt.setString(7, "Original Address");
-            stmt.setString(8, "user");  // Correct role type
+            stmt.setString(8, "user");
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 userId = rs.getInt("user_id");
