@@ -24,7 +24,7 @@ import java.sql.SQLException;
 @MultipartConfig
 public class UserServlet extends AbstractDatabaseServlet {
 
-    private ErrorCode errorCode = null;
+    private final ErrorCode errorCode = null;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -37,10 +37,14 @@ public class UserServlet extends AbstractDatabaseServlet {
 
         try {
             switch (operation) {
-                case "/login" -> req.getRequestDispatcher("/html/login.html").forward(req, res);
-                case "/register" -> req.getRequestDispatcher("/html/signup.html").forward(req, res);
-                case "/profile" -> showUserProfile(req, res);
-                default -> writeError(res, ErrorCode.OPERATION_UNKNOWN);
+                case "/login" ->
+                    req.getRequestDispatcher("/jsp/user/signIn.jsp").forward(req, res);
+                case "/register" ->
+                    req.getRequestDispatcher("/jsp/user/signUp.jsp").forward(req, res);
+                case "/profile" ->
+                    showUserProfile(req, res);
+                default ->
+                    writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
         } catch (IOException e) {
             LOGGER.error("IOException during GET: ", e);
@@ -58,15 +62,18 @@ public class UserServlet extends AbstractDatabaseServlet {
         LOGGER.info("POST operation: {}", operation);
 
         switch (operation) {
-            case "/login" -> handleLogin(req, res);
-            case "/register" -> handleRegister(req, res);
-            default -> writeError(res, ErrorCode.OPERATION_UNKNOWN);
+            case "/login" ->
+                handleLogin(req, res);
+            case "/register" ->
+                handleRegister(req, res);
+            default ->
+                writeError(res, ErrorCode.OPERATION_UNKNOWN);
         }
     }
 
     private void handleLogin(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try {
-            String usernameOrEmail = req.getParameter("username");
+            String usernameOrEmail = req.getParameter("email");
             String password = req.getParameter("password");
 
             if (LoginServices.loginValidation(usernameOrEmail, password, errorCode)) {
@@ -77,13 +84,19 @@ public class UserServlet extends AbstractDatabaseServlet {
                     session.setAttribute("user", user);
                     session.setAttribute("Authorization", jwt);
                     res.setHeader("Authorization", jwt);
-                    res.sendRedirect(req.getContextPath() + "/user/profile");
+
+                    if ("admin".equalsIgnoreCase(user.getRole())) {
+                        res.sendRedirect(req.getContextPath() + "/admin/dashboard");
+                    } else {
+                        res.sendRedirect(req.getContextPath() + "/user/profile");
+                    }
                 } else {
-                    writeError(res, ErrorCode.USER_NOT_FOUND);
+                    req.setAttribute("error_message", "Invalid email or password.");
+                    req.getRequestDispatcher("/jsp/user/signIn.jsp").forward(req, res);
                 }
             } else {
-                res.setStatus(errorCode.getHttpCode());
-                req.getRequestDispatcher("/html/login.html").forward(req, res);
+                req.setAttribute("error_message", "Login validation failed.");
+                req.getRequestDispatcher("/jsp/user/signIn.jsp").forward(req, res);
             }
         } catch (SQLException e) {
             LOGGER.error("SQLException during login: ", e);
@@ -91,19 +104,25 @@ public class UserServlet extends AbstractDatabaseServlet {
         }
     }
 
-    private void handleRegister(HttpServletRequest req, HttpServletResponse res) throws IOException {
+    private void handleRegister(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try {
             String username = req.getParameter("username");
-            String firstName = req.getParameter("first_name");
-            String lastName = req.getParameter("last_name");
+            String firstName = req.getParameter("firstName");
+            String lastName = req.getParameter("lastName");
             String password = req.getParameter("password");
             String rePassword = req.getParameter("password_check");
             String email = req.getParameter("email");
             String phone = req.getParameter("phone");
             String address = req.getParameter("address");
 
-            byte[] imageData = req.getPart("image").getInputStream().readAllBytes();
-            Image image = new Image(imageData, req.getPart("image").getContentType());
+            Image image = null;
+            try {
+                if (req.getPart("image") != null && req.getPart("image").getSize() > 0) {
+                    byte[] imageData = req.getPart("image").getInputStream().readAllBytes();
+                    image = new Image(imageData, req.getPart("image").getContentType());
+                }
+            } catch (Exception ignored) {
+            }
 
             User newUser = new User(username, password, firstName, lastName, email, phone, address, "user", image);
 
@@ -115,30 +134,41 @@ public class UserServlet extends AbstractDatabaseServlet {
                     session.setAttribute("user", registered);
                     session.setAttribute("Authorization", jwt);
                     res.setHeader("Authorization", jwt);
-                    res.sendRedirect(req.getContextPath() + "/profile/");
+
+                    if ("admin".equalsIgnoreCase(registered.getRole())) {
+                        res.sendRedirect(req.getContextPath() + "/admin/dashboard");
+                    } else {
+                        res.sendRedirect(req.getContextPath() + "/user/profile");
+                    }
                 } else {
-                    writeError(res, ErrorCode.INTERNAL_ERROR);
+                    req.setAttribute("error_message", "Failed to register user.");
+                    req.getRequestDispatcher("/jsp/user/signUp.jsp").forward(req, res);
                 }
             } else {
-                res.setStatus(errorCode.getHttpCode());
-                req.getRequestDispatcher("/html/signup.html").forward(req, res);
+                req.setAttribute("error_message", "Validation failed: Passwords must match and be valid.");
+                req.getRequestDispatcher("/jsp/user/signUp.jsp").forward(req, res);
             }
 
-        } catch (SQLException | ServletException e) {
+        } catch (SQLException e) {
             LOGGER.error("Registration error: ", e);
             writeError(res, ErrorCode.INTERNAL_ERROR);
         }
     }
-
 
     private void showUserProfile(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         HttpSession session = req.getSession(false);
         if (session != null && session.getAttribute("user") != null) {
             User user = (User) session.getAttribute("user");
             req.setAttribute("user", user);
-            req.getRequestDispatcher("/jsp/user/userProfile.jsp").forward(req, res);
+
+            if ("admin".equalsIgnoreCase(user.getRole())) {
+                res.sendRedirect(req.getContextPath() + "/admin/dashboard");
+            } else {
+                req.getRequestDispatcher("/jsp/user/userProfile.jsp").forward(req, res);
+            }
         } else {
-            res.sendRedirect(req.getContextPath() + "/user/login"); // not logged in
+            res.sendRedirect(req.getContextPath() + "/user/login");
         }
     }
+
 }

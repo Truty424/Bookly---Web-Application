@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -22,6 +23,14 @@ public class AdminServlet extends AbstractDatabaseServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
 
+        // ✅ Secure: check if user is admin
+        HttpSession session = req.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+        if (user == null || !"admin".equalsIgnoreCase(user.getRole())) {
+            resp.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
         try {
             if (path == null) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing action.");
@@ -29,38 +38,33 @@ public class AdminServlet extends AbstractDatabaseServlet {
             }
 
             switch (path) {
-                // Book Operations
-                case "/addBook" -> handleAddBook(req, resp);
-                case "/updateBook" -> handleUpdateBook(req, resp);
-                case "/deleteBook" -> handleDeleteBook(req, resp);
-
-                // Author Operations
-                case "/addAuthor" -> handleAddAuthor(req, resp);
-                case "/updateAuthor" -> handleUpdateAuthor(req, resp);
-                case "/deleteAuthor" -> handleDeleteAuthor(req, resp);
-
-                // Publisher Operations
-                case "/addPublisher" -> handleAddPublisher(req, resp);
-                case "/updatePublisher" -> handleUpdatePublisher(req, resp);
-                case "/deletePublisher" -> handleDeletePublisher(req, resp);
-
-                // Discount Operations
-                case "/addDiscount" -> handleAddDiscount(req, resp);
-                case "/deleteDiscount" -> handleDeleteDiscount(req, resp);
-
+                case "/addBook" -> handleAddBook(req);
+                case "/updateBook" -> handleUpdateBook(req);
+                case "/deleteBook" -> handleDeleteBook(req);
+                case "/addAuthor" -> handleAddAuthor(req);
+                case "/updateAuthor" -> handleUpdateAuthor(req);
+                case "/deleteAuthor" -> handleDeleteAuthor(req);
+                case "/addPublisher" -> handleAddPublisher(req);
+                case "/updatePublisher" -> handleUpdatePublisher(req);
+                case "/deletePublisher" -> handleDeletePublisher(req);
+                case "/addDiscount" -> handleAddDiscount(req);
+                case "/deleteDiscount" -> handleDeleteDiscount(req);
                 default -> resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unsupported action.");
             }
 
+            // ✅ Redirect back to dashboard after successful operation
+            resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
+
         } catch (Exception e) {
-            LOGGER.error("AdminServlet error: {}", e.getMessage());
-            resp.sendRedirect("/html/error.html");
+            LOGGER.error("AdminServlet error: {}", e.getMessage(), e);
+            resp.sendRedirect(req.getContextPath() + "/html/error.html");
         }
     }
 
-    // ========================= BOOK =========================
-    private void handleAddBook(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    // ========== BOOK ==========
+    private void handleAddBook(HttpServletRequest req) throws Exception {
         Book book = new Book(
-                req.getParameter("book_id") != null ? Integer.parseInt(req.getParameter("book_id")) : null,
+                Integer.parseInt(req.getParameter("book_id")),
                 req.getParameter("title"),
                 req.getParameter("language"),
                 req.getParameter("isbn"),
@@ -73,10 +77,9 @@ public class AdminServlet extends AbstractDatabaseServlet {
                 req.getParameter("summary")
         );
         new InsertBookDAO(getConnection(), book).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    private void handleUpdateBook(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void handleUpdateBook(HttpServletRequest req) throws Exception {
         int bookId = Integer.parseInt(req.getParameter("book_id"));
         new UpdateBookDAO(
                 getConnection(),
@@ -92,17 +95,15 @@ public class AdminServlet extends AbstractDatabaseServlet {
                 Double.parseDouble(req.getParameter("average_rate")),
                 req.getParameter("summary")
         ).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    private void handleDeleteBook(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void handleDeleteBook(HttpServletRequest req) throws Exception {
         int bookId = Integer.parseInt(req.getParameter("book_id"));
         new DeleteBookDAO(getConnection(), bookId).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    // ========================= AUTHOR =========================
-    private void handleAddAuthor(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    // ========== AUTHOR ==========
+    private void handleAddAuthor(HttpServletRequest req) throws Exception {
         Author author = new Author(
                 req.getParameter("first_name"),
                 req.getParameter("last_name"),
@@ -110,10 +111,9 @@ public class AdminServlet extends AbstractDatabaseServlet {
                 req.getParameter("nationality")
         );
         new InsertAuthorDAO(getConnection(), author).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    private void handleUpdateAuthor(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void handleUpdateAuthor(HttpServletRequest req) throws Exception {
         Author author = new Author(
                 req.getParameter("first_name"),
                 req.getParameter("last_name"),
@@ -122,27 +122,24 @@ public class AdminServlet extends AbstractDatabaseServlet {
         );
         author.setAuthor_id(Integer.parseInt(req.getParameter("author_id")));
         new UpdateAuthorDAO(getConnection(), author).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    private void handleDeleteAuthor(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void handleDeleteAuthor(HttpServletRequest req) throws Exception {
         int authorId = Integer.parseInt(req.getParameter("author_id"));
         new DeleteAuthorDAO(getConnection(), authorId).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    // ========================= PUBLISHER =========================
-    private void handleAddPublisher(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    // ========== PUBLISHER ==========
+    private void handleAddPublisher(HttpServletRequest req) throws Exception {
         Publisher publisher = new Publisher(
                 req.getParameter("publisher_name"),
                 req.getParameter("phone"),
                 req.getParameter("address")
         );
         new InsertPublisherDAO(getConnection(), publisher).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    private void handleUpdatePublisher(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void handleUpdatePublisher(HttpServletRequest req) throws Exception {
         Publisher publisher = new Publisher(
                 req.getParameter("publisher_name"),
                 req.getParameter("phone"),
@@ -150,30 +147,24 @@ public class AdminServlet extends AbstractDatabaseServlet {
         );
         publisher.setPublisherId(Integer.parseInt(req.getParameter("publisher_id")));
         new UpdatePublisherDAO(getConnection(), publisher).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    private void handleDeletePublisher(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void handleDeletePublisher(HttpServletRequest req) throws Exception {
         int publisherId = Integer.parseInt(req.getParameter("publisher_id"));
         new DeletePublisherDAO(getConnection(), publisherId).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 
-    // ========================= DISCOUNT =========================
+    // ========== DISCOUNT ==========
+    private void handleAddDiscount(HttpServletRequest req) throws Exception {
+        Discount discount = new Discount();
+        discount.setCode(req.getParameter("code"));
+        discount.setDiscountPercentage(Double.parseDouble(req.getParameter("percentage")));
+        discount.setExpiredDate(Timestamp.valueOf(req.getParameter("expiredDate") + " 00:00:00"));
+        new InsertDiscountDAO(getConnection(), discount).access();
+    }
 
-    private void handleAddDiscount(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-    Discount discount = new Discount();
-    discount.setCode(req.getParameter("code"));
-    discount.setDiscountPercentage(Double.parseDouble(req.getParameter("percentage")));
-    discount.setExpiredDate(Timestamp.valueOf(req.getParameter("expiredDate") + " 00:00:00"));
-
-    new InsertDiscountDAO(getConnection(), discount).access();
-    resp.sendRedirect("/admin/dashboard.jsp");
-}
-
-    private void handleDeleteDiscount(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void handleDeleteDiscount(HttpServletRequest req) throws Exception {
         int discountId = Integer.parseInt(req.getParameter("discount_id"));
         new DeleteDiscountDAO(getConnection(), discountId).access();
-        resp.sendRedirect("/admin/dashboard.jsp");
     }
 }

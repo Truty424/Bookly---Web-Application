@@ -9,6 +9,7 @@ import it.unipd.bookly.dao.category.GetAllCategoriesDAO;
 import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.LogContext;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,19 +29,23 @@ public class HomeServlet extends AbstractDatabaseServlet {
         double minRating = 4.0;
 
         try (Connection con = getConnection()) {
-            // Fetch data using a single shared connection
+            // Load all categories for home navigation/filter
             List<Category> categories = new GetAllCategoriesDAO(con).access().getOutputParam();
+
+            // Load top-rated books (e.g. featured section)
             List<Book> topRatedBooks = new GetTopRatedBooksDAO(con, minRating).access().getOutputParam();
+
+            // Load all books for general listing on homepage
             List<Book> allBooks = new GetAllBooksDAO(con).access().getOutputParam();
 
-            // Build map: bookId → authors using the same connection
+            // Load authors per book (for display under each title)
             Map<Integer, List<Author>> bookAuthors = new HashMap<>();
             for (Book book : allBooks) {
                 List<Author> authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
                 bookAuthors.put(book.getBookId(), authors);
             }
 
-            // Set attributes
+            // Set all attributes needed for the homepage
             req.setAttribute("categories", categories);
             req.setAttribute("topRatedBooks", topRatedBooks);
             req.setAttribute("allBooks", allBooks);
