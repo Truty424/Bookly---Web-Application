@@ -36,7 +36,7 @@ public class Book {
         this.summary = summary;
     }
 
-        public Book(int book_id, String title, String language, String isbn, double price, String edition,
+    public Book(int book_id, String title, String language, String isbn, double price, String edition,
             int publication_year, int number_of_pages, int stock_quantity, double average_rate, String summary,Image book_pic) {
         this.book_id = book_id;
         this.title = title;
