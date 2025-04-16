@@ -12,7 +12,7 @@ import java.io.IOException;
 public class LogoutServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         // Invalidate user session
         if (req.getSession(false) != null) {
             req.getSession().invalidate();
@@ -21,13 +21,8 @@ public class LogoutServlet extends HttpServlet {
         // Optional: clear Authorization header (if set manually)
         resp.setHeader("Authorization", "");
 
-        // Redirect to home page or login page
+        // Redirect to home page
         resp.sendRedirect(req.getContextPath() + "/");
     }
 
-    // Also handle POST if form submits logout
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        doGet(req, resp);
-    }
 }

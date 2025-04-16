@@ -24,7 +24,7 @@
             <form action="${pageContext.request.contextPath}/user/changePassword" method="get">
                 <button type="submit">Change Password</button>
             </form>
-            <form action="${pageContext.request.contextPath}/logout" method="post">
+            <form action="${pageContext.request.contextPath}/user/logout" method="post">
                 <button type="submit">Log Out</button>
             </form>
         </div>
