@@ -39,8 +39,8 @@ public class InsertAuthorDAO extends AbstractDAO<Boolean> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(INSERT_AUTHOR)) {
-            stmt.setString(1, author.getFirst_name());
-            stmt.setString(2, author.getLast_name());
+            stmt.setString(1, author.getFirstName());
+            stmt.setString(2, author.getLastName());
             stmt.setString(3, author.get_biography());
             stmt.setString(4, author.get_nationality());
 

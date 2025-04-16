@@ -48,7 +48,7 @@ public class Author {
      *
      * @return The author's ID.
      */
-    public int getAuthor_id() {
+    public int getAuthorId() {
         return author_id;
     }
 
@@ -66,7 +66,7 @@ public class Author {
      *
      * @return The author's first name.
      */
-    public String getFirst_name() {
+    public String getFirstName() {
         return first_name;
     }
 
@@ -84,7 +84,7 @@ public class Author {
      *
      * @return The author's last name.
      */
-    public String getLast_name() {
+    public String getLastName() {
         return last_name;
     }
 

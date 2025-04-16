@@ -61,8 +61,8 @@ public class UserProfileManagementRest extends AbstractRestResource {
         Boolean updated = new UpdateUserDAO(
                 con,
                 userId,
-                user.getFirst_name(),
-                user.getLast_name(),
+                user.getFirstName(),
+                user.getLastName(),
                 user.getEmail(),
                 user.getPhone(),
                 user.getAddress(),

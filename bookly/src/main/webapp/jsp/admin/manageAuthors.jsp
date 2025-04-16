@@ -23,14 +23,14 @@
         <% for (Author author : authors) { %>
         <tr>
             <td><%= author.getAuthor_id() %></td>
-            <td><%= author.getFirst_name() %> <%= author.getLast_name() %></td>
+            <td><%= author.getFirstName() %> <%= author.getLastName() %></td>
             <td><%= author.getNationality() %></td>
             <td class="actions">
                 <!-- Edit -->
                 <form action="<%= request.getContextPath() %>/admin/updateAuthor" method="post">
                     <input type="hidden" name="author_id" value="<%= author.getAuthor_id() %>" />
-                    <input type="hidden" name="first_name" value="<%= author.getFirst_name() %>" />
-                    <input type="hidden" name="last_name" value="<%= author.getLast_name() %>" />
+                    <input type="hidden" name="first_name" value="<%= author.getFirstName() %>" />
+                    <input type="hidden" name="last_name" value="<%= author.getLastName() %>" />
                     <input type="hidden" name="biography" value="<%= author.getBiography() %>" />
                     <input type="hidden" name="nationality" value="<%= author.getNationality() %>" />
                     <button class="edit-btn" type="submit">Edit</button>

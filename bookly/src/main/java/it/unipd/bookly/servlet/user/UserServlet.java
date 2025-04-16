@@ -146,7 +146,6 @@ public class UserServlet extends AbstractDatabaseServlet {
             String firstName = req.getParameter("firstName");
             String lastName = req.getParameter("lastName");
             String password = req.getParameter("password");
-            String rePassword = req.getParameter("password_check");
             String email = req.getParameter("email");
             String phone = req.getParameter("phone");
             String address = req.getParameter("address");
@@ -162,7 +161,7 @@ public class UserServlet extends AbstractDatabaseServlet {
 
             User newUser = new User(username, password, firstName, lastName, email, phone, address, "user", image);
 
-            if (RegisterServices.registerValidation(newUser, rePassword, errorCode)) {
+            if (RegisterServices.registerValidation(newUser, errorCode)) {
                 User registered = new RegisterUserDAO(getConnection(), newUser).access().getOutputParam();
                 if (registered != null) {
                     String jwt = JwtManager.createToken("username", registered.getUsername());

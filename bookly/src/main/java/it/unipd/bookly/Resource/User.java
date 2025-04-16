@@ -115,7 +115,7 @@ public class User {
      *
      * @return The first name.
      */
-    public String getFirst_name() {
+    public String getFirstName() {
         return firstName;
     }
 
@@ -124,7 +124,7 @@ public class User {
      *
      * @return The last name.
      */
-    public String getLast_name() {
+    public String getLastName() {
         return lastName;
     }
 

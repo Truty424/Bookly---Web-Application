@@ -54,7 +54,7 @@ public class GetAllAuthorsDAO extends AbstractDAO<List<Author>> {
             this.outputParam = authors;
 
             if (!authors.isEmpty()) {
-                LOGGER.info("First Author loaded: {} {}", authors.get(0).getFirst_name(), authors.get(0).getLast_name());
+                LOGGER.info("First Author loaded: {} {}", authors.get(0).getFirstName(), authors.get(0).getLastName());
             } else {
                 LOGGER.info("No authors found in the database.");
             }

@@ -15,7 +15,7 @@
                 for (Author author : authors) {
         %>
                     <li>
-                        <a href="<%= request.getContextPath() %>/author/<%= author.getAuthor_id() %>">
+                        <a href="<%= request.getContextPath() %>/author/<%= author.getAuthorId() %>">
                             <%= author.getName() %>
                         </a>
                     </li>
