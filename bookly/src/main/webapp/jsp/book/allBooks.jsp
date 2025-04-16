@@ -9,6 +9,11 @@
     <h1>All Books</h1>
 
     <ul>
+
+    <form action="<%= request.getContextPath() %>/" method="get">
+        <button type="submit">Go to Home</button>
+    </form>
+
         <%
             List<Book> books = (List<Book>) request.getAttribute("all_books");
             if (books != null) {

@@ -27,6 +27,9 @@
             <form action="${pageContext.request.contextPath}/user/logout" method="post">
                 <button type="submit">Log Out</button>
             </form>
+            <form action="${pageContext.request.contextPath}/" method="get">
+                <button type="submit">Home Page</button>
+            </form>
         </div>
 
         <h2 style="margin-top: 30px;">Orders</h2>
