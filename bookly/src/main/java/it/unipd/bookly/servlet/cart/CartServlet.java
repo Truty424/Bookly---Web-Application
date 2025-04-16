@@ -30,7 +30,7 @@ public class CartServlet extends AbstractDatabaseServlet {
             Integer userId = (Integer) req.getSession().getAttribute("userId");
 
             if (userId == null) {
-                resp.sendRedirect("/html/login.html");
+                resp.sendRedirect("/jsp/user/login.jsp");
                 return;
             }
 
@@ -61,7 +61,7 @@ public class CartServlet extends AbstractDatabaseServlet {
             Integer userId = (Integer) req.getSession().getAttribute("userId");
 
             if (userId == null) {
-                resp.sendRedirect("/html/login.html");
+                resp.sendRedirect("/jsp/user/login.jsp");
                 return;
             }
 
