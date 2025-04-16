@@ -7,10 +7,10 @@ The following section provides documentation for all RESTful endpoints in the Bo
 
 \textbf{Sign Up} \\
 Registers a new user with profile data.
-– URL: /auth/signup \\
-– Method: POST \\
-– URL Parameters: NONE \\
-– Data Parameters: username, email, password, firstName, lastName, phone, address \\
+- URL: /auth/signup \\
+- Method: POST \\
+- URL Parameters: NONE \\
+- Data Parameters: username, email, password, firstName, lastName, phone, address \\
 – Success Response: \\
 Code: 201 \\
 Content: \{"message": "User created successfully."\} \\
@@ -24,11 +24,11 @@ When: Username/email already registered
 
 \textbf{Login} \\
 Authenticates a user and returns a JWT.
-– URL: /auth/login \\
-– Method: POST \\
-– URL Parameters: NONE \\
-– Data Parameters: username, password \\
-– Success Response: \\
+- URL: /auth/login \\
+- Method: POST \\
+- URL Parameters: NONE \\
+- Data Parameters: username, password \\
+Success Response: \\
 Code: 200 OK \\
 Content: \{"token": "jwtToken"\} \\
 – Error Response: \\
@@ -41,10 +41,10 @@ When: Login failed
 
 \textbf{Logout} \\
 Logs out the current user session.
-– URL: /auth/logout \\
-– Method: GET \\
-– URL Parameters: NONE \\
-– Success Response: \\
+URL: /auth/logout \\
+Method: GET \\
+URL Parameters: NONE \\
+Success Response: \\
 Code: 200 OK \\
 Content: Redirect to home
 
@@ -53,76 +53,76 @@ Content: Redirect to home
 
 \textbf{Get All Books} \\
 Fetch all books in the catalog.
-– URL: /books \\
-– Method: GET \\
-– Success Response: \\
+- URL: /books \\
+- Method: GET \\
+- Success Response: \\
 Code: 200 OK \\
-Content: [book_list]
+Content: [book\_list]
 
 \textbf{Get Book by ID} \\
 Retrieve a single book by its ID.
-– URL: /book?id={book_id} \\
-– Method: GET \\
-– Success Response: \\
+- URL: /book?id={book\_id} \\
+- Method: GET \\
+- Success Response: \\
 Code: 200 OK \\
 Content: {book details} \\
-– Error Response: \\
+- Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "Book not found."\}
 
 \textbf{Search Books} \\
 Find books matching a title keyword.
-– URL: /books/search?title={query} \\
-– Method: GET \\
-– Success Response: \\
+- URL: /books/search?title={query} \\
+- Method: GET \\
+- Success Response: \\
 Code: 200 OK \\
-Content: [matched_books] \\
+Content: [matched\_books] \\
 – Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "No matches."\}
 
 \textbf{Top Rated Books} \\
 List top-rated books.
-– URL: /books/top-rated \\
-– Method: GET \\
-– Success Response: \\
+- URL: /books/top-rated \\
+- Method: GET \\
+- Success Response: \\
 Code: 200 OK \\
-Content: [top_books]
+- Content: [top\_books]
 
 \textbf{Insert Book} \\
 Creates a new book entry.
-– URL: /book \\
-– Method: POST \\
-– Data Parameters: title, price, author_id, publisher_id, isbn, language, ... \\
+- URL: /book \\
+- Method: POST \\
+- Data Parameters: title, price, author\_id, publisher\_id, isbn, language, ... \\
 – Success Response: \\
-Code: 201 Created \\
-Content: \{"message": "Book created."\} \\
+- Code: 201 Created \\
+- Content: \{"message": "Book created."\} \\
 – Error Response: \\
 Code: 400 Bad Request \\
-Content: \{"error": "Missing book fields."\}
+- Content: \{"error": "Missing book fields."\}
 
 \textbf{Update Book} \\
 Updates a book record.
-– URL: /book \\
-– Method: PUT \\
-– Data Parameters: bookId, title, price, etc. \\
-– Success Response: \\
+- URL: /book \\
+- Method: PUT \\
+- Data Parameters: bookId, title, price, etc. \\
+- Success Response: \\
 Code: 200 OK \\
-Content: \{"message": "Book updated."\}
+- Content: \{"message": "Book updated."\}
 
 \textbf{Delete Book} \\
 Deletes a book.
-– URL: /book?id={book_id} \\
-– Method: DELETE \\
-– Success Response: \\
+- URL: /book?id={book\_id} \\
+- Method: DELETE \\
+- Success Response: \\
 Code: 200 OK \\
-Content: \{"message": "Book deleted."\}
+- Content: \{"message": "Book deleted."\}
 
 \textbf{Update Book Stock} \\
 Adjusts stock for a book.
-– URL: /book/stock?id={book_id}&quantity={qty} \\
-– Method: PUT \\
-– Success Response: \\
+- URL: /book/stock?id={book\_id}\&quantity={qty} \\
+- Method: PUT \\
+- Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Stock updated."\}
 
@@ -134,8 +134,8 @@ Retrieves a list of all authors.
 – URL: /authors \\
 – Method: GET \\
 – Success Response: \\
-Code: 200 OK \\
-Content: [author_list]
+- Code: 200 OK \\
+- Content: [author\_list]
 
 \textbf{Get Author by ID} \\
 Returns a specific author's information.
@@ -144,26 +144,26 @@ Returns a specific author's information.
 – URL Parameters: id = author ID \\
 – Success Response: \\
 Code: 200 OK \\
-Content: {author_details} \\
+Content: {author\_details} \\
 – Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "Author not found."\}
 
 \textbf{Create Author} \\
 Adds a new author.
-– URL: /authors \\
-– Method: POST \\
-– Data Parameters: first_name, last_name, biography, nationality \\
+URL: /authors \\
+Method: POST \\
+Data Parameters: first\_name, last\_name, biography, nationality \\
 – Success Response: \\
 Code: 201 Created \\
 Content: \{"message": "Author created."\}
 
 \textbf{Update Author} \\
 Modifies an existing author.
-– URL: /authors/{id} \\
-– Method: PUT \\
-– URL Parameters: id = author ID \\
-– Data Parameters: first_name, last_name, biography, nationality \\
+URL: /authors/{id} \\
+Method: PUT \\
+URL Parameters: id = author ID \\
+Data Parameters: first\_name, last\_name, biography, nationality \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Author updated."\}
@@ -202,7 +202,7 @@ Content: \{"message": "Author removed."\}
 – URL: /publishers \\
 – Method: POST \\
 – URL Parameters: NONE \\
-– Data Parameters: publisher_name, phone, address \\
+– Data Parameters: publisher\_name, phone, address \\
 – Success Response: \\
 Code: 201 Created \\
 Content: \{"message": "Publisher inserted successfully."\} \\
@@ -214,7 +214,7 @@ Content: \{"error": "Failed to insert publisher."\}
 – URL: /publishers/{id} \\
 – Method: PUT \\
 – URL Parameters: id = publisher ID \\
-– Data Parameters: publisher_name, phone, address \\
+– Data Parameters: publisher\_name, phone, address \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Publisher updated successfully."\} \\
@@ -236,19 +236,19 @@ Content: \{"message": "Publisher deleted successfully."\}
 \subsubsection*{Cart}
 
 \textbf{Retrieve Cart by User ID} \\
-– URL: /cart?userId={user_id} \\
+– URL: /cart?userId={user\_id} \\
 – Method: GET \\
 – URL Parameters: userId = user ID \\
 – Data Parameters: NONE \\
 – Success Response: \\
 Code: 200 OK \\
-Content: \{cart_details\} \\
+Content: \{cart\_details\} \\
 – Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "Cart not found."\}
 
 \textbf{Add Book to Cart} \\
-– URL: /cart/add?cartId={cart_id}&bookId={book_id} \\
+– URL: /cart/add?cartId={cart\_id}\&bookId={book\_id} \\
 – Method: POST \\
 – URL Parameters: cartId, bookId \\
 – Data Parameters: NONE \\
@@ -257,7 +257,7 @@ Code: 200 OK \\
 Content: \{"message": "Book added to cart."\}
 
 \textbf{Remove Book from Cart} \\
-– URL: /cart/remove?cartId={cart_id}&bookId={book_id} \\
+– URL: /cart/remove?cartId={cart\_id}\&bookId={book\_id} \\
 – Method: DELETE \\
 – URL Parameters: cartId, bookId \\
 – Data Parameters: NONE \\
@@ -269,7 +269,7 @@ Content: \{"message": "Book removed from cart."\}
 \subsubsection*{Wishlist}
 
 \textbf{Create Wishlist} \\
-– URL: /wishlist?userId={user_id} \\
+– URL: /wishlist?userId={user\_id} \\
 – Method: POST \\
 – URL Parameters: userId \\
 – Data Parameters: NONE \\
@@ -311,7 +311,7 @@ Content: \{"message": "Book removed from wishlist."\}
 – Data Parameters: NONE \\
 – Success Response: \\
 Code: 200 OK \\
-Content: \{[book_1, book_2, ...]\}
+Content: \{[book\_1, book\_2, ...]\}
 
 \textbf{Count Books in Wishlist} \\
 – URL: /wishlist/books/count?wishlistId={wishlistId} \\
@@ -332,7 +332,7 @@ Content: \{"count": X\}
 – Data Parameters: NONE \\
 – Success Response: \\
 Code: 200 OK \\
-Content: [ \{ order_1 \}, \{ order_2 \}, ... ]
+Content: [ \{ order\_1 \}, \{ order\_2 \}, ... ]
 
 \textbf{Get Order by ID} \\
 – URL: /order/{id} \\
@@ -341,13 +341,13 @@ Content: [ \{ order_1 \}, \{ order_2 \}, ... ]
 – Data Parameters: NONE \\
 – Success Response: \\
 Code: 200 OK \\
-Content: \{order_details\}
+Content: \{order\_details\}
 
 \textbf{Insert Order} \\
 – URL: /order \\
 – Method: POST \\
 – URL Parameters: NONE \\
-– Data Parameters: total_price, payment_method, address, status, cart_id (optional) \\
+– Data Parameters: total\_price, payment\_method, address, status, cart\_id (optional) \\
 – Success Response: \\
 Code: 201 Created \\
 Content: \{"message": "Order created."\}
@@ -359,7 +359,7 @@ Content: \{"message": "Order created."\}
 – Data Parameters: NONE \\
 – Success Response: \\
 Code: 200 OK \\
-Content: [ \{ order_1 \}, \{ order_2 \} ]
+Content: [ \{ order\_1 \}, \{ order\_2 \} ]
 
 \textbf{Get Latest Order for User} \\
 – URL: /order/user/{userId}/latest \\
@@ -368,7 +368,7 @@ Content: [ \{ order_1 \}, \{ order_2 \} ]
 – Data Parameters: NONE \\
 – Success Response: \\
 Code: 200 OK \\
-Content: \{latest_order\}
+Content: \{latest\_order\}
 
 % === DISCOUNTS ===
 \subsubsection*{Discounts}
@@ -389,10 +389,10 @@ Content: [ \{discounts\} ]
 – Data Parameters: NONE \\
 – Success Response: \\
 Code: 200 OK \\
-Content: [ \{active_discounts\} ]
+Content: [ \{active\_discounts\} ]
 
 \textbf{Get Discount by Code} \\
-– URL: /discount/code?code={discount_code} \\
+– URL: /discount/code?code={discount\_code} \\
 – Method: GET \\
 – URL Parameters: code = discount code \\
 – Data Parameters: NONE \\
@@ -401,7 +401,7 @@ Code: 200 OK \\
 Content: \{discount\}
 
 \textbf{Get Valid Discount by Code} \\
-– URL: /discount/query/valid?code={discount_code} \\
+– URL: /discount/query/valid?code={discount\_code} \\
 – Method: GET \\
 – URL Parameters: code = discount code \\
 – Data Parameters: NONE \\
@@ -410,7 +410,7 @@ Code: 200 OK \\
 Content: \{discount\}
 
 \textbf{Delete Discount} \\
-– URL: /discount?id={discount_id} \\
+– URL: /discount?id={discount\_id} \\
 – Method: DELETE \\
 – URL Parameters: id = discount ID \\
 – Data Parameters: NONE \\
@@ -434,7 +434,7 @@ Content: \{user\_data\}
 – URL: /user/update \\
 – Method: PUT \\
 – URL Parameters: NONE \\
-– Data Parameters: user_id, first_name, last_name, email, phone, address, role \\
+– Data Parameters: user\_id, first\_name, last\_name, email, phone, address, role \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "User updated."\}
@@ -443,7 +443,7 @@ Content: \{"message": "User updated."\}
 – URL: /user/password \\
 – Method: PUT \\
 – URL Parameters: NONE \\
-– Data Parameters: user_id, new_password \\
+– Data Parameters: user\_id, new\_password \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Password changed successfully."\}
@@ -452,7 +452,7 @@ Content: \{"message": "Password changed successfully."\}
 – URL: /user/image \\
 – Method: POST \\
 – URL Parameters: NONE \\
-– Data Parameters: user_id, image (multipart) \\
+– Data Parameters: user\_id, image (multipart) \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Image uploaded."\}
