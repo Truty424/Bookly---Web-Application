@@ -128,7 +128,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                     }
                 } else {
                     req.setAttribute("error_message", "Invalid email or password.");
-                    req.getRequestDispatcher("/book").forward(req, res);
+                    req.getRequestDispatcher("/jsp/user/login.jsp").forward(req, res);
                 }
             } else {
                 req.setAttribute("error_message", "Login validation failed.");

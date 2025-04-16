@@ -55,7 +55,7 @@
             <c:choose>
                 <c:when test="${not empty bookAuthors[book.bookId]}">
                     <c:forEach var="author" items="${bookAuthors[book.bookId]}" varStatus="loop">
-                        ${author.first_name} ${author.last_name}<c:if test="${!loop.last}">, </c:if>
+                        ${author.firstName} ${author.lastName}<c:if test="${!loop.last}">, </c:if>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>Unknown</c:otherwise>
@@ -82,7 +82,7 @@
             <c:choose>
                 <c:when test="${not empty bookAuthors[book.bookId]}">
                     <c:forEach var="author" items="${bookAuthors[book.bookId]}" varStatus="loop">
-                        ${author.first_name} ${author.last_name}<c:if test="${!loop.last}">, </c:if>
+                        ${author.firstName} ${author.lastName}<c:if test="${!loop.last}">, </c:if>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
