@@ -106,9 +106,14 @@ public class UserServlet extends AbstractDatabaseServlet {
         try {
             String email = req.getParameter("email");
             String password = req.getParameter("password");
+            LOGGER.info("Login attempt with email: {}, password: {}", email, password);
 
             if (LoginServices.loginValidation(email, password, errorCode)) {
+                LOGGER.info("Validating login: email={}, password={}", email, password);
+
                 User user = new LoginUserDAO(getConnection(), email, password).access().getOutputParam();
+                LOGGER.info("DAO returned user: {}", user != null ? user.getUsername() : "null");
+
                 if (user != null) {
                     String jwt = JwtManager.createToken("username", user.getUsername());
                     HttpSession session = req.getSession();
@@ -123,7 +128,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                     }
                 } else {
                     req.setAttribute("error_message", "Invalid email or password.");
-                    req.getRequestDispatcher("/jsp/user/login.jsp").forward(req, res);
+                    req.getRequestDispatcher("/book").forward(req, res);
                 }
             } else {
                 req.setAttribute("error_message", "Login validation failed.");
