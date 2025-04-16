@@ -9,6 +9,7 @@ import it.unipd.bookly.dao.category.GetAllCategoriesDAO;
 import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.LogContext;
+import it.unipd.bookly.utilities.ServletUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,23 +30,23 @@ public class HomeServlet extends AbstractDatabaseServlet {
         double minRating = 4.0;
 
         try (Connection con = getConnection()) {
-            // Load all categories for home navigation/filter
+            // Load categories for homepage
             List<Category> categories = new GetAllCategoriesDAO(con).access().getOutputParam();
 
-            // Load top-rated books (e.g. featured section)
+            // Load featured (top-rated) books
             List<Book> topRatedBooks = new GetTopRatedBooksDAO(con, minRating).access().getOutputParam();
 
-            // Load all books for general listing on homepage
+            // Load general listing
             List<Book> allBooks = new GetAllBooksDAO(con).access().getOutputParam();
 
-            // Load authors per book (for display under each title)
+            // Attach authors to books
             Map<Integer, List<Author>> bookAuthors = new HashMap<>();
             for (Book book : allBooks) {
                 List<Author> authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
                 bookAuthors.put(book.getBookId(), authors);
             }
 
-            // Set all attributes needed for the homepage
+            // Set attributes for JSP
             req.setAttribute("categories", categories);
             req.setAttribute("topRatedBooks", topRatedBooks);
             req.setAttribute("allBooks", allBooks);
@@ -53,8 +54,8 @@ public class HomeServlet extends AbstractDatabaseServlet {
 
             req.getRequestDispatcher("/jsp/home.jsp").forward(req, resp);
         } catch (Exception e) {
-            LOGGER.error("Error in HomeServlet: {}", e.getMessage());
-            req.getRequestDispatcher("/html/error.html").forward(req, resp);
+            LOGGER.error("Error in HomeServlet: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "HomeServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();

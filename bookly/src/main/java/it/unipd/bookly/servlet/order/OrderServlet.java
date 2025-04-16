@@ -5,6 +5,7 @@ import it.unipd.bookly.Resource.Order;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+import it.unipd.bookly.utilities.ServletUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -40,7 +41,7 @@ public class OrderServlet extends AbstractDatabaseServlet {
             req.getRequestDispatcher("/jsp/user/userOrders.jsp").forward(req, res);
         } catch (Exception e) {
             LOGGER.error("Failed to load user orders: {}", e.getMessage(), e);
-            res.sendRedirect(req.getContextPath() + "/html/error.html");
+            ServletUtils.redirectToErrorPage(req, res, "OrderServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();

@@ -6,6 +6,7 @@ import it.unipd.bookly.dao.book.*;
 import it.unipd.bookly.dao.publisher.*;
 import it.unipd.bookly.dao.discount.*;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+import it.unipd.bookly.utilities.ServletUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,9 +24,10 @@ public class AdminServlet extends AbstractDatabaseServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String path = req.getPathInfo();
 
-        // ✅ Secure: check if user is admin
         HttpSession session = req.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        // ✅ Check if user is admin
         if (user == null || !"admin".equalsIgnoreCase(user.getRole())) {
             resp.sendRedirect(req.getContextPath() + "/user/login");
             return;
@@ -33,7 +35,7 @@ public class AdminServlet extends AbstractDatabaseServlet {
 
         try {
             if (path == null) {
-                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing action.");
+                ServletUtils.redirectToErrorPage(req, resp, "Missing admin action path.");
                 return;
             }
 
@@ -49,122 +51,144 @@ public class AdminServlet extends AbstractDatabaseServlet {
                 case "/deletePublisher" -> handleDeletePublisher(req);
                 case "/addDiscount" -> handleAddDiscount(req);
                 case "/deleteDiscount" -> handleDeleteDiscount(req);
-                default -> resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Unsupported action.");
+                default -> ServletUtils.redirectToErrorPage(req, resp, "Unsupported admin action: " + path);
             }
 
-            // ✅ Redirect back to dashboard after successful operation
+            // ✅ Success: redirect back to dashboard
             resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
 
         } catch (Exception e) {
             LOGGER.error("AdminServlet error: {}", e.getMessage(), e);
-            resp.sendRedirect(req.getContextPath() + "/html/error.html");
+            ServletUtils.redirectToErrorPage(req, resp, "AdminServlet error: " + e.getMessage());
         }
     }
 
     // ========== BOOK ==========
     private void handleAddBook(HttpServletRequest req) throws Exception {
-        Book book = new Book(
-                Integer.parseInt(req.getParameter("book_id")),
-                req.getParameter("title"),
-                req.getParameter("language"),
-                req.getParameter("isbn"),
-                Double.parseDouble(req.getParameter("price")),
-                req.getParameter("edition"),
-                Integer.parseInt(req.getParameter("publication_year")),
-                Integer.parseInt(req.getParameter("number_of_pages")),
-                Integer.parseInt(req.getParameter("stock_quantity")),
-                0.0,
-                req.getParameter("summary")
-        );
-        new InsertBookDAO(getConnection(), book).access();
+        try (var con = getConnection()) {
+            Book book = new Book(
+                    Integer.parseInt(req.getParameter("book_id")),
+                    req.getParameter("title"),
+                    req.getParameter("language"),
+                    req.getParameter("isbn"),
+                    Double.parseDouble(req.getParameter("price")),
+                    req.getParameter("edition"),
+                    Integer.parseInt(req.getParameter("publication_year")),
+                    Integer.parseInt(req.getParameter("number_of_pages")),
+                    Integer.parseInt(req.getParameter("stock_quantity")),
+                    0.0,
+                    req.getParameter("summary")
+            );
+            new InsertBookDAO(con, book).access();
+        }
     }
 
     private void handleUpdateBook(HttpServletRequest req) throws Exception {
-        int bookId = Integer.parseInt(req.getParameter("book_id"));
-        new UpdateBookDAO(
-                getConnection(),
-                bookId,
-                req.getParameter("title"),
-                req.getParameter("language"),
-                req.getParameter("isbn"),
-                Double.parseDouble(req.getParameter("price")),
-                req.getParameter("edition"),
-                Integer.parseInt(req.getParameter("publication_year")),
-                Integer.parseInt(req.getParameter("number_of_pages")),
-                Integer.parseInt(req.getParameter("stock_quantity")),
-                Double.parseDouble(req.getParameter("average_rate")),
-                req.getParameter("summary")
-        ).access();
+        try (var con = getConnection()) {
+            int bookId = Integer.parseInt(req.getParameter("book_id"));
+            new UpdateBookDAO(
+                    con,
+                    bookId,
+                    req.getParameter("title"),
+                    req.getParameter("language"),
+                    req.getParameter("isbn"),
+                    Double.parseDouble(req.getParameter("price")),
+                    req.getParameter("edition"),
+                    Integer.parseInt(req.getParameter("publication_year")),
+                    Integer.parseInt(req.getParameter("number_of_pages")),
+                    Integer.parseInt(req.getParameter("stock_quantity")),
+                    Double.parseDouble(req.getParameter("average_rate")),
+                    req.getParameter("summary")
+            ).access();
+        }
     }
 
     private void handleDeleteBook(HttpServletRequest req) throws Exception {
-        int bookId = Integer.parseInt(req.getParameter("book_id"));
-        new DeleteBookDAO(getConnection(), bookId).access();
+        try (var con = getConnection()) {
+            int bookId = Integer.parseInt(req.getParameter("book_id"));
+            new DeleteBookDAO(con, bookId).access();
+        }
     }
 
     // ========== AUTHOR ==========
     private void handleAddAuthor(HttpServletRequest req) throws Exception {
-        Author author = new Author(
-                req.getParameter("first_name"),
-                req.getParameter("last_name"),
-                req.getParameter("biography"),
-                req.getParameter("nationality")
-        );
-        new InsertAuthorDAO(getConnection(), author).access();
+        try (var con = getConnection()) {
+            Author author = new Author(
+                    req.getParameter("first_name"),
+                    req.getParameter("last_name"),
+                    req.getParameter("biography"),
+                    req.getParameter("nationality")
+            );
+            new InsertAuthorDAO(con, author).access();
+        }
     }
 
     private void handleUpdateAuthor(HttpServletRequest req) throws Exception {
-        Author author = new Author(
-                req.getParameter("first_name"),
-                req.getParameter("last_name"),
-                req.getParameter("biography"),
-                req.getParameter("nationality")
-        );
-        author.setAuthor_id(Integer.parseInt(req.getParameter("author_id")));
-        new UpdateAuthorDAO(getConnection(), author).access();
+        try (var con = getConnection()) {
+            Author author = new Author(
+                    req.getParameter("first_name"),
+                    req.getParameter("last_name"),
+                    req.getParameter("biography"),
+                    req.getParameter("nationality")
+            );
+            author.setAuthor_id(Integer.parseInt(req.getParameter("author_id")));
+            new UpdateAuthorDAO(con, author).access();
+        }
     }
 
     private void handleDeleteAuthor(HttpServletRequest req) throws Exception {
-        int authorId = Integer.parseInt(req.getParameter("author_id"));
-        new DeleteAuthorDAO(getConnection(), authorId).access();
+        try (var con = getConnection()) {
+            int authorId = Integer.parseInt(req.getParameter("author_id"));
+            new DeleteAuthorDAO(con, authorId).access();
+        }
     }
 
     // ========== PUBLISHER ==========
     private void handleAddPublisher(HttpServletRequest req) throws Exception {
-        Publisher publisher = new Publisher(
-                req.getParameter("publisher_name"),
-                req.getParameter("phone"),
-                req.getParameter("address")
-        );
-        new InsertPublisherDAO(getConnection(), publisher).access();
+        try (var con = getConnection()) {
+            Publisher publisher = new Publisher(
+                    req.getParameter("publisher_name"),
+                    req.getParameter("phone"),
+                    req.getParameter("address")
+            );
+            new InsertPublisherDAO(con, publisher).access();
+        }
     }
 
     private void handleUpdatePublisher(HttpServletRequest req) throws Exception {
-        Publisher publisher = new Publisher(
-                req.getParameter("publisher_name"),
-                req.getParameter("phone"),
-                req.getParameter("address")
-        );
-        publisher.setPublisherId(Integer.parseInt(req.getParameter("publisher_id")));
-        new UpdatePublisherDAO(getConnection(), publisher).access();
+        try (var con = getConnection()) {
+            Publisher publisher = new Publisher(
+                    req.getParameter("publisher_name"),
+                    req.getParameter("phone"),
+                    req.getParameter("address")
+            );
+            publisher.setPublisherId(Integer.parseInt(req.getParameter("publisher_id")));
+            new UpdatePublisherDAO(con, publisher).access();
+        }
     }
 
     private void handleDeletePublisher(HttpServletRequest req) throws Exception {
-        int publisherId = Integer.parseInt(req.getParameter("publisher_id"));
-        new DeletePublisherDAO(getConnection(), publisherId).access();
+        try (var con = getConnection()) {
+            int publisherId = Integer.parseInt(req.getParameter("publisher_id"));
+            new DeletePublisherDAO(con, publisherId).access();
+        }
     }
 
     // ========== DISCOUNT ==========
     private void handleAddDiscount(HttpServletRequest req) throws Exception {
-        Discount discount = new Discount();
-        discount.setCode(req.getParameter("code"));
-        discount.setDiscountPercentage(Double.parseDouble(req.getParameter("percentage")));
-        discount.setExpiredDate(Timestamp.valueOf(req.getParameter("expiredDate") + " 00:00:00"));
-        new InsertDiscountDAO(getConnection(), discount).access();
+        try (var con = getConnection()) {
+            Discount discount = new Discount();
+            discount.setCode(req.getParameter("code"));
+            discount.setDiscountPercentage(Double.parseDouble(req.getParameter("percentage")));
+            discount.setExpiredDate(Timestamp.valueOf(req.getParameter("expiredDate") + " 00:00:00"));
+            new InsertDiscountDAO(con, discount).access();
+        }
     }
 
     private void handleDeleteDiscount(HttpServletRequest req) throws Exception {
-        int discountId = Integer.parseInt(req.getParameter("discount_id"));
-        new DeleteDiscountDAO(getConnection(), discountId).access();
+        try (var con = getConnection()) {
+            int discountId = Integer.parseInt(req.getParameter("discount_id"));
+            new DeleteDiscountDAO(con, discountId).access();
+        }
     }
 }

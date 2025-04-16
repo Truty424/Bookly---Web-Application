@@ -6,6 +6,8 @@ import it.unipd.bookly.dao.cart.*;
 import it.unipd.bookly.dao.discount.GetValidDiscountByCodeDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.LogContext;
+import it.unipd.bookly.utilities.ServletUtils;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -37,12 +39,12 @@ public class CartServlet extends AbstractDatabaseServlet {
             if (path.matches(".*/cart/?")) {
                 showCart(req, resp, userId);
             } else {
-                resp.sendRedirect("/html/error.html");
+                ServletUtils.redirectToErrorPage(req, resp, "Invalid cart path: " + path);
             }
 
         } catch (Exception e) {
-            LOGGER.error("CartServlet GET error: {}", e.getMessage());
-            resp.sendRedirect("/html/error.html");
+            LOGGER.error("CartServlet GET error: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "CartServlet GET error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -96,12 +98,12 @@ public class CartServlet extends AbstractDatabaseServlet {
 
                 resp.sendRedirect("/cart");
             } else {
-                resp.sendRedirect("/html/error.html");
+                ServletUtils.redirectToErrorPage(req, resp, "Invalid cart operation: " + path);
             }
 
         } catch (Exception e) {
-            LOGGER.error("CartServlet POST error: {}", e.getMessage());
-            resp.sendRedirect("/html/error.html");
+            LOGGER.error("CartServlet POST error: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "CartServlet POST error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();

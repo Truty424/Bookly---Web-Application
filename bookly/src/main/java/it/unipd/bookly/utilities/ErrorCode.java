@@ -90,7 +90,7 @@ public enum ErrorCode {
         return code;
     }
 
-    public int getHttpCode() {
+    public int getHTTPCode() {
         return httpCode;
     }
 
@@ -105,7 +105,7 @@ public enum ErrorCode {
         return json;
     }
 
-    public int getHTTPCode() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+//    public int getHTTPCode() {
+//        throw new UnsupportedOperationException("Not supported yet.");
+//    }
 }

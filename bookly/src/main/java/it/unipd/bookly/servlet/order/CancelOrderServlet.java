@@ -3,11 +3,13 @@ package it.unipd.bookly.servlet.order;
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.dao.order.CancelOrderDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+import it.unipd.bookly.utilities.ServletUtils;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.Connection;
 
@@ -33,8 +35,8 @@ public class CancelOrderServlet extends AbstractDatabaseServlet {
             }
 
         } catch (Exception e) {
-            LOGGER.error("Error cancelling order: {}", e.getMessage());
-            res.sendRedirect(req.getContextPath() + "/html/error.html");
+            LOGGER.error("Error cancelling order: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, res, "CancelOrderServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();

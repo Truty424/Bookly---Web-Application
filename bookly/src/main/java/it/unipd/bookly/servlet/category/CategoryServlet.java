@@ -49,18 +49,22 @@ public class CategoryServlet extends AbstractDatabaseServlet {
     }
 
     private void showAllCategories(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        List<Category> categories = new GetAllCategoriesDAO(getConnection()).access().getOutputParam();
-        req.setAttribute("all_categories", categories);
-        req.getRequestDispatcher("/jsp/category/allCategories.jsp").forward(req, resp);
+        try (var con = getConnection()) {
+            List<Category> categories = new GetAllCategoriesDAO(con).access().getOutputParam();
+            req.setAttribute("all_categories", categories);
+            req.getRequestDispatcher("/jsp/category/allCategories.jsp").forward(req, resp);
+        }
     }
 
     private void showBooksByCategory(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        String[] segments = req.getRequestURI().split("/");
-        int category_id = Integer.parseInt(segments[segments.length - 1]);
+        try (var con = getConnection()) {
+            String[] segments = req.getRequestURI().split("/");
+            int category_id = Integer.parseInt(segments[segments.length - 1]);
 
-        List<Book> books = new GetBooksByCategoryDAO(getConnection(), category_id).access().getOutputParam();
-        req.setAttribute("category_books", books);
-        req.setAttribute("category_id", category_id);
-        req.getRequestDispatcher("/jsp/category/categoryBooks.jsp").forward(req, resp);
+            List<Book> books = new GetBooksByCategoryDAO(con, category_id).access().getOutputParam();
+            req.setAttribute("category_books", books);
+            req.setAttribute("category_id", category_id);
+            req.getRequestDispatcher("/jsp/category/categoryBooks.jsp").forward(req, resp);
+        }
     }
 }

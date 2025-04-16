@@ -6,6 +6,7 @@ import it.unipd.bookly.Resource.Publisher;
 import it.unipd.bookly.dao.publisher.GetAllPublishersDAO;
 import it.unipd.bookly.dao.publisher.GetBooksByPublisherDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+import it.unipd.bookly.utilities.ServletUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,11 +37,11 @@ public class PublisherServlet extends AbstractDatabaseServlet {
             } else if (path.matches(".*/publisher/\\d+")) {
                 showBooksByPublisher(req, resp);
             } else {
-                resp.sendRedirect("/html/error.html");
+                ServletUtils.redirectToErrorPage(req, resp, "Invalid publisher path: " + path);
             }
         } catch (Exception e) {
             LOGGER.error("PublisherServlet error: {}", e.getMessage());
-            resp.sendRedirect("/html/error.html");
+            ServletUtils.redirectToErrorPage(req, resp, "PublisherServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -48,18 +49,24 @@ public class PublisherServlet extends AbstractDatabaseServlet {
     }
 
     private void showAllPublishers(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        List<Publisher> publishers = new GetAllPublishersDAO(getConnection()).access().getOutputParam();
-        req.setAttribute("all_publishers", publishers);
-        req.getRequestDispatcher("/jsp/publisher/allPublishers.jsp").forward(req, resp);
+        try (var con = getConnection()) {
+            List<Publisher> publishers = new GetAllPublishersDAO(con).access().getOutputParam();
+            req.setAttribute("all_publishers", publishers);
+            req.getRequestDispatcher("/jsp/publisher/allPublishers.jsp").forward(req, resp);
+        }
     }
+
 
     private void showBooksByPublisher(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        String[] segments = req.getRequestURI().split("/");
-        int publisherId = Integer.parseInt(segments[segments.length - 1]);
+        try (var con = getConnection()) {
+            String[] segments = req.getRequestURI().split("/");
+            int publisherId = Integer.parseInt(segments[segments.length - 1]);
 
-        List<Book> books = new GetBooksByPublisherDAO(getConnection(), publisherId).access().getOutputParam();
-        req.setAttribute("publisher_books", books);
-        req.setAttribute("publisher_id", publisherId);
-        req.getRequestDispatcher("/jsp/publisher/publisherBooks.jsp").forward(req, resp);
+            List<Book> books = new GetBooksByPublisherDAO(con, publisherId).access().getOutputParam();
+            req.setAttribute("publisher_books", books);
+            req.setAttribute("publisher_id", publisherId);
+            req.getRequestDispatcher("/jsp/publisher/publisherBooks.jsp").forward(req, resp);
+        }
     }
+
 }

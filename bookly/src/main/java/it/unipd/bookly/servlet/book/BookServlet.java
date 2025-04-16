@@ -11,6 +11,8 @@ import it.unipd.bookly.dao.book.GetAllBooksDAO;
 import it.unipd.bookly.dao.book.GetBookByIdDAO;
 import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+import it.unipd.bookly.utilities.ServletUtils;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,11 +35,11 @@ public class BookServlet extends AbstractDatabaseServlet {
             } else if (path.matches(".*/book/\\d+")) {
                 showBookDetails(req, resp, con);
             } else {
-                resp.sendRedirect("/html/error.html");
+                ServletUtils.redirectToErrorPage(req, resp, "Invalid path in BookServlet: " + path);
             }
         } catch (Exception e) {
-            LOGGER.error("BookServlet error: {}", e.getMessage());
-            resp.sendRedirect("/html/error.html");
+            LOGGER.error("BookServlet error: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "BookServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -62,7 +64,7 @@ public class BookServlet extends AbstractDatabaseServlet {
             req.setAttribute("authors", authors);
             req.getRequestDispatcher("/jsp/book/bookDetails.jsp").forward(req, resp);
         } else {
-            resp.sendRedirect("/html/error.html");
+            ServletUtils.redirectToErrorPage(req, resp, "Book not found for ID: " + bookId);
         }
     }
 }
