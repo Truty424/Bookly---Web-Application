@@ -21,26 +21,11 @@ INSERT INTO booklySchema.authors (first_name, last_name, biography, nationality)
 ('Virginia', 'Woolf', 'English modernist author known for her stream-of-consciousness style.', 'English');
 
 INSERT INTO booklySchema.users (username, password, first_name, last_name, email, phone, address, role) VALUES
-('esmith', 'vUU@3MdB7b', 'Phillip', 'Akhtar', 'ypritchard@yahoo.co.uk', '+441514960872', 'Flat 09, Terry centers, New Lesleyhaven, G0J 2DZ', 'admin'),
-('smithchristine', '(6dR#aSJ$E', 'Elizabeth', 'Stewart', 'cheryl80@hotmail.com', '+14124118244', '48740 Cynthia Village Suite 005, Lake Tina, WA 58413', 'user'),
-('bensimpson', 's)$KQ8Dvgm', 'Dr', 'Morris', 'stewart33@gmail.com', '+441174960654', 'Flat 86R, Singh crescent, Antonyshire, BD1 5PS', 'user'),
-('margot65', '6dU6a!hs*J', 'Henri', 'Guillou', 'marc69@dbmail.com', '+33473872148', 'chemin Jean, 20037 Lecoq-sur-Legrand', 'user'),
-('jcontreras', 'ZO8NGbtf(8', 'Barbara', 'Anderson', 'matthew81@yahoo.com', '+27823166587', '669 Melissa Wade, Woodsstad, SA, 2986', 'user'),
-('brentgray', 'kT_Ra9ZdJO', 'Jessica', 'Camacho', 'howelljohn@yahoo.com.au', '+6193745299', '19 Sarah River, Sandersborough, NSW, 6314', 'admin'),
-('laetitia87', 'SD9LELAp%B', 'Raymond', 'Gilles', 'jules73@live.com', '+33154948083', '97, avenue Imbert, 70143 Jacquot-sur-Mer', 'admin'),
-('oswingiess', 'Y+&1Y+IgM#', 'Berend', 'Gude-Hübel', 'hans-erich04@yahoo.de', '+491671902294', 'Brita-Wilmsen-Straße 86, 74964 Schmölln', 'user'),
-('neelofarborde', '#bHi#&Nw5q', 'Aarna', 'Bhandari', 'fkanda@hotmail.com', '+915940139904', '87, Chana Road, Pallavaram 756551', 'admin'),
-('wpires', '(yOGpIBk6G', 'Manuela', 'Moreira', 'ceciliagoncalves@bol.com.br', '+558167737826', 'Conjunto de Campos, 66, João Pinheiro, 04499-727 Monteiro de Melo / PI', 'admin'),
-('mwillis', 'Yq2@f9dT6', 'Michael', 'Willis', 'mwillis@example.com', '+13105550198', '234 Elm Street, Los Angeles, CA', 'user'),
-('sophiaj', 'X4!bQ8vKs', 'Sophia', 'Jones', 'sophiaj@gmail.com', '+447415888222', '12 Maple Drive, London', 'admin'),
-('tandrews', 'G*9FgJs3T', 'Tom', 'Andrews', 'tandrews@example.net', '+440512233445', '43 Baker Street, Manchester', 'user'),
-('emilyh', 'Hj73@Lq8D', 'Emily', 'Harrison', 'emilyh@example.com', '+33765987654', '56 Avenue des Champs, Paris', 'admin'),
-('davidp', 'Pa$8gqTl2', 'David', 'Peterson', 'davidp@outlook.com', '+491607891234', '78 Hauptstraße, Berlin', 'user'),
-('oliviac', 'UqT6@!dH9', 'Olivia', 'Carter', 'oliviac@gmail.com', '+61402555789', '102 Victoria Street, Sydney', 'admin'),
-('johnm', '9XvT4@!gQ', 'John', 'Miller', 'johnm@example.com', '+393331234567', 'Via Roma, Milan', 'user'),
-('rachelb', 'M8qT6!Lk2', 'Rachel', 'Brown', 'rachelb@example.com', '+819055556789', 'Shinjuku, Tokyo', 'user'),
-('lucasg', 'Tg4Q8@!9X', 'Lucas', 'Green', 'lucasg@outlook.com', '+5511999998888', 'Avenida Paulista, São Paulo', 'admin'),
-('isabellaw', 'X9TgQ!@4M', 'Isabella', 'White', 'isabellaw@example.com', '+27725556789', 'Main Road, Cape Town', 'user');
+('esmith', MD5('vUU@3MdB7b'), 'Phillip', 'Akhtar', 'ypritchard@yahoo.co.uk', '+441514960872', 'Flat 09, Terry centers, New Lesleyhaven, G0J 2DZ', 'admin'),
+('smithchristine', MD5('(6dR#aSJ$E'), 'Elizabeth', 'Stewart', 'cheryl80@hotmail.com', '+14124118244', '48740 Cynthia Village Suite 005, Lake Tina, WA 58413', 'user'),
+('bensimpson', MD5('s)$KQ8Dvgm'), 'Dr', 'Morris', 'stewart33@gmail.com', '+441174960654', 'Flat 86R, Singh crescent, Antonyshire, BD1 5PS', 'user'),
+('margot65', MD5('6dU6a!hs*J'), 'Henri', 'Guillou', 'marc69@dbmail.com', '+33473872148', 'chemin Jean, 20037 Lecoq-sur-Legrand', 'user'),
+('jcontreras', MD5('ZO8NGbtf(8'), 'Barbara', 'Anderson', 'matthew81@yahoo.com', '+27823166587', '669 Melissa Wade, Woodsstad, SA, 2986', 'user'),
 
 
 INSERT INTO booklySchema.publishers (publisher_name, phone, address) VALUES

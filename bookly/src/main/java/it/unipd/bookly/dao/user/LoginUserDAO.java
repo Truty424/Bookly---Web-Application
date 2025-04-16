@@ -38,8 +38,8 @@ public class LoginUserDAO extends AbstractDAO<User> {
             PreparedStatement userStmt = con.prepareStatement(LOGIN_USER);
             PreparedStatement imageStmt = con.prepareStatement(GET_USER_IMAGE)
         ) {
-            userStmt.setString(1, username);
-            userStmt.setString(2, password); // will be hashed via md5(?) in SQL
+            userStmt.setString(1, this.username);
+            userStmt.setString(2, this.password); 
 
             try (ResultSet userRs = userStmt.executeQuery()) {
                 if (userRs.next()) {
@@ -57,7 +57,6 @@ public class LoginUserDAO extends AbstractDAO<User> {
                         }
                     }
 
-                    // Create and return the User object
                     this.outputParam = new User(
                         userRs.getString("username"),
                         userRs.getString("password"),
@@ -70,15 +69,15 @@ public class LoginUserDAO extends AbstractDAO<User> {
                         profileImage
                     );
 
-                    LOGGER.info("Login successful for user '{}'.", username);
+                    LOGGER.info("Login successful for user '{}'.", this.username);
                 } else {
                     this.outputParam = null;
-                    LOGGER.warn("Login failed: No user found for '{}'.", username);
+                    LOGGER.warn("Login failed: No user found for '{}'.", this.username);
                 }
             }
         } catch (Exception e) {
             this.outputParam = null;  // Ensure it's always set
-            LOGGER.error("LoginUserDAO error for '{}': {}", username, e.getMessage());
+            LOGGER.error("LoginUserDAO error for '{}': {}", this.username, e.getMessage());
             throw e;
         }
     }
