@@ -6,8 +6,7 @@
 <body>
     <h2>Change Password</h2>
     <form action="${pageContext.request.contextPath}/user/changePassword" method="post">
-        Current Password: <input type="password" name="currentPassword" required><br>
-        New Password: <input type="password" name="newPassword" required><br>
+        <input type="password" name="newPassword" placeholder="New Password" required />
         <button type="submit">Update</button>
     </form>
     

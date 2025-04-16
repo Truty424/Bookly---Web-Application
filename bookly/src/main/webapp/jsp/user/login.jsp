@@ -5,12 +5,11 @@
 </head>
 <body>
     <h1>Sign In</h1>
-    <form action="${pageContext.request.contextPath}/user/login" method="post">
-        <input type="text" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Password" required>
+    <form method="post" action="${pageContext.request.contextPath}/user/login">
+        <input type="text" name="email" placeholder="Email" required />
+        <input type="password" name="password" placeholder="Password" required />
         <button type="submit">Login</button>
     </form>
-    
     <p>
         <a href="${pageContext.request.contextPath}/user/changePassword" style="text-decoration: underline;">Forgot password?</a>
     </p>

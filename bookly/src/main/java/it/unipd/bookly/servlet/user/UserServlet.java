@@ -1,9 +1,13 @@
 package it.unipd.bookly.servlet.user;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.auth.JwtManager;
+import it.unipd.bookly.dao.user.ChangeUserPasswordDAO;
 import it.unipd.bookly.dao.user.LoginUserDAO;
 import it.unipd.bookly.dao.user.RegisterUserDAO;
 import it.unipd.bookly.services.user.LoginServices;
@@ -16,9 +20,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
-import java.io.IOException;
-import java.sql.SQLException;
 
 @WebServlet(name = "UserServlet", value = "/user/*")
 @MultipartConfig
@@ -41,6 +42,8 @@ public class UserServlet extends AbstractDatabaseServlet {
                     req.getRequestDispatcher("/jsp/user/login.jsp").forward(req, res);
                 case "/register" ->
                     req.getRequestDispatcher("/jsp/user/signUp.jsp").forward(req, res);
+                case "/changePassword" ->
+                    req.getRequestDispatcher("/jsp/user/changePassword.jsp").forward(req, res);
                 case "/profile" ->
                     showUserProfile(req, res);
                 default ->
@@ -66,8 +69,36 @@ public class UserServlet extends AbstractDatabaseServlet {
                 handleLogin(req, res);
             case "/register" ->
                 handleRegister(req, res);
+            case "/changePassword" ->
+                handlePasswordChange(req, res);
             default ->
                 writeError(res, ErrorCode.OPERATION_UNKNOWN);
+        }
+    }
+
+    private void handlePasswordChange(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            res.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+        int userId = user.getUserId();
+        String newPassword = req.getParameter("new_password");
+
+        try {
+            boolean changed = new ChangeUserPasswordDAO(getConnection(), userId, newPassword).access().getOutputParam();
+            if (changed) {
+                req.setAttribute("success_message", "Password updated successfully.");
+            } else {
+                req.setAttribute("error_message", "Password update failed.");
+            }
+            req.getRequestDispatcher("/jsp/user/changePassword.jsp").forward(req, res);
+        } catch (Exception e) {
+            LOGGER.error("Password update error: {}", e.getMessage());
+            req.setAttribute("error_message", "Internal error during password update.");
+            req.getRequestDispatcher("/jsp/user/changePassword.jsp").forward(req, res);
         }
     }
 
