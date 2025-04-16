@@ -17,8 +17,34 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Timestamp;
 
+import it.unipd.bookly.LogContext;
+import it.unipd.bookly.utilities.ErrorCode;
+
 @WebServlet(name = "AdminServlet", value = "/admin/*")
 public class AdminServlet extends AbstractDatabaseServlet {
+
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        LogContext.setIPAddress(req.getRemoteAddr());
+        LogContext.setResource(req.getRequestURI());
+        LogContext.setAction("AdminServlet");
+
+        String operation = req.getRequestURI().substring(req.getRequestURI().lastIndexOf("admin") + 5);
+        LOGGER.info("GET operation: {}", operation);
+
+        try {
+            switch (operation) {
+                case "/dashboard" ->
+                    req.getRequestDispatcher("/jsp/admin/dashboard.jsp").forward(req, res);
+                default ->
+                    writeError(res, ErrorCode.OPERATION_UNKNOWN);
+            }
+        } catch (IOException e) {
+            LOGGER.error("IOException during GET: ", e);
+            writeError(res, ErrorCode.INTERNAL_ERROR);
+        }
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -54,7 +80,6 @@ public class AdminServlet extends AbstractDatabaseServlet {
                 default -> ServletUtils.redirectToErrorPage(req, resp, "Unsupported admin action: " + path);
             }
 
-            // ✅ Success: redirect back to dashboard
             resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
 
         } catch (Exception e) {
