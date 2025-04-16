@@ -58,10 +58,11 @@ public class LoginUserDAO extends AbstractDAO<User> {
                     }
 
                     this.outputParam = new User(
+                        userRs.getInt("user_id"),   
                         userRs.getString("username"),
                         userRs.getString("password"),
-                        userRs.getString("first_name"),
-                        userRs.getString("last_name"),
+                        userRs.getString("firstName"),
+                        userRs.getString("lastName"),
                         userRs.getString("email"),
                         userRs.getString("phone"),
                         userRs.getString("address"),

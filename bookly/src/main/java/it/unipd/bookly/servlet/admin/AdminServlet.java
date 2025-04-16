@@ -139,8 +139,8 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleAddAuthor(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Author author = new Author(
-                    req.getParameter("first_name"),
-                    req.getParameter("last_name"),
+                    req.getParameter("firstName"),
+                    req.getParameter("lastName"),
                     req.getParameter("biography"),
                     req.getParameter("nationality")
             );
@@ -151,8 +151,8 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleUpdateAuthor(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Author author = new Author(
-                    req.getParameter("first_name"),
-                    req.getParameter("last_name"),
+                    req.getParameter("firstName"),
+                    req.getParameter("lastName"),
                     req.getParameter("biography"),
                     req.getParameter("nationality")
             );

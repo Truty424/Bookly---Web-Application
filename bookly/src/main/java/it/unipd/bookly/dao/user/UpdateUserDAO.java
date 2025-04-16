@@ -14,6 +14,7 @@ import static it.unipd.bookly.dao.user.UserQueries.UPDATE_USER;
 public class UpdateUserDAO extends AbstractDAO<Boolean> {
 
     private final int userId;
+    private final String username;
     private final String firstName;
     private final String lastName;
     private final String email;
@@ -26,6 +27,7 @@ public class UpdateUserDAO extends AbstractDAO<Boolean> {
      *
      * @param con       Database connection
      * @param userId    User ID to update
+     * @param username  Username
      * @param firstName First name
      * @param lastName  Last name
      * @param email     Email address
@@ -33,10 +35,11 @@ public class UpdateUserDAO extends AbstractDAO<Boolean> {
      * @param address   Address
      * @param role      Role (e.g., USER, ADMIN)
      */
-    public UpdateUserDAO(Connection con, int userId, String firstName, String lastName,
+    public UpdateUserDAO(Connection con, int userId, String username, String firstName, String lastName,
                          String email, String phone, String address, String role) {
         super(con);
         this.userId = userId;
+        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -48,13 +51,14 @@ public class UpdateUserDAO extends AbstractDAO<Boolean> {
     @Override
     protected void doAccess() throws SQLException {
         try (PreparedStatement stmt = con.prepareStatement(UPDATE_USER)) {
-            stmt.setString(1, firstName);
-            stmt.setString(2, lastName);
-            stmt.setString(3, email);
-            stmt.setString(4, phone);
-            stmt.setString(5, address);
-            stmt.setString(6, role);
-            stmt.setInt(7, userId);
+            stmt.setString(1, username);
+            stmt.setString(2, firstName);
+            stmt.setString(3, lastName);
+            stmt.setString(4, email);
+            stmt.setString(5, phone);
+            stmt.setString(6, address);
+            stmt.setString(7, role);
+            stmt.setInt(8, userId);
 
             int affectedRows = stmt.executeUpdate();
             this.outputParam = affectedRows > 0;

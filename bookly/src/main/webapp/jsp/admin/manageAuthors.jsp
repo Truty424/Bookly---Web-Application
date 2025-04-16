@@ -29,8 +29,8 @@
                 <!-- Edit -->
                 <form action="<%= request.getContextPath() %>/admin/updateAuthor" method="post">
                     <input type="hidden" name="author_id" value="<%= author.getAuthorId() %>" />
-                    <input type="hidden" name="first_name" value="<%= author.getFirstName() %>" />
-                    <input type="hidden" name="last_name" value="<%= author.getLastName() %>" />
+                    <input type="hidden" name="firstName" value="<%= author.getFirstName() %>" />
+                    <input type="hidden" name="lastName" value="<%= author.getLastName() %>" />
                     <input type="hidden" name="biography" value="<%= author.getBiography() %>" />
                     <input type="hidden" name="nationality" value="<%= author.getNationality() %>" />
                     <button class="edit-btn" type="submit">Edit</button>

@@ -49,8 +49,8 @@ public class GetAuthorsByBookDAO extends AbstractDAO<List<Author>> {
                 while (rs.next()) {
                     authors.add(new Author(
                             rs.getInt("author_id"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
+                            rs.getString("firstName"),
+                            rs.getString("lastName"),
                             rs.getString("biography"),
                             rs.getString("nationality")
                     ));

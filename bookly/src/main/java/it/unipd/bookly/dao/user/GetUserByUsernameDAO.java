@@ -45,8 +45,8 @@ public class GetUserByUsernameDAO extends AbstractDAO<User> {
                     User user = new User(
                             rs.getString("username"),
                             rs.getString("password"),
-                            rs.getString("first_name"),
-                            rs.getString("last_name"),
+                            rs.getString("firstName"),
+                            rs.getString("lastName"),
                             rs.getString("email"),
                             rs.getString("phone"),
                             rs.getString("address"),

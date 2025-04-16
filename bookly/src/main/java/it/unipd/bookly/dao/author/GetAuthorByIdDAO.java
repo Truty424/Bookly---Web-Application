@@ -45,8 +45,8 @@ public class GetAuthorByIdDAO extends AbstractDAO<Author> {
                 if (rs.next()) {
                     this.outputParam = new Author(
                         rs.getInt("author_id"),
-                        rs.getString("first_name"),
-                        rs.getString("last_name"),
+                        rs.getString("firstName"),
+                        rs.getString("lastName"),
                         rs.getString("biography"),
                         rs.getString("nationality")
                     );

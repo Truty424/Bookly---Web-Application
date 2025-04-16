@@ -8,8 +8,8 @@
 <h2>Add New Author</h2>
 
 <form action="<%= request.getContextPath() %>/admin/addAuthor" method="post">
-    <label>First Name: <input type="text" name="first_name" required /></label><br />
-    <label>Last Name: <input type="text" name="last_name" required /></label><br />
+    <label>First Name: <input type="text" name="firstName" required /></label><br />
+    <label>Last Name: <input type="text" name="lastName" required /></label><br />
     <label>Nationality: <input type="text" name="nationality" required /></label><br />
     <label>Biography: <textarea name="biography" rows="4" cols="30"></textarea></label><br /><br />
     <button type="submit">Add Author</button>

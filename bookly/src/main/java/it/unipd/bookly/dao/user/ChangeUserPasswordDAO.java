@@ -13,18 +13,18 @@ import static it.unipd.bookly.dao.user.UserQueries.CHANGE_USER_PASSWORD;
 public class ChangeUserPasswordDAO extends AbstractDAO<Boolean> {
 
     private final int userId;
-    private final String newHashedPassword;
+    private final String password;
 
-    public ChangeUserPasswordDAO(Connection con, int userId, String newHashedPassword) {
+    public ChangeUserPasswordDAO(Connection con, int userId, String password) {
         super(con);
         this.userId = userId;
-        this.newHashedPassword = newHashedPassword;
+        this.password = password;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(CHANGE_USER_PASSWORD)) {
-            stmt.setString(1, newHashedPassword);
+            stmt.setString(1, password);
             stmt.setInt(2, userId);
             int affectedRows = stmt.executeUpdate();
 

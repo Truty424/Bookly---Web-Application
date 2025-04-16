@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS booklySchema.users (
     user_id SERIAL PRIMARY KEY,
     username booklySchema.username_domain UNIQUE NOT NULL,
     password booklySchema.password_domain NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     phone booklySchema.phone_domain,
     address TEXT,
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS booklySchema.user_image (
 
 CREATE TABLE IF NOT EXISTS booklySchema.authors (
     author_id SERIAL PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
+    firstName VARCHAR(100) NOT NULL,
+    lastName VARCHAR(100) NOT NULL,
     biography TEXT,
     nationality VARCHAR(100) NOT NULL
 );

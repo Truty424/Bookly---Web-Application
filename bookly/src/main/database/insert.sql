@@ -1,4 +1,4 @@
-INSERT INTO booklySchema.authors (first_name, last_name, biography, nationality) VALUES
+INSERT INTO booklySchema.authors (firstName, lastName, biography, nationality) VALUES
 ('Chimamanda', 'Ngozi Adichie', 'Nigerian writer known for novels blending themes of feminism, politics, and identity.', 'Nigerian'),
 ('Haruki', 'Murakami', 'A Japanese author famous for surreal, philosophical fiction exploring loneliness and time.', 'Japanese'),
 ('Isabel', 'Allende', 'Chilean-American writer whose works often focus on womens experiences and magical realism.', 'Chilean'),
@@ -20,7 +20,7 @@ INSERT INTO booklySchema.authors (first_name, last_name, biography, nationality)
 ('Leo', 'Tolstoy', 'Russian writer known for his epic novels War and Peace and Anna Karenina.', 'Russian'),
 ('Virginia', 'Woolf', 'English modernist author known for her stream-of-consciousness style.', 'English');
 
-INSERT INTO booklySchema.users (username, password, first_name, last_name, email, phone, address, role) VALUES
+INSERT INTO booklySchema.users (username, password, firstName, lastName, email, phone, address, role) VALUES
 ('esmith', MD5('vUU@3MdB7b'), 'Phillip', 'Akhtar', 'ypritchard@yahoo.co.uk', '+441514960872', 'Flat 09, Terry centers, New Lesleyhaven, G0J 2DZ', 'admin'),
 ('smithchristine', MD5('(6dR#aSJ$E'), 'Elizabeth', 'Stewart', 'cheryl80@hotmail.com', '+14124118244', '48740 Cynthia Village Suite 005, Lake Tina, WA 58413', 'user'),
 ('bensimpson', MD5('s)$KQ8Dvgm'), 'Dr', 'Morris', 'stewart33@gmail.com', '+441174960654', 'Flat 86R, Singh crescent, Antonyshire, BD1 5PS', 'user'),

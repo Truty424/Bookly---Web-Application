@@ -6,8 +6,8 @@ package it.unipd.bookly.Resource;
 public class Author {
 
     private int author_id;
-    private String first_name;
-    private String last_name;
+    private String firstName;
+    private String lastName;
     private String biography;
     private String nationality;
 
@@ -15,15 +15,15 @@ public class Author {
      * Constructs an Author with all attributes.
      *
      * @param author_id   The unique ID of the author.
-     * @param first_name  The first name of the author.
-     * @param last_name   The last name of the author.
+     * @param firstName  The first name of the author.
+     * @param lastName   The last name of the author.
      * @param biography   The biography of the author.
      * @param nationality The nationality of the author.
      */
-    public Author(int author_id, String first_name, String last_name, String biography, String nationality) {
+    public Author(int author_id, String firstName, String lastName, String biography, String nationality) {
         this.author_id = author_id;
-        this.first_name = first_name;
-        this.last_name = last_name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.biography = biography;
         this.nationality = nationality;
     }
@@ -31,14 +31,14 @@ public class Author {
     /**
      * Constructs an Author without an ID.
      *
-     * @param first_name  The first name of the author.
-     * @param last_name   The last name of the author.
+     * @param firstName  The first name of the author.
+     * @param lastName   The last name of the author.
      * @param biography   The biography of the author.
      * @param nationality The nationality of the author.
      */
-    public Author(String first_name, String last_name, String biography, String nationality) {
-        this.first_name = first_name;
-        this.last_name = last_name;
+    public Author(String firstName, String lastName, String biography, String nationality) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.biography = biography;
         this.nationality = nationality;
     }
@@ -67,16 +67,16 @@ public class Author {
      * @return The author's first name.
      */
     public String getFirstName() {
-        return first_name;
+        return firstName;
     }
 
     /**
      * Sets the author's first name.
      *
-     * @param first_name The author's first name.
+     * @param firstName The author's first name.
      */
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setfirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     /**
@@ -85,16 +85,16 @@ public class Author {
      * @return The author's last name.
      */
     public String getLastName() {
-        return last_name;
+        return lastName;
     }
 
     /**
      * Sets the author's last name.
      *
-     * @param last_name The author's last name.
+     * @param lastName The author's last name.
      */
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setlastName(String lastName) {
+        this.lastName = lastName;
     }
 
     /**
@@ -139,6 +139,6 @@ public class Author {
      * @return The full name of the author (first name + last name).
      */
     public String getName() {
-        return first_name + " " + last_name;
+        return firstName + " " + lastName;
     }
 }

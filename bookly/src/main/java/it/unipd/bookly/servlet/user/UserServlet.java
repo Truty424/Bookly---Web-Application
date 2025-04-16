@@ -10,6 +10,7 @@ import it.unipd.bookly.auth.JwtManager;
 import it.unipd.bookly.dao.user.ChangeUserPasswordDAO;
 import it.unipd.bookly.dao.user.LoginUserDAO;
 import it.unipd.bookly.dao.user.RegisterUserDAO;
+import it.unipd.bookly.dao.user.UpdateUserDAO;
 import it.unipd.bookly.services.user.LoginServices;
 import it.unipd.bookly.services.user.RegisterServices;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
@@ -73,6 +74,8 @@ public class UserServlet extends AbstractDatabaseServlet {
                 handleRegister(req, res);
             case "/changePassword" ->
                 handlePasswordChange(req, res);
+            case "/editUserProfile" ->
+                handleUpdate(req, res);
             default ->
                 writeError(res, ErrorCode.OPERATION_UNKNOWN);
         }
@@ -87,16 +90,22 @@ public class UserServlet extends AbstractDatabaseServlet {
 
         User user = (User) session.getAttribute("user");
         int userId = user.getUserId();
-        String newPassword = req.getParameter("new_password");
+        String newPassword = req.getParameter("password");
 
+        if (newPassword == null || newPassword.trim().isEmpty()) {
+            req.setAttribute("error_message", "Password cannot be empty.");
+            res.sendRedirect(req.getContextPath() + "/jsp/user/login.jsp");
+            return;
+        }
         try {
             boolean changed = new ChangeUserPasswordDAO(getConnection(), userId, newPassword).access().getOutputParam();
             if (changed) {
                 req.setAttribute("success_message", "Password updated successfully.");
+                res.sendRedirect(req.getContextPath() + "/jsp/user/login.jsp");
             } else {
                 req.setAttribute("error_message", "Password update failed.");
+                req.getRequestDispatcher("/jsp/user/changePassword.jsp").forward(req, res);
             }
-            req.getRequestDispatcher("/jsp/user/changePassword.jsp").forward(req, res);
         } catch (Exception e) {
             LOGGER.error("Password update error: {}", e.getMessage());
             req.setAttribute("error_message", "Internal error during password update.");
@@ -147,15 +156,6 @@ public class UserServlet extends AbstractDatabaseServlet {
             String address = req.getParameter("address");
 
             Image image = null;
-            // try {
-            //     if (req.getPart("image") != null && req.getPart("image").getSize() > 0) {
-            //         byte[] imageData = req.getPart("image").getInputStream().readAllBytes();
-            //         image = new Image(imageData, req.getPart("image").getContentType());
-            //     }
-            // } catch (ServletException | IOException e) {
-            //     LOGGER.error("Image error: ", e);
-            //     writeError(res, ErrorCode.INTERNAL_ERROR);
-            // }
 
             User newUser = new User(username, password, firstName, lastName, email, phone, address, "user", image);
 
@@ -185,6 +185,68 @@ public class UserServlet extends AbstractDatabaseServlet {
         } catch (SQLException e) {
             LOGGER.error("Registration error: ", e);
             writeError(res, ErrorCode.INTERNAL_ERROR);
+        }
+    }
+
+    private void handleUpdate(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            res.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+        int userId = user.getUserId();
+        String role = user.getRole();
+
+        String newUserName = req.getParameter("username");
+        String newFirstName = req.getParameter("firstName");
+        String newLastName = req.getParameter("lastName");
+        String newEmail = req.getParameter("email");
+        String newPhone = req.getParameter("phone");
+        String newAddress = req.getParameter("address");
+
+
+        try {
+            boolean success = new UpdateUserDAO(
+                    getConnection(),
+                    userId,
+                    newUserName,
+                    newFirstName,
+                    newLastName,
+                    newEmail,
+                    newPhone,
+                    newAddress,
+                    role
+            ).access().getOutputParam();
+
+            if (success) {
+                // Update session user
+                User updatedUser = new User(
+                        userId,
+                        newUserName,
+                        user.getPassword(),
+                        newFirstName,
+                        newLastName,
+                        newEmail,
+                        newPhone,
+                        newAddress,
+                        role,
+                        user.getProfileImage()
+                );
+
+                session.setAttribute("user", updatedUser);
+                req.setAttribute("success_message", "Profile updated successfully.");
+                res.sendRedirect(req.getContextPath() + "/user/profile");
+            } else {
+                req.setAttribute("error_message", "Failed to update profile.");
+                req.getRequestDispatcher("/jsp/user/editUserProfile.jsp").forward(req, res);
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Error updating user profile: {}", e.getMessage());
+            req.setAttribute("error_message", "Internal server error while updating profile.");
+            req.getRequestDispatcher("/jsp/user/editUserProfile.jsp").forward(req, res);
         }
     }
 

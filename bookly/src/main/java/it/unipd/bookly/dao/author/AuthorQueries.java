@@ -18,7 +18,7 @@ public final class AuthorQueries {
      * SQL query to insert a new author into the database.
      */
     public static final String INSERT_AUTHOR =
-        "INSERT INTO booklySchema.authors (first_name, last_name, biography, nationality) VALUES (?, ?, ?, ?)";
+        "INSERT INTO booklySchema.authors (firstName, lastName, biography, nationality) VALUES (?, ?, ?, ?)";
 
 
     /**
@@ -52,7 +52,7 @@ public final class AuthorQueries {
      * SQL query to update an author's details in the database.
      */
     public static final String UPDATE_AUTHOR =
-        "UPDATE booklySchema.authors SET first_name = ?, last_name = ?, biography = ?, nationality = ? WHERE author_id = ?";
+        "UPDATE booklySchema.authors SET firstName = ?, lastName = ?, biography = ?, nationality = ? WHERE author_id = ?";
 
 
     /**

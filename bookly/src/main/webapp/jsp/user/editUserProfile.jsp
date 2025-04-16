@@ -7,9 +7,9 @@
     <h1>Edit User Profile</h1>
     <form action="${pageContext.request.contextPath}/user/editUserProfile" method="post">
         <label for="name">First Name:</label>
-        <input type="text" id="firstname" name="firstname" value="${user.firstName}" required><br>
+        <input type="text" id="firstname" name="firstName" value="${user.firstName}" required><br>
         <label for="lastname">Last Name:</label>
-        <input type="text" id="lastname" name="lastname" value="${user.lastName}" required><br>
+        <input type="text" id="lastname" name="lastName" value="${user.lastName}" required><br>
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" value="${user.username}" required><br>
         <label for="email">Email:</label>

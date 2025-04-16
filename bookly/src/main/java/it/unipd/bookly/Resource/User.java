@@ -3,9 +3,9 @@ package it.unipd.bookly.Resource;
 import java.util.List;
 
 /**
- * Represents a user in the Bookly system.
- * A user includes details such as username, password, personal information, and relationships
- * with orders, wishlists, and carts.
+ * Represents a user in the Bookly system. A user includes details such as
+ * username, password, personal information, and relationships with orders,
+ * wishlists, and carts.
  */
 public class User {
 
@@ -36,17 +36,44 @@ public class User {
     /**
      * Constructs a User with basic attributes.
      *
-     * @param username  The username of the user.
-     * @param password  The password of the user.
+     * @param username The username of the user.
+     * @param password The password of the user.
      * @param firstName The first name of the user.
-     * @param lastName  The last name of the user.
-     * @param email     The email address of the user.
-     * @param phone     The phone number of the user.
-     * @param address   The address of the user.
-     * @param role      The role of the user (either "Admin", "Customer").
+     * @param lastName The last name of the user.
+     * @param email The email address of the user.
+     * @param phone The phone number of the user.
+     * @param address The address of the user.
+     * @param role The role of the user (either "Admin", "Customer").
      */
     public User(String username, String password, String firstName, String lastName,
+            String email, String phone, String address, String role, Image profileImage) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.role = role;
+        this.profileImage = profileImage;
+    }
+
+    /**
+     * Constructs a User with basic attributes.
+     *
+     * @param userId the id of the user
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @param firstName The first name of the user.
+     * @param lastName The last name of the user.
+     * @param email The email address of the user.
+     * @param phone The phone number of the user.
+     * @param address The address of the user.
+     * @param role The role of the user (either "Admin", "Customer").
+     */
+    public User(int userId, String username, String password, String firstName, String lastName,
             String email, String phone, String address, String role) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -60,18 +87,20 @@ public class User {
     /**
      * Constructs a User with all attributes, including the profile image.
      *
-     * @param username     The username of the user.
-     * @param password     The password of the user.
-     * @param firstName    The first name of the user.
-     * @param lastName     The last name of the user.
-     * @param email        The email address of the user.
-     * @param phone        The phone number of the user.
-     * @param address      The address of the user.
-     * @param role         The role of the user (either "Admin", "Customer").
+     * @param userId the id of the user
+     * @param username The username of the user.
+     * @param password The password of the user.
+     * @param firstName The first name of the user.
+     * @param lastName The last name of the user.
+     * @param email The email address of the user.
+     * @param phone The phone number of the user.
+     * @param address The address of the user.
+     * @param role The role of the user (either "Admin", "Customer").
      * @param profileImage The profile image of the user.
      */
-    public User(String username, String password, String firstName, String lastName,
+    public User(int userId, String username, String password, String firstName, String lastName,
             String email, String phone, String address, String role, Image profileImage) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.firstName = firstName;

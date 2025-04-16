@@ -8,6 +8,7 @@
               factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
               driverClassName="org.postgresql.Driver"
               url="jdbc:postgresql://db:5432/BooklyDB"
+              maxTotal="20"
               username="postgres"
               password="postgres"
 

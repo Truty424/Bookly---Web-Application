@@ -31,17 +31,14 @@ public class UserProfileManagementRest extends AbstractRestResource {
         Message message;
 
         try {
-            switch (method) {
-                case "PUT" -> {
-                    if (path.matches(".*/user/profile/\\d+$")) {
-                        handleUpdate(path);
-                    } else {
-                        sendNotFound("Invalid user profile update path.");
-                    }
+            if ("PUT".equalsIgnoreCase(method)) {
+                if (path.matches(".*/user/profile/\\d+$")) {
+                    handleUpdate(path);
+                } else {
+                    sendNotFound("Invalid user profile update path.");
                 }
-
-                default ->
-                    sendMethodNotAllowed("Only PUT method is supported for user profile update.");
+            } else {
+                sendMethodNotAllowed("Only PUT method is supported for user profile update.");
             }
         } catch (Exception e) {
             LOGGER.error("UserProfileManagementRest error: ", e);
@@ -55,18 +52,19 @@ public class UserProfileManagementRest extends AbstractRestResource {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
         User user = mapper.readValue(req.getInputStream(), User.class);
 
-        // Ensure userId in path takes precedence
+        // Enforce userId from path
         user.setUserId(userId);
 
         Boolean updated = new UpdateUserDAO(
-                con,
-                userId,
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getAddress(),
-                user.getRole()
+            con,
+            user.getUserId(),
+            user.getUsername(),
+            user.getFirstName(),
+            user.getLastName(),
+            user.getEmail(),
+            user.getPhone(),
+            user.getAddress(),
+            user.getRole()
         ).access().getOutputParam();
 
         if (updated != null && updated) {
