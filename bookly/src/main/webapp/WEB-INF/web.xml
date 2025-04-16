@@ -124,6 +124,8 @@
         <url-pattern>/publisher/*</url-pattern>
     </servlet-mapping>
 
+    
+
     <servlet>
         <servlet-name>CategoryServlet</servlet-name>
         <servlet-class>it.unipd.bookly.servlet.category.CategoryServlet</servlet-class>

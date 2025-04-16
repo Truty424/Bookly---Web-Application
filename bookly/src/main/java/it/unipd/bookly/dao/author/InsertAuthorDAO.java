@@ -41,8 +41,8 @@ public class InsertAuthorDAO extends AbstractDAO<Boolean> {
         try (PreparedStatement stmt = con.prepareStatement(INSERT_AUTHOR)) {
             stmt.setString(1, author.getFirstName());
             stmt.setString(2, author.getLastName());
-            stmt.setString(3, author.get_biography());
-            stmt.setString(4, author.get_nationality());
+            stmt.setString(3, author.getBiography());
+            stmt.setString(4, author.getNationality());
 
             int rowsInserted = stmt.executeUpdate();
             this.outputParam = rowsInserted > 0;

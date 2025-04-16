@@ -166,7 +166,7 @@ public class Book {
      *
      * @return The stock quantity.
      */
-    public int getStock_quantity() {
+    public int getStockQuantity() {
         return stock_quantity;
     }
 

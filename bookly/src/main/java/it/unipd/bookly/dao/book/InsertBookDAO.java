@@ -67,7 +67,7 @@ public class InsertBookDAO extends AbstractDAO<Book> {
             stmntBook.setString(5, book.getEdition());
             stmntBook.setInt(6, book.getPublication_year());
             stmntBook.setInt(7, book.getNumber_of_pages());
-            stmntBook.setInt(8, book.getStock_quantity());
+            stmntBook.setInt(8, book.getStockQuantity());
             stmntBook.setDouble(9, book.getAverage_rate());
             stmntBook.setString(10, book.getSummary());
             stmntBook.execute();

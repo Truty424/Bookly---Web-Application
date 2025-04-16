@@ -2,6 +2,7 @@ package it.unipd.bookly.servlet.wishlist;
 
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.Resource.Wishlist;
 import it.unipd.bookly.dao.wishlist.GetBooksInWishlistDAO;
 import it.unipd.bookly.dao.wishlist.GetWishlistByUserDAO;
@@ -11,6 +12,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -21,7 +23,6 @@ public class WishlistServlet extends AbstractDatabaseServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
         LogContext.setIPAddress(req.getRemoteAddr());
         LogContext.setResource(req.getRequestURI());
         LogContext.setAction("WishlistServlet");
@@ -33,6 +34,15 @@ public class WishlistServlet extends AbstractDatabaseServlet {
                 showUserWishlists(req, resp, con);
             } else if (path.matches(".*/wishlist/\\d+")) {
                 showWishlistBooks(req, resp, con);
+            } else if (path.endsWith("/wishlist") || path.endsWith("/wishlist/")) {
+                HttpSession session = req.getSession(false);
+                User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+                if (user != null) {
+                    resp.sendRedirect(req.getContextPath() + "/wishlist/user/" + user.getUserId());
+                } else {
+                    ServletUtils.redirectToErrorPage(req, resp, "You must be logged in to view your wishlist.");
+                }
             } else {
                 ServletUtils.redirectToErrorPage(req, resp, "Invalid wishlist path.");
             }

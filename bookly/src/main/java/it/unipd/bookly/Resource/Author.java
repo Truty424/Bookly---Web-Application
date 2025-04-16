@@ -102,7 +102,7 @@ public class Author {
      *
      * @return The author's biography.
      */
-    public String get_biography() {
+    public String getBiography() {
         return biography;
     }
 
@@ -111,7 +111,7 @@ public class Author {
      *
      * @param biography The author's biography.
      */
-    public void set_biography(String biography) {
+    public void setBiography(String biography) {
         this.biography = biography;
     }
 
@@ -120,7 +120,7 @@ public class Author {
      *
      * @return The author's nationality.
      */
-    public String get_nationality() {
+    public String getNationality() {
         return nationality;
     }
 
@@ -129,7 +129,7 @@ public class Author {
      *
      * @param nationality The author's nationality.
      */
-    public void set_nationality(String nationality) {
+    public void setNationality(String nationality) {
         this.nationality = nationality;
     }
 

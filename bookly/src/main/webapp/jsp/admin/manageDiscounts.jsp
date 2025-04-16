@@ -5,15 +5,6 @@
 <html>
 <head>
     <title>Manage Discounts</title>
-    <style>
-        body { font-family: Arial; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
-        .actions { display: flex; gap: 10px; }
-        a, button { padding: 5px 10px; text-decoration: none; }
-        .add-btn { margin-top: 20px; display: inline-block; background: #4CAF50; color: white; }
-        .delete-btn { background: #d9534f; color: white; border: none; }
-    </style>
 </head>
 <body>
 

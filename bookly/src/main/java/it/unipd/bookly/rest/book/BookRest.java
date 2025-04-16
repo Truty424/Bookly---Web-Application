@@ -121,7 +121,7 @@ public class BookRest extends AbstractRestResource {
                 book.getEdition(),
                 book.getPublication_year(),
                 book.getNumber_of_pages(),
-                book.getStock_quantity(),
+                book.getStockQuantity(),
                 book.getAverage_rate(),
                 book.getSummary()
         ).access().getOutputParam();

@@ -26,7 +26,7 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
         try (Connection con = getConnection()) {
             List<Publisher> publishers = new GetAllPublishersDAO(con).access().getOutputParam();
             req.setAttribute("publishers", publishers);
-            req.getRequestDispatcher("/jsp/publisher/manage.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/admin/managePublishers.jsp").forward(req, resp);
         } catch (Exception e) {
             LOGGER.error("Error loading publisher management page: {}", e.getMessage(), e);
             ServletUtils.redirectToErrorPage(req, resp, "PublisherManagementServlet error: " + e.getMessage());

@@ -38,8 +38,8 @@ public class UpdateAuthorDAO extends AbstractDAO<Boolean> {
         try (PreparedStatement stmt = con.prepareStatement(UPDATE_AUTHOR)) {
             stmt.setString(1, author.getFirstName());
             stmt.setString(2, author.getLastName());
-            stmt.setString(3, author.get_biography());
-            stmt.setString(4, author.get_nationality());
+            stmt.setString(3, author.getBiography());
+            stmt.setString(4, author.getNationality());
             stmt.setInt(5, author.getAuthorId());
 
             int affectedRows = stmt.executeUpdate();
