@@ -7,14 +7,15 @@
     <description>Bookly Web Application</description>
 
     <!-- User & Authentication -->
-    <servlet>
-        <servlet-name>UserServlet</servlet-name>
-        <servlet-class>it.unipd.bookly.servlet.user.UserServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>UserServlet</servlet-name>
-        <url-pattern>/user/*</url-pattern>
-    </servlet-mapping>
+<servlet>
+    <servlet-name>UserServlet</servlet-name>
+    <servlet-class>it.unipd.bookly.servlet.user.UserServlet</servlet-class>
+</servlet>
+
+<servlet-mapping>
+    <servlet-name>UserServlet</servlet-name>
+    <url-pattern>/user/*</url-pattern>
+</servlet-mapping>
 
     <!-- Home (landing page) -->
     <servlet>
