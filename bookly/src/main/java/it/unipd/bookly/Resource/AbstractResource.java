@@ -11,9 +11,16 @@ import org.apache.logging.log4j.message.StringFormatterMessageFactory;
 import java.io.IOException;
 import java.io.OutputStream;
 
-
+/**
+ * Abstract base class for resources that can be serialized to JSON.
+ * Subclasses must implement the {@link #writeJSON(OutputStream)} method
+ * to define how the resource is serialized.
+ */
 public abstract class AbstractResource implements Resource {
 
+    /**
+     * Logger for logging messages and errors.
+     */
     protected static final Logger LOGGER = LogManager.getLogger(it.unipd.bookly.rest.AbstractRestResource.class, StringFormatterMessageFactory.INSTANCE);
 
     /**
@@ -30,6 +37,20 @@ public abstract class AbstractResource implements Resource {
         LOGGER.debug("JSON factory successfully setup.");
     }
 
+    /**
+     * Default constructor for AbstractResource.
+     * Initializes the base class for resources that can be serialized to JSON.
+     */
+    public AbstractResource() {
+        // Default constructor
+    }
+
+    /**
+     * Serializes the resource to JSON and writes it to the provided output stream.
+     *
+     * @param out The output stream to which the JSON representation of the resource is written.
+     * @throws IOException If an error occurs during serialization.
+     */
     @Override
     public void toJSON(final OutputStream out) throws IOException {
 
