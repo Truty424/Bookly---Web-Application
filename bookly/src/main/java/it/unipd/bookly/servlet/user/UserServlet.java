@@ -104,14 +104,14 @@ public class UserServlet extends AbstractDatabaseServlet {
 
     private void handleLogin(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try {
-            String email = req.getParameter("email");
+            String username = req.getParameter("username");
             String password = req.getParameter("password");
-            LOGGER.info("Login attempt with email: {}, password: {}", email, password);
+            LOGGER.info("Login attempt with username: {}, password: {}", username, password);
 
-            if (LoginServices.loginValidation(email, password, errorCode)) {
-                LOGGER.info("Validating login: email={}, password={}", email, password);
+            if (LoginServices.loginValidation(username, password, errorCode)) {
+                LOGGER.info("Validating login: username={}, password={}", username, password);
 
-                User user = new LoginUserDAO(getConnection(), email, password).access().getOutputParam();
+                User user = new LoginUserDAO(getConnection(), username, password).access().getOutputParam();
                 LOGGER.info("DAO returned user: {}", user != null ? user.getUsername() : "null");
 
                 if (user != null) {
@@ -127,7 +127,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                         res.sendRedirect(req.getContextPath() + "/user/profile");
                     }
                 } else {
-                    req.setAttribute("error_message", "Invalid email or password.");
+                    req.setAttribute("error_message", "Invalid username or password.");
                     req.getRequestDispatcher("/jsp/user/login.jsp").forward(req, res);
                 }
             } else {

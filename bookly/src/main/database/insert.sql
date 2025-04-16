@@ -21,11 +21,11 @@ INSERT INTO booklySchema.authors (first_name, last_name, biography, nationality)
 ('Virginia', 'Woolf', 'English modernist author known for her stream-of-consciousness style.', 'English');
 
 INSERT INTO booklySchema.users (username, password, first_name, last_name, email, phone, address, role) VALUES
-('adam', MD5('vUU@3MdB7b'), 'Phillip', 'Akhtar', 'ypritchard@yahoo.co.uk', '+441514960872', 'Flat 09, Terry centers, New Lesleyhaven, G0J 2DZ', 'admin'),
-('amir', MD5('(6dR#aSJ$E'), 'Elizabeth', 'Stewart', 'cheryl80@hotmail.com', '+14124118244', '48740 Cynthia Village Suite 005, Lake Tina, WA 58413', 'user'),
-('ayoub', MD5('s)$KQ8Dvgm'), 'Dr', 'Morris', 'stewart33@gmail.com', '+441174960654', 'Flat 86R, Singh crescent, Antonyshire, BD1 5PS', 'user'),
-('parisa', MD5('6dU6a!hs*J'), 'Henri', 'Guillou', 'marc69@dbmail.com', '+33473872148', 'chemin Jean, 20037 Lecoq-sur-Legrand', 'admin'),
-('mia', MD5('ZO8NGbtf(8'), 'Barbara', 'Anderson', 'matthew81@yahoo.com', '+27823166587', '669 Melissa Wade, Woodsstad, SA, 2986', 'user');
+('esmith', MD5('vUU@3MdB7b'), 'Phillip', 'Akhtar', 'ypritchard@yahoo.co.uk', '+441514960872', 'Flat 09, Terry centers, New Lesleyhaven, G0J 2DZ', 'admin'),
+('smithchristine', MD5('(6dR#aSJ$E'), 'Elizabeth', 'Stewart', 'cheryl80@hotmail.com', '+14124118244', '48740 Cynthia Village Suite 005, Lake Tina, WA 58413', 'user'),
+('bensimpson', MD5('s)$KQ8Dvgm'), 'Dr', 'Morris', 'stewart33@gmail.com', '+441174960654', 'Flat 86R, Singh crescent, Antonyshire, BD1 5PS', 'user'),
+('margot65', MD5('6dU6a!hs*J'), 'Henri', 'Guillou', 'marc69@dbmail.com', '+33473872148', 'chemin Jean, 20037 Lecoq-sur-Legrand', 'user'),
+('jcontreras', MD5('ZO8NGbtf(8'), 'Barbara', 'Anderson', 'matthew81@yahoo.com', '+27823166587', '669 Melissa Wade, Woodsstad, SA, 2986', 'user');
 
 
 INSERT INTO booklySchema.publishers (publisher_name, phone, address) VALUES

@@ -29,16 +29,16 @@
             </form>
         </div>
 
-        <h2 style="margin-top: 30px;">History</h2>
-        <c:if test="${not empty user.history}">
+        <h2 style="margin-top: 30px;">Orders</h2>
+        <c:if test="${not empty user.orders}">
             <ul>
-                <c:forEach var="historyItem" items="${user.history}">
-                    <li>${historyItem}</li>
+                <c:forEach var="orderItem" items="${user.orders}">
+                    <li>${orderItem}</li>
                 </c:forEach>
             </ul>
         </c:if>
-        <c:if test="${empty user.history}">
-            <p>No history available.</p>
+        <c:if test="${empty user.orders}">
+            <p>No order available.</p>
         </c:if>
     </c:if>
 
