@@ -19,19 +19,19 @@ public class LoginServices {
     /**
      * Validates username or email format.
      */
-    public static boolean usernameOrEmailValidation(String usernameOrEmail, ErrorCode errorCode) {
+    public static boolean usernameOrEmailValidation(String email, ErrorCode errorCode) {
         boolean flag = true;
 
-        if (StringUtils.isBlank(usernameOrEmail)) {
+        if (StringUtils.isBlank(email)) {
             errorCode = ErrorCode.USERNAME_OR_EMAIL_MISSING;
             flag = false;
-        } else if (usernameOrEmail.contains("@")) {
-            if (!EMAIL_PATTERN.matcher(usernameOrEmail).matches()) {
+        } else if (email.contains("@")) {
+            if (!EMAIL_PATTERN.matcher(email).matches()) {
                 errorCode = ErrorCode.INVALID_EMAIL_FORMAT;
                 flag = false;
             }
         } else {
-            if (!USERNAME_PATTERN.matcher(usernameOrEmail).matches()) {
+            if (!USERNAME_PATTERN.matcher(email).matches()) {
                 errorCode = ErrorCode.INVALID_USERNAME_FORMAT;
                 flag = false;
             }
@@ -60,10 +60,10 @@ public class LoginServices {
     /**
      * Overall login input validation.
      */
-    public static boolean loginValidation(String usernameOrEmail, String password, ErrorCode errorCode) {
+    public static boolean loginValidation(String email, String password, ErrorCode errorCode) {
         boolean flag = true;
 
-        if (!usernameOrEmailValidation(usernameOrEmail, errorCode)) {
+        if (!usernameOrEmailValidation(email, errorCode)) {
             flag = false;
         } else if (!passwordValidation(password, errorCode)) {
             flag = false;

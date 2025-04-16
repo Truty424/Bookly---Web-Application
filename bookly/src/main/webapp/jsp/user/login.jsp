@@ -6,13 +6,13 @@
 <body>
     <h1>Sign In</h1>
     <form action="${pageContext.request.contextPath}/user/login" method="post">
-        <input type="text" id="usernameOrEmail" name="usernameOrEmail" placeholder="Enter your username or email" required><br>
-        <input type="password" id="password" name="password" placeholder="Enter your password" required><br>
+        <input type="text" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
         <button type="submit">Login</button>
     </form>
     
     <p>
-        <a href="${pageContext.request.contextPath}/user/forgotPassword" style="text-decoration: underline;">Forgot password?</a>
+        <a href="${pageContext.request.contextPath}/user/changePassword" style="text-decoration: underline;">Forgot password?</a>
     </p>
     
     <button onclick="location.href='${pageContext.request.contextPath}/user/register'">Create a new account</button>

@@ -38,7 +38,7 @@ public class UserServlet extends AbstractDatabaseServlet {
         try {
             switch (operation) {
                 case "/login" ->
-                    req.getRequestDispatcher("/jsp/user/signIn.jsp").forward(req, res);
+                    req.getRequestDispatcher("/jsp/user/login.jsp").forward(req, res);
                 case "/register" ->
                     req.getRequestDispatcher("/jsp/user/signUp.jsp").forward(req, res);
                 case "/profile" ->
@@ -73,11 +73,11 @@ public class UserServlet extends AbstractDatabaseServlet {
 
     private void handleLogin(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         try {
-            String usernameOrEmail = req.getParameter("email");
+            String email = req.getParameter("email");
             String password = req.getParameter("password");
 
-            if (LoginServices.loginValidation(usernameOrEmail, password, errorCode)) {
-                User user = new LoginUserDAO(getConnection(), usernameOrEmail, password).access().getOutputParam();
+            if (LoginServices.loginValidation(email, password, errorCode)) {
+                User user = new LoginUserDAO(getConnection(), email, password).access().getOutputParam();
                 if (user != null) {
                     String jwt = JwtManager.createToken("username", user.getUsername());
                     HttpSession session = req.getSession();
@@ -92,11 +92,11 @@ public class UserServlet extends AbstractDatabaseServlet {
                     }
                 } else {
                     req.setAttribute("error_message", "Invalid email or password.");
-                    req.getRequestDispatcher("/jsp/user/signIn.jsp").forward(req, res);
+                    req.getRequestDispatcher("/jsp/user/login.jsp").forward(req, res);
                 }
             } else {
                 req.setAttribute("error_message", "Login validation failed.");
-                req.getRequestDispatcher("/jsp/user/signIn.jsp").forward(req, res);
+                req.getRequestDispatcher("/jsp/user/login.jsp").forward(req, res);
             }
         } catch (SQLException e) {
             LOGGER.error("SQLException during login: ", e);
@@ -121,7 +121,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                     byte[] imageData = req.getPart("image").getInputStream().readAllBytes();
                     image = new Image(imageData, req.getPart("image").getContentType());
                 }
-            } catch (Exception ignored) {
+            } catch (ServletException | IOException ignored) {
             }
 
             User newUser = new User(username, password, firstName, lastName, email, phone, address, "user", image);

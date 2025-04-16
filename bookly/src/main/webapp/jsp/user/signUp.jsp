@@ -23,7 +23,7 @@
     <button type="submit">Create Account</button>
 </form>
 
-<p>Already have an account? <a href="signIn.jsp">Sign In</a></p>
+<p>Already have an account? <a href="login.jsp">Sign In</a></p>
 
 </body>
 </html>
