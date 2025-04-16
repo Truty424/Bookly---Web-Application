@@ -5,8 +5,10 @@ The following section provides documentation for all RESTful endpoints in the Bo
 % === AUTH ===
 \subsubsection*{User Authentication}
 
+\begin{flushleft}
 \textbf{Sign Up} \\
 Registers a new user with profile data.
+
 - URL: /user/signup \\
 - Method: POST \\
 - URL Parameters: NONE \\
@@ -21,9 +23,12 @@ When: Required fields are missing \\
 Code: 409 Conflict \\
 Content: \{"error": "Username or email already exists."\} \\
 When: Username/email already registered
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Login} \\
 Authenticates a user and returns a JWT.
+
 - URL: /user/login \\
 - Method: POST \\
 - URL Parameters: NONE \\
@@ -38,29 +43,36 @@ When: Username or password is missing \\
 Code: 401 Unauthorized \\
 Content: \{"error": "Invalid credentials."\} \\
 When: Login failed
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Logout} \\
 Logs out the current user session.
-URL: /auth/logout \\
-Method: GET \\
-URL Parameters: NONE \\
-Success Response: \\
+
+-URL: /auth/logout \\
+-Method: GET \\
+-URL Parameters: NONE \\
+-Success Response: \\
 Code: 200 OK \\
 Content: Redirect to home
+\end{flushleft}
 
 % === BOOKS ===
 \subsubsection*{Books}
 
 \textbf{Get All Books} \\
 Fetch all books in the catalog.
+
 - URL: /books \\
 - Method: GET \\
 - Success Response: \\
 Code: 200 OK \\
 Content: [book\_list]
 
+\begin{flushleft}
 \textbf{Get Book by ID} \\
 Retrieve a single book by its ID.
+
 - URL: /book?id={book\_id} \\
 - Method: GET \\
 - Success Response: \\
@@ -69,9 +81,12 @@ Content: {book details} \\
 - Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "Book not found."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Search Books} \\
 Find books matching a title keyword.
+
 - URL: /books/search?title={query} \\
 - Method: GET \\
 - Success Response: \\
@@ -80,17 +95,23 @@ Content: [matched\_books] \\
 – Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "No matches."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Top Rated Books} \\
 List top-rated books.
+
 - URL: /books/top-rated \\
 - Method: GET \\
 - Success Response: \\
 Code: 200 OK \\
 - Content: [top\_books]
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Insert Book} \\
 Creates a new book entry.
+
 - URL: /book \\
 - Method: POST \\
 - Data Parameters: title, price, author\_id, publisher\_id, isbn, language, ... \\
@@ -100,45 +121,59 @@ Creates a new book entry.
 – Error Response: \\
 Code: 400 Bad Request \\
 - Content: \{"error": "Missing book fields."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Update Book} \\
 Updates a book record.
+
 - URL: /book \\
 - Method: PUT \\
 - Data Parameters: bookId, title, price, etc. \\
 - Success Response: \\
 Code: 200 OK \\
 - Content: \{"message": "Book updated."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Delete Book} \\
 Deletes a book.
+
 - URL: /book?id={book\_id} \\
 - Method: DELETE \\
 - Success Response: \\
 Code: 200 OK \\
 - Content: \{"message": "Book deleted."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Update Book Stock} \\
 Adjusts stock for a book.
+
 - URL: /book/stock?id={book\_id}\&quantity={qty} \\
 - Method: PUT \\
 - Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Stock updated."\}
+\end{flushleft}
 
 % === AUTHORS ===
 \subsubsection*{Authors}
-
+\begin{flushleft}
 \textbf{Get All Authors} \\
 Retrieves a list of all authors.
+
 – URL: /authors \\
 – Method: GET \\
 – Success Response: \\
 - Code: 200 OK \\
 - Content: [author\_list]
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Get Author by ID} \\
 Returns a specific author's information.
+
 – URL: /authors/{id} \\
 – Method: GET \\
 – URL Parameters: id = author ID \\
@@ -148,52 +183,68 @@ Content: {author\_details} \\
 – Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "Author not found."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Create Author} \\
 Adds a new author.
-URL: /authors \\
-Method: POST \\
-Data Parameters: first\_name, last\_name, biography, nationality \\
+
+-URL: /authors \\
+-Method: POST \\
+-Data Parameters: first\_name, last\_name, biography, nationality \\
 – Success Response: \\
 Code: 201 Created \\
 Content: \{"message": "Author created."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Update Author} \\
 Modifies an existing author.
-URL: /authors/{id} \\
-Method: PUT \\
-URL Parameters: id = author ID \\
-Data Parameters: first\_name, last\_name, biography, nationality \\
+
+-URL: /authors/{id} \\
+-Method: PUT \\
+-URL Parameters: id = author ID \\
+-Data Parameters: first\_name, last\_name, biography, nationality \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Author updated."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Delete Author} \\
 Removes an author.
+
 – URL: /authors/{id} \\
 – Method: DELETE \\
 – URL Parameters: id = author ID \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Author deleted."\}
+\end{flushleft}
 
+\begin{flushleft}
 \textbf{Assign Author to Book} \\
 Links an author to a book.
+
 – URL: /authors/assign \\
 – Method: POST \\
 – Data Parameters: bookId, authorId \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Author assigned."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Remove Author from Book} \\
 Unlinks an author from a book.
+
 – URL: /authors/remove \\
 – Method: DELETE \\
 – Data Parameters: bookId, authorId \\
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Author removed."\}
+\end{flushleft}
 
 % === PUBLISHERS ===
 \subsubsection*{Publishers}
@@ -210,6 +261,7 @@ Content: \{"message": "Publisher inserted successfully."\} \\
 Code: 500 Internal Server Error \\
 Content: \{"error": "Failed to insert publisher."\}
 
+\begin{flushleft} 
 \textbf{Update Publisher} \\
 – URL: /publisher/{id} \\
 – Method: PUT \\
@@ -221,7 +273,9 @@ Content: \{"message": "Publisher updated successfully."\} \\
 – Error Response: \\
 Code: 404 Not Found \\
 Content: \{"error": "Publisher not found."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Delete Publisher} \\
 – URL: /publisher/{id} \\
 – Method: DELETE \\
@@ -230,7 +284,7 @@ Content: \{"error": "Publisher not found."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Publisher deleted successfully."\}
-
+\end{flushleft}
 
 % === CART ===
 \subsubsection*{Cart}
@@ -247,6 +301,7 @@ Content: \{cart\_details\} \\
 Code: 404 Not Found \\
 Content: \{"error": "Cart not found."\}
 
+\begin{flushleft} 
 \textbf{Add Book to Cart} \\
 – URL: /cart/add?cartId={cart\_id}\&bookId={book\_id} \\
 – Method: POST \\
@@ -255,7 +310,9 @@ Content: \{"error": "Cart not found."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Book added to cart."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Remove Book from Cart} \\
 – URL: /cart/remove?cartId={cart\_id}\&bookId={book\_id} \\
 – Method: DELETE \\
@@ -264,6 +321,7 @@ Content: \{"message": "Book added to cart."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Book removed from cart."\}
+\end{flushleft}
 
 % === WISHLIST ===
 \subsubsection*{Wishlist}
@@ -277,6 +335,7 @@ Content: \{"message": "Book removed from cart."\}
 Code: 201 Created \\
 Content: \{"message": "Wishlist created successfully."\}
 
+\begin{flushleft} 
 \textbf{Delete Wishlist} \\
 – URL: /wishlist/{wishlistId} \\
 – Method: DELETE \\
@@ -285,7 +344,9 @@ Content: \{"message": "Wishlist created successfully."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Wishlist deleted."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Add Book to Wishlist} \\
 – URL: /wishlist/books/add \\
 – Method: POST \\
@@ -294,7 +355,9 @@ Content: \{"message": "Wishlist deleted."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Book added to wishlist."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Remove Book from Wishlist} \\
 – URL: /wishlist/books/remove \\
 – Method: DELETE \\
@@ -303,7 +366,9 @@ Content: \{"message": "Book added to wishlist."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Book removed from wishlist."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Get Wishlist Books} \\
 – URL: /wishlist/books/{wishlistId} \\
 – Method: GET \\
@@ -312,7 +377,9 @@ Content: \{"message": "Book removed from wishlist."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{[book\_1, book\_2, ...]\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Count Books in Wishlist} \\
 – URL: /wishlist/books/count?wishlistId={wishlistId} \\
 – Method: GET \\
@@ -321,6 +388,7 @@ Content: \{[book\_1, book\_2, ...]\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"count": X\}
+\end{flushleft}
 
 % === ORDERS ===
 \subsubsection*{Orders}
@@ -334,6 +402,7 @@ Content: \{"count": X\}
 Code: 200 OK \\
 Content: [ \{ order\_1 \}, \{ order\_2 \}, ... ]
 
+\begin{flushleft} 
 \textbf{Get Order by ID} \\
 – URL: /order/{id} \\
 – Method: GET \\
@@ -342,7 +411,9 @@ Content: [ \{ order\_1 \}, \{ order\_2 \}, ... ]
 – Success Response: \\
 Code: 200 OK \\
 Content: \{order\_details\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Insert Order} \\
 – URL: /order \\
 – Method: POST \\
@@ -351,7 +422,9 @@ Content: \{order\_details\}
 – Success Response: \\
 Code: 201 Created \\
 Content: \{"message": "Order created."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Get User Orders} \\
 – URL: /order/user/{userId} \\
 – Method: GET \\
@@ -360,7 +433,9 @@ Content: \{"message": "Order created."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: [ \{ order\_1 \}, \{ order\_2 \} ]
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Get Latest Order for User} \\
 – URL: /order/user/{userId}/latest \\
 – Method: GET \\
@@ -369,6 +444,7 @@ Content: [ \{ order\_1 \}, \{ order\_2 \} ]
 – Success Response: \\
 Code: 200 OK \\
 Content: \{latest\_order\}
+\end{flushleft}
 
 % === DISCOUNTS ===
 \subsubsection*{Discounts}
@@ -382,6 +458,7 @@ Content: \{latest\_order\}
 Code: 200 OK \\
 Content: [ \{discounts\} ]
 
+\begin{flushleft} 
 \textbf{Get Active Discounts} \\
 – URL: /discount/active \\
 – Method: GET \\
@@ -390,7 +467,9 @@ Content: [ \{discounts\} ]
 – Success Response: \\
 Code: 200 OK \\
 Content: [ \{active\_discounts\} ]
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Get Discount by Code} \\
 – URL: /discount/code?code={discount\_code} \\
 – Method: GET \\
@@ -399,7 +478,9 @@ Content: [ \{active\_discounts\} ]
 – Success Response: \\
 Code: 200 OK \\
 Content: \{discount\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Get Valid Discount by Code} \\
 – URL: /discount/query/valid?code={discount\_code} \\
 – Method: GET \\
@@ -408,7 +489,9 @@ Content: \{discount\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{discount\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Delete Discount} \\
 – URL: /discount?id={discount\_id} \\
 – Method: DELETE \\
@@ -417,7 +500,7 @@ Content: \{discount\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Discount deleted."\}
-
+\end{flushleft}
 
 % === User ===
 \subsubsection*{User}
@@ -430,6 +513,7 @@ Content: \{"message": "Discount deleted."\}
 Code: 200 OK \\
 Content: \{user\_data\}
 
+\begin{flushleft} 
 \textbf{Update User Profile} \\
 – URL: /user/update \\
 – Method: PUT \\
@@ -438,7 +522,9 @@ Content: \{user\_data\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "User updated."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Change Password} \\
 – URL: /user/password \\
 – Method: PUT \\
@@ -447,7 +533,9 @@ Content: \{"message": "User updated."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Password changed successfully."\}
+\end{flushleft}
 
+\begin{flushleft} 
 \textbf{Upload/Update Profile Image} \\
 – URL: /user/image \\
 – Method: POST \\
@@ -456,7 +544,9 @@ Content: \{"message": "Password changed successfully."\}
 – Success Response: \\
 Code: 200 OK \\
 Content: \{"message": "Image uploaded."\}
+\end{flushleft} 
 
+\begin{flushleft} 
 \textbf{Get User Image} \\
 – URL: /user/image?userId={id} \\
 – Method: GET \\
@@ -465,3 +555,4 @@ Content: \{"message": "Image uploaded."\}
 – Success Response: \\
 Code: 200 OK \\
 Content-Type: image/jpeg (or image/png)
+\end{flushleft}
