@@ -6,7 +6,7 @@
 <body>
     <h1>Sign In</h1>
     <form method="post" action="${pageContext.request.contextPath}/user/login">
-        <input type="text" name="email" placeholder="Email" required />
+        <input type="text" name="username" placeholder="username" required />
         <input type="password" name="password" placeholder="Password" required />
         <button type="submit">Login</button>
     </form>
