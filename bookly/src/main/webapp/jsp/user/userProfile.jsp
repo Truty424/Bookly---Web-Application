@@ -18,7 +18,7 @@
         <img src="${pageContext.request.contextPath}/user/image/${user.userId}" alt="Profile Image" width="150" height="150"/>
 
         <div class="button-group" style="margin-top: 20px;">
-            <form action="${pageContext.request.contextPath}/user/edit" method="get">
+            <form action="${pageContext.request.contextPath}/user/editUserProfile" method="get">
                 <button type="submit">Edit Profile</button>
             </form>
             <form action="${pageContext.request.contextPath}/user/changePassword" method="get">

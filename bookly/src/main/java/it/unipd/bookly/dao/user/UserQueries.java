@@ -10,7 +10,7 @@ public final class UserQueries {
 
     public static final String REGISTER_USER
             = "INSERT INTO booklySchema.users (username, password, first_name, last_name, email, phone, address, role) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?::booklyschema.user_role)";
 
     public static final String UPDATE_USER
             = "UPDATE booklySchema.users "

@@ -46,6 +46,8 @@ public class UserServlet extends AbstractDatabaseServlet {
                     req.getRequestDispatcher("/jsp/user/changePassword.jsp").forward(req, res);
                 case "/profile" ->
                     showUserProfile(req, res);
+                case "/editUserProfile" ->
+                    req.getRequestDispatcher("/jsp/user/editUserProfile.jsp").forward(req, res);
                 default ->
                     writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
@@ -106,14 +108,8 @@ public class UserServlet extends AbstractDatabaseServlet {
         try {
             String username = req.getParameter("username");
             String password = req.getParameter("password");
-            LOGGER.info("Login attempt with username: {}, password: {}", username, password);
-
             if (LoginServices.loginValidation(username, password, errorCode)) {
-                LOGGER.info("Validating login: username={}, password={}", username, password);
-
                 User user = new LoginUserDAO(getConnection(), username, password).access().getOutputParam();
-                LOGGER.info("DAO returned user: {}", user != null ? user.getUsername() : "null");
-
                 if (user != null) {
                     String jwt = JwtManager.createToken("username", user.getUsername());
                     HttpSession session = req.getSession();
@@ -151,13 +147,15 @@ public class UserServlet extends AbstractDatabaseServlet {
             String address = req.getParameter("address");
 
             Image image = null;
-            try {
-                if (req.getPart("image") != null && req.getPart("image").getSize() > 0) {
-                    byte[] imageData = req.getPart("image").getInputStream().readAllBytes();
-                    image = new Image(imageData, req.getPart("image").getContentType());
-                }
-            } catch (ServletException | IOException ignored) {
-            }
+            // try {
+            //     if (req.getPart("image") != null && req.getPart("image").getSize() > 0) {
+            //         byte[] imageData = req.getPart("image").getInputStream().readAllBytes();
+            //         image = new Image(imageData, req.getPart("image").getContentType());
+            //     }
+            // } catch (ServletException | IOException e) {
+            //     LOGGER.error("Image error: ", e);
+            //     writeError(res, ErrorCode.INTERNAL_ERROR);
+            // }
 
             User newUser = new User(username, password, firstName, lastName, email, phone, address, "user", image);
 
