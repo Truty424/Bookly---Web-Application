@@ -40,15 +40,15 @@ public class UpdateAuthorDAO extends AbstractDAO<Boolean> {
             stmt.setString(2, author.getLastName());
             stmt.setString(3, author.get_biography());
             stmt.setString(4, author.get_nationality());
-            stmt.setInt(5, author.getAuthor_id());
+            stmt.setInt(5, author.getAuthorId());
 
             int affectedRows = stmt.executeUpdate();
             this.outputParam = affectedRows > 0;
 
             if (this.outputParam) {
-                LOGGER.info("Author {} successfully updated.", author.getAuthor_id());
+                LOGGER.info("Author {} successfully updated.", author.getAuthorId());
             } else {
-                LOGGER.warn("No author updated for ID {}", author.getAuthor_id());
+                LOGGER.warn("No author updated for ID {}", author.getAuthorId());
             }
         }
     }

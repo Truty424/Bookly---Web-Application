@@ -22,13 +22,13 @@
         </tr>
         <% for (Author author : authors) { %>
         <tr>
-            <td><%= author.getAuthor_id() %></td>
+            <td><%= author.getAuthorId() %></td>
             <td><%= author.getFirstName() %> <%= author.getLastName() %></td>
             <td><%= author.getNationality() %></td>
             <td class="actions">
                 <!-- Edit -->
                 <form action="<%= request.getContextPath() %>/admin/updateAuthor" method="post">
-                    <input type="hidden" name="author_id" value="<%= author.getAuthor_id() %>" />
+                    <input type="hidden" name="author_id" value="<%= author.getAuthorId() %>" />
                     <input type="hidden" name="first_name" value="<%= author.getFirstName() %>" />
                     <input type="hidden" name="last_name" value="<%= author.getLastName() %>" />
                     <input type="hidden" name="biography" value="<%= author.getBiography() %>" />
@@ -38,7 +38,7 @@
 
                 <!-- Delete -->
                 <form action="<%= request.getContextPath() %>/admin/deleteAuthor" method="post" onsubmit="return confirm('Are you sure?');">
-                    <input type="hidden" name="author_id" value="<%= author.getAuthor_id() %>" />
+                    <input type="hidden" name="author_id" value="<%= author.getAuthorId() %>" />
                     <button class="delete-btn" type="submit">Delete</button>
                 </form>
             </td>
