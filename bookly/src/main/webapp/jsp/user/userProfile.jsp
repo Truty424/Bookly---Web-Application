@@ -5,7 +5,7 @@
     <title>User Profile</title>
 </head>
 <body>
-    <h1>Profile</h1>
+    <h1>User Profile</h1>
 
     <c:if test="${not empty user}">
         <p><strong>First Name:</strong> ${user.firstName}</p>
@@ -14,9 +14,22 @@
         <p><strong>Email:</strong> ${user.email}</p>
         <p><strong>Phone:</strong> ${user.phone}</p>
         <p><strong>Address:</strong> ${user.address}</p>
+
         <img src="${pageContext.request.contextPath}/user/image/${user.userId}" alt="Profile Image" width="150" height="150"/>
 
-        <h2>History</h2>
+        <div class="button-group" style="margin-top: 20px;">
+            <form action="${pageContext.request.contextPath}/user/edit" method="get">
+                <button type="submit">Edit Profile</button>
+            </form>
+            <form action="${pageContext.request.contextPath}/user/changePassword" method="get">
+                <button type="submit">Change Password</button>
+            </form>
+            <form action="${pageContext.request.contextPath}/logout" method="post">
+                <button type="submit">Log Out</button>
+            </form>
+        </div>
+
+        <h2 style="margin-top: 30px;">History</h2>
         <c:if test="${not empty user.history}">
             <ul>
                 <c:forEach var="historyItem" items="${user.history}">
@@ -30,7 +43,7 @@
     </c:if>
 
     <c:if test="${empty user}">
-        <p>Error: User data not available.</p>
+        <p style="color: red;">Error: User session not available.</p>
     </c:if>
 </body>
 </html>
