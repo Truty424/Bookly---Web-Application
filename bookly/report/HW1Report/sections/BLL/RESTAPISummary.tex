@@ -11,9 +11,9 @@ This API structure is aligned with the entities in the ER diagram, covering user
 \textbf{URI} & \textbf{Method} & \textbf{Description} & \textbf{F} 
 \\\hline
 
-/auth/signup & POST & Register a new user. & A \\
+/user/signup & POST & Register a new user. & A \\
 \hline
-/auth/login & POST & Login a user and return token. & A \\
+/user/login & POST & Login a user and return token. & A \\
 \hline
 /user?username=\{username\} & GET & Get user by username. & A \\
 \hline
@@ -57,23 +57,23 @@ This API structure is aligned with the entities in the ER diagram, covering user
 \hline
 /publishers & GET & Get all publishers. & B \\
 \hline
-/publishers/\{id\} & GET & Get publisher by ID. & B \\
+/publisher/\{id\} & GET & Get publisher by ID. & B \\
 \hline
-/publishers & POST & Create publisher. & B \\
+/publisher & POST & Create publisher. & B \\
 \hline
-/publishers/\{id\} & PUT & Update publisher. & B \\
+/publisher/\{id\} & PUT & Update publisher. & B \\
 \hline
-/publishers/\{id\} & DELETE & Delete publisher. & B \\
+/publisher/\{id\} & DELETE & Delete publisher. & B \\
 \hline
-/publishers/book/\{bookId\} & GET & Get book’s publishers. & B \\
+/publisher/book/\{bookId\} & GET & Get book’s publishers. & B \\
 \hline
-/publishers/\{id\}/books & GET & Books by publisher. & B \\
+/publisher/\{id\}/books & GET & Books by publisher. & B \\
 \hline
-/publishers/\{id\}/books/count & GET & Count publisher books. & B \\
+/publisher/\{id\}/books/count & GET & Count publisher books. & B \\
 \hline
-/publishers?bookId=\{b\}\&publisherId=\{p\} & POST & Assign publisher to book. & B \\
+/publisher?bookId=\{b\}\&publisherId=\{p\} & POST & Assign publisher to book. & B \\
 \hline
-/publishers?bookId=\{b\}\&publisherId=\{p\} & DELETE & Remove publisher from book. & B \\
+/publisher?bookId=\{b\}\&publisherId=\{p\} & DELETE & Remove publisher from book. & B \\
 \hline
 /books & GET & Get all books. & B \\
 \hline

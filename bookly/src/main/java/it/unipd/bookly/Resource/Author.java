@@ -7,7 +7,7 @@ public class Author {
     private String last_name;
     private String biography;
     private String nationality;
-
+    
     public Author(int author_id, String first_name, String last_name, String biography, String nationality) {
         this.author_id = author_id;
         this.first_name = first_name;

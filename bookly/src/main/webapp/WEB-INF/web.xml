@@ -120,7 +120,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>PublisherServlet</servlet-name>
-        <url-pattern>/publisher</url-pattern>
+        <url-pattern>/publisher/*</url-pattern>
     </servlet-mapping>
 
     <servlet>

@@ -7,7 +7,7 @@ The following section provides documentation for all RESTful endpoints in the Bo
 
 \textbf{Sign Up} \\
 Registers a new user with profile data.
-- URL: /auth/signup \\
+- URL: /user/signup \\
 - Method: POST \\
 - URL Parameters: NONE \\
 - Data Parameters: username, email, password, firstName, lastName, phone, address \\
@@ -24,7 +24,7 @@ When: Username/email already registered
 
 \textbf{Login} \\
 Authenticates a user and returns a JWT.
-- URL: /auth/login \\
+- URL: /user/login \\
 - Method: POST \\
 - URL Parameters: NONE \\
 - Data Parameters: username, password \\
@@ -199,7 +199,7 @@ Content: \{"message": "Author removed."\}
 \subsubsection*{Publishers}
 
 \textbf{Insert Publisher} \\
-– URL: /publishers \\
+– URL: /publisher \\
 – Method: POST \\
 – URL Parameters: NONE \\
 – Data Parameters: publisher\_name, phone, address \\
@@ -211,7 +211,7 @@ Code: 500 Internal Server Error \\
 Content: \{"error": "Failed to insert publisher."\}
 
 \textbf{Update Publisher} \\
-– URL: /publishers/{id} \\
+– URL: /publisher/{id} \\
 – Method: PUT \\
 – URL Parameters: id = publisher ID \\
 – Data Parameters: publisher\_name, phone, address \\
@@ -223,7 +223,7 @@ Code: 404 Not Found \\
 Content: \{"error": "Publisher not found."\}
 
 \textbf{Delete Publisher} \\
-– URL: /publishers/{id} \\
+– URL: /publisher/{id} \\
 – Method: DELETE \\
 – URL Parameters: id = publisher ID \\
 – Data Parameters: NONE \\

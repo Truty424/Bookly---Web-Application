@@ -1,48 +1,56 @@
-# README #
+# Bookly 📚
 
-Welcome to **Bookly**, a complete backend solution for managing an online bookstore. This project provides a RESTful API built with Java, following a layered architecture using DAO patterns, and is fully integrated with a PostgreSQL database.
+Bookly is a complete backend and JSP-powered frontend system for managing an online bookstore. It provides:
 
----
-
-### What is this repository for? ###
-
-* **Quick summary:**
-  Bookly is designed to handle the backend operations of an online bookstore. It covers user registration, book inventory, author/publisher relationships, orders, reviews, discounts, cart, and wishlist functionalities.
-
-* **Version:** `1.0.0`
-
-* **Main Technologies:**
-  - Java 17+
-  - Jakarta EE (Servlets)
-  - PostgreSQL
-  - Jackson (JSON)
-  - JWT for authentication
-  - JUnit 5 for testing
-
-* **API Style:** RESTful, JSON-based
-
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+- RESTful APIs for integration
+- JSP & servlet-based frontend views
+- Full CRUD for books, users, publishers, authors
+- Order + wishlist + discount management
+- JWT-based user authentication
 
 ---
 
-### How do I get set up? ###
+## 📁 Project Structure
 
-#### ✅ Summary of set up
+| Folder             | Description                                      |
+|--------------------|--------------------------------------------------|
+| `/rest`            | Jakarta REST endpoints (e.g., `/books`, `/wishlist`) |
+| `/servlet`         | JSP-based MVC controller servlets (e.g., `UserServlet`) |
+| `/dao`             | DAO layer with PostgreSQL queries                |
+| `/resources`       | Java models for User, Book, Author, etc.         |
+| `/jsp`             | JSP pages used for views                         |
+| `/html`            | Static error/success HTML pages                  |
+| `/sql`             | Contains `database.sql` and `insert.sql` files   |
 
-1. Clone the repository:
+---
+
+## 🚀 Quick Setup
+
+```bash
+git clone https://github.com/your-org/bookly.git
+cd bookly
+```
+2. after that you have to run the docker
+```bash
+   mvn package
+   docker compose up --build
+```
+
+3. The WAR file will be generated under `target/bookly.war`.
+
+4. Deploy this WAR file to your servlet container (Tomcat, Jetty, etc.).
+
+5. Access via:
    ```bash
-   git clone https://your-repo-url/bookly.git
-   cd bookly
+   http://localhost:8080/bookly/api/...
    ```
 
-2. Set up PostgreSQL with the `bookly` schema and tables. (SQL schema file should be provided or generated.)
-
-3. Update your DB credentials inside DAO or through environment variables.
-
-4. Compile and run tests:
-   ```bash
-   mvn clean test
-   ```
+Example endpoints:
+- `POST /auth/login`
+- `POST /users`
+- `GET /books`
+- `POST /order`
+- `GET /wishlist/user/{id}`
 
 5. Package and deploy to your preferred servlet container (Tomcat, Jetty, etc.).
 
@@ -72,81 +80,11 @@ All dependencies are declared in `pom.xml`.
 
 ---
 
-#### 🛠️ Database configuration
-
-Make sure PostgreSQL is running and a database named `bookly` exists:
-
-```sql
-CREATE DATABASE bookly;
-```
-
-Basic tables (example):
-- `users`
-- `book`
-- `author`
-- `publisher`
-- `wishlist`
-- `orders`
-- `discounts`
-- `reviews`
-- `cart`
-
-You can configure database credentials in DAO classes or inject via system properties.
-
----
-
-#### 🧪 How to run tests
-
-Tests are located under `src/test/java`.
-
-```bash
-# Run all tests
-mvn clean test
-```
-
-Tests include:
-- DAO layer integration tests
-- Data creation and teardown using `@BeforeEach` and `@AfterEach`
-- Assertions on insert/update/delete operations
-
-Example:
-```java
-assertEquals("Book Title", book.getTitle());
-assertTrue(bookList.size() > 0);
-```
-
----
 
 #### 🚀 Deployment instructions
 
-1. Build the project with:
+1. Clean the project with:
    ```bash
-   mvn clean package
+   mvn package clean
    ```
-
-2. The WAR file will be generated under `target/bookly.war`.
-
-3. Deploy this WAR file to your servlet container (Tomcat, Jetty, etc.).
-
-4. Access via:
-   ```
-   http://localhost:8080/bookly/api/...
-   ```
-
-Example endpoints:
-- `POST /auth/login`
-- `POST /users`
-- `GET /books`
-- `POST /order`
-- `GET /wishlist/user/{id}`
-
----
-
-### Contribution guidelines ###
-
-#### ✅ Writing tests
-
-- Write JUnit 5-based tests in `src/test/java`.
-- Use mock data or temporary inserts.
-- Clean up test data after each run.
 

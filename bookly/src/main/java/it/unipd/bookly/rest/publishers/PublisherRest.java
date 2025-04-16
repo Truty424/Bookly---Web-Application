@@ -13,10 +13,10 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * Handles: - GET /api/publishers → get all publishers - GET
- * /api/publishers/{id} → get a specific publisher by ID - POST /api/publishers
- * → insert a new publisher - PUT /api/publishers/{id} → update an existing
- * publisher - DELETE /api/publishers/{id} → delete a publisher by ID
+ * Handles: - GET /api/publisher → get all publisher - GET
+ * /api/publisher/{id} → get a specific publisher by ID - POST /api/publisher
+ * → insert a new publisher - PUT /api/publisher/{id} → update an existing
+ * publisher - DELETE /api/publisher/{id} → delete a publisher by ID
  */
 public class PublisherRest extends AbstractRestResource {
 
@@ -35,30 +35,30 @@ public class PublisherRest extends AbstractRestResource {
         try {
             switch (method) {
                 case "GET" -> {
-                    if (path.matches(".*/publishers/?$")) {
+                    if (path.matches(".*/publisher/?$")) {
                         handleGetAllPublishers();
-                    } else if (path.matches(".*/publishers/\\d+$")) {
+                    } else if (path.matches(".*/publisher/\\d+$")) {
                         handleGetPublisherById(path);
                     } else {
                         sendMethodNotAllowed();
                     }
                 }
                 case "POST" -> {
-                    if (path.matches(".*/publishers/?$")) {
+                    if (path.matches(".*/publisher/?$")) {
                         handleInsertPublisher();
                     } else {
                         sendMethodNotAllowed();
                     }
                 }
                 case "PUT" -> {
-                    if (path.matches(".*/publishers/\\d+$")) {
+                    if (path.matches(".*/publisher/\\d+$")) {
                         handleUpdatePublisher(path);
                     } else {
                         sendMethodNotAllowed();
                     }
                 }
                 case "DELETE" -> {
-                    if (path.matches(".*/publishers/\\d+$")) {
+                    if (path.matches(".*/publisher/\\d+$")) {
                         handleDeletePublisher(path);
                     } else {
                         sendMethodNotAllowed();

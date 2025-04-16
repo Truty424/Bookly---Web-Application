@@ -34,12 +34,12 @@ public class AuthenticationUserRest extends AbstractRestResource {
         try {
             switch (method) {
                 case "POST" -> {
-                    if (path.endsWith("/auth/login")) {
+                    if (path.endsWith("/user/login")) {
                         handleLogin();
-                    } else if (path.endsWith("/auth/signup")) {
+                    } else if (path.endsWith("/user/signup")) {
                         handleSignup();
                     } else {
-                        sendNotFound("Invalid authentication path. Use /auth/login or /auth/signup.");
+                        sendNotFound("Invalid authentication path. Use /user/login or /user/signup.");
                     }
                 }
                 default ->

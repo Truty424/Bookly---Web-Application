@@ -15,9 +15,9 @@ import java.util.List;
 
 /**
  * Handles:
- * - GET    /api/publishers/book/{bookId} → get publishers for a book
- * - GET    /api/publishers/{publisherId}/books → get books by publisher
- * - GET    /api/publishers/{publisherId}/books/count → get count of books by publisher
+ * - GET    /api/publisher/book/{bookId} → get publishers for a book
+ * - GET    /api/publisher/{publisherId}/books → get books by publisher
+ * - GET    /api/publisher/{publisherId}/books/count → get count of books by publisher
  * - POST   → assign publisher to a book (params: bookId, publisherId)
  * - DELETE → remove publisher from a book (params: bookId, publisherId)
  */
@@ -35,11 +35,11 @@ public class PublisherAssignmentRest extends AbstractRestResource {
         try {
             switch (method) {
                 case "GET" -> {
-                    if (path.matches(".*/publishers/book/\\d+$")) {
+                    if (path.matches(".*/publisher/book/\\d+$")) {
                         handleGetPublishersByBook(path);
-                    } else if (path.matches(".*/publishers/\\d+/books$")) {
+                    } else if (path.matches(".*/publisher/\\d+/books$")) {
                         handleGetBooksByPublisher(path);
-                    } else if (path.matches(".*/publishers/\\d+/books/count$")) {
+                    } else if (path.matches(".*/publisher/\\d+/books/count$")) {
                         handleCountBooksByPublisher(path);
                     } else {
                         sendError("Invalid GET path.", "404", "Unsupported GET endpoint.");
