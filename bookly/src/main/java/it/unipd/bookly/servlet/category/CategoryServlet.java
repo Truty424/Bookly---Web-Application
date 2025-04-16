@@ -13,15 +13,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.List;
 
 @WebServlet(name = "CategoryServlet", value = "/category/*")
 public class CategoryServlet extends AbstractDatabaseServlet {
 
     /**
-     * Handles GET requests for:
-     * - /category                 → show all categories
-     * - /category/{categoryId}   → show books for a specific category
+     * Handles GET requests for: - /category → show all categories -
+     * /category/{categoryId} → show books for a specific category
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,7 +35,7 @@ public class CategoryServlet extends AbstractDatabaseServlet {
         try {
             if (path == null || path.equals("/")) {
                 showAllCategories(req, resp);
-            } else if (path.matches("/\\d+")) {
+            } else if (path.matches("/\\d+?")) {
                 showBooksByCategory(req, resp, path);
             } else {
                 ServletUtils.redirectToErrorPage(req, resp, "Invalid category path.");
@@ -58,13 +58,39 @@ public class CategoryServlet extends AbstractDatabaseServlet {
     }
 
     private void showBooksByCategory(HttpServletRequest req, HttpServletResponse resp, String path) throws Exception {
-        try (var con = getConnection()) {
-            int category_id = Integer.parseInt(path.substring(1)); // remove leading slash
+        try (Connection con = getConnection()) {
+            // Extract the category ID from the path
+            String[] segments = path.split("/");
+            if (segments.length < 2) {
+                LOGGER.warn("Invalid category path: {}", path);
+                resp.sendRedirect(req.getContextPath() + "/html/error.html");
+                return;
+            }
+
+            int category_id;
+            try {
+                category_id = Integer.parseInt(segments[segments.length - 1]);
+            } catch (NumberFormatException e) {
+                LOGGER.warn("Category ID is not a valid number: {}", segments[segments.length - 1]);
+                resp.sendRedirect(req.getContextPath() + "/html/error.html");
+                return;
+            }
+
+            // Fetch books from DAO
             List<Book> books = new GetBooksByCategoryDAO(con, category_id).access().getOutputParam();
 
+            // Set attributes for the JSP
             req.setAttribute("category_books", books);
             req.setAttribute("category_id", category_id);
+
+            // Forward to the view
             req.getRequestDispatcher("/jsp/category/categoryBooks.jsp").forward(req, resp);
+
+        } catch (Exception e) {
+            LOGGER.error("Error loading category books: {}", e.getMessage(), e);
+            req.setAttribute("error_message", "Error loading category books.");
+            req.getRequestDispatcher("/html/error.html").forward(req, resp);
         }
     }
+
 }
