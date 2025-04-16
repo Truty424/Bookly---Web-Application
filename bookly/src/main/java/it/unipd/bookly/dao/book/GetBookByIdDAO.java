@@ -10,15 +10,35 @@ import java.sql.ResultSet;
 
 import static it.unipd.bookly.dao.book.BookQueries.GET_BOOK_BY_ID;
 
+/**
+ * DAO to retrieve a book by its ID from the database.
+ * This class provides functionality to fetch a book record
+ * from the database using the book's unique ID.
+ */
 public class GetBookByIdDAO extends AbstractDAO<Book> {
 
+    /**
+     * The ID of the book to retrieve.
+     */
     private final int book_id;
 
+    /**
+     * Constructs a DAO to retrieve a book by its ID.
+     *
+     * @param con     The database connection to use.
+     * @param book_id The ID of the book to retrieve.
+     */
     public GetBookByIdDAO(final Connection con, final int book_id) {
         super(con);
         this.book_id = book_id;
     }
 
+    /**
+     * Executes the query to retrieve a book by its ID.
+     * Populates the {@link #outputParam} with the retrieved {@link Book} object.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmnt = con.prepareStatement(GET_BOOK_BY_ID)) {

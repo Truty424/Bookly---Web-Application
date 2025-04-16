@@ -13,16 +13,33 @@ import static it.unipd.bookly.dao.book.BookQueries.GET_BOOKS_BY_AUTHOR_ID;
 
 /**
  * DAO class to retrieve books by a given author ID.
+ * This class provides functionality to fetch all books associated
+ * with a specific author from the database and return them as a list of {@link Book} objects.
  */
 public class GetBooksByAuthorIdDAO extends AbstractDAO<List<Book>> {
 
+    /**
+     * The ID of the author whose books are to be retrieved.
+     */
     private final int authorId;
 
+    /**
+     * Constructs a DAO to retrieve books by a given author ID.
+     *
+     * @param con      The database connection to use.
+     * @param authorId The ID of the author whose books are to be retrieved.
+     */
     public GetBooksByAuthorIdDAO(final Connection con, final int authorId) {
         super(con);
         this.authorId = authorId;
     }
 
+    /**
+     * Executes the query to retrieve books by a given author ID.
+     * Populates the {@link #outputParam} with a list of {@link Book} objects.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         List<Book> books = new ArrayList<>();

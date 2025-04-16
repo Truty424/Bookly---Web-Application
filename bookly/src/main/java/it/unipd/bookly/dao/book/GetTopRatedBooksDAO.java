@@ -13,17 +13,33 @@ import java.util.List;
 import static it.unipd.bookly.dao.book.BookQueries.GET_TOP_RATED_BOOKS;
 
 /**
- * DAO to retrieve top-rated books with average_rate >= threshold.
+ * DAO to retrieve top-rated books with an average rating greater than or equal to a specified threshold.
+ * This class provides functionality to fetch books from the database and return them as a list of {@link Book} objects.
  */
 public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
 
+    /**
+     * The minimum average rating threshold for retrieving top-rated books.
+     */
     private final double minRating;
 
+    /**
+     * Constructs a DAO to retrieve top-rated books.
+     *
+     * @param con       The database connection to use.
+     * @param minRating The minimum average rating threshold for retrieving books.
+     */
     public GetTopRatedBooksDAO(final Connection con, final double minRating) {
         super(con);
         this.minRating = minRating;
     }
 
+    /**
+     * Executes the query to retrieve top-rated books with an average rating greater than or equal to the threshold.
+     * Populates the {@link #outputParam} with a list of {@link Book} objects.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         List<Book> topRatedBooks = new ArrayList<>();
@@ -59,7 +75,7 @@ public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
                     Book book = (bookImage == null)
                             ? new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary)
-                            : new Book(book_id,title, language, isbn, price, edition,
+                            : new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     topRatedBooks.add(book);

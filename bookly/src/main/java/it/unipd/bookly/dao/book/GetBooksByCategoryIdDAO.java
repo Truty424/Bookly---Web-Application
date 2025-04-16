@@ -14,16 +14,33 @@ import static it.unipd.bookly.dao.book.BookQueries.GET_BOOKS_BY_CATEGORY_ID;
 
 /**
  * DAO to retrieve books by category ID.
+ * This class provides functionality to fetch all books associated
+ * with a specific category from the database and return them as a list of {@link Book} objects.
  */
 public class GetBooksByCategoryIdDAO extends AbstractDAO<List<Book>> {
 
+    /**
+     * The ID of the category whose books are to be retrieved.
+     */
     private final int category_id;
 
+    /**
+     * Constructs a DAO to retrieve books by category ID.
+     *
+     * @param con         The database connection to use.
+     * @param category_id The ID of the category whose books are to be retrieved.
+     */
     public GetBooksByCategoryIdDAO(final Connection con, final int category_id) {
         super(con);
         this.category_id = category_id;
     }
 
+    /**
+     * Executes the query to retrieve books by category ID.
+     * Populates the {@link #outputParam} with a list of {@link Book} objects.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         List<Book> books = new ArrayList<>();
@@ -61,7 +78,7 @@ public class GetBooksByCategoryIdDAO extends AbstractDAO<List<Book>> {
                         book = new Book(book_id, title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary);
                     } else {
-                        book = new Book(book_id,title, language, isbn, price, edition,
+                        book = new Book(book_id, title, language, isbn, price, edition,
                                 publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
                     }
 

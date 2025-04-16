@@ -14,16 +14,33 @@ import static it.unipd.bookly.dao.book.BookQueries.GET_BOOKS_BY_PUBLISHER_ID;
 
 /**
  * DAO to retrieve books by a specific publisher ID.
+ * This class provides functionality to fetch all books associated
+ * with a specific publisher from the database and return them as a list of {@link Book} objects.
  */
 public class GetBooksByPublisherIdDAO extends AbstractDAO<List<Book>> {
 
+    /**
+     * The ID of the publisher whose books are to be retrieved.
+     */
     private final int publisherId;
 
+    /**
+     * Constructs a DAO to retrieve books by a specific publisher ID.
+     *
+     * @param con         The database connection to use.
+     * @param publisherId The ID of the publisher whose books are to be retrieved.
+     */
     public GetBooksByPublisherIdDAO(final Connection con, final int publisherId) {
         super(con);
         this.publisherId = publisherId;
     }
 
+    /**
+     * Executes the query to retrieve books by a specific publisher ID.
+     * Populates the {@link #outputParam} with a list of {@link Book} objects.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         List<Book> books = new ArrayList<>();
@@ -59,7 +76,7 @@ public class GetBooksByPublisherIdDAO extends AbstractDAO<List<Book>> {
                     Book book = (bookImage == null)
                             ? new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary)
-                            : new Book(book_id,title, language, isbn, price, edition,
+                            : new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     books.add(book);

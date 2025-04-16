@@ -12,16 +12,22 @@ import static it.unipd.bookly.dao.book.BookQueries.INSERT_BOOK_IMAGE;
 
 /**
  * DAO to insert a new book (with optional image).
+ * This class provides functionality to add a new book record
+ * to the database, including optional image data.
  */
 public class InsertBookDAO extends AbstractDAO<Book> {
 
+    /**
+     * The {@link Book} object containing the details of the book to be inserted.
+     */
     private final Book book;
 
     /**
-     * Constructor for atomic insertion of a book and optional image.
+     * Constructs a DAO to insert a new book (with optional image).
      *
-     * @param con  database connection
-     * @param book the book to insert
+     * @param con  The database connection to use.
+     * @param book The {@link Book} object containing the details of the book to be inserted.
+     * @throws Exception If an error occurs while setting up the DAO.
      */
     public InsertBookDAO(final Connection con, final Book book) throws Exception {
         super(con);
@@ -29,6 +35,13 @@ public class InsertBookDAO extends AbstractDAO<Book> {
         con.setAutoCommit(false);
     }
 
+    /**
+     * Executes the query to insert a new book (with optional image) into the database.
+     * If an image is provided, it is inserted into the database along with the book metadata.
+     * Populates the {@link #outputParam} with the inserted {@link Book} object.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
 

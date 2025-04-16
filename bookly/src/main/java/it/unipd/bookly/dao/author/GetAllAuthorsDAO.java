@@ -11,17 +11,28 @@ import java.util.List;
 
 import static it.unipd.bookly.dao.author.AuthorQueries.GET_ALL_AUTHORS;
 
+/**
+ * DAO to retrieve all authors from the database.
+ * This class provides functionality to fetch all author records
+ * from the database and return them as a list of {@link Author} objects.
+ */
 public class GetAllAuthorsDAO extends AbstractDAO<List<Author>> {
 
     /**
      * Creates a new DAO to retrieve all authors from the database.
      *
-     * @param con the database connection to use.
+     * @param con The database connection to use.
      */
     public GetAllAuthorsDAO(final Connection con) {
         super(con);
     }
 
+    /**
+     * Executes the query to retrieve all authors from the database.
+     * Populates the {@link #outputParam} with a list of {@link Author} objects.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         List<Author> authors = new ArrayList<>();
@@ -39,7 +50,7 @@ public class GetAllAuthorsDAO extends AbstractDAO<List<Author>> {
                 }
             }
 
-            // ✅ Always set outputParam — even if empty
+            // Always set outputParam (even if empty)
             this.outputParam = authors;
 
             if (!authors.isEmpty()) {
@@ -50,7 +61,7 @@ public class GetAllAuthorsDAO extends AbstractDAO<List<Author>> {
 
         } catch (Exception ex) {
             LOGGER.error("Error retrieving authors: {}", ex.getMessage());
-            this.outputParam = new ArrayList<>();  // ✅ fail-safe in case of an exception
+            this.outputParam = new ArrayList<>();  // fail-safe in case of an exception
         }
     }
 }

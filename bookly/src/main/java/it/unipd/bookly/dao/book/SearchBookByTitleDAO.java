@@ -14,17 +14,33 @@ import static it.unipd.bookly.dao.book.BookQueries.SEARCH_BOOK_BY_TITLE;
 
 /**
  * DAO to search books by partial or full title.
- * Converts all string fields to lowercase.
+ * This class provides functionality to search for books in the database
+ * based on a search term and return them as a list of {@link Book} objects.
  */
 public class SearchBookByTitleDAO extends AbstractDAO<List<Book>> {
 
+    /**
+     * The search term used to find books by title.
+     */
     private final String searchTerm;
 
+    /**
+     * Constructs a DAO to search books by partial or full title.
+     *
+     * @param con        The database connection to use.
+     * @param searchTerm The search term used to find books by title.
+     */
     public SearchBookByTitleDAO(final Connection con, final String searchTerm) {
         super(con);
         this.searchTerm = searchTerm;
     }
 
+    /**
+     * Executes the query to search books by partial or full title.
+     * Populates the {@link #outputParam} with a list of {@link Book} objects.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         List<Book> books = new ArrayList<>();
@@ -60,7 +76,7 @@ public class SearchBookByTitleDAO extends AbstractDAO<List<Book>> {
                     Book book = (bookImage == null)
                             ? new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary)
-                            : new Book(book_id,title, language, isbn, price, edition,
+                            : new Book(book_id, title, language, isbn, price, edition,
                             publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     books.add(book);

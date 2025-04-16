@@ -12,12 +12,28 @@ import java.util.List;
 
 import static it.unipd.bookly.dao.book.BookQueries.GET_ALL_BOOKS;
 
+/**
+ * DAO to retrieve all books from the database.
+ * This class provides functionality to fetch all book records
+ * from the database and return them as a list of {@link Book} objects.
+ */
 public class GetAllBooksDAO extends AbstractDAO<List<Book>> {
 
+    /**
+     * Constructs a DAO to retrieve all books from the database.
+     *
+     * @param con The database connection to use.
+     */
     public GetAllBooksDAO(final Connection con) {
         super(con);
     }
 
+    /**
+     * Executes the query to retrieve all books from the database.
+     * Populates the {@link #outputParam} with a list of {@link Book} objects.
+     *
+     * @throws Exception If an error occurs during the database operation.
+     */
     @Override
     protected void doAccess() throws Exception {
         List<Book> books = new ArrayList<>();
@@ -52,7 +68,7 @@ public class GetAllBooksDAO extends AbstractDAO<List<Book>> {
                 Book book = (bookImage == null)
                         ? new Book(book_id, title, language, isbn, price, edition, publication_year,
                         number_of_pages, stock_quantity, average_rate, summary)
-                        : new Book(book_id,title, language, isbn, price, edition, publication_year,
+                        : new Book(book_id, title, language, isbn, price, edition, publication_year,
                         number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                 books.add(book);
