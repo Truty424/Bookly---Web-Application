@@ -49,11 +49,9 @@
     </c:if>
 
     <p><strong>Total:</strong> €${total_price}</p>
-    <p><strong>Final Total:</strong> €${final_total}</p>
 
-    <%-- Order Now Button --%>
-    <form action="<%= request.getContextPath() %>/orders" method="post">
-        <button type="submit">Order Now</button>
+    <form action="<%= request.getContextPath() %>/checkout" method="get">
+        <button type="submit">go to checkout</button>
     </form>
 
 

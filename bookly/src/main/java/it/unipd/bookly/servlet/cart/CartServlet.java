@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 
 @WebServlet(name = "CartServlet", value = "/cart/*")
@@ -124,7 +123,7 @@ public class CartServlet extends AbstractDatabaseServlet {
         List<Book> cartBooks = new GetBooksInCartDAO(getConnection(), cartId).access().getOutputParam();
 
         double totalPrice = cartBooks.stream().mapToDouble(Book::getPrice).sum();
-        BigDecimal discountedTotal = BigDecimal.valueOf(totalPrice);
+        double discountedTotal = totalPrice;
         Discount appliedDiscount = (Discount) req.getSession().getAttribute("appliedDiscount");
 
         if (appliedDiscount != null) {
@@ -141,7 +140,7 @@ public class CartServlet extends AbstractDatabaseServlet {
         req.setAttribute("total_price", totalPrice);
         req.setAttribute("final_total", discountedTotal);
         
-        req.getSession().setAttribute("cart_final_price", discountedTotal.doubleValue());
+        req.getSession().setAttribute("cart_final_price", discountedTotal);
 
         req.getRequestDispatcher("/jsp/cart/viewCart.jsp").forward(req, resp);
     }

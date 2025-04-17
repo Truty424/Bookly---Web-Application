@@ -1,0 +1,160 @@
+package it.unipd.bookly.servlet.order;
+
+import it.unipd.bookly.LogContext;
+import it.unipd.bookly.Resource.*;
+import it.unipd.bookly.dao.cart.*;
+import it.unipd.bookly.dao.order.InsertOrderDAO;
+import it.unipd.bookly.servlet.AbstractDatabaseServlet;
+import it.unipd.bookly.utilities.ServletUtils;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
+import java.io.IOException;
+import java.sql.Connection;
+import java.util.List;
+
+@WebServlet(name = "CheckoutServlet", value = "/checkout")
+public class CheckoutServlet extends AbstractDatabaseServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        LogContext.setIPAddress(req.getRemoteAddr());
+        LogContext.setResource(req.getRequestURI());
+        LogContext.setAction("CheckoutServlet");
+
+        HttpSession session = req.getSession(false);
+        if (!isUserLoggedIn(session)) {
+            res.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
+        try  {
+            User user = (User) session.getAttribute("user");
+            Cart cart = getCartByUserId(getConnection(), user.getUserId());
+
+            if (cart == null) {
+                ServletUtils.redirectToErrorPage(req, res, "Your cart is empty.");
+                return;
+            }
+
+            List<Book> books = getBooksInCart(getConnection(), cart.getCartId());
+            double total = calculateCartTotal(books);
+            double finalTotal = applyDiscountIfExists(getConnection(), cart.getCartId(), session);
+
+            req.setAttribute("cart_books", books);
+            req.setAttribute("total_price", total);
+            req.setAttribute("final_total", finalTotal);
+            req.getRequestDispatcher("/jsp/order/checkout.jsp").forward(req, res);
+        } catch (Exception e) {
+            LOGGER.error("Checkout GET error: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, res, "Failed to load checkout page.");
+        } finally {
+            LogContext.removeAction();
+            LogContext.removeResource();
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        LogContext.setIPAddress(req.getRemoteAddr());
+        LogContext.setResource(req.getRequestURI());
+        LogContext.setAction("CheckoutServlet");
+
+        HttpSession session = req.getSession(false);
+        if (!isUserLoggedIn(session)) {
+            res.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
+        String address = req.getParameter("address");
+        String paymentMethod = req.getParameter("paymentMethod");
+
+        if (address == null || address.isBlank() || paymentMethod == null || paymentMethod.isBlank()) {
+            ServletUtils.redirectToErrorPage(req, res, "Please fill in all checkout fields.");
+            return;
+        }
+
+        try (Connection con = getConnection()) {
+            User user = (User) session.getAttribute("user");
+            Cart cart = getCartByUserId(con, user.getUserId());
+
+            if (cart == null) {
+                ServletUtils.redirectToErrorPage(req, res, "No active cart to place an order.");
+                return;
+            }
+
+            double total = applyDiscountIfExists(con, cart.getCartId(), session);
+            Order order = new Order(total, paymentMethod, address, null, "placed");
+
+            boolean success = new InsertOrderDAO(con, order).access().getOutputParam();
+
+            if (success) {
+                switch (paymentMethod) {
+                    case "credit_card":
+                        clearDiscountSession(session);
+                        res.sendRedirect(req.getContextPath() + "/orders");
+                    case "in_person":
+                        clearDiscountSession(session);
+                        res.sendRedirect(req.getContextPath() + "/orders");
+                        break;
+                    default:
+                        ServletUtils.redirectToErrorPage(req, res, "Unsupported payment method.");
+                }
+            } else {
+                ServletUtils.redirectToErrorPage(req, res, "Failed to place your order.");
+            }
+        } catch (Exception e) {
+            LOGGER.error("Checkout POST error: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, res, "An error occurred while placing your order.");
+        } finally {
+            LogContext.removeAction();
+            LogContext.removeResource();
+        }
+    }
+
+    // ======== Private Helper Methods ========
+    private boolean isUserLoggedIn(HttpSession session) {
+        return session != null && session.getAttribute("user") != null;
+    }
+
+    private Cart getCartByUserId(Connection con, int userId) throws Exception {
+        return new GetCartByUserIdDAO(con, userId).access().getOutputParam();
+    }
+
+    private List<Book> getBooksInCart(Connection con, int cartId) throws Exception {
+        return new GetBooksInCartDAO(con, cartId).access().getOutputParam();
+    }
+
+    private double calculateCartTotal(List<Book> books) {
+        return books.stream().mapToDouble(Book::getPrice).sum();
+    }
+
+    private double applyDiscountIfExists(Connection con, int cartId, HttpSession session) throws Exception {
+        Discount discount = (Discount) session.getAttribute("appliedDiscount");
+        if (discount != null) {
+            return new ApplyDiscountToCartDAO(con, cartId, discount.getDiscountId()).access().getOutputParam();
+        }
+        return getCartById(con, cartId).getTotalPrice();
+    }
+
+    private Cart getCartById(Connection con, int cartId) throws Exception {
+        return new GetCartByUserIdDAO(con, cartId).access().getOutputParam();
+    }
+
+    private void linkCartToOrder(Connection con, int cartId, int orderId) throws Exception {
+        new LinkOrderToCartDAO(con, cartId, orderId).access();
+    }
+
+    private void clearCart(Connection con, int cartId) throws Exception {
+        new ClearCartDAO(con, cartId).access();
+    }
+
+    private void clearDiscountSession(HttpSession session) {
+        session.removeAttribute("appliedDiscount");
+        session.removeAttribute("discountId");
+    }
+}

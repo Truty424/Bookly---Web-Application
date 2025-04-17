@@ -2,19 +2,18 @@ package it.unipd.bookly.dao.cart;
 
 import it.unipd.bookly.dao.AbstractDAO;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import static it.unipd.bookly.dao.cart.CartQueries.*;
-import static it.unipd.bookly.dao.discount.DiscountQueries.*;
+import static it.unipd.bookly.dao.cart.CartQueries.GET_CART_TOTAL;
+import static it.unipd.bookly.dao.discount.DiscountQueries.GET_DISCOUNT_PERCENTAGE;
+import static it.unipd.bookly.dao.cart.CartQueries.APPLY_DISCOUNT;
 
 /**
- * DAO class to apply a discount to a shopping cart and return the discounted price.
+ * DAO class to apply a discount to a shopping cart and return the discounted price using double.
  */
-public class ApplyDiscountToCartDAO extends AbstractDAO<BigDecimal> {
+public class ApplyDiscountToCartDAO extends AbstractDAO<Double> {
 
     private final int cartId;
     private final int discountId;
@@ -27,19 +26,19 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<BigDecimal> {
 
     @Override
     protected void doAccess() throws Exception {
-        BigDecimal totalPrice;
-        BigDecimal discountPercentage;
+        double totalPrice = 0.0;
+        double discountPercentage = 0.0;
 
         try (
-                PreparedStatement getTotalStmt = con.prepareStatement(GET_CART_TOTAL);
-                PreparedStatement getDiscountStmt = con.prepareStatement(GET_DISCOUNT_PERCENTAGE);
-                PreparedStatement applyStmt = con.prepareStatement(APPLY_DISCOUNT)
+            PreparedStatement getTotalStmt = con.prepareStatement(GET_CART_TOTAL);
+            PreparedStatement getDiscountStmt = con.prepareStatement(GET_DISCOUNT_PERCENTAGE);
+            PreparedStatement applyStmt = con.prepareStatement(APPLY_DISCOUNT)
         ) {
             // Get cart total price
             getTotalStmt.setInt(1, cartId);
             try (ResultSet rs = getTotalStmt.executeQuery()) {
                 if (rs.next()) {
-                    totalPrice = rs.getBigDecimal("total_price");
+                    totalPrice = rs.getDouble("total_price");
                 } else {
                     throw new Exception("Cart not found for ID: " + cartId);
                 }
@@ -49,7 +48,7 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<BigDecimal> {
             getDiscountStmt.setInt(1, discountId);
             try (ResultSet rs = getDiscountStmt.executeQuery()) {
                 if (rs.next()) {
-                    discountPercentage = rs.getBigDecimal("discount_percentage");
+                    discountPercentage = rs.getDouble("discount_percentage");
                 } else {
                     throw new Exception("Discount not found for ID: " + discountId);
                 }
@@ -60,9 +59,9 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<BigDecimal> {
             applyStmt.setInt(2, cartId);
             applyStmt.executeUpdate();
 
-            // Calculate: total * (1 - discount / 100)
-            BigDecimal discountFactor = BigDecimal.ONE.subtract(discountPercentage.divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP));
-            BigDecimal discountedPrice = totalPrice.multiply(discountFactor);
+            // Calculate discounted price
+            double discountFactor = 1 - (discountPercentage / 100);
+            double discountedPrice = totalPrice * discountFactor;
 
             this.outputParam = discountedPrice;
 
