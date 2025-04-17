@@ -4,6 +4,7 @@ import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Order;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.order.CancelOrderDAO;
+import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
@@ -16,8 +17,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
-
-import it.unipd.bookly.dao.order.GetOrderWithBooksDAO;
 
 @WebServlet(name = "OrderServlet", value = "/orders/*")
 public class OrderServlet extends AbstractDatabaseServlet {
@@ -37,15 +36,13 @@ public class OrderServlet extends AbstractDatabaseServlet {
         User user = (User) session.getAttribute("user");
 
         try (Connection con = getConnection()) {
-            // Fetch all orders for the user
-            Order orders = new GetOrderWithBooksDAO(con, user.getUserId()).access().getOutputParam();
-
-    
+            List<Order> orders = new GetOrdersByUserDAO(con, user.getUserId()).access().getOutputParam();
             req.setAttribute("orders", orders);
             req.getRequestDispatcher("/jsp/order/userOrders.jsp").forward(req, res);
         } catch (Exception e) {
             LOGGER.error("Failed to load user orders: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, res, "Unable to load your orders.");
+            req.setAttribute("error_message", "Unable to load your orders.");
+            req.getRequestDispatcher("/jsp/order/userOrders.jsp").forward(req, res);
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();

@@ -3,6 +3,24 @@
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Objects" %>
 
+<html>
+<head>
+    <title>Your Orders</title>
+</head>
+<body>
+
+<h1>Your Orders</h1>
+
+<%-- Display error message if present --%>
+<%
+    String errorMessage = (String) request.getAttribute("error_message");
+    if (errorMessage != null) {
+%>
+    <p style="color: red;"><strong>Error:</strong> <%= errorMessage %></p>
+<%
+    }
+%>
+
 <%
     List<Order> orders = (List<Order>) request.getAttribute("orders");
     if (orders == null) {
@@ -11,21 +29,27 @@
 %>
 
 <% if (!orders.isEmpty()) { %>
-    <table>
+    <table border="1" cellpadding="5" cellspacing="0">
         <tr>
             <th>Order ID</th>
             <th>Status</th>
+            <th>Total Price</th>
+            <th>Order Date</th>
         </tr>
         <% for (Order order : orders) {
             if (order == null) continue;
-            String status = Objects.toString(order.getStatus(), "unknown");
         %>
             <tr>
                 <td><%= order.getOrderId() %></td>
-                <td><%= status %></td>
+                <td><%= Objects.toString(order.getStatus(), "unknown") %></td>
+                <td>€<%= order.getTotalPrice() %></td>
+                <td><%= order.getOrderDate() %></td>
             </tr>
         <% } %>
     </table>
 <% } else { %>
     <p>No orders found.</p>
 <% } %>
+
+</body>
+</html>
