@@ -28,10 +28,19 @@ public class InsertOrderDAO extends AbstractDAO<Boolean> {
             stmt.setDouble(1, order.getTotalPrice());
             stmt.setString(2, order.getPaymentMethod());
             stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            stmt.setString(4, order.getStatus());
+            stmt.setString(4, order.getAddress());
+            stmt.setString(5, order.getShipmentCode());
+            stmt.setString(6, order.getStatus());
 
-            int affectedRows = stmt.executeUpdate();
-            this.outputParam = affectedRows > 0;
+            try (var rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    order.setOrderId(rs.getInt(1));
+                    this.outputParam = true;
+                } else {
+                    this.outputParam = false;
+                }
+            }
+
         } catch (SQLException e) {
             LOGGER.error("InsertOrderDAO - Error inserting order: {}", e.getMessage());
             throw e;

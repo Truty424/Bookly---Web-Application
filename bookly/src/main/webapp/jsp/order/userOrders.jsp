@@ -51,5 +51,9 @@
     <p>No orders found.</p>
 <% } %>
 
+<br>
+<form action="${pageContext.request.contextPath}/" method="get">
+                <button type="submit">Home Page</button>
+            </form>
 </body>
 </html>

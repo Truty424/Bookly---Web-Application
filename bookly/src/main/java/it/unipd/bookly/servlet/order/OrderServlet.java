@@ -1,10 +1,17 @@
 package it.unipd.bookly.servlet.order;
 
 import it.unipd.bookly.LogContext;
+import it.unipd.bookly.Resource.Cart;
 import it.unipd.bookly.Resource.Order;
 import it.unipd.bookly.Resource.User;
+import it.unipd.bookly.dao.cart.ClearCartDAO;
+import it.unipd.bookly.dao.cart.DeleteCartByUserIdDAO;
+import it.unipd.bookly.dao.cart.GetCartByUserIdDAO;
+import it.unipd.bookly.dao.cart.LinkOrderToCartDAO;
 import it.unipd.bookly.dao.order.CancelOrderDAO;
+import it.unipd.bookly.dao.order.GetLatestOrderForUserDAO;
 import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
+import it.unipd.bookly.dao.order.InsertOrderDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
@@ -61,31 +68,56 @@ public class OrderServlet extends AbstractDatabaseServlet {
             return;
         }
 
-        String action = req.getParameter("action");
-        String orderIdParam = req.getParameter("orderId");
+        User user = (User) session.getAttribute("user");
 
-        if ("cancel".equalsIgnoreCase(action) && orderIdParam != null) {
+        try {
+            Cart cart;
             try (Connection con = getConnection()) {
-                int orderId = Integer.parseInt(orderIdParam);
-                boolean cancelled = new CancelOrderDAO(con, orderId).access().getOutputParam();
+                cart = new GetCartByUserIdDAO(con, user.getUserId()).access().getOutputParam();
 
-                if (cancelled) {
-                    LOGGER.info("Order {} cancelled successfully.", orderId);
-                    res.sendRedirect(req.getContextPath() + "/orders");
-                } else {
-                    LOGGER.warn("Order cancellation failed for ID {}", orderId);
-                    ServletUtils.redirectToErrorPage(req, res, "Unable to cancel order.");
-                }
-
-            } catch (Exception e) {
-                LOGGER.error("Error cancelling order: {}", e.getMessage(), e);
-                ServletUtils.redirectToErrorPage(req, res, "An error occurred while cancelling your order.");
             }
-        } else {
-            ServletUtils.redirectToErrorPage(req, res, "Invalid order operation.");
-        }
 
-        LogContext.removeAction();
-        LogContext.removeResource();
+            if (cart == null || cart.getCartId() == 0) {
+                ServletUtils.redirectToErrorPage(req, res, "No cart available to place an order.");
+                return;
+            }
+
+            Order order = new Order();
+            order.setTotalPrice(cart.getTotalPrice());
+            order.setPaymentMethod("credit_card");
+            order.setStatus("placed");
+            order.setAddress("Default Address");
+            order.setShipmentCode("DEFAULT_SHIP");
+
+            boolean success;
+            try (Connection con = getConnection()) {
+                success = new InsertOrderDAO(con, order).access().getOutputParam();
+            }
+
+            if (!success) {
+                ServletUtils.redirectToErrorPage(req, res, "Failed to insert order.");
+                return;
+            }
+
+            int orderId = order.getOrderId();
+            int cartId = cart.getCartId();
+
+            try (Connection con = getConnection()) {
+                new LinkOrderToCartDAO(con, cart.getCartId(), orderId).access();
+            }
+
+            try (Connection con = getConnection()) {
+                new ClearCartDAO(con, cartId).access();
+            }
+
+            res.sendRedirect(req.getContextPath() + "/orders");
+
+        } catch (Exception e) {
+            LOGGER.error("Error placing order: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, res, "An error occurred while placing the order.");
+        } finally {
+            LogContext.removeAction();
+            LogContext.removeResource();
+        }
     }
 }

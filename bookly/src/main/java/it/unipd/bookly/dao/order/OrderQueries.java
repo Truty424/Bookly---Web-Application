@@ -6,9 +6,18 @@ public final class OrderQueries {
     }
 
     // Create
-    public static final String INSERT_ORDER
-            = "INSERT INTO booklySchema.orders (total_price, payment_method, payment_date, status) "
-            + "VALUES (?, ?::booklyschema.payment_method, ?, ?::booklyschema.payment_status) RETURNING order_id";
+//    public static final String INSERT_ORDER
+//            = "INSERT INTO booklySchema.orders (total_price, payment_method, payment_date, status) "
+//            + "VALUES (?, ?::booklyschema.payment_method, ?, ?::booklyschema.payment_status) RETURNING order_id";
+
+    public static final String INSERT_ORDER = """
+    INSERT INTO booklySchema.orders 
+        (total_price, payment_method, order_date, address, shipment_code, status)
+    VALUES (?, ?::booklySchema.payment_method, ?, ?, ?, ?::booklySchema.payment_status)
+    RETURNING order_id
+""";
+
+
 
     // Read
     public static final String GET_ORDER_BY_ID
@@ -57,7 +66,7 @@ public final class OrderQueries {
     public static final String GET_LATEST_ORDER_FOR_USER
             = "SELECT o.* FROM booklySchema.orders o "
             + "JOIN booklySchema.shoppingcart s ON o.order_id = s.order_id "
-            + "WHERE s.user_id = ? ORDER BY o.payment_date DESC LIMIT 1";
+            + "WHERE s.user_id = ? ORDER BY o.order_date DESC LIMIT 1";
 
     // Update
     public static final String UPDATE_ORDER_STATUS
