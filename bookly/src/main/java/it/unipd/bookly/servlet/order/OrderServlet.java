@@ -81,9 +81,12 @@ public class OrderServlet extends AbstractDatabaseServlet {
                 ServletUtils.redirectToErrorPage(req, res, "No cart available to place an order.");
                 return;
             }
-
+            Double finalTotal = (Double) req.getSession().getAttribute("cart_final_price");
+            if (finalTotal == null) {
+                finalTotal = cart.getTotalPrice();
+            }
             Order order = new Order();
-            order.setTotalPrice(cart.getTotalPrice());
+            order.setTotalPrice(finalTotal);
             order.setPaymentMethod("credit_card");
             order.setStatus("placed");
             order.setAddress("Default Address");

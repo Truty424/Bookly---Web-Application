@@ -140,6 +140,8 @@ public class CartServlet extends AbstractDatabaseServlet {
         req.setAttribute("cart_books", cartBooks);
         req.setAttribute("total_price", totalPrice);
         req.setAttribute("final_total", discountedTotal);
+        
+        req.getSession().setAttribute("cart_final_price", discountedTotal.doubleValue());
 
         req.getRequestDispatcher("/jsp/cart/viewCart.jsp").forward(req, resp);
     }
