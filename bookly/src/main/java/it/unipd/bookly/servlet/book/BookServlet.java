@@ -29,11 +29,11 @@ public class BookServlet extends AbstractDatabaseServlet {
 
         String path = req.getRequestURI();
 
-        try (Connection con = getConnection()) {
+        try {
             if (path.matches(".*/book/?")) {
-                showAllBooks(req, resp, con);
+                showAllBooks(req, resp);
             } else if (path.matches(".*/book/\\d+")) {
-                showBookDetails(req, resp, con);
+                showBookDetails(req, resp);
             } else {
                 ServletUtils.redirectToErrorPage(req, resp, "Invalid path in BookServlet: " + path);
             }
@@ -46,18 +46,27 @@ public class BookServlet extends AbstractDatabaseServlet {
         }
     }
 
-    private void showAllBooks(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
-        List<Book> books = new GetAllBooksDAO(con).access().getOutputParam();
-        req.setAttribute("all_books", books);
-        req.getRequestDispatcher("/jsp/book/allBooks.jsp").forward(req, resp);
+    private void showAllBooks(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        try (Connection con = getConnection()) {
+            List<Book> books = new GetAllBooksDAO(con).access().getOutputParam();
+            req.setAttribute("all_books", books);
+            req.getRequestDispatcher("/jsp/book/allBooks.jsp").forward(req, resp);
+        }
     }
 
-    private void showBookDetails(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
+    private void showBookDetails(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         String[] segments = req.getRequestURI().split("/");
         int bookId = Integer.parseInt(segments[segments.length - 1]);
 
-        Book book = new GetBookByIdDAO(con, bookId).access().getOutputParam();
-        List<Author> authors = new GetAuthorsByBookDAO(con, bookId).access().getOutputParam();
+        Book book;
+        try (Connection con = getConnection()) {
+            book = new GetBookByIdDAO(con, bookId).access().getOutputParam();
+        }
+
+        List<Author> authors;
+        try (Connection con = getConnection()) {
+            authors = new GetAuthorsByBookDAO(con, bookId).access().getOutputParam();
+        }
 
         if (book != null) {
             req.setAttribute("book_details", book);

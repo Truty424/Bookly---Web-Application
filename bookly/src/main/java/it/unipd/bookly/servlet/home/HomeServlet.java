@@ -29,30 +29,42 @@ public class HomeServlet extends AbstractDatabaseServlet {
 
         double minRating = 4.0;
 
-        try (Connection con = getConnection()) {
-            // Load categories for homepage
-            List<Category> categories = new GetAllCategoriesDAO(con).access().getOutputParam();
-
-            // Load featured (top-rated) books
-            List<Book> topRatedBooks = new GetTopRatedBooksDAO(con, minRating).access().getOutputParam();
-
-            // Load general listing
-            List<Book> allBooks = new GetAllBooksDAO(con).access().getOutputParam();
-
-            // Attach authors to books
-            Map<Integer, List<Author>> bookAuthors = new HashMap<>();
-            for (Book book : allBooks) {
-                List<Author> authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
-                bookAuthors.put(book.getBookId(), authors);
+        try {
+            // Load categories
+            List<Category> categories;
+            try (Connection con = getConnection()) {
+                categories = new GetAllCategoriesDAO(con).access().getOutputParam();
             }
 
-            // Set attributes for JSP
+            // Load top-rated books
+            List<Book> topRatedBooks;
+            try (Connection con = getConnection()) {
+                topRatedBooks = new GetTopRatedBooksDAO(con, minRating).access().getOutputParam();
+            }
+
+            // Load all books
+            List<Book> allBooks;
+            try (Connection con = getConnection()) {
+                allBooks = new GetAllBooksDAO(con).access().getOutputParam();
+            }
+
+            // Load authors per book (each call with fresh connection)
+            Map<Integer, List<Author>> bookAuthors = new HashMap<>();
+            for (Book book : allBooks) {
+                try (Connection con = getConnection()) {
+                    List<Author> authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
+                    bookAuthors.put(book.getBookId(), authors);
+                }
+            }
+
+            // Set request attributes
             req.setAttribute("categories", categories);
             req.setAttribute("topRatedBooks", topRatedBooks);
             req.setAttribute("allBooks", allBooks);
             req.setAttribute("bookAuthors", bookAuthors);
 
             req.getRequestDispatcher("/jsp/home.jsp").forward(req, resp);
+
         } catch (Exception e) {
             LOGGER.error("Error in HomeServlet: {}", e.getMessage(), e);
             ServletUtils.redirectToErrorPage(req, resp, "HomeServlet error: " + e.getMessage());

@@ -78,6 +78,7 @@ public class GetAllBooksDAO extends AbstractDAO<List<Book>> {
 
         } catch (Exception e) {
             LOGGER.error("Error retrieving all books: {}", e.getMessage());
+            throw e;
         }
     }
 }
