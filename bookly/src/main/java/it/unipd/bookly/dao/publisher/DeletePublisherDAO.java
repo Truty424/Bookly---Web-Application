@@ -18,7 +18,7 @@ public class DeletePublisherDAO extends AbstractDAO<Boolean> {
     /**
      * Constructor to delete a specific publisher.
      *
-     * @param con         the database connection
+     * @param con the database connection
      * @param publisherId the ID of the publisher to delete
      */
     public DeletePublisherDAO(final Connection con, final int publisherId) {
@@ -28,15 +28,25 @@ public class DeletePublisherDAO extends AbstractDAO<Boolean> {
 
     @Override
     protected void doAccess() throws SQLException {
-        try (PreparedStatement stmt = con.prepareStatement(DELETE_PUBLISHER)) {
-            stmt.setInt(1, publisherId);
-            int rowsAffected = stmt.executeUpdate();
-            this.outputParam = rowsAffected > 0;
+        try {
+            // Step 1: Delete from published_by where publisher is still linked to books
+            try (PreparedStatement stmt = con.prepareStatement(
+                    "DELETE FROM booklySchema.published_by WHERE publisher_id = ?")) {
+                stmt.setInt(1, publisherId);
+                stmt.executeUpdate(); // This removes the foreign key dependencies
+            }
 
-            if (rowsAffected > 0) {
-                LOGGER.info("Publisher with ID {} deleted successfully.", publisherId);
-            } else {
-                LOGGER.warn("No publisher found with ID {}. Nothing was deleted.", publisherId);
+            // Step 2: Now delete the publisher
+            try (PreparedStatement stmt = con.prepareStatement(DELETE_PUBLISHER)) {
+                stmt.setInt(1, publisherId);
+                int rowsAffected = stmt.executeUpdate();
+                this.outputParam = rowsAffected > 0;
+
+                if (rowsAffected > 0) {
+                    LOGGER.info("Publisher with ID {} deleted successfully.", publisherId);
+                } else {
+                    LOGGER.warn("No publisher found with ID {}. Nothing was deleted.", publisherId);
+                }
             }
 
         } catch (SQLException ex) {
@@ -44,4 +54,5 @@ public class DeletePublisherDAO extends AbstractDAO<Boolean> {
             throw ex;
         }
     }
+
 }

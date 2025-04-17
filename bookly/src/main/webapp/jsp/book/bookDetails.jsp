@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="it.unipd.bookly.Resource.Book" %>
 <%@ page import="it.unipd.bookly.Resource.Author" %>
 <%@ page import="java.util.List" %>
@@ -42,6 +43,24 @@
     <%
         }
     %>
+    <h2>Reviews</h2>
+<c:choose>
+    <c:when test="${not empty reviews}">
+        <ul>
+            <c:forEach var="review" items="${reviews}">
+                <li>
+                    <strong>Rating:</strong> ${review.rating} / 5<br/>
+                    <strong>Review:</strong> ${review.reviewText}<br/>
+                    <em>By User ID: ${review.userId}</em>
+                    <br/><br/>
+                </li>
+            </c:forEach>
+        </ul>
+    </c:when>
+    <c:otherwise>
+        <p>No reviews yet for this book.</p>
+    </c:otherwise>
+</c:choose>
     <a href="<%= request.getContextPath() %>/book">Back to all books</a>
 </body>
 </html>
