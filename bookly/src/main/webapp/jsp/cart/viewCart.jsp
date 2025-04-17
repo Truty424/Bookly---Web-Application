@@ -56,10 +56,6 @@
         <button type="submit">Order Now</button>
     </form>
 
-    <%-- Clear Cart Button --%>
-    <form action="<%= request.getContextPath() %>/checkout" method="get">
-        <button type="submit">Order Now for me</button>
-    </form>
 
     <a href="<%= request.getContextPath() %>/book">Continue Shopping</a>
 </body>
