@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 
-@WebServlet(name = "CancelOrderServlet", value = "/user/orders/cancel")
+@WebServlet(name = "CancelOrderServlet", value = "/orders/cancel")
 public class CancelOrderServlet extends AbstractDatabaseServlet {
 
     @Override
@@ -28,9 +28,9 @@ public class CancelOrderServlet extends AbstractDatabaseServlet {
             try (Connection con = getConnection()) {
                 Boolean result = new CancelOrderDAO(con, orderId).access().getOutputParam();
                 if (Boolean.TRUE.equals(result)) {
-                    res.sendRedirect(req.getContextPath() + "/user/orders?cancel=success");
+                    res.sendRedirect(req.getContextPath() + "/orders?cancel=success");
                 } else {
-                    res.sendRedirect(req.getContextPath() + "/user/orders?cancel=failed");
+                    res.sendRedirect(req.getContextPath() + "/orders?cancel=failed");
                 }
             }
 

@@ -52,7 +52,7 @@
     <p><strong>Final Total:</strong> €${final_total}</p>
 
     <%-- Order Now Button --%>
-    <form action="<%= request.getContextPath() %>/user/orders" method="post">
+    <form action="<%= request.getContextPath() %>/orders">
         <button type="submit">Order Now</button>
     </form>
 
