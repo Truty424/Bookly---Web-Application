@@ -2,11 +2,14 @@ package it.unipd.bookly.servlet.user;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.Resource.Order;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.auth.JwtManager;
+import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
 import it.unipd.bookly.dao.user.ChangeUserPasswordDAO;
 import it.unipd.bookly.dao.user.LoginUserDAO;
 import it.unipd.bookly.dao.user.RegisterUserDAO;
@@ -208,7 +211,6 @@ public class UserServlet extends AbstractDatabaseServlet {
         String newPhone = req.getParameter("phone");
         String newAddress = req.getParameter("address");
 
-
         try {
             boolean success = new UpdateUserDAO(
                     getConnection(),
@@ -254,17 +256,26 @@ public class UserServlet extends AbstractDatabaseServlet {
 
     private void showUserProfile(HttpServletRequest req, HttpServletResponse res) throws IOException, ServletException {
         HttpSession session = req.getSession(false);
-        if (session != null && session.getAttribute("user") != null) {
-            User user = (User) session.getAttribute("user");
-            req.setAttribute("user", user);
-
-            if ("admin".equalsIgnoreCase(user.getRole())) {
-                res.sendRedirect(req.getContextPath() + "/admin/dashboard");
-            } else {
-                req.getRequestDispatcher("/jsp/user/userProfile.jsp").forward(req, res);
-            }
-        } else {
+        if (session == null || session.getAttribute("user") == null) {
             res.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+        req.setAttribute("user", user);
+
+        if ("admin".equalsIgnoreCase(user.getRole())) {
+            res.sendRedirect(req.getContextPath() + "/admin/dashboard");
+        } else {
+            try {
+                List<Order> orders = new GetOrdersByUserDAO(getConnection(), user.getUserId()).access().getOutputParam();
+                req.setAttribute("user_orders", orders);
+            } catch (Exception e) {
+                LOGGER.error("Error loading user orders: {}", e.getMessage(), e);
+                req.setAttribute("order_error", "Unable to load order history.");
+            }
+
+            req.getRequestDispatcher("/jsp/user/userProfile.jsp").forward(req, res);
         }
     }
 

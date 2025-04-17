@@ -35,19 +35,32 @@
             </form>
         </div>
 
-        <h2 style="margin-top: 30px;">Orders</h2>
-        <c:if test="${not empty user.orders}">
-            <ul>
-                <c:forEach var="orderItem" items="${user.orders}">
-                    <li>${orderItem}</li>
+        <h2 style="margin-top: 30px;">Order History</h2>
+        <c:if test="${not empty user_orders}">
+            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Status</th>
+                    <th>Total Price (€)</th>
+                    <th>Order Date</th>
+                </tr>
+                <c:forEach var="order" items="${user_orders}">
+                    <tr>
+                        <td>${order.orderId}</td>
+                        <td>${order.status}</td>
+                        <td>${order.totalPrice}</td>
+                        <td>${order.orderDate}</td>
+                    </tr>
                 </c:forEach>
-            </ul>
+            </table>
         </c:if>
-        <c:if test="${empty user.orders}">
-            <p>No order available.</p>
+        <c:if test="${empty user_orders}">
+            <p>No orders found.</p>
         </c:if>
     </c:if>
-
+    <c:if test="${not empty order_error}">
+        <p style="color: red;"><strong>${order_error}</strong></p>
+    </c:if>
     <c:if test="${empty user}">
         <p style="color: red;">Error: User session not available.</p>
     </c:if>
