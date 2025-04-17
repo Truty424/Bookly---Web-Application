@@ -47,7 +47,6 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
         try (Connection con = getConnection()) {
             switch (action) {
                 case "create" -> createPublisher(req, resp, con);
-                case "update" -> updatePublisher(req, resp, con);
                 case "delete" -> deletePublisher(req, resp, con);
                 default -> ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
             }
@@ -72,20 +71,6 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
         resp.sendRedirect(req.getContextPath() + "/admin/publishers");
     }
 
-    private void updatePublisher(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
-        int id = Integer.parseInt(req.getParameter("publisherId"));
-        String name = req.getParameter("name");
-        String phone = req.getParameter("phone");
-        String address = req.getParameter("address");
-
-        Publisher updatedPublisher = new Publisher(name, phone, address);
-        updatedPublisher.setPublisherId(id);
-
-        boolean updated = new UpdatePublisherDAO(con, updatedPublisher).access().getOutputParam();
-
-        LOGGER.info("Publisher updated: {}", updated);
-        resp.sendRedirect(req.getContextPath() + "/admin/publishers");
-    }
 
     private void deletePublisher(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
         int id = Integer.parseInt(req.getParameter("publisherId"));

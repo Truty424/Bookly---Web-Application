@@ -46,8 +46,8 @@ public class BookManagementServlet extends AbstractDatabaseServlet {
 
         try (Connection con = getConnection()) {
             switch (action) {
-                // case "create" -> createBook(req, resp, con);
-                // case "update" -> updateBook(req, resp, con);
+                case "create" ->
+                    createBook(req, resp, con);
                 case "delete" ->
                     deleteBook(req, resp, con);
                 default ->
@@ -62,32 +62,46 @@ public class BookManagementServlet extends AbstractDatabaseServlet {
         }
     }
 
-    // private void createBook(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
-    //     boolean created = new InsertBookDAO(con, newBook).access().getOutputParam();
-    //     LOGGER.info("Book created: {}", created);
-    //     resp.sendRedirect(req.getContextPath() + "/admin/books");
-    // }
-    // private void updateBook(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
-    //     int id = Integer.parseInt(req.getParameter("bookId"));
-    //     Book updatedBook = ServletUtils.extractBookFromRequest(req);
-    //     updatedBook.setBookId(id);
-    //     boolean updated = new UpdateBookDAO(
-    //         con,
-    //         updatedBook.getBookId(),
-    //         updatedBook.getTitle(),
-    //         updatedBook.getLanguage(),
-    //         updatedBook.getIsbn(),
-    //         updatedBook.getPrice(),
-    //         updatedBook.getEdition(),
-    //         updatedBook.getPublication_year(),
-    //         updatedBook.getNumber_of_pages(),
-    //         updatedBook.getStockQuantity(),
-    //         updatedBook.getAverage_rate(),
-    //         updatedBook.getSummary()
-    //     ).access().getOutputParam();
-    //     LOGGER.info("Book updated: {}", updated);
-    //     resp.sendRedirect(req.getContextPath() + "/admin/books");
-    // }
+    private void createBook(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
+        try {
+            String title = req.getParameter("title");
+            String language = req.getParameter("language");
+            String isbn = req.getParameter("isbn");
+            double price = Double.parseDouble(req.getParameter("price"));
+            String edition = req.getParameter("edition");
+            int publicationYear = Integer.parseInt(req.getParameter("publication_year"));
+            int numberOfPages = Integer.parseInt(req.getParameter("number_of_pages"));
+            int stockQuantity = Integer.parseInt(req.getParameter("stock_quantity"));
+            double averageRate = 4.0; // Initial average rate
+            String summary = req.getParameter("summary");
+
+            Book newBook = new Book(
+                    0, // ID will be auto-generated
+                    title,
+                    language,
+                    isbn,
+                    price,
+                    edition,
+                    publicationYear,
+                    numberOfPages,
+                    stockQuantity,
+                    averageRate,
+                    summary,
+                    null // You can load an image if needed later
+            );
+
+            boolean created = new InsertBookDAO(con, newBook).access().getOutputParam();
+            LOGGER.info("Book created: {}", created);
+        } catch (Exception e) {
+            LOGGER.error("Error creating book: {}", e.getMessage(), e);
+            req.setAttribute("error_message", "Failed to create book: " + e.getMessage());
+            req.getRequestDispatcher("/jsp/book/bookForm.jsp").forward(req, resp);
+            return;
+        }
+
+        resp.sendRedirect(req.getContextPath() + "/admin/books");
+    }
+
     private void deleteBook(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
         try {
             String bookIdParam = req.getParameter("book_id");

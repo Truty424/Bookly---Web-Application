@@ -36,6 +36,18 @@ cd bookly
    docker compose up --build
 ```
 
+2.1. For login to profile page use this username and password
+```bash
+   username: 'smithchristine'
+   password: '(6dR#aSJ$E'
+```
+
+2.2. For login to admin page use this username and password
+```bash
+   username: 'esmith'
+   password: 'vUU@3MdB7b'
+```
+
 3. The WAR file will be generated under `target/bookly.war`.
 
 4. Deploy this WAR file to your servlet container (Tomcat, Jetty, etc.).

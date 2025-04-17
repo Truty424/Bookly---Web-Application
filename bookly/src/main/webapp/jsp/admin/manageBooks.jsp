@@ -28,12 +28,6 @@
             <td>€<%= book.getPrice() %></td>
             <td><%= book.getStockQuantity() %></td>
             <td class="actions">
-                <!-- Edit Form -->
-                <form action="<%= request.getContextPath() %>/admin/updateBook" method="post">
-                    <input type="hidden" name="book_id" value="<%= book.getBookId() %>" />
-                    <button class="edit-btn" type="submit">Edit</button>
-                </form>
-
                 <!-- Delete Form -->
                 <form action="<%= request.getContextPath() %>/admin/deleteBook" method="post" onsubmit="return confirm('Are you sure?');">
                     <input type="hidden" name="book_id" value="<%= book.getBookId() %>" />

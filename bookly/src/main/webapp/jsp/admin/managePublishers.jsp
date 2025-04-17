@@ -27,14 +27,6 @@
             <td><%= publisher.getPhone() %></td>
             <td><%= publisher.getAddress() %></td>
             <td class="actions">
-                <!-- Edit -->
-                <form action="<%= request.getContextPath() %>/admin/updatePublisher" method="post">
-                    <input type="hidden" name="publisher_id" value="<%= publisher.getPublisherId() %>" />
-                    <input type="hidden" name="publisher_name" value="<%= publisher.getPublisherName() %>" />
-                    <input type="hidden" name="phone" value="<%= publisher.getPhone() %>" />
-                    <input type="hidden" name="address" value="<%= publisher.getAddress() %>" />
-                    <button class="edit-btn" type="submit">Edit</button>
-                </form>
 
                 <!-- Delete -->
                 <form action="<%= request.getContextPath() %>/admin/deletePublisher" method="post" onsubmit="return confirm('Are you sure?');">

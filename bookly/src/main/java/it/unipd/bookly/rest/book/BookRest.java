@@ -44,15 +44,15 @@ public class BookRest extends AbstractRestResource {
                     handleInsertBook();
                 case "PUT" -> {
                     if (path.contains("/stock")) {
-                        handleUpdateStock(); 
-                    }else {
+                        handleUpdateStock();
+                    } else {
                         handleUpdateBook();
                     }
                 }
                 case "DELETE" -> {
                     if (idParam != null) {
-                        handleDeleteBook(Integer.parseInt(idParam)); 
-                    }else {
+                        handleDeleteBook(Integer.parseInt(idParam));
+                    } else {
                         respondError("Missing 'id' for deletion", "E400");
                     }
                 }
@@ -91,8 +91,8 @@ public class BookRest extends AbstractRestResource {
         } else if (path.contains("/book") && idParam != null) {
             Book book = new GetBookByIdDAO(con, Integer.parseInt(idParam)).access().getOutputParam();
             if (book != null) {
-                mapper.writeValue(res.getOutputStream(), book); 
-            }else {
+                mapper.writeValue(res.getOutputStream(), book);
+            } else {
                 respondNotFound("Book not found with ID: " + idParam);
             }
         } else {
@@ -103,9 +103,21 @@ public class BookRest extends AbstractRestResource {
 
     private void handleInsertBook() throws Exception {
         Book book = mapper.readValue(req.getInputStream(), Book.class);
-        Book inserted = new InsertBookDAO(con, book).access().getOutputParam();
-        res.setStatus(HttpServletResponse.SC_CREATED);
-        mapper.writeValue(res.getOutputStream(), inserted);
+        book.setBookId(0);
+
+        if (book.getAverage_rate() == 0.0) {
+            book.setAverage_rate(0.0);
+        }
+
+        boolean inserted = new InsertBookDAO(con, book).access().getOutputParam();
+
+        if (inserted) {
+            res.setStatus(HttpServletResponse.SC_CREATED);
+            mapper.writeValue(res.getOutputStream(), new Message("Book created successfully", "201", book.getTitle()));
+        } else {
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            mapper.writeValue(res.getOutputStream(), new Message("Failed to create book", "400", null));
+        }
     }
 
     private void handleUpdateBook() throws Exception {

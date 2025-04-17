@@ -15,7 +15,7 @@ import static it.unipd.bookly.dao.book.BookQueries.INSERT_BOOK_IMAGE;
  * This class provides functionality to add a new book record
  * to the database, including optional image data.
  */
-public class InsertBookDAO extends AbstractDAO<Book> {
+public class InsertBookDAO extends AbstractDAO<Boolean> {
 
     /**
      * The {@link Book} object containing the details of the book to be inserted.

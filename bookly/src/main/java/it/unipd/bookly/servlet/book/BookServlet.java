@@ -7,9 +7,11 @@ import java.util.List;
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Author;
+import it.unipd.bookly.Resource.Review;
 import it.unipd.bookly.dao.book.GetAllBooksDAO;
 import it.unipd.bookly.dao.book.GetBookByIdDAO;
 import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
+import it.unipd.bookly.dao.review.GetReviewsByBookDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
