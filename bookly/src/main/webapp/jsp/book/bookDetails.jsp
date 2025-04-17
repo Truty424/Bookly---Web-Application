@@ -43,6 +43,15 @@
     <%
         }
     %>
+
+        <form action="<%= request.getContextPath() %>/cart/add/<%= book.getBookId() %>" method="post" style="margin-top: 20px;">
+            <button type="submit">Add to Cart</button>
+        </form>
+
+        <form action="<%= request.getContextPath() %>/wishlist/add/<%= book.getBookId() %>" method="post" style="margin-top: 10px;">
+            <button type="submit"> Add to Wishlist</button>
+        </form>
+
     <h2>Reviews</h2>
 <c:choose>
     <c:when test="${not empty reviews}">

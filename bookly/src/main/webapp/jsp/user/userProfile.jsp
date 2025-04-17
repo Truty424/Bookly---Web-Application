@@ -30,6 +30,9 @@
             <form action="${pageContext.request.contextPath}/" method="get">
                 <button type="submit">Home Page</button>
             </form>
+            <form action="${pageContext.request.contextPath}/wishlist" method="get" style="display: inline;">
+                <button type="submit">Wishlist</button>
+            </form>
         </div>
 
         <h2 style="margin-top: 30px;">Orders</h2>

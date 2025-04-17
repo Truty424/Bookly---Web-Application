@@ -43,6 +43,11 @@
         <button type="submit">View All Books</button>
     </form>
 
+    <!-- View Cart -->
+    <form action="${pageContext.request.contextPath}/cart" method="get">
+        <button type="submit">View Cart</button>
+    </form>
+
     <!-- Top Rated Books -->
     <h2>Top Rated Books (4+ stars)</h2>
     <c:forEach var="book" items="${allBooks}">

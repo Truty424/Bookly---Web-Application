@@ -6,7 +6,8 @@ public final class WishlistQueries {
 
     // --- CREATE ---
     public static final String CREATE_WISHLIST =
-            "INSERT INTO booklySchema.wishlists (user_id) VALUES (?) RETURNING wishlist_id";
+            "INSERT INTO booklySchema.wishlists (user_id, created_at) VALUES (?, CURRENT_TIMESTAMP) RETURNING wishlist_id, created_at";
+
 
     public static final String ADD_BOOK_TO_WISHLIST =
             "INSERT INTO booklySchema.contains_wishlist (wishlist_id, book_id) VALUES (?, ?)";

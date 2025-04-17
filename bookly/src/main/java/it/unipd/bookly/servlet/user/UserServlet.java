@@ -123,6 +123,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                     String jwt = JwtManager.createToken("username", user.getUsername());
                     HttpSession session = req.getSession();
                     session.setAttribute("user", user);
+                    session.setAttribute("userId", user.getUserId());
                     session.setAttribute("Authorization", jwt);
                     res.setHeader("Authorization", jwt);
 
@@ -165,6 +166,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                     String jwt = JwtManager.createToken("username", registered.getUsername());
                     HttpSession session = req.getSession();
                     session.setAttribute("user", registered);
+                    session.setAttribute("userId", registered.getUserId());
                     session.setAttribute("Authorization", jwt);
                     res.setHeader("Authorization", jwt);
 
