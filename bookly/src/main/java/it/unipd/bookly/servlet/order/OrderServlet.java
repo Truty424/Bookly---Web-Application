@@ -82,9 +82,7 @@ public class OrderServlet extends AbstractDatabaseServlet {
                 return;
             }
             Double finalTotal = (Double) req.getSession().getAttribute("cart_final_price");
-            if (finalTotal == null) {
-                finalTotal = cart.getTotalPrice();
-            }
+            if (finalTotal == null) finalTotal = cart.getTotalPrice();
             Order order = new Order();
             order.setTotalPrice(finalTotal);
             order.setPaymentMethod("credit_card");

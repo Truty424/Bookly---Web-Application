@@ -78,19 +78,19 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             return;
         }
 
-        try (Connection con = getConnection()) {
+        try {
             User user = (User) session.getAttribute("user");
-            Cart cart = getCartByUserId(con, user.getUserId());
+            Cart cart = getCartByUserId(getConnection(), user.getUserId());
 
             if (cart == null) {
                 ServletUtils.redirectToErrorPage(req, res, "No active cart to place an order.");
                 return;
             }
 
-            double total = applyDiscountIfExists(con, cart.getCartId(), session);
+            double total = applyDiscountIfExists(getConnection(), cart.getCartId(), session);
             Order order = new Order(total, paymentMethod, address, null, "placed");
 
-            boolean success = new InsertOrderDAO(con, order).access().getOutputParam();
+            boolean success = new InsertOrderDAO(getConnection(), order).access().getOutputParam();
 
             if (success) {
                 switch (paymentMethod) {
