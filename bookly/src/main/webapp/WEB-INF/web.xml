@@ -86,7 +86,15 @@
         <servlet-name>CancelOrderServlet</servlet-name>
         <url-pattern>/orders/cancel</url-pattern>
     </servlet-mapping>
-
+    <!-- checkout -->
+    <servlet>
+        <servlet-name>CheckoutServlet</servlet-name>
+        <servlet-class>it.unipd.bookly.servlet.order.CheckoutServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CheckoutServlet</servlet-name>
+        <url-pattern>/checkout</url-pattern>
+    </servlet-mapping>
     <!-- Images -->
     <servlet>
         <servlet-name>UserImageLoaderServlet</servlet-name>
