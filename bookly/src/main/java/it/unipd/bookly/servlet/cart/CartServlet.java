@@ -30,7 +30,7 @@ public class CartServlet extends AbstractDatabaseServlet {
             Integer userId = (Integer) req.getSession().getAttribute("userId");
 
             if (userId == null) {
-                resp.sendRedirect("/jsp/user/login.jsp");
+                resp.sendRedirect(req.getContextPath() + "/jsp/user/login.jsp");
                 return;
             }
 
@@ -61,7 +61,7 @@ public class CartServlet extends AbstractDatabaseServlet {
             Integer userId = (Integer) req.getSession().getAttribute("userId");
 
             if (userId == null) {
-                resp.sendRedirect("/jsp/user/login.jsp");
+                resp.sendRedirect(req.getContextPath() + "/jsp/user/login.jsp");
                 return;
             }
 
@@ -71,19 +71,19 @@ public class CartServlet extends AbstractDatabaseServlet {
             if (path.matches(".*/cart/add/\\d+/?")) {
                 int bookId = extractBookIdFromPath(path);
                 new AddBookToCartDAO(getConnection(), bookId, cartId).access();
-                resp.sendRedirect("/cart");
+                resp.sendRedirect(req.getContextPath() + "/cart");
 
             } else if (path.matches(".*/cart/remove/\\d+/?")) {
                 int bookId = extractBookIdFromPath(path);
                 new RemoveBookFromCartDAO(getConnection(), bookId, cartId).access();
-                resp.sendRedirect("/cart");
+                resp.sendRedirect(req.getContextPath() + "/cart");
 
             } else if (path.matches(".*/cart/clear/?")) {
                 new ClearCartDAO(getConnection(), cartId).access();
-                resp.sendRedirect("/cart");
+                resp.sendRedirect(req.getContextPath() + "/cart");
 
             } else if (path.matches(".*/cart/apply-discount/?")) {
-                String discountCode = req.getParameter("discount_code");
+                String discountCode = req.getParameter("discount");
 
                 var discountDAO = new GetValidDiscountByCodeDAO(getConnection(), discountCode);
                 discountDAO.access();
@@ -92,11 +92,13 @@ public class CartServlet extends AbstractDatabaseServlet {
                 if (discount != null) {
                     req.getSession().setAttribute("discountId", discount.getDiscountId());
                     req.getSession().setAttribute("appliedDiscount", discount);
+                    req.getSession().removeAttribute("discountError");
                 } else {
                     req.getSession().setAttribute("discountError", "Invalid or expired discount.");
                 }
 
-                resp.sendRedirect("/cart");
+                resp.sendRedirect(req.getContextPath() + "/cart");
+
             } else {
                 ServletUtils.redirectToErrorPage(req, resp, "Invalid cart operation: " + path);
             }
@@ -115,7 +117,7 @@ public class CartServlet extends AbstractDatabaseServlet {
 
         if (cart == null) {
             int newCartId = new CreateCartForUserDAO(getConnection(), userId, "standard").access().getOutputParam();
-            cart = new GetCartByUserIdDAO(getConnection(), userId).access().getOutputParam();
+            cart = new GetCartByUserIdDAO(getConnection(), newCartId).access().getOutputParam();
         }
 
         int cartId = cart.getCartId();
