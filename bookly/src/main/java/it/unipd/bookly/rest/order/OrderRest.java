@@ -3,9 +3,7 @@ package it.unipd.bookly.rest.order;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.Order;
-import it.unipd.bookly.dao.order.GetAllOrdersDAO;
-import it.unipd.bookly.dao.order.GetOrderByIdDAO;
-import it.unipd.bookly.dao.order.InsertOrderDAO;
+import it.unipd.bookly.dao.order.*;
 import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,8 +14,11 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * Handles: - GET /api/order/{id} → get order by ID - GET /api/orders → get all
- * orders - POST /api/order → insert new order
+ * REST endpoint for handling orders.
+ * Supported routes:
+ * - GET /api/order/{id}         → get order with books
+ * - GET /api/orders             → get all orders
+ * - POST /api/order             → insert a new order
  */
 public class OrderRest extends AbstractRestResource {
 
@@ -66,12 +67,11 @@ public class OrderRest extends AbstractRestResource {
 
         if (order == null) {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Order not found", "404", "No order with ID " + orderId)
-                    .toJSON(res.getOutputStream());
+            new Message("Order not found", "404", "No order with ID " + orderId).toJSON(res.getOutputStream());
         } else {
             res.setContentType("application/json;charset=UTF-8");
             res.setStatus(HttpServletResponse.SC_OK);
-            order.toJSON(res.getOutputStream());
+            new ObjectMapper().writeValue(res.getOutputStream(), order);
         }
     }
 

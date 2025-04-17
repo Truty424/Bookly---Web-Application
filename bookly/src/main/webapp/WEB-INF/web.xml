@@ -84,7 +84,7 @@
 
     <servlet-mapping>
         <servlet-name>CancelOrderServlet</servlet-name>
-        <url-pattern>/user/orders/cancel</url-pattern>
+        <url-pattern>/orders/cancel</url-pattern>
     </servlet-mapping>
 
     <!-- Images -->
@@ -142,7 +142,7 @@
 </servlet>
 <servlet-mapping>
     <servlet-name>OrderServlet</servlet-name>
-    <url-pattern>/user/orders</url-pattern>
+    <url-pattern>/orders/*</url-pattern>
 </servlet-mapping>
 
 <servlet>

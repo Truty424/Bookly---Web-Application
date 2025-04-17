@@ -17,7 +17,12 @@ public class GetCartByUserIdDAO extends AbstractDAO<Cart> {
 
     private final int userId;
 
-
+    /**
+     * Constructs the DAO with the specified DB connection and user ID.
+     *
+     * @param con    the database connection
+     * @param userId the ID of the user whose cart is to be retrieved
+     */
     public GetCartByUserIdDAO(final Connection con, final int userId) {
         super(con);
         this.userId = userId;
@@ -25,10 +30,10 @@ public class GetCartByUserIdDAO extends AbstractDAO<Cart> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(GET_CART_BY_USER_ID)) {
-            stmnt.setInt(1, userId);
+        try (PreparedStatement stmt = con.prepareStatement(GET_CART_BY_USER_ID)) {
+            stmt.setInt(1, userId);
 
-            try (ResultSet rs = stmnt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     Cart cart = new Cart(
                             rs.getInt("cart_id"),
@@ -39,18 +44,19 @@ public class GetCartByUserIdDAO extends AbstractDAO<Cart> {
                             (Integer) rs.getObject("order_id"),
                             rs.getTimestamp("created_date"),
                             rs.getInt("total_price"),
-                            Collections.emptyList() // not loading items in this DAO
+                            Collections.emptyList() // Items can be populated in another DAO
                     );
+
                     this.outputParam = cart;
-                    LOGGER.info("Cart retrieved for user ID {}.", userId);
+                    LOGGER.info(String.format("Cart retrieved successfully for user ID %d.", userId));
                 } else {
                     this.outputParam = null;
-                    LOGGER.warn("No cart found for user ID {}.", userId);
+                    LOGGER.warn(String.format("No cart found for user ID %d.", userId));
                 }
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving cart for user ID {}: {}", userId, ex.getMessage());
+            LOGGER.error(String.format("Failed to retrieve cart for user ID %d: %s", userId, ex.getMessage()), ex);
             throw ex;
         }
     }

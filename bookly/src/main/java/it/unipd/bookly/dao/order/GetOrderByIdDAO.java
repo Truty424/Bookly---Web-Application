@@ -23,33 +23,34 @@ public class GetOrderByIdDAO extends AbstractDAO<Order> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmt = con.prepareStatement(GET_ORDER_BY_ID);
-             ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = con.prepareStatement(GET_ORDER_BY_ID)) {
+            stmt.setInt(1, orderId);  // set parameter first
 
-            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    int order_id = rs.getInt("order_id");
+                    double total_price = rs.getDouble("total_price");
+                    String payment_method = rs.getString("payment_method");
+                    java.sql.Timestamp order_date = rs.getTimestamp("order_date");
+                    String address = rs.getString("address");
+                    String shipment_code = rs.getString("shipment_code");
+                    String status = rs.getString("status");
 
-            if (rs.next()) {
-                int order_id = rs.getInt("order_id");
-                double total_price = rs.getDouble("total_price");
-                String payment_method = rs.getString("payment_method");
-                java.sql.Timestamp order_date = rs.getTimestamp("order_date");
-                String address = rs.getString("address");
-                String shipment_code = rs.getString("shipment_code");
-                String status = rs.getString("status");
-
-                this.outputParam = new Order(
-                        order_id,
-                        total_price,
-                        payment_method,
-                        order_date,
-                        address,
-                        shipment_code,
-                        status
-                );
+                    this.outputParam = new Order(
+                            order_id,
+                            total_price,
+                            payment_method,
+                            order_date,
+                            address,
+                            shipment_code,
+                            status
+                    );
+                }
             }
 
         } catch (Exception e) {
             LOGGER.error("Error retrieving order by ID {}: {}", orderId, e.getMessage());
+            throw e;
         }
     }
 }
