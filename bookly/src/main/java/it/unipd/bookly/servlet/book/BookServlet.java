@@ -70,9 +70,16 @@ public class BookServlet extends AbstractDatabaseServlet {
             authors = new GetAuthorsByBookDAO(con, bookId).access().getOutputParam();
         }
 
+        List<Review> reviews;
+        try (Connection con = getConnection()) {
+            reviews = new GetReviewsByBookDAO(con, bookId).access().getOutputParam();
+        }
+        
+
         if (book != null) {
             req.setAttribute("book_details", book);
             req.setAttribute("authors", authors);
+            req.setAttribute("reviews", reviews);
             req.getRequestDispatcher("/jsp/book/bookDetails.jsp").forward(req, resp);
         } else {
             ServletUtils.redirectToErrorPage(req, resp, "Book not found for ID: " + bookId);

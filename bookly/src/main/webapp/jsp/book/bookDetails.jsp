@@ -2,6 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="it.unipd.bookly.Resource.Book" %>
 <%@ page import="it.unipd.bookly.Resource.Author" %>
+<%@ page import="it.unipd.bookly.Resource.Review" %>
 <%@ page import="java.util.List" %>
 <html>
 <head>
@@ -52,25 +53,37 @@
             <button type="submit"> Add to Wishlist</button>
         </form>
 
-    <h2>Reviews</h2>
-
-    <c:choose>
-        <c:when test="${not empty reviews}">
+        <h2>Reviews</h2>
+        <%
+            List<Review> reviews = (List<Review>) request.getAttribute("reviews");
+            if (reviews != null && !reviews.isEmpty()) {
+        %>
             <ul>
-                <c:forEach var="review" items="${reviews}">
-                    <li style="margin-bottom: 1em;">
-                        <p><strong>Rating:</strong> ${review.rating} / 5</p>
-                        <p><strong>Review:</strong> ${review.reviewText}</p>
-                        <p><em>By User #${review.userId} on ${review.reviewDate}</em></p>
-                        <p>👍 ${review.numberOfLikes} | 👎 ${review.numberOfDislikes}</p>
+                <%
+                    for (it.unipd.bookly.Resource.Review review : reviews) {
+                %>
+                    <li>
+                        <p><strong>Rating:</strong> <%= review.getRating() %> / 5</p>
+                        <p><strong>Comment:</strong> <%= review.getReviewText() %></p>
+                        <p><em>By User ID:</em> <%= review.getUserId() %></p>
+                        <p><em>Date:</em> <%= review.getReviewDate() %></p>
+                        <p>👍 <%= review.getNumberOfLikes() %> | 👎 <%= review.getNumberOfDislikes() %></p>
+                        <hr/>
                     </li>
-                </c:forEach>
+                <%
+                    }
+                %>
             </ul>
-        </c:when>
-        <c:otherwise>
-            <p>No reviews yet for this book.</p>
-        </c:otherwise>
-    </c:choose>
+        <%
+            } else {
+        %>
+            <p>No reviews available for this book.</p>
+        <%
+            }
+        %>
+
+ 
+    
     <a href="<%= request.getContextPath() %>/book">Back to all books</a>
 </body>
 </html>
