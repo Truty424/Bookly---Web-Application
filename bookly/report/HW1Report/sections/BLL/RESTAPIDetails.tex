@@ -513,3 +513,80 @@ The following section provides documentation for all RESTful endpoints in the Bo
     When: Request is made without manager/admin role
 \end{flushleft}
 
+\begin{flushleft}
+    \textbf{Display Checkout Page} \\
+    Displays the checkout view with cart contents and total.
+
+    - URL: /checkout \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: Checkout page with book list and totals. \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Your cart is empty."\} \\
+    Code: 401 Unauthorized \\
+    Redirect: /user/login
+\end{flushleft}
+
+\begin{flushleft}
+    \textbf{Submit Order from Checkout} \\
+    Submits an order using cart data and payment info.
+
+    - URL: /checkout \\
+    - Method: POST \\
+    - URL Parameters: NONE \\
+    - Data Parameters: address (string), paymentMethod (string) \\
+    – Success Response: \\
+    Code: 302 Redirect \\
+    Redirect: /orders \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Please fill in all checkout fields."\} \\
+    Code: 404 Not Found \\
+    Content: \{"error": "No active cart to place an order."\} \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Failed to place your order."\} \\
+    Code: 401 Unauthorized \\
+    Redirect: /user/login
+\end{flushleft}
+
+\begin{flushleft}
+    \textbf{Get User Orders} \\
+    Displays a list of orders for the current user.
+
+    - URL: /orders \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: Orders page with order list. \\
+    – Error Response: \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Unable to load your orders."\} \\
+    Code: 401 Unauthorized \\
+    Redirect: /user/login
+\end{flushleft}
+
+\begin{flushleft}
+    \textbf{Place New Order} \\
+    Creates a new order based on the user’s cart.
+
+    - URL: /orders \\
+    - Method: POST \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE (uses session/cart data) \\
+    – Success Response: \\
+    Code: 302 Redirect \\
+    Redirect: /orders \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "No cart available to place an order."\} \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Failed to insert order."\} \\
+    Code: 401 Unauthorized \\
+    Redirect: /user/login
+\end{flushleft}
