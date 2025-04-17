@@ -40,10 +40,10 @@
             <option value="credit_card">Credit Card</option>
             <option value="in_person">Pay on Delivery</option>
         </select><br/>
+    </form>
 
-        <form action="<%= request.getContextPath() %>/orders" method="post">
-            <button type="submit">Order Now</button>
-        </form>
+    <form action="<%= request.getContextPath() %>/orders" method="post">
+        <button type="submit">Order Now</button>
     </form>
 </div>
 
