@@ -1,15 +1,14 @@
 package it.unipd.bookly.dao.category;
 
-import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.category.CategoryQueries.GET_BOOKS_BY_CATEGORY;
 
 /**
@@ -47,8 +46,8 @@ public class GetBooksByCategoryDAO extends AbstractDAO<List<Book>> {
 
                     Image bookImage = null;
                     try {
-                        byte[] imageData = rs.getBytes("book_pic");
-                        String imageType = rs.getString("book_pic_type");
+                        byte[] imageData = rs.getBytes("image");
+                        String imageType = rs.getString("image_type");
                         if (imageData != null && imageType != null) {
                             bookImage = new Image(imageData, imageType);
                         }
@@ -56,10 +55,10 @@ public class GetBooksByCategoryDAO extends AbstractDAO<List<Book>> {
                         LOGGER.debug("No image found for book ID {} in category {}", rs.getInt("book_id"), category_id);
                     }
                     Book book = (bookImage == null)
-                        ? new Book(book_id, title, language, isbn, price, edition, publication_year,
-                        number_of_pages, stock_quantity, average_rate, summary)
-                        : new Book(book_id, title, language, isbn, price, edition, publication_year,
-                        number_of_pages, stock_quantity, average_rate, summary, bookImage);
+                            ? new Book(book_id, title, language, isbn, price, edition, publication_year,
+                                    number_of_pages, stock_quantity, average_rate, summary)
+                            : new Book(book_id, title, language, isbn, price, edition, publication_year,
+                                    number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     books.add(book);
                 }

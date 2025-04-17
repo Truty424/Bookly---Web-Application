@@ -52,8 +52,8 @@ public class GetBooksInWishlistDAO extends AbstractDAO<List<Book>> {
 
                     Image bookImage = null;
                     try {
-                        byte[] imageData = rs.getBytes("book_pic");
-                        String imageType = rs.getString("book_pic_type");
+                        byte[] imageData = rs.getBytes("image");
+                        String imageType = rs.getString("image_type");
                         if (imageData != null && imageType != null) {
                             bookImage = new Image(imageData, imageType);
                         }

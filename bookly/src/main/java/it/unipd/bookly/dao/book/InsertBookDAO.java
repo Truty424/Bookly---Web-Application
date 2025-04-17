@@ -48,7 +48,7 @@ public class InsertBookDAO extends AbstractDAO<Boolean> {
         try (PreparedStatement stmntImg = con.prepareStatement(INSERT_BOOK_IMAGE);
              PreparedStatement stmntBook = con.prepareStatement(INSERT_BOOK)) {
 
-            Image image = book.getBook_pic();
+            Image image = book.getImage();
 
             // Insert image if available
             if (image != null) {

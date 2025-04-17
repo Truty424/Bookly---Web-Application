@@ -21,7 +21,9 @@
             <li class="book-item">
                 <a href="<%= request.getContextPath() %>/book?id=<%= book.getBookId() %>"><%= book.getTitle() %></a>
                 <p>Price: €<%= book.getPrice() %></p>
-                <button class="remove-btn" onclick="removeFromWishlist(<%= wishlistId %>, <%= book.getBookId() %>)">Remove</button>
+                <form action="<%= request.getContextPath() %>/wishlist/remove/<%= book.getBookId() %>" method="post" style="display:inline;">
+                    <button type="submit">Remove from wishlist</button>
+                </form>
             </li>
         <% } %>
     </ul>
@@ -29,21 +31,9 @@
     <p>Your wishlist is currently empty.</p>
 <% } %>
 
-<script>
-function removeFromWishlist(wishlistId, bookId) {
-    fetch(`/api/wishlist/books/remove?wishlistId=${wishlistId}&bookId=${bookId}`, {
-        method: "DELETE"
-    }).then(res => {
-        if (res.ok) {
-            location.reload();
-        } else {
-            alert("Failed to remove item.");
-        }
-    });
-}
-</script>
-
-<p><a href="<%= request.getContextPath() %>/wishlist/user">Back to My Wishlists</a></p>
+<form action="<%= request.getContextPath() %>/" method="get">
+    <button type="submit">Go to Home</button>
+</form>
 
 </body>
 </html>

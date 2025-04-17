@@ -18,7 +18,7 @@ public class Book {
     private int stock_quantity;
     private double average_rate;
     private String summary;
-    private Image book_pic;
+    private Image image;
 
     /**
      * Default constructor for Book.
@@ -70,10 +70,10 @@ public class Book {
      * @param stock_quantity   The stock quantity of the book.
      * @param average_rate     The average rating of the book.
      * @param summary          The summary of the book.
-     * @param book_pic         The image associated with the book.
+     * @param image         The image associated with the book.
      */
     public Book(int book_id, String title, String language, String isbn, double price, String edition,
-            int publication_year, int number_of_pages, int stock_quantity, double average_rate, String summary,Image book_pic) {
+            int publication_year, int number_of_pages, int stock_quantity, double average_rate, String summary,Image image) {
         this.book_id = book_id;
         this.title = title;
         this.language = language;
@@ -85,7 +85,7 @@ public class Book {
         this.stock_quantity = stock_quantity;
         this.average_rate = average_rate;
         this.summary = summary;
-        this.book_pic = book_pic;
+        this.image = image;
 
     }
 
@@ -193,8 +193,8 @@ public class Book {
      *
      * @return The book image.
      */
-    public Image getBook_pic() {
-        return book_pic;
+    public Image getImage() {
+        return image;
     }
 
     /**
@@ -299,9 +299,9 @@ public class Book {
     /**
      * Sets the image associated with the book.
      *
-     * @param book_pic The book image.
+     * @param image The book image.
      */
-    public void setProfile_pic(Image book_pic) {
-        this.book_pic = book_pic;
+    public void setImage(Image image) {
+        this.image = image;
     }
 }

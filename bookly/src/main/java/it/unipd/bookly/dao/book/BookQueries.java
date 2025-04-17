@@ -26,7 +26,7 @@ public final class BookQueries {
     /**
      * SQL query to insert a book image into the database.
      */
-    public static final String INSERT_BOOK_IMAGE = "INSERT INTO booklySchema.book_images (title, book_pic, book_pic_type) VALUES (?, ?, ?)";
+    public static final String INSERT_BOOK_IMAGE = "INSERT INTO booklySchema.book_image (title, image, image_type) VALUES (?, ?, ?)";
 
     // --- READ ---
 

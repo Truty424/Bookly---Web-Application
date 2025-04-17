@@ -1,20 +1,20 @@
 package it.unipd.bookly.dao.book;
 
-import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.GET_TOP_RATED_BOOKS;
 
 /**
- * DAO to retrieve top-rated books with an average rating greater than or equal to a specified threshold.
- * This class provides functionality to fetch books from the database and return them as a list of {@link Book} objects.
+ * DAO to retrieve top-rated books with an average rating greater than or equal
+ * to a specified threshold. This class provides functionality to fetch books
+ * from the database and return them as a list of {@link Book} objects.
  */
 public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
 
@@ -26,8 +26,9 @@ public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
     /**
      * Constructs a DAO to retrieve top-rated books.
      *
-     * @param con       The database connection to use.
-     * @param minRating The minimum average rating threshold for retrieving books.
+     * @param con The database connection to use.
+     * @param minRating The minimum average rating threshold for retrieving
+     * books.
      */
     public GetTopRatedBooksDAO(final Connection con, final double minRating) {
         super(con);
@@ -35,8 +36,9 @@ public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
     }
 
     /**
-     * Executes the query to retrieve top-rated books with an average rating greater than or equal to the threshold.
-     * Populates the {@link #outputParam} with a list of {@link Book} objects.
+     * Executes the query to retrieve top-rated books with an average rating
+     * greater than or equal to the threshold. Populates the
+     * {@link #outputParam} with a list of {@link Book} objects.
      *
      * @throws Exception If an error occurs during the database operation.
      */
@@ -63,8 +65,8 @@ public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
 
                     Image bookImage = null;
                     try {
-                        byte[] imageData = rs.getBytes("book_pic");
-                        String imageType = rs.getString("book_pic_type");
+                        byte[] imageData = rs.getBytes("image");
+                        String imageType = rs.getString("image_type");
                         if (imageData != null && imageType != null) {
                             bookImage = new Image(imageData, imageType);
                         }
@@ -74,9 +76,9 @@ public class GetTopRatedBooksDAO extends AbstractDAO<List<Book>> {
 
                     Book book = (bookImage == null)
                             ? new Book(book_id, title, language, isbn, price, edition,
-                            publication_year, number_of_pages, stock_quantity, average_rate, summary)
+                                    publication_year, number_of_pages, stock_quantity, average_rate, summary)
                             : new Book(book_id, title, language, isbn, price, edition,
-                            publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
+                                    publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     topRatedBooks.add(book);
                 }

@@ -9,18 +9,16 @@ import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
 /**
- * Handles:
- * - POST   /api/wishlist/books/add                  → Add book to wishlist
- * - DELETE /api/wishlist/books/remove               → Remove book from wishlist
- * - GET    /api/wishlist/books/{wishlistId}         → Get all books in wishlist
- * - GET    /api/wishlist/books/contains             → Check if book exists in wishlist
- * - GET    /api/wishlist/books/count                → Count books in wishlist
+ * Handles wishlist book operations:
+ * - POST    /api/wishlist/books/add           → Add book to wishlist
+ * - DELETE  /api/wishlist/books/remove        → Remove book from wishlist
+ * - GET     /api/wishlist/books/{wishlistId}  → Get books in wishlist
+ * - GET     /api/wishlist/books/contains      → Check if book is in wishlist
  */
 public class WishlistBookRest extends AbstractRestResource {
 
@@ -36,55 +34,56 @@ public class WishlistBookRest extends AbstractRestResource {
         try {
             switch (method) {
                 case "POST" -> {
-                    if (path.endsWith("/add")) {
-                        handleAddBookToWishlist();
-                    } else {
-                        unsupported();
-                    }
+                    if (path.endsWith("/add")) handleAddBookToWishlist();
+                    else unsupported();
                 }
                 case "DELETE" -> {
-                    if (path.contains("/remove")) {
-                        handleRemoveBookFromWishlist();
-                    } else {
-                        unsupported();
-                    }
+                    if (path.contains("/remove")) handleRemoveBookFromWishlist();
+                    else unsupported();
                 }
                 case "GET" -> {
-                    if (path.matches(".*/wishlist/books/\\d+$")) {
-                        handleGetBooksInWishlist(path);
-                    } else if (path.contains("/contains")) {
-                        handleCheckBookInWishlist();
-                    } else if (path.contains("/count")) {
-                        handleCountBooksInWishlist();
-                    } else {
-                        unsupported();
-                    }
+                    if (path.matches(".*/wishlist/books/\\d+$")) handleGetBooksInWishlist(path);
+                    else if (path.contains("/contains")) handleCheckBookInWishlist();
+                    else unsupported();
                 }
                 default -> unsupported();
             }
         } catch (Exception e) {
             LOGGER.error("WishlistBookRest error", e);
-            sendError("Wishlist book operation failed", "500", e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Wishlist book operation failed", "E500", e.getMessage());
         }
     }
 
-    private void handleAddBookToWishlist() throws Exception {
-        int wishlistId = Integer.parseInt(req.getParameter("wishlistId"));
-        int bookId = Integer.parseInt(req.getParameter("bookId"));
+    private void handleAddBookToWishlist() throws IOException {
+        String wishlistIdParam = req.getParameter("wishlistId");
+        String bookIdParam = req.getParameter("book_id");
 
-        Wishlist wishlist = new Wishlist();
-        wishlist.setWishlistId(wishlistId);
+        if (wishlistIdParam == null || bookIdParam == null) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400", "'wishlistId' and 'book_id' are required.");
+            return;
+        }
 
-        Book book = new Book();
-        book.setBookId(bookId);
+        try {
+            int wishlistId = Integer.parseInt(wishlistIdParam);
+            int bookId = Integer.parseInt(bookIdParam);
 
-        new AddBookToWishlistDAO(con, wishlist, book).access();
-        sendMessage("Book added to wishlist", "200", "Book ID: " + bookId + " added to Wishlist ID: " + wishlistId);
+            new AddBookToWishlistDAO(con, wishlistId, bookId).access();
+
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("Book added to wishlist", "200",
+                    "Book ID " + bookId + " was added to Wishlist ID " + wishlistId).toJSON(res.getOutputStream());
+
+        } catch (NumberFormatException e) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format", "E401", "'wishlistId' and 'book_id' must be valid integers.");
+        } catch (Exception e) {
+            LOGGER.error("Error adding book to wishlist", e);
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500", "Failed to add book to wishlist: " + e.getMessage());
+        }
     }
 
     private void handleRemoveBookFromWishlist() throws Exception {
         int wishlistId = Integer.parseInt(req.getParameter("wishlistId"));
-        int bookId = Integer.parseInt(req.getParameter("bookId"));
+        int bookId = Integer.parseInt(req.getParameter("book_id"));
 
         new RemoveBookFromWishlistDAO(con, bookId, wishlistId).access();
         sendMessage("Book removed from wishlist", "200", "Book ID: " + bookId + " removed from Wishlist ID: " + wishlistId);
@@ -101,7 +100,7 @@ public class WishlistBookRest extends AbstractRestResource {
 
     private void handleCheckBookInWishlist() throws Exception {
         int wishlistId = Integer.parseInt(req.getParameter("wishlistId"));
-        int bookId = Integer.parseInt(req.getParameter("bookId"));
+        int bookId = Integer.parseInt(req.getParameter("book_id"));
 
         Wishlist wishlist = new Wishlist();
         wishlist.setWishlistId(wishlistId);
@@ -110,24 +109,15 @@ public class WishlistBookRest extends AbstractRestResource {
         book.setBookId(bookId);
 
         boolean exists = new IsBookInWishlistDAO(con, wishlist, book).access().getOutputParam();
+
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
         res.getWriter().write("{\"exists\": " + exists + "}");
     }
 
-    private void handleCountBooksInWishlist() throws Exception {
-        int wishlistId = Integer.parseInt(req.getParameter("wishlistId"));
-        Wishlist wishlist = new Wishlist();
-        wishlist.setWishlistId(wishlistId);
-
-        int count = new CountBooksInWishlistDAO(con, wishlist).access().getOutputParam();
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-        res.getWriter().write("{\"count\": " + count + "}");
-    }
 
     private void unsupported() throws IOException {
-        sendError("Unsupported operation", "400", "Operation on wishlist books not allowed", HttpServletResponse.SC_BAD_REQUEST);
+        sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported operation", "E405", "This endpoint or method is not supported.");
     }
 
     private void sendMessage(String title, String code, String detail) throws IOException {
@@ -135,7 +125,7 @@ public class WishlistBookRest extends AbstractRestResource {
         new Message(title, code, detail).toJSON(res.getOutputStream());
     }
 
-    private void sendError(String title, String code, String detail, int status) throws IOException {
+    private void sendError(int status, String title, String code, String detail) throws IOException {
         res.setStatus(status);
         new Message(title, code, detail).toJSON(res.getOutputStream());
     }

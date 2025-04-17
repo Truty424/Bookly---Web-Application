@@ -1,21 +1,20 @@
 package it.unipd.bookly.dao.book;
 
-import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.GET_BOOKS_BY_PUBLISHER_ID;
 
 /**
- * DAO to retrieve books by a specific publisher ID.
- * This class provides functionality to fetch all books associated
- * with a specific publisher from the database and return them as a list of {@link Book} objects.
+ * DAO to retrieve books by a specific publisher ID. This class provides
+ * functionality to fetch all books associated with a specific publisher from
+ * the database and return them as a list of {@link Book} objects.
  */
 public class GetBooksByPublisherIdDAO extends AbstractDAO<List<Book>> {
 
@@ -27,8 +26,9 @@ public class GetBooksByPublisherIdDAO extends AbstractDAO<List<Book>> {
     /**
      * Constructs a DAO to retrieve books by a specific publisher ID.
      *
-     * @param con         The database connection to use.
-     * @param publisherId The ID of the publisher whose books are to be retrieved.
+     * @param con The database connection to use.
+     * @param publisherId The ID of the publisher whose books are to be
+     * retrieved.
      */
     public GetBooksByPublisherIdDAO(final Connection con, final int publisherId) {
         super(con);
@@ -64,8 +64,8 @@ public class GetBooksByPublisherIdDAO extends AbstractDAO<List<Book>> {
 
                     Image bookImage = null;
                     try {
-                        byte[] imageData = rs.getBytes("book_pic");
-                        String imageType = rs.getString("book_pic_type");
+                        byte[] imageData = rs.getBytes("image");
+                        String imageType = rs.getString("image_type");
                         if (imageData != null && imageType != null) {
                             bookImage = new Image(imageData, imageType);
                         }
@@ -75,9 +75,9 @@ public class GetBooksByPublisherIdDAO extends AbstractDAO<List<Book>> {
 
                     Book book = (bookImage == null)
                             ? new Book(book_id, title, language, isbn, price, edition,
-                            publication_year, number_of_pages, stock_quantity, average_rate, summary)
+                                    publication_year, number_of_pages, stock_quantity, average_rate, summary)
                             : new Book(book_id, title, language, isbn, price, edition,
-                            publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
+                                    publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
 
                     books.add(book);
                 }

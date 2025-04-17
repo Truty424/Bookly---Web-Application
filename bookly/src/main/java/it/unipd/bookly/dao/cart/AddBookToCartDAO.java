@@ -2,6 +2,7 @@ package it.unipd.bookly.dao.cart;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.cart.CartQueries.ADD_BOOK_TO_CART;
@@ -22,15 +23,24 @@ public class AddBookToCartDAO extends AbstractDAO<Void> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(ADD_BOOK_TO_CART)) {
-            stmnt.setInt(1, book_id);
-            stmnt.setInt(2, cartId);
+        String checkQuery = "SELECT 1 FROM booklySchema.contains WHERE book_id = ? AND cart_id = ?";
+        try (PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
+            checkStmt.setInt(1, book_id);
+            checkStmt.setInt(2, cartId);
 
-            stmnt.executeUpdate();
-            LOGGER.info("Book {} successfully added to cart {}.", book_id, cartId);
-        } catch (Exception ex) {
-            LOGGER.error("Error adding book {} to cart {}: {}", book_id, cartId, ex.getMessage());
-            throw ex;
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next()) {
+                    LOGGER.warn("Book {} is already in cart {}", book_id, cartId);
+                    return; // Skip inserting, already present
+                }
+            }
+        }
+
+        try (PreparedStatement stmt = con.prepareStatement(ADD_BOOK_TO_CART)) {
+            stmt.setInt(1, book_id);
+            stmt.setInt(2, cartId);
+            stmt.executeUpdate();
+            LOGGER.info("Book {} added to cart {}", book_id, cartId);
         }
     }
 }

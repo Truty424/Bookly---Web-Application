@@ -100,10 +100,8 @@ public class WishlistRest extends AbstractRestResource {
 
     private void handleClearWishlist(String path) throws Exception {
         int wishlistId = extractIdFromPath(path);
-        Wishlist wishlist = new Wishlist();
-        wishlist.setWishlistId(wishlistId);
 
-        new ClearWishlistDAO(con, wishlist).access();
+        new ClearWishlistDAO(con, wishlistId).access();
         sendMessage("Wishlist cleared successfully.", "200", null, HttpServletResponse.SC_OK);
     }
 

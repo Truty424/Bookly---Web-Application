@@ -1,9 +1,6 @@
 package it.unipd.bookly.dao.wishlist;
 
-import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Wishlist;
 import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
@@ -12,42 +9,40 @@ import static it.unipd.bookly.dao.wishlist.WishlistQueries.ADD_BOOK_TO_WISHLIST;
 /**
  * DAO to add a book to a specific wishlist.
  */
-public class AddBookToWishlistDAO extends AbstractDAO<Wishlist> {
+public class AddBookToWishlistDAO extends AbstractDAO<Void> {
 
-    private final Wishlist wishlist;
-    private final Book book;
+    private final int wishlistId;
+    private final int book_id;
 
     /**
      * Constructor.
      *
-     * @param con      the database connection
-     * @param wishlist the wishlist to which the book will be added
-     * @param book     the book to be added to the wishlist
+     * @param con        the database connection
+     * @param wishlistId the wishlist ID
+     * @param book_id     the book ID
      */
-    public AddBookToWishlistDAO(final Connection con, final Wishlist wishlist, final Book book) {
+    public AddBookToWishlistDAO(final Connection con, final int wishlistId, final int book_id) {
         super(con);
-        this.wishlist = wishlist;
-        this.book = book;
+        this.wishlistId = wishlistId;
+        this.book_id = book_id;
     }
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(ADD_BOOK_TO_WISHLIST)) {
-            stmnt.setInt(1, wishlist.getWishlistId());
-            stmnt.setInt(2, book.getBookId());
+        try (PreparedStatement stmt = con.prepareStatement(ADD_BOOK_TO_WISHLIST)) {
+            stmt.setInt(1, wishlistId);
+            stmt.setInt(2, book_id);
 
-            int rowsAffected = stmnt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                LOGGER.info("Added book ID {} to wishlist ID {}.", book.getBookId(), wishlist.getWishlistId());
-                this.outputParam = wishlist;
+                LOGGER.info("Book ID {} added to wishlist ID {} successfully.", book_id, wishlistId);
             } else {
-                LOGGER.warn("No book was added — book ID {} and wishlist ID {} may already be linked.", book.getBookId(), wishlist.getWishlistId());
-                this.outputParam = null;
+                LOGGER.warn("Book ID {} not added — maybe already in wishlist ID {}.", book_id, wishlistId);
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Error adding book ID {} to wishlist ID {}: {}", book.getBookId(), wishlist.getWishlistId(), ex.getMessage());
+            LOGGER.error("Failed to add book ID {} to wishlist ID {}: {}", book_id, wishlistId, ex.getMessage());
             throw ex;
         }
     }

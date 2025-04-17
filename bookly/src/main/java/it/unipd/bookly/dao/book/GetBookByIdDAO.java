@@ -1,19 +1,18 @@
 package it.unipd.bookly.dao.book;
 
-import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.GET_BOOK_BY_ID;
 
 /**
- * DAO to retrieve a book by its ID from the database.
- * This class provides functionality to fetch a book record
- * from the database using the book's unique ID.
+ * DAO to retrieve a book by its ID from the database. This class provides
+ * functionality to fetch a book record from the database using the book's
+ * unique ID.
  */
 public class GetBookByIdDAO extends AbstractDAO<Book> {
 
@@ -25,7 +24,7 @@ public class GetBookByIdDAO extends AbstractDAO<Book> {
     /**
      * Constructs a DAO to retrieve a book by its ID.
      *
-     * @param con     The database connection to use.
+     * @param con The database connection to use.
      * @param book_id The ID of the book to retrieve.
      */
     public GetBookByIdDAO(final Connection con, final int book_id) {
@@ -34,8 +33,8 @@ public class GetBookByIdDAO extends AbstractDAO<Book> {
     }
 
     /**
-     * Executes the query to retrieve a book by its ID.
-     * Populates the {@link #outputParam} with the retrieved {@link Book} object.
+     * Executes the query to retrieve a book by its ID. Populates the
+     * {@link #outputParam} with the retrieved {@link Book} object.
      *
      * @throws Exception If an error occurs during the database operation.
      */
@@ -60,8 +59,8 @@ public class GetBookByIdDAO extends AbstractDAO<Book> {
 
                     Image bookImage = null;
                     try {
-                        byte[] imageData = rs.getBytes("book_pic");
-                        String imageType = rs.getString("book_pic_type");
+                        byte[] imageData = rs.getBytes("image");
+                        String imageType = rs.getString("image_type");
                         if (imageData != null && imageType != null) {
                             bookImage = new Image(imageData, imageType);
                         }

@@ -28,7 +28,7 @@ public class AddToCartRest extends AbstractRestResource {
 
     private void handleAddToCart() throws IOException {
         String cartIdParam = req.getParameter("cartId");
-        String bookIdParam = req.getParameter("bookId");
+        String bookIdParam = req.getParameter("book_id");
 
         if (cartIdParam == null || bookIdParam == null) {
             sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400",
