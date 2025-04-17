@@ -33,22 +33,22 @@ public class GetReviewsByUserDAO extends AbstractDAO<List<Review>> {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     int reviewId = rs.getInt("review_id");
-                    int book_id = rs.getInt("book_id");
-                    String content = rs.getString("review_content");
-                    int plotRating = rs.getInt("plot_rating");
-                    int styleRating = rs.getInt("style_rating");
-                    int themeRating = rs.getInt("theme_rating");
+                    int bookId = rs.getInt("book_id");
+                    String comment = rs.getString("comment");
+                    int rating = rs.getInt("rating");
+                    int likes = rs.getInt("number_of_likes");
+                    int dislikes = rs.getInt("number_of_dislikes");
                     Timestamp reviewDate = rs.getTimestamp("review_date");
 
                     Review review = new Review(
-                            reviewId,
-                            userId,
-                            book_id,
-                            content,
-                            plotRating,
-                            styleRating,
-                            themeRating,
-                            reviewDate
+                        reviewId,
+                        userId,
+                        bookId,
+                        comment,
+                        rating,
+                        likes,
+                        dislikes,
+                        reviewDate
                     );
 
                     reviews.add(review);

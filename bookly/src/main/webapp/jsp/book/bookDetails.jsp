@@ -53,23 +53,34 @@
         </form>
 
     <h2>Reviews</h2>
-<c:choose>
-    <c:when test="${not empty reviews}">
-        <ul>
-            <c:forEach var="review" items="${reviews}">
-                <li>
-                    <strong>Rating:</strong> ${review.rating} / 5<br/>
-                    <strong>Review:</strong> ${review.reviewText}<br/>
-                    <em>By User ID: ${review.userId}</em>
-                    <br/><br/>
-                </li>
-            </c:forEach>
-        </ul>
-    </c:when>
-    <c:otherwise>
-        <p>No reviews yet for this book.</p>
-    </c:otherwise>
-</c:choose>
+
+    <c:choose>
+        <c:when test="${not empty reviews}">
+            <ul>
+                <c:forEach var="review" items="${reviews}">
+                    <li style="margin-bottom: 1em;">
+                        <p><strong>Rating:</strong> ${review.rating} / 5</p>
+                        <p><strong>Review:</strong> ${review.reviewText}</p>
+                        <p><em>By User #${review.userId} on ${review.reviewDate}</em></p>
+                        <p>👍 ${review.numberOfLikes} | 👎 ${review.numberOfDislikes}</p>
+                    </li>
+                </c:forEach>
+            </ul>
+        </c:when>
+        <c:otherwise>
+            <p>No reviews yet for this book.</p>
+        </c:otherwise>
+    </c:choose>
     <a href="<%= request.getContextPath() %>/book">Back to all books</a>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+

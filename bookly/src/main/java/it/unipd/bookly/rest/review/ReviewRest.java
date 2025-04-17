@@ -98,10 +98,6 @@ public class ReviewRest extends AbstractRestResource {
         new Message("Method Not Allowed", "405", detail).toJSON(res.getOutputStream());
     }
 
-    private void respondNotFound(String detail) throws IOException {
-        res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        new Message("Not Found", "404", detail).toJSON(res.getOutputStream());
-    }
 
     private void respondServerError(String detail) throws IOException {
         res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

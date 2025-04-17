@@ -8,8 +8,7 @@ import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.review.ReviewQueries.UPDATE_REVIEW_LIKES_DISLIKES;
 
 /**
- * DAO responsible for updating the number of likes and dislikes
- * associated with a specific review.
+ * DAO to update the number of likes and dislikes for a specific review.
  */
 public class UpdateReviewLikesDislikesDAO extends AbstractDAO<Boolean> {
 
@@ -17,19 +16,11 @@ public class UpdateReviewLikesDislikesDAO extends AbstractDAO<Boolean> {
     private final int numberOfLikes;
     private final int numberOfDislikes;
 
-    /**
-     * Constructs the DAO to update likes/dislikes for a review.
-     *
-     * @param con               Database connection
-     * @param reviewId          ID of the review to update
-     * @param numberOfLikes     New like count
-     * @param numberOfDislikes  New dislike count
-     */
     public UpdateReviewLikesDislikesDAO(Connection con, int reviewId, int numberOfLikes, int numberOfDislikes) {
         super(con);
         this.reviewId = reviewId;
-        this.numberOfLikes = numberOfLikes;
-        this.numberOfDislikes = numberOfDislikes;
+        this.numberOfLikes = Math.max(0, numberOfLikes);
+        this.numberOfDislikes = Math.max(0, numberOfDislikes);
     }
 
     @Override
@@ -42,11 +33,15 @@ public class UpdateReviewLikesDislikesDAO extends AbstractDAO<Boolean> {
             int affectedRows = stmt.executeUpdate();
             this.outputParam = affectedRows > 0;
 
-            LOGGER.info("Updated review ID {} with likes = {}, dislikes = {}. Success = {}",
-                    reviewId, numberOfLikes, numberOfDislikes, outputParam);
+            if (outputParam) {
+                LOGGER.info("Successfully updated review ID {}: likes={}, dislikes={}", reviewId, numberOfLikes, numberOfDislikes);
+            } else {
+                LOGGER.warn("No review found with ID {}. No update performed.", reviewId);
+            }
+
         } catch (SQLException e) {
-            LOGGER.error("Failed to update likes/dislikes for review ID {}: {}", reviewId, e.getMessage());
-            throw e; // Let the caller handle or log this
+            LOGGER.error("Error updating likes/dislikes for review ID {}: {}", reviewId, e.getMessage(), e);
+            throw e;
         }
     }
 }

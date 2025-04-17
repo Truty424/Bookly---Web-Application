@@ -9,10 +9,11 @@ import java.util.List;
 
 import it.unipd.bookly.Resource.Review;
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.review.ReviewQueries.GET_ALL_REVIEWS;
 
 /**
- * DAO to retrieve all reviews.
+ * DAO to retrieve all reviews from the database.
  */
 public class GetAllReviewsDAO extends AbstractDAO<List<Review>> {
 
@@ -24,19 +25,30 @@ public class GetAllReviewsDAO extends AbstractDAO<List<Review>> {
     protected void doAccess() throws Exception {
         List<Review> reviews = new ArrayList<>();
 
-        try (PreparedStatement stmt = con.prepareStatement(GET_ALL_REVIEWS); ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = con.prepareStatement(GET_ALL_REVIEWS);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 int reviewId = rs.getInt("review_id");
                 int userId = rs.getInt("user_id");
-                int book_id = rs.getInt("book_id");
-                String reviewContent = rs.getString("review_content");
-                int plotRating = rs.getInt("plot_rating");
-                int styleRating = rs.getInt("style_rating");
-                int themeRating = rs.getInt("theme_rating");
-                Timestamp reviewDate = rs.getTimestamp("review_date");
+                int bookId = rs.getInt("book_id");
+                String comment = rs.getString("comment");
+                int rating = rs.getInt("rating");
+                int likes = rs.getInt("number_of_likes");
+                int dislikes = rs.getInt("number_of_dislikes");
+                Timestamp date = rs.getTimestamp("review_date");
 
-                Review review = new Review(reviewId, userId, book_id, reviewContent, plotRating, styleRating, themeRating, reviewDate);
+                Review review = new Review(reviewId, userId, bookId, comment, rating, likes, dislikes, date);
+
+                // If JOINs are used in the query, populate username and bookTitle
+                try {
+                    review.setUsername(rs.getString("username"));
+                } catch (Exception ignored) {}
+
+                try {
+                    review.setBookTitle(rs.getString("book_title"));
+                } catch (Exception ignored) {}
+
                 reviews.add(review);
             }
 
@@ -44,7 +56,7 @@ public class GetAllReviewsDAO extends AbstractDAO<List<Review>> {
 
         } catch (Exception e) {
             LOGGER.error("Error retrieving all reviews: {}", e.getMessage(), e);
-            throw e; // rethrowing so calling service can handle it
+            throw e;
         }
     }
 }
