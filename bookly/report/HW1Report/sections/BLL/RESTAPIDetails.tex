@@ -6,553 +6,510 @@ The following section provides documentation for all RESTful endpoints in the Bo
 \subsubsection*{User Authentication}
 
 \begin{flushleft}
-\textbf{Sign Up} \\
-Registers a new user with profile data.
+    \textbf{Sign Up} \\
+    Registers a new user with profile data.
 
-- URL: /user/signup \\
-- Method: POST \\
-- URL Parameters: NONE \\
-- Data Parameters: username, email, password, firstName, lastName, phone, address \\
-– Success Response: \\
-Code: 201 \\
-Content: \{"message": "User created successfully."\} \\
-– Error Response: \\
-Code: 400 Bad Request \\
-Content: \{"error": "Missing required fields"\} \\
-When: Required fields are missing \\
-Code: 409 Conflict \\
-Content: \{"error": "Username or email already exists."\} \\
-When: Username/email already registered
+    - URL: /user/signup \\
+    - Method: POST \\
+    - URL Parameters: NONE \\
+    - Data Parameters: username, email, password, firstName, lastName, phone, address \\
+    – Success Response: \\
+    Code: 201 \\
+    Content: \{"message": "User created successfully."\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Missing required fields"\} \\
+    When: Required fields are missing \\
+    Code: 409 Conflict \\
+    Content: \{"error": "Username or email already exists."\} \\
+    When: Username/email already registered
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Login} \\
-Authenticates a user and returns a JWT.
+    \textbf{Login} \\
+    Authenticates a user and returns a session token.
 
-- URL: /user/login \\
-- Method: POST \\
-- URL Parameters: NONE \\
-- Data Parameters: username, password \\
-Success Response: \\
-Code: 200 OK \\
-Content: \{"token": "jwtToken"\} \\
-– Error Response: \\
-Code: 400 Bad Request \\
-Content: \{"error": "Missing credentials"\} \\
-When: Username or password is missing \\
-Code: 401 Unauthorized \\
-Content: \{"error": "Invalid credentials."\} \\
-When: Login failed
+    - URL: /user/login \\
+    - Method: POST \\
+    - URL Parameters: NONE \\
+    - Data Parameters: username, password \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"token": "user-session-token"\} \\
+    – Error Response: \\
+    Code: 401 Unauthorized \\
+    Content: \{"error": "Invalid login credentials."\} \\
+    When: Username or password is incorrect \\
+    Code: 401 Unauthorized \\
+    Content: \{"error": "Session expired or user not logged in."\} \\
+    When: Session has timed out
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Logout} \\
-Logs out the current user session.
+    \textbf{Get User's Cart} \\
+    Retrieves the contents of the user's cart.
 
--URL: /auth/logout \\
--Method: GET \\
--URL Parameters: NONE \\
--Success Response: \\
-Code: 200 OK \\
-Content: Redirect to home
-\end{flushleft}
-
-% === BOOKS ===
-\subsubsection*{Books}
-
-\textbf{Get All Books} \\
-Fetch all books in the catalog.
-
-- URL: /books \\
-- Method: GET \\
-- Success Response: \\
-Code: 200 OK \\
-Content: [book\_list]
-
-\begin{flushleft}
-\textbf{Get Book by ID} \\
-Retrieve a single book by its ID.
-
-- URL: /book?id={book\_id} \\
-- Method: GET \\
-- Success Response: \\
-Code: 200 OK \\
-Content: {book details} \\
-- Error Response: \\
-Code: 404 Not Found \\
-Content: \{"error": "Book not found."\}
+    - URL: /cart?userId=\{id\} \\
+    - Method: GET \\
+    - URL Parameters: userId (integer) \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"cartId": 123, "items": [...]\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Cart not found."\} \\
+    When: Cart with the given user ID does not exist \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "User ID is invalid."\} \\
+    When: Provided user ID is not a valid integer
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Search Books} \\
-Find books matching a title keyword.
+    \textbf{Add Book to Cart} \\
+    Adds a book to the user's cart using the cart ID and book ID.
 
-- URL: /books/search?title={query} \\
-- Method: GET \\
-- Success Response: \\
-Code: 200 OK \\
-Content: [matched\_books] \\
-– Error Response: \\
-Code: 404 Not Found \\
-Content: \{"error": "No matches."\}
+    - URL: /cart/add?cartId=\{id\}\&bookId=\{id\} \\
+    - Method: POST \\
+    - URL Parameters: cartId (integer), bookId (integer) \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"message": "Book added to cart."\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Cart is full."\} \\
+    When: Cart has too many items \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Item already in cart."\} \\
+    When: The book is already in the cart \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Item quantity must be greater than 0."\} \\
+    When: Book quantity is not valid \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Cart not found."\} \\
+    When: Cart ID does not exist
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Top Rated Books} \\
-List top-rated books.
+    \textbf{Remove Book from Cart} \\
+    Removes a specific book from the user's cart.
 
-- URL: /books/top-rated \\
-- Method: GET \\
-- Success Response: \\
-Code: 200 OK \\
-- Content: [top\_books]
+    - URL: /cart/remove?cartId=\{id\}\&bookId=\{id\} \\
+    - Method: DELETE \\
+    - URL Parameters: cartId (integer), bookId (integer) \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"message": "Book removed from cart."\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Cart operation failed."\} \\
+    When: The book could not be removed from the cart \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Cart not found."\} \\
+    When: Cart with the given ID does not exist \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "User ID is invalid."\} \\
+    When: Provided user ID is invalid
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Insert Book} \\
-Creates a new book entry.
+    \textbf{Create Wishlist} \\
+    Creates a new wishlist for the specified user.
 
-- URL: /book \\
-- Method: POST \\
-- Data Parameters: title, price, author\_id, publisher\_id, isbn, language, ... \\
-– Success Response: \\
-- Code: 201 Created \\
-- Content: \{"message": "Book created."\} \\
-– Error Response: \\
-Code: 400 Bad Request \\
-- Content: \{"error": "Missing book fields."\}
+    - URL: /wishlist?userId=\{id\} \\
+    - Method: POST \\
+    - URL Parameters: userId (integer) \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 201 \\
+    Content: \{"message": "Wishlist created successfully."\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Invalid user ID."\} \\
+    When: Provided user ID is not valid \\
+    Code: 409 Conflict \\
+    Content: \{"error": "User already has a wishlist."\} \\
+    When: Wishlist already exists for this user
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Update Book} \\
-Updates a book record.
+    \textbf{Get User Wishlists} \\
+    Retrieves all wishlists.
 
-- URL: /book \\
-- Method: PUT \\
-- Data Parameters: bookId, title, price, etc. \\
-- Success Response: \\
-Code: 200 OK \\
-- Content: \{"message": "Book updated."\}
+    - URL: /wishlist \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"wishlists": [\{...wishlist1...\}, \{...wishlist2...\}]\} \\
+    – Error Response: \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Unable to retrieve wishlists."\} \\
+    When: Server-side issue occurs
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Delete Book} \\
-Deletes a book.
+    \textbf{Add Book to Wishlist} \\
+    Adds a book to the wishlist by wishlist ID.
 
-- URL: /book?id={book\_id} \\
-- Method: DELETE \\
-- Success Response: \\
-Code: 200 OK \\
-- Content: \{"message": "Book deleted."\}
+    - URL: /wishlist/add/\{id\} \\
+    - Method: POST \\
+    - URL Parameters: id (integer) — ID of the wishlist \\
+    - Data Parameters: bookId (integer) \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"message": "Book added to wishlist."\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Book already in wishlist."\} \\
+    When: The book is already part of the wishlist \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Wishlist not found."\} \\
+    When: No wishlist exists with the provided ID \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Invalid input data."\} \\
+    When: Missing or malformed parameters
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Update Book Stock} \\
-Adjusts stock for a book.
+    \textbf{Remove Book from Wishlist} \\
+    Removes a book from the wishlist by wishlist ID.
 
-- URL: /book/stock?id={book\_id}\&quantity={qty} \\
-- Method: PUT \\
-- Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Stock updated."\}
-\end{flushleft}
-
-% === AUTHORS ===
-\subsubsection*{Authors}
-\begin{flushleft}
-\textbf{Get All Authors} \\
-Retrieves a list of all authors.
-
-– URL: /authors \\
-– Method: GET \\
-– Success Response: \\
-- Code: 200 OK \\
-- Content: [author\_list]
-\end{flushleft}
-
-\begin{flushleft}
-\textbf{Get Author by ID} \\
-Returns a specific author's information.
-
-– URL: /authors/{id} \\
-– Method: GET \\
-– URL Parameters: id = author ID \\
-– Success Response: \\
-Code: 200 OK \\
-Content: {author\_details} \\
-– Error Response: \\
-Code: 404 Not Found \\
-Content: \{"error": "Author not found."\}
+    - URL: /wishlist/remove/\{id\} \\
+    - Method: DELETE \\
+    - URL Parameters: id (integer) — ID of the wishlist \\
+    - Data Parameters: bookId (integer) \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"message": "Book removed from wishlist."\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Wishlist not found."\} \\
+    When: The specified wishlist does not exist \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Book not in wishlist."\} \\
+    When: The specified book is not present in the wishlist \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Invalid input data."\} \\
+    When: Missing or malformed parameters
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Create Author} \\
-Adds a new author.
+    \textbf{Get All Authors} \\
+    Retrieves a list of all authors available in the system.
 
--URL: /authors \\
--Method: POST \\
--Data Parameters: first\_name, last\_name, biography, nationality \\
-– Success Response: \\
-Code: 201 Created \\
-Content: \{"message": "Author created."\}
+    - URL: /author \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"authors": [\{...author1...\}, \{...author2...\}]\} \\
+    – Error Response: \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Unable to retrieve authors."\} \\
+    When: Server-side issue occurs during data retrieval
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Update Author} \\
-Modifies an existing author.
+    \textbf{Get Author by ID} \\
+    Retrieves detailed information about a specific author.
 
--URL: /authors/{id} \\
--Method: PUT \\
--URL Parameters: id = author ID \\
--Data Parameters: first\_name, last\_name, biography, nationality \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Author updated."\}
+    - URL: /author/\{id\} \\
+    - Method: GET \\
+    - URL Parameters: id (integer) — ID of the author \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"id": 1, "name": "Author Name", "bio": "..." \} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Author not found."\} \\
+    When: No author exists with the given ID \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Invalid author ID."\} \\
+    When: Provided author ID is not valid
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Delete Author} \\
-Removes an author.
+    \textbf{Create New Author} \\
+    Creates a new author entry in the system. Admin access required.
 
-– URL: /authors/{id} \\
-– Method: DELETE \\
-– URL Parameters: id = author ID \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Author deleted."\}
+    - URL: /admin/authors \\
+    - Method: POST \\
+    - URL Parameters: NONE \\
+    - Data Parameters: name (string), bio (string, optional) \\
+    – Success Response: \\
+    Code: 201 \\
+    Content: \{"message": "Author created successfully.", "authorId": 12\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Missing required fields."\} \\
+    When: Required data like author name is not provided \\
+    Code: 403 Forbidden \\
+    Content: \{"error": "Unauthorized access."\} \\
+    When: Request is made without admin privileges
 \end{flushleft}
 
 \begin{flushleft}
-\textbf{Assign Author to Book} \\
-Links an author to a book.
+    \textbf{Delete Author} \\
+    Deletes an author from the system by ID. Admin access required.
 
-– URL: /authors/assign \\
-– Method: POST \\
-– Data Parameters: bookId, authorId \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Author assigned."\}
+    - URL: /admin/authors/\{id\} \\
+    - Method: DELETE \\
+    - URL Parameters: id (integer) — ID of the author to delete \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"message": "Author deleted successfully."\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Author not found."\} \\
+    When: No author exists with the given ID \\
+    Code: 403 Forbidden \\
+    Content: \{"error": "Unauthorized access."\} \\
+    When: Request is made without admin privileges
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Remove Author from Book} \\
-Unlinks an author from a book.
+\begin{flushleft}
+    \textbf{Get All Publishers} \\
+    Retrieves a list of all publishers available in the system.
 
-– URL: /authors/remove \\
-– Method: DELETE \\
-– Data Parameters: bookId, authorId \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Author removed."\}
+    - URL: /publisher \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"publishers": [\{...publisher1...\}, \{...publisher2...\}]\} \\
+    – Error Response: \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Unable to retrieve publishers."\} \\
+    When: A server-side error occurs during data retrieval
 \end{flushleft}
 
-% === PUBLISHERS ===
-\subsubsection*{Publishers}
+\begin{flushleft}
+    \textbf{Get Publisher by ID} \\
+    Retrieves detailed information about a specific publisher.
 
-\textbf{Insert Publisher} \\
-– URL: /publisher \\
-– Method: POST \\
-– URL Parameters: NONE \\
-– Data Parameters: publisher\_name, phone, address \\
-– Success Response: \\
-Code: 201 Created \\
-Content: \{"message": "Publisher inserted successfully."\} \\
-– Error Response: \\
-Code: 500 Internal Server Error \\
-Content: \{"error": "Failed to insert publisher."\}
-
-\begin{flushleft} 
-\textbf{Update Publisher} \\
-– URL: /publisher/{id} \\
-– Method: PUT \\
-– URL Parameters: id = publisher ID \\
-– Data Parameters: publisher\_name, phone, address \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Publisher updated successfully."\} \\
-– Error Response: \\
-Code: 404 Not Found \\
-Content: \{"error": "Publisher not found."\}
+    - URL: /publisher/\{id\} \\
+    - Method: GET \\
+    - URL Parameters: id (integer) — ID of the publisher \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"id": 1, "name": "Publisher Name", "country": "..." \} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Publisher not found."\} \\
+    When: No publisher exists with the given ID \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Invalid publisher ID."\} \\
+    When: Provided publisher ID is invalid
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Delete Publisher} \\
-– URL: /publisher/{id} \\
-– Method: DELETE \\
-– URL Parameters: id = publisher ID \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Publisher deleted successfully."\}
+\begin{flushleft}
+    \textbf{Create Publisher} \\
+    Creates a new publisher in the system. Admin access required.
+
+    - URL: /admin/publishers \\
+    - Method: POST \\
+    - URL Parameters: NONE \\
+    - Data Parameters: name (string), country (string) \\
+    – Success Response: \\
+    Code: 201 \\
+    Content: \{"message": "Publisher created successfully.", "publisherId": 5\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Missing required fields."\} \\
+    When: Required data like name or country is not provided \\
+    Code: 403 Forbidden \\
+    Content: \{"error": "Unauthorized access."\} \\
+    When: Request is made without admin privileges
 \end{flushleft}
 
-% === CART ===
-\subsubsection*{Cart}
+\begin{flushleft}
+    \textbf{Delete Publisher} \\
+    Deletes a publisher by ID. Admin access required.
 
-\textbf{Retrieve Cart by User ID} \\
-– URL: /cart?userId={user\_id} \\
-– Method: GET \\
-– URL Parameters: userId = user ID \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{cart\_details\} \\
-– Error Response: \\
-Code: 404 Not Found \\
-Content: \{"error": "Cart not found."\}
-
-\begin{flushleft} 
-\textbf{Add Book to Cart} \\
-– URL: /cart/add?cartId={cart\_id}\&bookId={book\_id} \\
-– Method: POST \\
-– URL Parameters: cartId, bookId \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Book added to cart."\}
+    - URL: /admin/publishesr/\{id\} \\
+    - Method: DELETE \\
+    - URL Parameters: id (integer) — ID of the publisher \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"message": "Publisher deleted successfully."\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Publisher not found."\} \\
+    When: No publisher exists with the given ID \\
+    Code: 403 Forbidden \\
+    Content: \{"error": "Unauthorized access."\} \\
+    When: Request is made without admin privileges
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Remove Book from Cart} \\
-– URL: /cart/remove?cartId={cart\_id}\&bookId={book\_id} \\
-– Method: DELETE \\
-– URL Parameters: cartId, bookId \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Book removed from cart."\}
+\begin{flushleft}
+    \textbf{Get All Books} \\
+    Retrieves a list of all books.
+
+    - URL: /book \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"books": [\{...book1...\}, \{...book2...\}]\} \\
+    – Error Response: \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Unable to retrieve books."\} \\
+    When: Server error occurs during retrieval
 \end{flushleft}
 
-% === WISHLIST ===
-\subsubsection*{Wishlist}
+\begin{flushleft}
+    \textbf{Get Book by ID} \\
+    Retrieves detailed information about a specific book.
 
-\textbf{Create Wishlist} \\
-– URL: /wishlist?userId={user\_id} \\
-– Method: POST \\
-– URL Parameters: userId \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 201 Created \\
-Content: \{"message": "Wishlist created successfully."\}
-
-\begin{flushleft} 
-\textbf{Delete Wishlist} \\
-– URL: /wishlist/{wishlistId} \\
-– Method: DELETE \\
-– URL Parameters: wishlistId \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Wishlist deleted."\}
+    - URL: /book/\{id\} \\
+    - Method: GET \\
+    - URL Parameters: id (integer) — ID of the book \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"id": 1, "title": "...", "author": "..."\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Book not found."\} \\
+    When: Book with the given ID does not exist \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Invalid book ID."\} \\
+    When: Provided book ID is not valid
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Add Book to Wishlist} \\
-– URL: /wishlist/books/add \\
-– Method: POST \\
-– URL Parameters: NONE \\
-– Data Parameters: wishlistId, bookId \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Book added to wishlist."\}
+\begin{flushleft}
+    \textbf{Add New Book} \\
+    Adds a new book to the system. Admin access required.
+
+    - URL: /admin/books \\
+    - Method: POST \\
+    - URL Parameters: NONE \\
+    - Data Parameters: title (string), authorId (integer), publisherId (integer), categoryId (integer), price (decimal), description (string) \\
+    – Success Response: \\
+    Code: 201 \\
+    Content: \{"message": "Book added successfully.", "bookId": 101\} \\
+    – Error Response: \\
+    Code: 400 Bad Request \\
+    Content: \{"error": "Missing required fields."\} \\
+    When: Required fields are missing \\
+    Code: 403 Forbidden \\
+    Content: \{"error": "Unauthorized access."\} \\
+    When: Request is made without admin privileges
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Remove Book from Wishlist} \\
-– URL: /wishlist/books/remove \\
-– Method: DELETE \\
-– URL Parameters: NONE \\
-– Data Parameters: wishlistId, bookId \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Book removed from wishlist."\}
+\begin{flushleft}
+    \textbf{Delete Book} \\
+    Deletes a book from the system by ID. Admin access required.
+
+    - URL: /admin/books?id=\{id\} \\
+    - Method: DELETE \\
+    - URL Parameters: id (integer) — ID of the book \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"message": "Book deleted successfully."\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Book not found."\} \\
+    When: Book does not exist with the given ID \\
+    Code: 403 Forbidden \\
+    Content: \{"error": "Unauthorized access."\} \\
+    When: Request is made without admin privileges
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Get Wishlist Books} \\
-– URL: /wishlist/books/{wishlistId} \\
-– Method: GET \\
-– URL Parameters: wishlistId \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{[book\_1, book\_2, ...]\}
+\begin{flushleft}
+    \textbf{Get Top-Rated Books} \\
+    Retrieves a list of top-rated books.
+
+    - URL: /books/top-rated \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"books": [\{...book1...\}, \{...book2...\}]\} \\
+    – Error Response: \\
+    Code: 500 Internal Server Error \\
+    Content: \{"error": "Unable to fetch top-rated books."\} \\
+    When: Server error occurs
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Count Books in Wishlist} \\
-– URL: /wishlist/books/count?wishlistId={wishlistId} \\
-– Method: GET \\
-– URL Parameters: wishlistId \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"count": X\}
+\begin{flushleft}
+    \textbf{Get Books by Author} \\
+    Fetches books written by a specific author.
+
+    - URL: /books/author?id=\{id\} \\
+    - Method: GET \\
+    - URL Parameters: id (integer) — Author ID \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"books": [\{...book1...\}]\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Author not found or has no books."\} \\
+    When: Author exists but has no books or doesn’t exist
 \end{flushleft}
 
-% === ORDERS ===
-\subsubsection*{Orders}
+\begin{flushleft}
+    \textbf{Get Books by Category} \\
+    Fetches books within a specific category.
 
-\textbf{Get All Orders} \\
-– URL: /orders \\
-– Method: GET \\
-– URL Parameters: NONE \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: [ \{ order\_1 \}, \{ order\_2 \}, ... ]
-
-\begin{flushleft} 
-\textbf{Get Order by ID} \\
-– URL: /order/{id} \\
-– Method: GET \\
-– URL Parameters: id = order ID \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{order\_details\}
+    - URL: /books/category?id=\{id\} \\
+    - Method: GET \\
+    - URL Parameters: id (integer) — Category ID \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"books": [\{...book1...\}]\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Category not found or has no books."\} \\
+    When: Category is invalid or empty
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Insert Order} \\
-– URL: /order \\
-– Method: POST \\
-– URL Parameters: NONE \\
-– Data Parameters: total\_price, payment\_method, address, status, cart\_id (optional) \\
-– Success Response: \\
-Code: 201 Created \\
-Content: \{"message": "Order created."\}
+\begin{flushleft}
+    \textbf{Get Books by Publisher} \\
+    Fetches books from a specific publisher.
+
+    - URL: /books/publisher?id=\{id\} \\
+    - Method: GET \\
+    - URL Parameters: id (integer) — Publisher ID \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"books": [\{...book1...\}]\} \\
+    – Error Response: \\
+    Code: 404 Not Found \\
+    Content: \{"error": "Publisher not found or has no books."\} \\
+    When: Publisher exists but has no books or doesn’t exist
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Get User Orders} \\
-– URL: /order/user/{userId} \\
-– Method: GET \\
-– URL Parameters: userId = user ID \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: [ \{ order\_1 \}, \{ order\_2 \} ]
+\begin{flushleft}
+    \textbf{Get All Discounts} \\
+    Retrieves all available discount offers. Manager access required.
+
+    - URL: /admin/discounts \\
+    - Method: GET \\
+    - URL Parameters: NONE \\
+    - Data Parameters: NONE \\
+    – Success Response: \\
+    Code: 200 \\
+    Content: \{"discounts": [\{...discount1...\}, \{...discount2...\}]\} \\
+    – Error Response: \\
+    Code: 403 Forbidden \\
+    Content: \{"error": "Unauthorized access."\} \\
+    When: Request is made without manager/admin role
 \end{flushleft}
 
-\begin{flushleft} 
-\textbf{Get Latest Order for User} \\
-– URL: /order/user/{userId}/latest \\
-– Method: GET \\
-– URL Parameters: userId = user ID \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{latest\_order\}
-\end{flushleft}
-
-% === DISCOUNTS ===
-\subsubsection*{Discounts}
-
-\textbf{Get All Discounts} \\
-– URL: /discount/all \\
-– Method: GET \\
-– URL Parameters: NONE \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: [ \{discounts\} ]
-
-\begin{flushleft} 
-\textbf{Get Active Discounts} \\
-– URL: /discount/active \\
-– Method: GET \\
-– URL Parameters: NONE \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: [ \{active\_discounts\} ]
-\end{flushleft}
-
-\begin{flushleft} 
-\textbf{Get Discount by Code} \\
-– URL: /discount/code?code={discount\_code} \\
-– Method: GET \\
-– URL Parameters: code = discount code \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{discount\}
-\end{flushleft}
-
-\begin{flushleft} 
-\textbf{Get Valid Discount by Code} \\
-– URL: /discount/query/valid?code={discount\_code} \\
-– Method: GET \\
-– URL Parameters: code = discount code \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{discount\}
-\end{flushleft}
-
-\begin{flushleft} 
-\textbf{Delete Discount} \\
-– URL: /discount?id={discount\_id} \\
-– Method: DELETE \\
-– URL Parameters: id = discount ID \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Discount deleted."\}
-\end{flushleft}
-
-% === User ===
-\subsubsection*{User}
-\textbf{Get User by Username} \\
-– URL: /user?username={username} \\
-– Method: GET \\
-– URL Parameters: username \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{user\_data\}
-
-\begin{flushleft} 
-\textbf{Update User Profile} \\
-– URL: /user/update \\
-– Method: PUT \\
-– URL Parameters: NONE \\
-– Data Parameters: user\_id, first\_name, last\_name, email, phone, address, role \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "User updated."\}
-\end{flushleft}
-
-\begin{flushleft} 
-\textbf{Change Password} \\
-– URL: /user/password \\
-– Method: PUT \\
-– URL Parameters: NONE \\
-– Data Parameters: user\_id, new\_password \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Password changed successfully."\}
-\end{flushleft}
-
-\begin{flushleft} 
-\textbf{Upload/Update Profile Image} \\
-– URL: /user/image \\
-– Method: POST \\
-– URL Parameters: NONE \\
-– Data Parameters: user\_id, image (multipart) \\
-– Success Response: \\
-Code: 200 OK \\
-Content: \{"message": "Image uploaded."\}
-\end{flushleft} 
-
-\begin{flushleft} 
-\textbf{Get User Image} \\
-– URL: /user/image?userId={id} \\
-– Method: GET \\
-– URL Parameters: userId \\
-– Data Parameters: NONE \\
-– Success Response: \\
-Code: 200 OK \\
-Content-Type: image/jpeg (or image/png)
-\end{flushleft}
