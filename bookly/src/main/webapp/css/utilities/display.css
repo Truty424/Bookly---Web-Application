@@ -1,0 +1,6 @@
+.col-lg-12 {
+    flex: 0 0 100%;
+}
+.d-flex {
+    display: flex;
+}
