@@ -99,4 +99,17 @@ All dependencies are declared in `pom.xml`.
    ```bash
    mvn package clean
    ```
+2. Build the project with:
+   ```bash
+   mvn package
+   ```
+
+
+#### 💻 Member of Team
+- Ayoub Ben Yamoune
+- Amirreza Jolani Mameghani
+- Md Abu Raihan Mia
+- Parisa Saeedidana
+- Adam Truty
+
 
