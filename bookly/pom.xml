@@ -14,6 +14,29 @@
     <name>bookly</name>
     <description>A platform for selling and buying books</description>
 
+    <!-- Developers -->
+    <developers>
+        <developer>
+            <name>Ayoub Ben Yamoune</name>
+            <id>2163617</id>
+        </developer>
+        <developer>
+            <name>Amirreza Jolani Mameghani</name>
+            <id>2106526</id>
+        </developer>
+        <developer>
+            <name>Md Abu Raihan Mia</name>
+            <id>2142011</id>
+        </developer>
+        <developer>
+            <name>Parisa Saeedidana</name>
+            <id>2142717</id>
+        </developer>
+        <developer>
+            <name>Adam Truty</name>
+            <id>2142741</id>
+        </developer>
+    </developers>
     <!-- Build settings -->
 
     <!-- Specifies the encoding to be used for project source files -->
