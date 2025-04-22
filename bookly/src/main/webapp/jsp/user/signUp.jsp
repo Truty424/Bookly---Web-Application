@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/utilities/display.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/utilities/layout.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/utilities/spacing.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/utilities/toast.css">
 
     <script defer src="${pageContext.request.contextPath}/static/js/password-show.js"></script>
 </head>
