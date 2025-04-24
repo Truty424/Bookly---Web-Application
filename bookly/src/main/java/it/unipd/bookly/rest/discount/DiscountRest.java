@@ -13,7 +13,7 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * @Handles: - GET /api/discount/all → Retrieve all discounts. - GET
+ * Handles: - GET /api/discount/all → Retrieve all discounts. - GET
  * /api/discount/active → Retrieve active (non-expired) discounts. - GET
  * /api/discount/code?code=... → Retrieve a discount by code. - DELETE
  * /api/discount?id=123 → Delete a discount by ID.

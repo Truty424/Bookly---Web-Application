@@ -21,7 +21,7 @@ public class GetUserByUsernameDAO extends AbstractDAO<User> {
      * Constructs the DAO with the connection and username pattern.
      *
      * @param con the DB connection
-     * @param usernameLike the username filter (e.g., "john%")
+     * @param username the username filter (e.g., "john%")
      */
     public GetUserByUsernameDAO(Connection con, String username) {
         super(con);

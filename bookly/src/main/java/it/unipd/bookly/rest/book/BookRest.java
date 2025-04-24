@@ -13,14 +13,18 @@ import java.sql.Connection;
 import java.util.List;
 
 /**
- * Unified REST controller for book-related operations: - GET /api/books → get
- * all books - GET /api/book?id=X → get book by ID - POST /api/book → insert a
- * new book - PUT /api/book → update book info - PUT
- * /api/book/stock?id=X&quantity=Y → update stock - DELETE /api/book?id=X →
- * delete book - GET /api/books/top-rated → books with rating >= 4 - GET
- * /api/books/search?title=abc → search books - GET /api/books/author?id=X → by
- * author - GET /api/books/category?id=X → by category - GET
- * /api/books/publisher?id=X → by publisher
+ * Unified REST controller for book-related operations:
+ * - GET /api/books → get all books
+ * - GET /api/book?id=X → get book by ID
+ * - POST /api/book → insert a new book
+ * - PUT /api/book → update book info
+ * - PUT /api/book/stock?id=X&amp;quantity=Y → update stock
+ * - DELETE /api/book?id=X → delete book
+ * - GET /api/books/top-rated → books with rating &gt;= 4
+ * - GET /api/books/search?title=abc → search books
+ * - GET /api/books/author?id=X → by author
+ * - GET /api/books/category?id=X → by category
+ * - GET /api/books/publisher?id=X → by publisher
  */
 public class BookRest extends AbstractRestResource {
 

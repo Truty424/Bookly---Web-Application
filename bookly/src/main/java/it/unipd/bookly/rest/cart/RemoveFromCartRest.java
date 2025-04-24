@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 /**
  * REST endpoint to remove a book from the shopping cart.
  * 
- * Endpoint: DELETE /api/cart/remove?cartId=123&bookId=456
+ * Endpoint: DELETE /api/cart/remove?cartId=123&amp;bookId=456
  */
 public class RemoveFromCartRest extends AbstractRestResource {
 

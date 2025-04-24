@@ -15,9 +15,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * @Handles:
- * - GET /api/order/user/{userId}
- * - GET /api/order/user/{userId}/latest
+ * Handles requests for retrieving user orders.
+ *
+ * <p>Supported operations:</p>
+ * <ul>
+ *   <li><strong>GET</strong> /api/user/{userId}/latest - Retrieves the latest order for the specified user.</li>
+ *   <li><strong>GET</strong> /api/user/{userId} - Retrieves all orders for the specified user.</li>
+ * </ul>
  */
 public class UserOrderRest extends AbstractRestResource {
 

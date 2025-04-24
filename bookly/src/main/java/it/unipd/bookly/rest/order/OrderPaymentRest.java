@@ -12,8 +12,7 @@ import java.sql.Connection;
 import java.sql.Timestamp;
 
 /**
- * @Handles:
- * - PUT /api/order/{orderId}/payment?value=PAID&amount=99.99 → Updates order's payment status and amount
+ * Handles requests for updating the payment status and amount of an order.
  */
 public class OrderPaymentRest extends AbstractRestResource {
 

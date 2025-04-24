@@ -20,7 +20,7 @@ public class CountBooksInWishlistDAO extends AbstractDAO<Integer> {
      * Constructor.
      *
      * @param con      the database connection
-     * @param wishlist the wishlist to count books in
+     * @param wishlist_id the wishlist to count books in
      */
     public CountBooksInWishlistDAO(final Connection con, final int wishlist_id) {
         super(con);

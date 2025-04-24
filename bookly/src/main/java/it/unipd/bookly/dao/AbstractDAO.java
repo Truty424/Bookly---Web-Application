@@ -36,7 +36,6 @@ import java.sql.SQLException;
  * transparently change the underlying DBMS, without the need of modifying their
  * code.
  * </ol>
- * </p>
  *
  * <p>
  * With respect to the first goal, {@code AbstractDAO}

@@ -12,9 +12,13 @@ import java.sql.Connection;
 import java.sql.Timestamp;
 
 /**
- * @Handles:
- * - PUT /api/order/{orderId}/status?value=STATUS
- * - PUT /api/order/{orderId}/payment?value=PAID&amount=99.99&method=CARD
+ * Handles requests for updating the status or payment information of an order.
+ *
+ * <p>Supported operations:</p>
+ * <ul>
+ *   <li><strong>PUT</strong> /api/order/{orderId}/status?value=SHIPPED - Updates the order's status.</li>
+ *   <li><strong>PUT</strong> /api/order/{orderId}/payment?value=PAID&amp;amount=99.99&amp;method=CREDIT_CARD - Updates the order's payment information.</li>
+ * </ul>
  */
 public class OrderStatusRest extends AbstractRestResource {
 

@@ -10,8 +10,12 @@ import java.io.IOException;
 import java.sql.Connection;
 
 /**
- * @Handles:
- * - DELETE /api/order/{orderId}/cancel → Cancel an order by ID
+ * Handles requests for canceling an order.
+ *
+ * <p>Supported operations:</p>
+ * <ul>
+ *   <li><strong>DELETE</strong> /api/order/{orderId}/cancel - Cancels the specified order.</li>
+ * </ul>
  */
 public class CancelOrderRest extends AbstractRestResource {
 

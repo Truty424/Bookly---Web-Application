@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.Connection;
 
 /**
- * @Handles:
+ * Handles:
  * - GET /api/discount/query?code=CODE → Retrieves a discount by its code.
  * - GET /api/discount/query/valid?code=CODE → Retrieves only if the discount is valid (i.e., not expired).
  * 
