@@ -8,7 +8,8 @@
     <title>Your Orders</title>
 </head>
 <body>
-
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
 <h1>Your Orders</h1>
 
 <%-- Display error message if present --%>
@@ -51,9 +52,6 @@
     <p>No orders found.</p>
 <% } %>
 
-<br>
-<form action="${pageContext.request.contextPath}/" method="get">
-                <button type="submit">Home Page</button>
-            </form>
+    <%@ include file="/html/footer.html" %>
 </body>
 </html>

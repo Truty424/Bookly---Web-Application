@@ -4,6 +4,17 @@
 <html>
 <head>
     <title>All Books</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/base/root.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../static/css/base/globals.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="../static/css/components/footer.css"
+    /> 
 </head>
 <body>
     <h1>All Books</h1>

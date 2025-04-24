@@ -6,32 +6,11 @@
 <head>
     <meta charset="UTF-8">
     <title>All Publishers</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-        }
-        h1 {
-            color: #333;
-        }
-        ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        li {
-            margin: 10px 0;
-        }
-        a {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 18px;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+
 </head>
 <body>
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
     <h1>All Publishers</h1>
     <ul>
         <%
@@ -53,5 +32,7 @@
             }
         %>
     </ul>
+
+    <%@ include file="/html/footer.html" %>
 </body>
 </html>

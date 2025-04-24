@@ -6,6 +6,8 @@
     <title>Books by Author</title>
 </head>
 <body>
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
     <h1>Books by Author ID: ${author_id}</h1>
 
     <ul>

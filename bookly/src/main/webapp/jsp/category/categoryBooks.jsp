@@ -6,6 +6,9 @@
     <title>Books in Category</title>
 </head>
 <body>
+
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
     <h1>Books in Selected Category</h1>
 
     <ul>

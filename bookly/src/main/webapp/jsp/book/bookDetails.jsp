@@ -9,6 +9,8 @@
     <title>Book Details</title>
 </head>
 <body>
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
     <h1>Book Details</h1>
 
     <%

@@ -7,6 +7,8 @@
     <title>Your Shopping Cart</title>
 </head>
 <body>
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
     <h1>Your Cart</h1>
 
     <ul>

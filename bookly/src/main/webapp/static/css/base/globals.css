@@ -49,3 +49,7 @@ input:focus, textarea:focus, select:focus {
   border-color: var(--color-blue-500);
   box-shadow: var(--shadow-sm);
 }
+
+main {
+  min-height: 100vh;
+}

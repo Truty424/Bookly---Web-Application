@@ -20,6 +20,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     />
   </head>
   <body>
+    <%@ include file="/html/cdn.html" %> <%@ include file="/html/header.html" %>
     <div class="container" style="margin-top: 50px; max-width: 600px">
       <h2 class="text-center">Create Your Account</h2>
 
@@ -132,4 +133,5 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </p>
     </div>
   </body>
+  <%@ include file="/html/footer.html" %>
 </html>

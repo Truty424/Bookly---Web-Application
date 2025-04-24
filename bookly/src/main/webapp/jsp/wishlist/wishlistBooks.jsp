@@ -7,7 +7,8 @@
     <title>My Wishlist</title>
 </head>
 <body>
-
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
 <h1>My Wishlist</h1>
 
 <%
@@ -34,6 +35,7 @@
 <form action="<%= request.getContextPath() %>/" method="get">
     <button type="submit">Go to Home</button>
 </form>
+<%@ include file="/html/footer.html" %>
 
 </body>
 </html>

@@ -64,5 +64,6 @@
     <c:if test="${empty user}">
         <p style="color: red;">Error: User session not available.</p>
     </c:if>
+    
 </body>
 </html>

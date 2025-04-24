@@ -5,7 +5,7 @@
     --font-serif: Georgia, 'Times New Roman', serif;
     --font-mono: 'Fira Code', monospace;
   
-    /* Font Sizes (Tailwind scale) */
+    /* Font Sizes */
     --text-xs: 0.75rem;   /* 12px */
     --text-sm: 0.875rem;  /* 14px */
     --text-base: 1rem;    /* 16px */
@@ -51,9 +51,10 @@
     --space-56: 14rem;     /* 224px */
     --space-64: 16rem;     /* 256px */
   
-    /* Colors (tailwind style tokens) */
+    /* Colors  */
     --color-white: #ffffff;
     --color-black: #000000;
+    --color-primary: #2563eb; /* blue-600 */
     
     /* Gray */
     --color-gray-50: #f9fafb;

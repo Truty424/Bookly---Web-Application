@@ -6,9 +6,8 @@
     <title>All Categories</title>
 </head>
 <body>
-    <form action="<%= request.getContextPath() %>/" method="get">
-        <button type="submit">Go to Home</button>
-    </form>
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
     <h1>Book Categories</h1>
 
     <ul>

@@ -3,6 +3,7 @@
 <%@ page import="java.util.List" %>
 <html>
 <head>
+    
     <title>Search Results</title>
     <style>
         /* Basic styles for the search results */
@@ -52,7 +53,8 @@
     </style>
 </head>
 <body>
-
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
 <h1>Search Results</h1>
 
 <%-- Display the search query entered by the user --%>
@@ -85,6 +87,6 @@
 
 <%-- Add a link back to the main search page --%>
 <p><a href="<%= request.getContextPath() %>/search">Back to Search</a></p>
-
+<%@ include file="/html/footer.html" %>
 </body>
 </html>

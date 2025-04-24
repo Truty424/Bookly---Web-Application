@@ -8,7 +8,8 @@
     <title>Checkout - Bookly</title>
 </head>
 <body>
-
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
 <h1>Checkout</h1>
 
 <c:if test="${not empty cart_books}">
@@ -45,7 +46,8 @@
     <form action="<%= request.getContextPath() %>/orders" method="post">
         <button type="submit">Order Now</button>
     </form>
-</div>
 
+    <%@ include file="/html/footer.html" %>
+</div>
 </body>
 </html>

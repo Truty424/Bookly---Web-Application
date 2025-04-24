@@ -6,6 +6,8 @@
     <title>All Authors</title>
 </head>
 <body>
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
     <h1>Book Authors</h1>
 
     <ul>

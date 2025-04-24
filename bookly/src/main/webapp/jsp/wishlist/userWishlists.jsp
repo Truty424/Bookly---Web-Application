@@ -6,7 +6,8 @@
     <title>Your Wishlists</title>
 </head>
 <body>
-
+    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/header.html" %>
 <h1>Your Wishlists</h1>
 
 <%
@@ -27,6 +28,6 @@
 <%
     }
 %>
-
+<%@ include file="/html/footer.html" %>
 </body>
 </html>

@@ -20,5 +20,6 @@
         <input type="text" id="address" name="address" value="${user.address}"><br>
         <button type="submit">Save Changes</button>
     </form>
+    
 </body>
 </html>
