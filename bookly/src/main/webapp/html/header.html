@@ -1,0 +1,32 @@
+<link rel="stylesheet" href="../css/main.css" />
+
+<nav class="header navbar navbar-expand-lg navbar-light">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-lg-flex" id="navbarNav">
+            <a class="navbar-brand col-lg-3 me-0" href="/">Bookly</a>
+            <div class="col-lg-6 justify-content-lg-center">
+                <ul class="navbar-nav justify-content-lg-center">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="/category/all" aria-haspopup="true" aria-expanded="false"> Categories  </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="/collection/all" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Authors </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about-us/">About Us</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="d-lg-flex col-lg-3 justify-content-lg-end">
+                <img onclick="redirectToProfilePage()"
+                     src="<c:url value='/load-user-img'><c:param name='username' value='${user.getUsername()}'/></c:url>" class="header-profile-image" alt="Profile Image">
+                <button id="login-button" class="btn btn-outline-primary"  onclick="redirectToLoginPage()">Login</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script src=" /js/header.js"></script>

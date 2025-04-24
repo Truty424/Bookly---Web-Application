@@ -13,8 +13,8 @@
 </servlet>
 
 <servlet-mapping>
-    <servlet-name>UserServlet</servlet-name>
-    <url-pattern>/user/*</url-pattern>
+    <servlet-name>default</servlet-name>
+    <url-pattern>/static/*</url-pattern>
 </servlet-mapping>
 
     <!-- Home (landing page) -->
