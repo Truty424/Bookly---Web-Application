@@ -1,9 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/edit-user-profile.css">
     <title>Edit User Profile</title>
 </head>
 <body>
+    <div class="profile-container">
     <h1>Edit User Profile</h1>
     <form action="${pageContext.request.contextPath}/user/editUserProfile" method="post">
         <label for="name">First Name:</label>
@@ -20,6 +22,6 @@
         <input type="text" id="address" name="address" value="${user.address}"><br>
         <button type="submit">Save Changes</button>
     </form>
-    
+    </div>
 </body>
 </html>

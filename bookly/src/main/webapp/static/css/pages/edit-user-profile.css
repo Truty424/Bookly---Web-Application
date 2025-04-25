@@ -1,0 +1,51 @@
+/* edit-user-profile.css - styles for editUserProfile.jsp */
+
+.profile-container {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    font-family: "Segoe UI", sans-serif;
+  }
+  
+  .profile-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+  
+  .profile-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-container label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .profile-container input[type="text"],
+  .profile-container input[type="email"],
+  .profile-container input[type="password"],
+  .profile-container input[type="tel"] {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+  }
+  
+  .profile-container button {
+    padding: 12px;
+    background-color: #3366cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  .profile-container button:hover {
+    background-color: #254d99;
+  }
+  
