@@ -6,9 +6,11 @@
 %>
 <html>
 <head>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/list-authors.css">
     <title>Author List</title>
 </head>
 <body>
+    <div class="authors-container">
     <h2>All Authors</h2>
     <table border="1">
         <tr><th>ID</th><th>Name</th></tr>
@@ -27,5 +29,6 @@
         <tr><td colspan="2">No authors found.</td></tr>
         <% } %>
     </table>
+    </div>
 </body>
 </html>

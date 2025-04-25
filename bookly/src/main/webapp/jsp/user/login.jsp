@@ -7,7 +7,7 @@
   <body>
     <%@ include file="/html/cdn.html" %> <%@ include file="/html/header.html" %>
     <h1>Sign In</h1>
-    <div class="login-container"></div>
+    <div class="login-container">
     <form method="post" action="${pageContext.request.contextPath}/user/login">
       <input type="text" name="username" placeholder="username" required />
       <input type="password" name="password" placeholder="Password" required />
