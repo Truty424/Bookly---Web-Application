@@ -6,13 +6,15 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.CartItem"
     request.getAttribute("total"); %>
     <html>
       <head>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/cart-summary.css">
         <title>Your Cart</title>
       </head>
       <body>
         <%@ include file="/html/cdn.html" %> <%@ include
         file="/html/header.html" %>
+        <div class="cart-container">
         <h2>Shopping Cart</h2>
-        <table border="1">
+        <table border="cart-table">
           <tr>
             <th>Book</th>
             <th>Quantity</th>
@@ -30,7 +32,10 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.CartItem"
           </tr>
           <% } %>
         </table>
-        <p><strong>Total: €<%= total != null ? total : "0.00" %></strong></p>
+        <div class="total-bar">
+        Total: €<%= total != null ? total : "0.00" %>
+        </div>
+        </div>
       </body>
     </html>
   </CartItem></CartItem
