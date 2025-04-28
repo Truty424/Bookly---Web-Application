@@ -4,46 +4,146 @@
 
 <html>
 <head>
+    <meta charset="UTF-8" />
     <title>Manage Discounts</title>
+         <!-- Base styles -->
+    <link
+    rel="stylesheet"
+    href="${pageContext.request.contextPath}/static/css/base/root.css"
+    type="text/css"
+  />
+  <link
+    rel="stylesheet"
+    href="${pageContext.request.contextPath}/static/css/base/globals.css"
+    type="text/css"
+  />
+
+  <!-- Components -->
+  <link
+    rel="stylesheet"
+    href="${pageContext.request.contextPath}/static/css/components/table.css"
+    type="text/css"
+  />
+  <link
+    rel="stylesheet"
+    href="${pageContext.request.contextPath}/static/css/components/forms.css"
+    type="text/css"
+  />
+
+  <!-- Page-specific -->
+  <link
+    rel="stylesheet"
+    href="${pageContext.request.contextPath}/static/css/pages/manageAdmin.css"
+    type="text/css"
+  />
+  <%@ include file="/html/cdn.html" %>
 </head>
 <body>
 
-<h2>Manage Discounts</h2>
+    <div class="container mb-4">
+        <div>
+          <!-- Title and Action Buttons -->
+          <div class="row my-3">
+            <div class="col-md-6">
+              <h2 class="fw-bold text-dark mb-0">Manage Discounts</h2>
+            </div>
+            <div class="col-md-6 text-md-end mt-3 mt-md-0 action-buttons">
+              <a
+                href="<%= request.getContextPath() %>/jsp/admin/addDiscount.jsp"
+                class="btn-add btn-custom"
+              >
+                + Create Discount
+              </a>
+              <a
+                href="<%= request.getContextPath() %>/admin/dashboard"
+                class="btn btn-light border btn-custom"
+              >
+                Back to Dashboard
+              </a>
+            </div>
+          </div>
+      
+          <!-- Search and Filter -->
+          <div class="row g-2 mb-2 search-filter">
+            <div class="col-md-6">
+              <input
+                id="searchInput"
+                type="text"
+                class="form-control rounded-3"
+                placeholder="Search for discounts..."
+              />
+            </div>
+            <div class="col-md-5 text-md-end p-0">
+              <select
+                id="rowsPerPage"
+                class="form-select rounded-3 w-auto d-inline-block"
+              >
+                <option value="5">5 per page</option>
+                <option value="10" selected>10 per page</option>
+                <option value="20">20 per page</option>
+              </select>
+            </div>
+          </div>
+      
+          <!-- Discounts Table -->
+          <%
+            List<Discount> discounts = (List<Discount>) request.getAttribute("discounts");
+            if (discounts != null && !discounts.isEmpty()) {
+          %>
+          <div class="container p-0 table-responsive">
+            <table id="discountsTable" class="table table-striped table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Code</th>
+                  <th>Percentage</th>
+                  <th>Expires</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                <% for (Discount discount : discounts) { %>
+                <tr>
+                  <td><%= discount.getDiscountId() %></td>
+                  <td><%= discount.getCode() %></td>
+                  <td><%= discount.getDiscountPercentage() %>%</td>
+                  <td><%= discount.getExpiredDate() %></td>
+                  <td>
+                    <form
+                      action="<%= request.getContextPath() %>/admin/deleteDiscount"
+                      method="post"
+                      onsubmit="return confirm('Are you sure you want to delete?');"
+                    >
+                      <input
+                        type="hidden"
+                        name="discount_id"
+                        value="<%= discount.getDiscountId() %>"
+                      />
+                      <button type="submit" class="btn-custom btn-delete">
+                        Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+      
+          <!-- Pagination -->
+          <nav>
+            <ul id="pagination" class="pagination justify-content-center"></ul>
+          </nav>
+          <% } else { %>
+            <p class="text-muted">No discounts available.</p>
+          <% } %>
+        </div>
+      </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<a class="add-btn" href="<%= request.getContextPath() %>/jsp/admin/addDiscount.jsp">+ Create Discount</a>
-
-<%
-    List<Discount> discounts = (List<Discount>) request.getAttribute("discounts");
-    if (discounts != null && !discounts.isEmpty()) {
-%>
-    <table>
-        <tr>
-            <th>ID</th>
-            <th>Code</th>
-            <th>Percentage</th>
-            <th>Expires</th>
-            <th>Actions</th>
-        </tr>
-        <% for (Discount discount : discounts) { %>
-        <tr>
-            <td><%= discount.getDiscountId() %></td>
-            <td><%= discount.getCode() %></td>
-            <td><%= discount.getDiscountPercentage() %>%</td>
-            <td><%= discount.getExpiredDate() %></td>
-            <td class="actions">
-                <form action="<%= request.getContextPath() %>/admin/deleteDiscount" method="post" onsubmit="return confirm('Are you sure?');">
-                    <input type="hidden" name="discount_id" value="<%= discount.getDiscountId() %>" />
-                    <button class="delete-btn" type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        <% } %>
-    </table>
-<% } else { %>
-    <p>No discounts available.</p>
-<% } %>
-
-<p><a href="<%= request.getContextPath() %>/admin/dashboard">Back to Dashboard</a></p>
-
+    <!-- Custom JavaScript for Pagination, Search, Toast -->
+    <script src="${pageContext.request.contextPath}/static/js/table-pagination.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/search-table.js"></script>
 </body>
 </html>
