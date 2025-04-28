@@ -1,0 +1,39 @@
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+.dashboard-cards {
+    display: flex;
+    gap: 1.5rem;
+}
+.card-link {
+    display: block;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+.card-link:hover {
+    background: #f0f0f0;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+}
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+.logout-btn {
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background 0.3s;
+}
+.logout-btn:hover {
+    background-color: #dc2626;
+}

@@ -28,10 +28,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       href="../../static/css/components/signup.css"
       type="text/css"
     />
-    <script src="../../static/js/toggle-password.js"></script>
+    <%@ include file="/html/cdn.html" %>
   </head>
   <body>
-    <%@ include file="/html/cdn.html" %> <%@ include file="/html/header.html" %>
+    <%@ include file="/html/header.html" %>
     <div class="signup-container">
       <div class="signup-card">
         <h2 class="text-center">Create Your Account</h2>
@@ -68,12 +68,24 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <div class="row">
             <div class="col-md-6 mb-3 form-group">
               <label for="username">Username</label>
-              <input type="text" id="username" placeholder="username" name="username" required />
+              <input
+                type="text"
+                id="username"
+                placeholder="username"
+                name="username"
+                required
+              />
             </div>
 
             <div class="col-md-6 mb-3 form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" placeholder="enter your Email" name="email" required />
+              <input
+                type="email"
+                id="email"
+                placeholder="enter your Email"
+                name="email"
+                required
+              />
             </div>
           </div>
 
@@ -107,7 +119,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <div class="row">
             <div class="col-md-12 mb-3 form-group">
               <label for="address">Address</label>
-              <input type="text" placeholder="enter your address" id="address" name="address" required />
+              <input
+                type="text"
+                placeholder="enter your address"
+                id="address"
+                name="address"
+                required
+              />
             </div>
           </div>
 
@@ -132,5 +150,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         </p>
       </div>
     </div>
+    <script src="../../static/js/toggle-password.js"></script>
   </body>
 </html>
