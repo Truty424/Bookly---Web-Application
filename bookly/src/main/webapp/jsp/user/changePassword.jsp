@@ -1,14 +1,48 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
-<head>
+  <head>
     <title>Change Password</title>
-</head>
-<body>
-    <h2>Change Password</h2>
-    <form action="${pageContext.request.contextPath}/user/changePassword" method="post">
-        <input type="password" name="password" placeholder="New Password" required />
-        <button type="submit">Update</button>
-    </form>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="ISO-8859-1" />
+    <link
+      rel="stylesheet"
+      href="../../static/css/base/root.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../static/css/base/globals.css"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="../../static/css/components/forms.css"
+    type="text/css"
+  </head>
+  <body>
 
-</body>
+        <%@ include file="/html/cdn.html" %> <%@ include file="/html/header.html" %>
+        <div class="container">
+            <div class="d-flex justify-content-center align-items-center vh-100">
+                <div class="card">
+                    <h2>Change Password</h2>
+                    <form
+                    action="${pageContext.request.contextPath}/user/changePassword"
+                    method="post"
+                    class="form-group"
+                    >
+                    <div>
+                    <label for="currentPassword">Current Password</label>
+                    <input
+                        type="password"
+                        name="currentPassword"
+                        placeholder="New Password"
+                        required
+                        id="currentPassword"
+                    />
+                    <button class="my-3" type="submit">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+  </body>
 </html>

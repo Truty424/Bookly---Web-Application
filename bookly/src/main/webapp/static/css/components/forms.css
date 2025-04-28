@@ -1,23 +1,98 @@
-
-.form-control {
-    margin-bottom: 1.2rem;
-  }
-  
-.form-control label {
-  display: block;
-  margin-bottom: 0.3rem;
-  font-weight: 500;
+.form-group {
+  text-align: left;
+  margin-bottom: 15px;
+  position: relative;
 }
-.form-control .form-input {
-    width: 100%;
-    padding: 0.65rem 0.8rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    transition: border 0.2s ease;
-  }
-.form-control .form-input:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+.form-group div {
+  margin-bottom: 10px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 30px 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 580px; /* limit max width */
+  text-align: center;
+}
+
+.card h2 {
+  margin-bottom: 10px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form-group div button {
+  background: linear-gradient(to right, #7f5af0, #6a5acd);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.form-group div button:hover {
+  background: linear-gradient(to right, #b5a9ff, #7f5af0);
+  transform: scale(1.05);
+}
+
+.toggle-password {
+  position: absolute;
+  top: 35px;
+  right: 20px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+.toggle-password::before {
+  content: '\1F441'; /* Unicode for eye emoji */
+  font-size: 20px;
+  display: inline-block;
+}
+
+
+.toggle-password.active::before {
+  content: '\1F648'; /* Unicode for see-no-evil monkey 🙈 */
+}
+
+.form-check-input {
+  margin-right: 10px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.form-options {
+  text-align: left;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+.form-options a {
+  color: #6a5acd;
+  text-decoration: none;
 }

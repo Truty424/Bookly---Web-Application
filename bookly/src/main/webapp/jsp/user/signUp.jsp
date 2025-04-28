@@ -10,128 +10,127 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <meta charset="ISO-8859-1" />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/base/globals.css"
+      href="../../static/css/base/root.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/css/style.css"
+      href="../../static/css/base/globals.css"
       type="text/css"
     />
+    <link
+      rel="stylesheet"
+      href="../../static/css/components/forms.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="../../static/css/components/signup.css"
+      type="text/css"
+    />
+    <script src="../../static/js/toggle-password.js"></script>
   </head>
   <body>
     <%@ include file="/html/cdn.html" %> <%@ include file="/html/header.html" %>
-    <div class="container" style="margin-top: 50px; max-width: 600px">
-      <h2 class="text-center">Create Your Account</h2>
+    <div class="signup-container">
+      <div class="signup-card">
+        <h2 class="text-center">Create Your Account</h2>
+        <form
+          action="${pageContext.request.contextPath}/user/register"
+          method="post"
+          novalidate
+        >
+          <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+              <label for="firstName">First Name</label>
+              <input
+                class="form-control"
+                type="text"
+                id="firstName"
+                name="firstName"
+                placeholder="First Name"
+                required
+              />
+            </div>
 
-      <c:if test="${not empty error_message}">
-        <p class="text-danger"><strong>${error_message}</strong></p>
-      </c:if>
-
-      <form
-        action="${pageContext.request.contextPath}/user/register"
-        method="post"
-        novalidate
-      >
-        <div class="form-control">
-          <label for="username">Username</label>
-          <input
-            class="form-input"
-            type="text"
-            id="username"
-            name="username"
-            required
-          />
-        </div>
-
-        <div class="form-control">
-          <label for="email">Email</label>
-          <input
-            class="form-input"
-            type="email"
-            id="email"
-            name="email"
-            required
-          />
-        </div>
-
-        <div class="form-control">
-          <label for="password">Password</label>
-          <input
-            class="form-input"
-            type="password"
-            id="password"
-            name="password"
-            minlength="8"
-            required
-          />
-          <div style="margin-top: 0.5rem">
-            <input
-              type="checkbox"
-              onclick="togglePasswordVisibility()"
-              id="showPassword"
-            />
-            <label for="showPassword">Show Password</label>
+            <div class="col-md-6 mb-3 form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                class="form-control"
+                type="text"
+                id="lastName"
+                name="lastName"
+                placeholder="Last Name"
+                required
+              />
+            </div>
           </div>
-        </div>
+          <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+              <label for="username">Username</label>
+              <input type="text" id="username" placeholder="username" name="username" required />
+            </div>
 
-        <div class="form-control">
-          <label for="firstName">First Name</label>
-          <input
-            class="form-input"
-            type="text"
-            id="firstName"
-            name="firstName"
-            required
-          />
-        </div>
+            <div class="col-md-6 mb-3 form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" placeholder="enter your Email" name="email" required />
+            </div>
+          </div>
 
-        <div class="form-control">
-          <label for="lastName">Last Name</label>
-          <input
-            class="form-input"
-            type="text"
-            id="lastName"
-            name="lastName"
-            required
-          />
-        </div>
+          <div class="row">
+            <div class="col-md-6 mb-3 form-group">
+              <label for="password">Password</label>
+              <input
+                class="form-control"
+                type="password"
+                id="password"
+                name="password"
+                placeholder="enter your Password"
+                pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"
+                minlength="4"
+                required
+              />
+              <span class="toggle-password" onclick="togglePassword()"></span>
+            </div>
+            <div class="col-md-6 mb-3 form-group">
+              <label for="phone">Phone</label>
+              <input
+                type="text"
+                id="phone"
+                name="phone"
+                placeholder="+1234567890"
+                required
+              />
+            </div>
+          </div>
 
-        <div class="form-control">
-          <label for="phone">Phone</label>
-          <input
-            class="form-input"
-            type="text"
-            id="phone"
-            name="phone"
-            placeholder="+1234567890"
-            required
-          />
-        </div>
+          <div class="row">
+            <div class="col-md-12 mb-3 form-group">
+              <label for="address">Address</label>
+              <input type="text" placeholder="enter your address" id="address" name="address" required />
+            </div>
+          </div>
 
-        <div class="form-control">
-          <label for="address">Address</label>
-          <input
-            class="form-input"
-            type="text"
-            id="address"
-            name="address"
-            required
-          />
-        </div>
+          <div class="row">
+            <div class="col-12">
+              <button type="submit" class="w-100 signup-btn mt-3">
+                Create Account
+              </button>
+            </div>
+          </div>
 
-        <div class="form-control" style="margin-top: 20px">
-          <button type="submit" class="btn btn-primary w-100">
-            Create Account
-          </button>
-        </div>
-      </form>
+          <c:if test="${not empty error_message}">
+            <p class="text-danger text-center mt-2">
+              <strong>${error_message}</strong>
+            </p>
+          </c:if>
+        </form>
 
-      <p class="text-center" style="margin-top: 20px">
-        Already have an account?
-        <a href="${pageContext.request.contextPath}/user/login">Sign In</a>
-      </p>
+        <p class="text-center signin-link mt-4">
+          Already have an account?
+          <a href="${pageContext.request.contextPath}/user/login">Sign In</a>
+        </p>
+      </div>
     </div>
   </body>
-  <%@ include file="/html/footer.html" %>
 </html>

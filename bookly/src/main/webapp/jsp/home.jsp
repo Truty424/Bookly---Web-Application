@@ -15,12 +15,6 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
       type="text/css"
       href="../static/css/base/globals.css"
     />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="../static/css/components/footer.css"
-    />
-    <script src="../static/js/test.js"></script>
   </head>
   <body>
     <%@ include file="/html/cdn.html" %> 
@@ -38,23 +32,6 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
           <button type="submit">My Profile</button>
         </form>
       </c:when>
-      <c:otherwise>
-        <form
-          action="${pageContext.request.contextPath}/user/login"
-          method="get"
-          style="display: inline"
-        >
-          <button type="submit">Login</button>
-        </form>
-
-        <form
-          action="${pageContext.request.contextPath}/user/register"
-          method="get"
-          style="display: inline"
-        >
-          <button type="submit">Register</button>
-        </form>
-      </c:otherwise>
     </c:choose>
 
     <!-- Go to All Categories -->

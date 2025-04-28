@@ -1,0 +1,17 @@
+.horizontal-scroll {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    cursor: grab;
+    user-select: none;
+    gap: 1rem;
+  }
+  
+  .horizontal-scroll.active {
+    cursor: grabbing;
+  }
+  
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none; /* Hide scrollbar for clean UI */
+  }
+  
