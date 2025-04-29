@@ -4,10 +4,10 @@
 <html>
 <head>
     <title>Books in Category</title>
+    <%@ include file="/html/cdn.html" %> 
 </head>
 <body>
 
-    <%@ include file="/html/cdn.html" %> 
     <%@ include file="/html/header.html" %>
     <h1>Books in Selected Category</h1>
 

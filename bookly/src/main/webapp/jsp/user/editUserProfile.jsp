@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/edit-user-profile.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/edit-user-profile.css" />
     <title>Edit User Profile</title>
 </head>
 <body>

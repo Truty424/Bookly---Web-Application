@@ -3,9 +3,10 @@
 <head>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/book-search.css">
     <title>Search Books</title>
+    <%@ include file="/html/cdn.html" %> 
 </head>
 <body>
-    <%@ include file="/html/cdn.html" %> 
+
     <%@ include file="/html/header.html" %>
     <div class="search-container">
     <h2>Search for a Book</h2>

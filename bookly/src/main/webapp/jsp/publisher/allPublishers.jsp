@@ -6,10 +6,9 @@
 <head>
     <meta charset="UTF-8">
     <title>All Publishers</title>
-
+    <%@ include file="/html/cdn.html" %> 
 </head>
 <body>
-    <%@ include file="/html/cdn.html" %> 
     <%@ include file="/html/header.html" %>
     <h1>All Publishers</h1>
     <ul>

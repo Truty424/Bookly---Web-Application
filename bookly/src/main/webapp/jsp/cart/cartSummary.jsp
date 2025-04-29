@@ -6,12 +6,13 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.CartItem"
     request.getAttribute("total"); %>
     <html>
       <head>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/cart-summary.css">
         <title>Your Cart</title>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/cart-summary.css" />
+        <%@ include file="/html/cdn.html" %> 
       </head>
       <body>
-        <%@ include file="/html/cdn.html" %> <%@ include
-        file="/html/header.html" %>
+
+        <%@ include file="/html/header.html" %>
         <div class="cart-container">
         <h2>Shopping Cart</h2>
         <table border="cart-table">

@@ -6,9 +6,9 @@
 <html>
 <head>
     <title>Your Orders</title>
+    <%@ include file="/html/cdn.html" %> 
 </head>
 <body>
-    <%@ include file="/html/cdn.html" %> 
     <%@ include file="/html/header.html" %>
 <h1>Your Orders</h1>
 

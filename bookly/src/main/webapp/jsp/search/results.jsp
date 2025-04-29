@@ -51,9 +51,10 @@
             color: red;
         }
     </style>
+        <%@ include file="/html/cdn.html" %> 
 </head>
 <body>
-    <%@ include file="/html/cdn.html" %> 
+
     <%@ include file="/html/header.html" %>
 <h1>Search Results</h1>
 
