@@ -5,30 +5,43 @@
 <head>
     <title>All Authors</title>
     <%@ include file="/html/cdn.html" %> 
+    <link
+    rel="stylesheet"
+    href="<%= request.getContextPath() %>/static/css/pages/allAuthors.css"
+    type="text/css"
+    />
 </head>
 <body>
     <%@ include file="/html/header.html" %>
-    <h1>Book Authors</h1>
-
-    <ul>
-        <%
-            List<Author> authors = (List<Author>) request.getAttribute("all_authors");
-            if (authors != null) {
-                for (Author author : authors) {
-        %>
-                    <li>
+    <div class="container">
+        <h1 class="page-title">Book Authors</h1>
+        <div class="authors-grid">
+            <%
+                List<Author> authors = (List<Author>) request.getAttribute("all_authors");
+                if (authors != null) {
+                    for (Author author : authors) {
+            %>
+                <div class="author-card">
+                    <img
+                        src="<%= request.getContextPath() %>/static/img/authors/<%= author.getAuthorId() %>.jpg"
+                        alt="<%= author.getName() %>"
+                        class="author-image"
+                    />
+                    <h3 class="author-name">
                         <a href="<%= request.getContextPath() %>/author/<%= author.getAuthorId() %>">
                             <%= author.getName() %>
                         </a>
-                    </li>
-        <%
+                    </h3>
+                </div>
+            <%
+                    }
+                } else {
+            %>
+                <p class="no-authors">No authors found.</p>
+            <%
                 }
-            } else {
-        %>
-            <li>No authors found.</li>
-        <%
-            }
-        %>
-    </ul>
+            %>
+        </div>
+    </div>
 </body>
 </html>
