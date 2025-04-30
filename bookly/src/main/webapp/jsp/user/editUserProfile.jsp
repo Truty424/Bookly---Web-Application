@@ -32,7 +32,7 @@
     <%@ include file="/html/cdn.html" %>
   </head>
   <body>
-    <div class="profile-container">
+    <div class="container-fluid p-0">
       <div class="d-flex">
         <aside class="sidebar">
           <div class="sidebar-content">
@@ -74,7 +74,7 @@
             </ul>
           </div>
         </aside>
-        <div>
+        <main class="profile-content">
           <h2>Edit User Profile</h2>
           <form
             action="${pageContext.request.contextPath}/user/editUserProfile"
@@ -128,7 +128,7 @@
             /><br />
             <button type="submit">Save Changes</button>
           </form>
-        </div>
+        </main>
       </div>
     </div>
   </body>

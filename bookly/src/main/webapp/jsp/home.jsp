@@ -43,14 +43,6 @@
 
     <!-- Navigation Buttons -->
     <div class="home-buttons">
-      <form action="${pageContext.request.contextPath}/category" method="get">
-        <button type="submit" class="btn btn-primary">View All Categories</button>
-      </form>
-
-      <form action="${pageContext.request.contextPath}/book" method="get">
-        <button type="submit" class="btn btn-primary">View All Books</button>
-      </form>
-
       <form action="${pageContext.request.contextPath}/cart" method="get">
         <button type="submit" class="btn btn-primary">View Cart</button>
       </form>
