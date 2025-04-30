@@ -97,14 +97,14 @@ public class UserServlet extends AbstractDatabaseServlet {
 
         if (newPassword == null || newPassword.trim().isEmpty()) {
             req.setAttribute("error_message", "Password cannot be empty.");
-            res.sendRedirect(req.getContextPath() + "/user/login.jsp");
+            res.sendRedirect(req.getContextPath() + "/user/login");
             return;
         }
         try {
             boolean changed = new ChangeUserPasswordDAO(getConnection(), userId, newPassword).access().getOutputParam();
             if (changed) {
                 req.setAttribute("success_message", "Password updated successfully.");
-                res.sendRedirect(req.getContextPath() + "/user/login.jsp");
+                res.sendRedirect(req.getContextPath() + "/user/login");
             } else {
                 req.setAttribute("error_message", "Password update failed.");
                 req.getRequestDispatcher("/jsp/user/changePassword.jsp").forward(req, res);
