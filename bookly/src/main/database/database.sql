@@ -21,7 +21,7 @@ DROP CONSTRAINT phone_domain_check;
 -- ENUM types
 CREATE TYPE booklySchema.user_role AS ENUM ('user', 'admin');
 CREATE TYPE booklySchema.payment_method AS ENUM ('in_person', 'credit_card');
-CREATE TYPE booklySchema.payment_status AS ENUM ('placed', 'paid','cancelled','shipped','delivered');
+CREATE TYPE booklySchema.payment_status AS ENUM ('placed', 'paid', 'cancelled', 'shipped', 'delivered');
 
 -- Users
 CREATE TABLE IF NOT EXISTS booklySchema.users (
@@ -43,7 +43,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.user_image (
     FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
 );
 
-
 CREATE TABLE IF NOT EXISTS booklySchema.authors (
     author_id SERIAL PRIMARY KEY,
     firstName VARCHAR(100) NOT NULL,
@@ -51,7 +50,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.authors (
     biography TEXT,
     nationality VARCHAR(100) NOT NULL
 );
-
 
 CREATE TABLE IF NOT EXISTS booklySchema.publishers (
     publisher_id SERIAL PRIMARY KEY,
@@ -65,7 +63,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.categories (
     category_name VARCHAR(50) NOT NULL,
     description TEXT
 );
-
 
 CREATE TABLE IF NOT EXISTS booklySchema.books (
     book_id SERIAL PRIMARY KEY,
@@ -85,10 +82,8 @@ CREATE TABLE IF NOT EXISTS booklySchema.book_image (
     book_id INTEGER PRIMARY KEY NOT NULL,
     image BYTEA NOT NULL,
     image_type VARCHAR(255) NOT NULL,
-    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id) 
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
 );
-
-
 
 CREATE TABLE IF NOT EXISTS booklySchema.wishlists (
     wishlist_id SERIAL PRIMARY KEY,
@@ -96,7 +91,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.wishlists (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
 );
-
 
 CREATE TABLE IF NOT EXISTS booklySchema.orders (
     order_id SERIAL PRIMARY KEY,
@@ -108,7 +102,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.orders (
     status booklySchema.payment_status NOT NULL
 );
 
-
 CREATE TABLE IF NOT EXISTS booklySchema.discounts (
     discount_id SERIAL PRIMARY KEY,
     code VARCHAR(50) UNIQUE NOT NULL,
@@ -116,17 +109,20 @@ CREATE TABLE IF NOT EXISTS booklySchema.discounts (
     expired_date TIMESTAMP
 );
 
+-- ✅ Reviews with reply support
 CREATE TABLE IF NOT EXISTS booklySchema.reviews (
     review_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
-    comment TEXT,
+    review_text TEXT,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     number_of_likes INTEGER,
     number_of_dislikes INTEGER,
+    parent_review_id INTEGER, -- 👈 self-referencing for replies
     FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
-    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id),
+    FOREIGN KEY (parent_review_id) REFERENCES booklySchema.reviews(review_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS booklySchema.shoppingcart (
@@ -143,8 +139,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.shoppingcart (
     FOREIGN KEY (order_id) REFERENCES booklySchema.orders(order_id)
 );
 
-
-
 CREATE TABLE IF NOT EXISTS booklySchema.published_by (
     book_id INTEGER NOT NULL,
     publisher_id INTEGER NOT NULL,
@@ -153,7 +147,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.published_by (
     FOREIGN KEY (publisher_id) REFERENCES booklySchema.publishers(publisher_id)
 );
 
-
+-- ✅ Writes remains optional in schema, no NOT NULL constraint
 CREATE TABLE IF NOT EXISTS booklySchema.writes (
     book_id INTEGER NOT NULL,
     author_id INTEGER NOT NULL,
@@ -170,7 +164,6 @@ CREATE TABLE IF NOT EXISTS booklySchema.contains (
     FOREIGN KEY (cart_id) REFERENCES booklySchema.shoppingcart(cart_id)
 );
 
-
 CREATE TABLE IF NOT EXISTS booklySchema.category_belongs (
     book_id INTEGER NOT NULL,
     category_id INTEGER NOT NULL,
@@ -181,7 +174,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.category_belongs (
 
 CREATE TABLE IF NOT EXISTS booklySchema.contains_wishlist (
     wishlist_id INTEGER NOT NULL,
-    book_id INTEGER UNIQUE, 
+    book_id INTEGER UNIQUE,
     PRIMARY KEY (wishlist_id, book_id),
     FOREIGN KEY (wishlist_id) REFERENCES booklySchema.wishlists(wishlist_id),
     FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
