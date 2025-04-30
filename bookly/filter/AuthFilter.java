@@ -27,7 +27,7 @@ public class AuthFilter implements Filter {
         if (loggedIn || loginRequest || uri.contains("static") || uri.contains("signup")) {
             chain.doFilter(request, response);
         } else {
-            res.sendRedirect(req.getContextPath() + "/jsp/user/login.jsp");
+            res.sendRedirect(req.getContextPath() + "/user/login.jsp");
         }
     }
 }

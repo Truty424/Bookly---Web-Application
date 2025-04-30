@@ -1,45 +1,44 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="it.unipd.bookly.Resource.Book" %>
-<%@ page import="java.util.List" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
 <head>
     <title>All Books</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/root.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/allBooks.css" type="text/css" />
+    <meta charset="UTF-8" />
+    <%@ include file="/html/cdn.html" %>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/allBooks.css" type="text/css" />
 </head>
 <body>
     <%@ include file="/html/header.html" %>
+
     <div class="container">
-        <h1 class="page-title">All Books</h1>
+        <h2 class="all-books-title">All Books</h2>
+
         <div class="books-grid">
-            <%
-                List<Book> books = (List<Book>) request.getAttribute("all_books");
-                if (books != null) {
-                    for (Book book : books) {
-            %>
+            <c:choose>
+                <c:when test="${not empty all_books}">
+                    <c:forEach var="book" items="${all_books}">
                         <div class="book-card">
-                            <img src="<%= request.getContextPath() %>/load-book-img?bookId=<%= book.getBookId() %>" alt="<%= book.getTitle() %>" class="book-image" />
+                            <img src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}"
+                                 alt="${book.title}" class="book-image" />
                             <h3 class="book-title">
-                                <a href="<%= request.getContextPath() %>/book/<%= book.getBookId() %>" class="book-title">
-                                    <%= book.getTitle() %>
+                                <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-title">
+                                    ${book.title}
                                 </a>
                             </h3>
                         </div>
-            <%
-                    }
-                } else {
-            %>
-                <p class="no-books">No books found.</p>
-            <%
-                }
-            %>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <p class="no-books-message">No books found.</p>
+                </c:otherwise>
+            </c:choose>
         </div>
-        <form action="<%= request.getContextPath() %>/" method="get" class="back-home-form">
-            <button type="submit" class="btn btn-primary">Go to Home</button>
-        </form>
+
     </div>
+
     <%@ include file="/html/footer.html" %>
 </body>
 </html>

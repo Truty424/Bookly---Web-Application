@@ -1,103 +1,99 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="it.unipd.bookly.Resource.Book" %>
-<%@ page import="it.unipd.bookly.Resource.Author" %>
-<%@ page import="it.unipd.bookly.Resource.Review" %>
-<%@ page import="java.util.List" %>
+<%@ page contentType="text/html;charset=UTF-8" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html>
-<head>
+  <head>
     <title>Book Details</title>
-    <%@ include file="/html/cdn.html" %> 
-</head>
-<body>
-
+    <%@ include file="/html/cdn.html" %>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/static/css/pages/bookDetails.css"
+    />
+  </head>
+  <body>
     <%@ include file="/html/header.html" %>
-    <h1>Book Details</h1>
 
-    <%
-        Book book = (Book) request.getAttribute("book_details");
-        List<Author> authors = (List<Author>) request.getAttribute("authors");
+    <div class="container">
+      <c:choose>
+        <c:when test="${not empty book_details}">
+          <h2 class="book-subheading">${book_details.title}</h2>
 
-        if (book != null) {
-    %>
-        <h2><%= book.getTitle() %></h2>
-        <p><strong>ISBN:</strong> <%= book.getIsbn() %></p>
-        <p><strong>Price:</strong> $<%= book.getPrice() %></p>
-        <p><strong>Language:</strong> <%= book.getLanguage() %></p>
-        <p><strong>Author(s):</strong>
-        <%
-            if (authors != null && !authors.isEmpty()) {
-                for (int i = 0; i < authors.size(); i++) {
-                    Author a = authors.get(i);
-        %>
-            <%= a.getName() %><%= (i < authors.size() - 1) ? ", " : "" %>
-        <%
-                }
-            } else {
-        %>
-            Unknown
-        <%
-            }
-        %>
-        </p>
-    <%
-        } else {
-    %>
-        <p>Book details not found.</p>
-    <%
-        }
-    %>
+          <p class="book-paragraph">
+            <strong class="book-label">ISBN:</strong> ${book_details.isbn}
+          </p>
+          <p class="book-paragraph">
+            <strong class="book-label">Price:</strong> €${book_details.price}
+          </p>
+          <p class="book-paragraph">
+            <strong class="book-label">Language:</strong>
+            ${book_details.language}
+          </p>
 
-        <form action="<%= request.getContextPath() %>/cart/add/<%= book.getBookId() %>" method="post" style="margin-top: 20px;">
-            <button type="submit">Add to Cart</button>
-        </form>
+          <p class="book-paragraph">
+            <strong class="book-label">Author(s):</strong>
+            <c:choose>
+              <c:when test="${not empty authors}">
+                <c:forEach var="author" items="${authors}" varStatus="loop">
+                  ${author.name}<c:if test="${!loop.last}">, </c:if>
+                </c:forEach>
+              </c:when>
+              <c:otherwise>Unknown</c:otherwise>
+            </c:choose>
+          </p>
 
-        <form action="<%= request.getContextPath() %>/wishlist/add/<%= book.getBookId() %>" method="post" style="margin-top: 10px;">
-            <button type="submit"> Add to Wishlist</button>
-        </form>
+          <form
+            class="book-action-form"
+            action="${pageContext.request.contextPath}/cart/add/${book_details.bookId}"
+            method="post"
+          >
+            <button class="book-action-button" type="submit">Add to Cart</button>
+          </form>
 
-        <h2>Reviews</h2>
-        <%
-            List<Review> reviews = (List<Review>) request.getAttribute("reviews");
-            if (reviews != null && !reviews.isEmpty()) {
-        %>
-            <ul>
-                <%
-                    for (it.unipd.bookly.Resource.Review review : reviews) {
-                %>
-                    <li>
-                        <p><strong>Rating:</strong> <%= review.getRating() %> / 5</p>
-                        <p><strong>Comment:</strong> <%= review.getReviewText() %></p>
-                        <p><em>By User ID:</em> <%= review.getUserId() %></p>
-                        <p><em>Date:</em> <%= review.getReviewDate() %></p>
-                        <p>👍 <%= review.getNumberOfLikes() %> | 👎 <%= review.getNumberOfDislikes() %></p>
-                        <hr/>
-                    </li>
-                <%
-                    }
-                %>
-            </ul>
-        <%
-            } else {
-        %>
-            <p>No reviews available for this book.</p>
-        <%
-            }
-        %>
+          <form
+            action="${pageContext.request.contextPath}/wishlist/add/${book_details.bookId}"
+            method="post"
+            style="margin-top: 10px"
+          >
+            <button type="submit">Add to Wishlist</button>
+          </form>
+        </c:when>
+        <c:otherwise>
+          <p>Book details not found.</p>
+        </c:otherwise>
+      </c:choose>
 
- 
-    
-    <a href="<%= request.getContextPath() %>/book">Back to all books</a>
+      <h2>Reviews</h2>
+      <c:choose>
+        <c:when test="${not empty reviews}">
+          <ul class="review-list">
+            <c:forEach var="review" items="${reviews}">
+              <li class="review-item">
+                <p><strong>Rating:</strong> ${review.rating} / 5</p>
+                <p><strong>Comment:</strong> ${review.reviewText}</p>
+                <p><em>By User ID:</em> ${review.userId}</p>
+                <p><em>Date:</em> ${review.reviewDate}</p>
+                <p>
+                  👍 ${review.numberOfLikes} | 👎 ${review.numberOfDislikes}
+                </p>
+                <hr />
+              </li>
+            </c:forEach>
+          </ul>
+        </c:when>
+        <c:otherwise>
+          <p>No reviews available for this book.</p>
+        </c:otherwise>
+      </c:choose>
+
+      <p>
+        <a href="${pageContext.request.contextPath}/book"
+          >← Back to All Books</a
+        >
+      </p>
+    </div>
+
     <%@ include file="/html/footer.html" %>
-</body>
+  </body>
 </html>
-
-
-
-
-
-
-
-
-
-
