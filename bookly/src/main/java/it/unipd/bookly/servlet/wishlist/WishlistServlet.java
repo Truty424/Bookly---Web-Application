@@ -33,7 +33,7 @@ public class WishlistServlet extends AbstractDatabaseServlet {
 
             String path = req.getRequestURI();
 
-            if (path.matches(".*/wishlist/?")) {
+            if (path.matches(".*/user/wishlist/?")) {
                 showWishlist(req, resp, userId);
             } else {
                 ServletUtils.redirectToErrorPage(req, resp, "Invalid wishlist path: " + path);
@@ -64,19 +64,19 @@ public class WishlistServlet extends AbstractDatabaseServlet {
             String path = req.getRequestURI();
             int wishlistId = getOrCreateWishlistId(userId);
 
-            if (path.matches(".*/wishlist/add/\\d+/?")) {
+            if (path.matches(".*/user/wishlist/add/\\d+/?")) {
                 int bookId = extractBookIdFromPath(path);
                 new AddBookToWishlistDAO(getConnection(), wishlistId, bookId).access();
-                resp.sendRedirect("/wishlist");
+                resp.sendRedirect("/user/wishlist");
 
-            } else if (path.matches(".*/wishlist/remove/\\d+/?")) {
+            } else if (path.matches(".*/user/wishlist/remove/\\d+/?")) {
                 int bookId = extractBookIdFromPath(path);
                 new RemoveBookFromWishlistDAO(getConnection(), bookId, wishlistId).access();
-                resp.sendRedirect("/wishlist");
+                resp.sendRedirect("/user/wishlist");
 
-            } else if (path.matches(".*/wishlist/clear/?")) {
+            } else if (path.matches(".*/user/wishlist/clear/?")) {
                 new ClearWishlistDAO(getConnection(), wishlistId).access();
-                resp.sendRedirect("/wishlist");
+                resp.sendRedirect("/user/wishlist");
 
             } else {
                 ServletUtils.redirectToErrorPage(req, resp, "Invalid wishlist operation: " + path);

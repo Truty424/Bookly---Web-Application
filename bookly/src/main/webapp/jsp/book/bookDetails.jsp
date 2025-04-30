@@ -7,9 +7,10 @@
 <html>
 <head>
     <title>Book Details</title>
+    <%@ include file="/html/cdn.html" %> 
 </head>
 <body>
-    <%@ include file="/html/cdn.html" %> 
+
     <%@ include file="/html/header.html" %>
     <h1>Book Details</h1>
 
@@ -87,6 +88,7 @@
  
     
     <a href="<%= request.getContextPath() %>/book">Back to all books</a>
+    <%@ include file="/html/footer.html" %>
 </body>
 </html>
 
