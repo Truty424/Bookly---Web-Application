@@ -7,6 +7,7 @@ import it.unipd.bookly.dao.publisher.GetAllPublishersDAO;
 import it.unipd.bookly.dao.publisher.GetBooksByPublisherDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,18 +30,25 @@ public class PublisherServlet extends AbstractDatabaseServlet {
         LogContext.setResource(req.getRequestURI());
         LogContext.setAction("publisherServlet");
 
-        String path = req.getRequestURI();
-
         try {
-            if (path.matches(".*/publisher/?")) {
-                showAllPublishers(req, resp);
-            } else if (path.matches(".*/publisher/\\d+")) {
-                showBooksByPublisher(req, resp);
-            } else {
-                ServletUtils.redirectToErrorPage(req, resp, "Invalid publisher path: " + path);
+            String[] segments = req.getRequestURI().split("/");
+            int segmentCount = segments.length;
+
+            switch (segmentCount) {
+                case 2, 3 -> showAllPublishers(req, resp); // /publisher or /publisher/
+                default -> {
+                    String lastSegment = segments[segments.length - 1];
+                    if (lastSegment.matches("\\d+")) {
+                        int publisherId = Integer.parseInt(lastSegment);
+                        showBooksByPublisher(req, resp, publisherId);
+                    } else {
+                        ServletUtils.redirectToErrorPage(req, resp, "Invalid publisher path.");
+                    }
+                }
             }
+
         } catch (Exception e) {
-            LOGGER.error("PublisherServlet error: {}", e.getMessage());
+            LOGGER.error("PublisherServlet error: {}", e.getMessage(), e);
             ServletUtils.redirectToErrorPage(req, resp, "PublisherServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
@@ -56,17 +64,12 @@ public class PublisherServlet extends AbstractDatabaseServlet {
         }
     }
 
-
-    private void showBooksByPublisher(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    private void showBooksByPublisher(HttpServletRequest req, HttpServletResponse resp, int publisherId) throws Exception {
         try (var con = getConnection()) {
-            String[] segments = req.getRequestURI().split("/");
-            int publisherId = Integer.parseInt(segments[segments.length - 1]);
-
             List<Book> books = new GetBooksByPublisherDAO(con, publisherId).access().getOutputParam();
             req.setAttribute("publisher_books", books);
             req.setAttribute("publisher_id", publisherId);
             req.getRequestDispatcher("/jsp/publisher/publisherBooks.jsp").forward(req, resp);
         }
     }
-
 }

@@ -3,10 +3,7 @@ package it.unipd.bookly.rest.review;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.Review;
-import it.unipd.bookly.dao.review.GetAllReviewsDAO;
-import it.unipd.bookly.dao.review.GetReviewsByBookDAO;
-import it.unipd.bookly.dao.review.GetReviewsByUserDAO;
-import it.unipd.bookly.dao.review.GetTopReviewsForBookDAO;
+import it.unipd.bookly.dao.review.*;
 import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,11 +11,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- * Handles: - GET /api/review/book/{bookId} - GET /api/review/user/{userId} -
- * GET /api/review/top/book/{bookId} - GET /api/reviews
+ * Handles review querying:
+ * - GET /api/review/book/{bookId}
+ * - GET /api/review/user/{userId}
+ * - GET /api/review/stats/book/{bookId}
  */
 public class ReviewQueryRest extends AbstractRestResource {
 
@@ -34,11 +35,10 @@ public class ReviewQueryRest extends AbstractRestResource {
         final String path = req.getRequestURI();
 
         try {
-            switch (method) {
-                case "GET" ->
-                    handleGet(path);
-                default ->
-                    respondMethodNotAllowed("Only GET is supported for review queries.");
+            if ("GET".equals(method)) {
+                handleGet(path);
+            } else {
+                respondMethodNotAllowed("Only GET is supported for review queries.");
             }
         } catch (Exception e) {
             LOGGER.error("ReviewQueryRest error", e);
@@ -48,50 +48,41 @@ public class ReviewQueryRest extends AbstractRestResource {
 
     private void handleGet(String path) throws Exception {
         if (path.matches(".*/review/book/\\d+$")) {
-            handleGetReviewsByBook(path);
+            int bookId = extractIdFromPath(path);
+            List<Review> reviews = new GetReviewsByBookDAO(con, bookId).access().getOutputParam();
+            respondJson(reviews);
         } else if (path.matches(".*/review/user/\\d+$")) {
-            handleGetReviewsByUser(path);
-        } else if (path.matches(".*/review/top/book/\\d+$")) {
-            handleGetTopReviewsForBook(path);
-        } else if (path.endsWith("/reviews")) {
-            handleGetAllReviews();
+            int userId = extractIdFromPath(path);
+            List<Review> reviews = new GetReviewsByUserDAO(con, userId).access().getOutputParam();
+            respondJson(reviews);
+        } else if (path.matches(".*/review/stats/book/\\d+$")) {
+            int bookId = extractIdFromPath(path);
+            handleGetReviewStats(bookId);
         } else {
             respondNotFound("Invalid review query path.");
         }
     }
 
-    private void handleGetReviewsByBook(String path) throws Exception {
-        int bookId = extractIdFromPath(path);
-        List<Review> reviews = new GetReviewsByBookDAO(con, bookId).access().getOutputParam();
-        writeJsonResponse(reviews);
-    }
+    private void handleGetReviewStats(int bookId) throws Exception {
+        double averageRating = new GetAvgRatingForBookDAO(con, bookId).access().getOutputParam();
+        int reviewCount = new CountReviewsForBookDAO(con, bookId).access().getOutputParam();
 
-    private void handleGetReviewsByUser(String path) throws Exception {
-        int userId = extractIdFromPath(path);
-        List<Review> reviews = new GetReviewsByUserDAO(con, userId).access().getOutputParam();
-        writeJsonResponse(reviews);
-    }
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("bookId", bookId);
+        stats.put("averageRating", averageRating);
+        stats.put("reviewCount", reviewCount);
 
-    private void handleGetTopReviewsForBook(String path) throws Exception {
-        int bookId = extractIdFromPath(path);
-        int limit = 5;
-        List<Review> reviews = new GetTopReviewsForBookDAO(con, bookId, limit).access().getOutputParam();
-        writeJsonResponse(reviews);
-    }
-
-    private void handleGetAllReviews() throws Exception {
-        List<Review> reviews = new GetAllReviewsDAO(con).access().getOutputParam();
-        writeJsonResponse(reviews);
+        respondJson(stats);
     }
 
     private int extractIdFromPath(String path) {
         return Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
     }
 
-    private void writeJsonResponse(List<Review> reviews) throws IOException {
+    private void respondJson(Object obj) throws IOException {
         res.setStatus(HttpServletResponse.SC_OK);
         res.setContentType("application/json;charset=UTF-8");
-        mapper.writeValue(res.getOutputStream(), reviews);
+        mapper.writeValue(res.getOutputStream(), obj);
     }
 
     private void respondNotFound(String detail) throws IOException {

@@ -18,6 +18,7 @@ public class Review {
     private int numberOfLikes;
     private int numberOfDislikes;
     private Timestamp reviewDate;
+    private Integer parentReviewId;
 
     // Optional fields for JOIN operations
     private String username;
@@ -31,7 +32,7 @@ public class Review {
     }
 
     /**
-     * Constructs a Review with all attributes.
+     * Constructs a Review with some attributes.
      *
      * @param reviewId        The ID of the review.
      * @param userId          The ID of the user who wrote the review.
@@ -55,6 +56,31 @@ public class Review {
     }
 
     /**
+     * Constructs a Review with all attributes.
+     *
+     * @param reviewId        The ID of the review.
+     * @param userId          The ID of the user who wrote the review.
+     * @param book_id         The ID of the book being reviewed.
+     * @param reviewText      The text of the review.
+     * @param rating          The rating given to the book.
+     * @param numberOfLikes   The number of likes the review has received.
+     * @param numberOfDislikes The number of dislikes the review has received.
+     * @param reviewDate      The date the review was written.
+     * @param parentReviewId  The id of parent's review.
+     */
+    public Review(int reviewId, int userId, int bookId, String reviewText, int rating,
+                int numberOfLikes, int numberOfDislikes, Timestamp reviewDate, Integer parentReviewId) {
+        this.reviewId = reviewId;
+        this.userId = userId;
+        this.book_id = bookId;
+        this.reviewText = reviewText;
+        this.rating = rating;
+        this.numberOfLikes = numberOfLikes;
+        this.numberOfDislikes = numberOfDislikes;
+        this.reviewDate = reviewDate;
+        this.parentReviewId = parentReviewId;
+    }
+    /**
      * Constructs a Review with minimal attributes.
      *
      * @param userId     The ID of the user who wrote the review.
@@ -76,6 +102,14 @@ public class Review {
      */
     public int getReviewId() {
         return reviewId;
+    }
+
+    public Integer getParentReviewId() {
+        return parentReviewId;
+    }
+
+    public void setParentReviewId(Integer parentReviewId) {
+        this.parentReviewId = parentReviewId;
     }
 
     /**

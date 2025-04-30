@@ -24,24 +24,29 @@ public class AuthorServlet extends AbstractDatabaseServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         LogContext.setIPAddress(req.getRemoteAddr());
         LogContext.setResource(req.getRequestURI());
-        LogContext.setAction("authorServlet");
+        LogContext.setAction("AuthorServlet");
 
-        try {
-            String path = req.getRequestURI();
+        String path = req.getPathInfo(); // e.g. / or /12
 
-            try (Connection con = getConnection()) {
-                if (path.matches(".*/author/?")) {
-                    showAllAuthors(req, resp, con);
-                } else if (path.matches(".*/author/\\d+/?")) {
-                    int authorId = extractAuthorIdFromPath(path);
-                    showBooksByAuthor(req, resp, con, authorId);
-                } else {
-                    ServletUtils.redirectToErrorPage(req, resp, "Invalid author path: " + path);
+        try (Connection con = getConnection()) {
+            if (path == null || "/".equals(path)) {
+                showAllAuthors(req, resp, con);
+                return;
+            }
+
+            // Clean path and determine action
+            path = path.replaceAll("^/+", "").replaceAll("/+$", "");
+
+            switch (getPathType(path)) {
+                case "authorId" -> showBooksByAuthor(req, resp, con, Integer.parseInt(path));
+                default -> {
+                    LOGGER.warn("Unrecognized path in AuthorServlet: {}", path);
+                    ServletUtils.redirectToErrorPage(req, resp, "Unknown author path: " + path);
                 }
             }
 
         } catch (Exception e) {
-            LOGGER.error("AuthorServlet GET error: {}", e.getMessage(), e);
+            LOGGER.error("AuthorServlet GET error", e);
             ServletUtils.redirectToErrorPage(req, resp, "AuthorServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
@@ -62,8 +67,10 @@ public class AuthorServlet extends AbstractDatabaseServlet {
         req.getRequestDispatcher("/jsp/author/authorBooks.jsp").forward(req, resp);
     }
 
-    private int extractAuthorIdFromPath(String path) {
-        String[] segments = path.split("/");
-        return Integer.parseInt(segments[segments.length - 1]);
+    private String getPathType(String path) {
+        if (path.matches("\\d+")) {
+            return "authorId";
+        }
+        return "unknown";
     }
 }

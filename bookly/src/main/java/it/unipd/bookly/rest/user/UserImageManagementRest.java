@@ -2,6 +2,7 @@ package it.unipd.bookly.rest.user;
 
 import java.io.IOException;
 import java.sql.Connection;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.Message;
-import it.unipd.bookly.dao.user.UpdateUserImageDAO;
+import it.unipd.bookly.dao.user.UpdateUserImageIfExistsDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 
 /**
@@ -51,15 +52,15 @@ public class UserImageManagementRest extends AbstractRestResource {
     }
 
     private void handleUploadImage(int userId, Image image) throws Exception {
-        boolean updated = new UpdateUserImageDAO(con, userId, image).access().getOutputParam();
+        boolean success = new UpdateUserImageIfExistsDAO(con, userId, image).access().getOutputParam();
 
-        if (updated) {
+        if (success) {
             res.setStatus(HttpServletResponse.SC_OK);
             new Message("Image uploaded successfully.", "200", "Image updated for user ID: " + userId)
                 .toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("User not found.", "404", "No user with ID " + userId)
+            new Message("User not found or update failed.", "404", "No user with ID " + userId)
                 .toJSON(res.getOutputStream());
         }
     }

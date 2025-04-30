@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 @WebServlet(name = "UserImageLoaderServlet", value = "/load-user-img")
 public class UserImageLoaderServlet extends AbstractDatabaseServlet {
@@ -21,31 +22,37 @@ public class UserImageLoaderServlet extends AbstractDatabaseServlet {
         LogContext.setIPAddress(req.getRemoteAddr());
         LogContext.setAction("load-user-img");
 
-        try {
-            String userName = req.getParameter("username");
+        String username = req.getParameter("username");
 
-            if (userName == null || userName.isBlank()) {
-                throw new IllegalArgumentException("Missing or empty username parameter.");
-            }
+        if (username == null || username.isBlank()) {
+            LOGGER.warn("Missing or empty 'username' parameter.");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing or empty 'username' parameter.");
+            return;
+        }
 
-            Image image = new UserImageLoaderDAO(getConnection(), userName).access().getOutputParam();
+        try (Connection con = getConnection()) {
+            Image image = new UserImageLoaderDAO(con, username).access().getOutputParam();
 
             if (image == null || image.getPhoto() == null) {
-                throw new Exception("No image found for username: " + userName);
+                LOGGER.warn("No profile image found for user '{}'.", username);
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Profile image not found for user: " + username);
+                return;
             }
 
-            resp.setContentType(image.getPhotoMediaType());
+            String contentType = image.getPhotoMediaType() != null ? image.getPhotoMediaType() : "image/jpeg";
+            resp.setContentType(contentType);
+            resp.setHeader("Content-Disposition", "inline; filename=\"" + username + "_profile.jpg\"");
+
             resp.getOutputStream().write(image.getPhoto());
             resp.getOutputStream().flush();
 
-            LOGGER.info("Photo for user '{}' successfully rendered.", userName);
-
+            LOGGER.info("Served profile image for user '{}'.", username);
         } catch (Exception e) {
-            LOGGER.error("Unable to load user photo: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, resp, "UserImageLoaderServlet error: " + e.getMessage());
+            LOGGER.error("Error retrieving profile image for user '{}': {}", username, e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "Unable to load user profile image.");
         } finally {
-            LogContext.removeIPAddress();
             LogContext.removeAction();
+            LogContext.removeIPAddress();
             LogContext.removeUser();
         }
     }

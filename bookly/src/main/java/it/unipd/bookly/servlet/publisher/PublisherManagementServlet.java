@@ -5,6 +5,7 @@ import it.unipd.bookly.dao.publisher.*;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.utilities.ServletUtils;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
             req.getRequestDispatcher("/jsp/admin/managePublishers.jsp").forward(req, resp);
         } catch (Exception e) {
             LOGGER.error("Error loading publisher management page: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, resp, "PublisherManagementServlet error: " + e.getMessage());
+            ServletUtils.redirectToErrorPage(req, resp, "Error loading publishers: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -47,12 +48,13 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
         try (Connection con = getConnection()) {
             switch (action) {
                 case "create" -> createPublisher(req, resp, con);
+                case "update" -> updatePublisher(req, resp, con);
                 case "delete" -> deletePublisher(req, resp, con);
-                default -> ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
+                default -> ServletUtils.redirectToErrorPage(req, resp, "Unsupported action: " + action);
             }
         } catch (Exception e) {
-            LOGGER.error("Error handling publisher POST action: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, resp, "PublisherManagementServlet error: " + e.getMessage());
+            LOGGER.error("Error processing publisher action '{}': {}", action, e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "Publisher action failed: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -71,12 +73,26 @@ public class PublisherManagementServlet extends AbstractDatabaseServlet {
         resp.sendRedirect(req.getContextPath() + "/admin/publishers");
     }
 
+    private void updatePublisher(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
+        int publisherId = Integer.parseInt(req.getParameter("publisher_id"));
+        String name = req.getParameter("name");
+        String phone = req.getParameter("phone");
+        String address = req.getParameter("address");
+
+        Publisher publisher = new Publisher(name, phone, address);
+        publisher.setPublisherId(publisherId);
+
+        boolean updated = new UpdatePublisherDAO(con, publisher).access().getOutputParam();
+
+        LOGGER.info("Publisher updated (ID={}): {}", publisherId, updated);
+        resp.sendRedirect(req.getContextPath() + "/admin/publishers");
+    }
 
     private void deletePublisher(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
-        int id = Integer.parseInt(req.getParameter("publisherId"));
-        boolean deleted = new DeletePublisherDAO(con, id).access().getOutputParam();
+        int publisherId = Integer.parseInt(req.getParameter("publisher_id"));
+        boolean deleted = new DeletePublisherDAO(con, publisherId).access().getOutputParam();
 
-        LOGGER.info("Publisher deleted: {}", deleted);
+        LOGGER.info("Publisher deleted (ID={}): {}", publisherId, deleted);
         resp.sendRedirect(req.getContextPath() + "/admin/publishers");
     }
 }

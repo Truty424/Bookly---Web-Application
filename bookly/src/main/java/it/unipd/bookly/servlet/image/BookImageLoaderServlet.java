@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.sql.Connection;
 
 @WebServlet(name = "BookImageLoaderServlet", value = "/load-book-img")
 public class BookImageLoaderServlet extends AbstractDatabaseServlet {
@@ -21,31 +22,44 @@ public class BookImageLoaderServlet extends AbstractDatabaseServlet {
         LogContext.setIPAddress(req.getRemoteAddr());
         LogContext.setAction("load-book-img");
 
+        String bookIdParam = req.getParameter("bookId");
+
+        if (bookIdParam == null || bookIdParam.isBlank()) {
+            LOGGER.warn("Missing 'bookId' parameter.");
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing 'bookId' parameter.");
+            return;
+        }
+
         try {
-            String bookIdParam = req.getParameter("bookId");
-
-            if (bookIdParam == null || bookIdParam.isBlank()) {
-                throw new IllegalArgumentException("Missing or empty bookId parameter.");
-            }
-
             int bookId = Integer.parseInt(bookIdParam);
-            Image image = new BookImageLoaderDAO(getConnection(), bookId).access().getOutputParam();
 
-            if (image == null || image.getPhoto() == null) {
-                throw new Exception("Image not found for bookId: " + bookId);
+            try (Connection con = getConnection()) {
+                Image image = new BookImageLoaderDAO(con, bookId).access().getOutputParam();
+
+                if (image == null || image.getPhoto() == null) {
+                    LOGGER.warn("No image found for bookId {}", bookId);
+                    resp.sendError(HttpServletResponse.SC_NOT_FOUND, "No image available for this book.");
+                    return;
+                }
+
+                String mediaType = image.getPhotoMediaType() != null ? image.getPhotoMediaType() : "image/jpeg";
+                resp.setContentType(mediaType);
+                resp.setHeader("Content-Disposition", "inline; filename=\"book_" + bookId + ".jpg\"");
+                resp.getOutputStream().write(image.getPhoto());
+                resp.getOutputStream().flush();
+
+                LOGGER.info("Image served successfully for bookId {}", bookId);
             }
 
-            resp.setContentType(image.getPhotoMediaType());
-            resp.getOutputStream().write(image.getPhoto());
-            resp.getOutputStream().flush();
-            LOGGER.info("Photo for bookId {} successfully rendered.", bookId);
-
+        } catch (NumberFormatException e) {
+            LOGGER.warn("Invalid 'bookId' format: {}", bookIdParam);
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid 'bookId' format.");
         } catch (Exception e) {
-            LOGGER.error("Unable to load the photo: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, resp, "BookImageLoaderServlet error: " + e.getMessage());
+            LOGGER.error("Error loading book image for ID '{}': {}", bookIdParam, e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "Unable to load image for book.");
         } finally {
-            LogContext.removeIPAddress();
             LogContext.removeAction();
+            LogContext.removeIPAddress();
             LogContext.removeUser();
         }
     }

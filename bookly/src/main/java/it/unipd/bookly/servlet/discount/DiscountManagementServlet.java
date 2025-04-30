@@ -5,8 +5,8 @@ import it.unipd.bookly.dao.discount.DeleteDiscountDAO;
 import it.unipd.bookly.dao.discount.GetAllDiscountsDAO;
 import it.unipd.bookly.dao.discount.InsertDiscountDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
-import it.unipd.bookly.LogContext;
 import it.unipd.bookly.utilities.ServletUtils;
+import it.unipd.bookly.LogContext;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -33,7 +33,7 @@ public class DiscountManagementServlet extends AbstractDatabaseServlet {
             req.getRequestDispatcher("/jsp/admin/manageDiscounts.jsp").forward(req, resp);
         } catch (Exception e) {
             LOGGER.error("Error loading discount management page: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, resp, "DiscountManagementServlet error: " + e.getMessage());
+            ServletUtils.redirectToErrorPage(req, resp, "Error loading discount list.");
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -49,39 +49,55 @@ public class DiscountManagementServlet extends AbstractDatabaseServlet {
         String action = req.getParameter("action");
 
         try (Connection con = getConnection()) {
-            switch (action) {
-                case "create" -> createDiscount(req, resp, con);
-                case "delete" -> deleteDiscount(req, resp, con);
-                default -> ServletUtils.redirectToErrorPage(req, resp, "Unknown discount action: " + action);
+            switch (action != null ? action : "") {
+                case "create" -> handleCreateDiscount(req, resp, con);
+                case "delete" -> handleDeleteDiscount(req, resp, con);
+                default -> {
+                    LOGGER.warn("Unsupported discount action: '{}'", action);
+                    ServletUtils.redirectToErrorPage(req, resp, "Unknown discount action.");
+                }
             }
         } catch (Exception e) {
-            LOGGER.error("Error handling discount POST action: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, resp, "DiscountManagementServlet error: " + e.getMessage());
+            LOGGER.error("Error in discount management: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "Discount management failed.");
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
         }
     }
 
-    private void createDiscount(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
+    private void handleCreateDiscount(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
         String code = req.getParameter("code");
-        double percentage = Double.parseDouble(req.getParameter("percentage"));
+        String percentageStr = req.getParameter("percentage");
         String expiryDateStr = req.getParameter("expiredDate");
 
-        Timestamp expiryDate = Timestamp.valueOf(expiryDateStr + " 00:00:00");
-        Discount discount = new Discount(code, percentage, expiryDate);
+        if (code == null || percentageStr == null || expiryDateStr == null) {
+            ServletUtils.redirectToErrorPage(req, resp, "Missing required discount fields.");
+            return;
+        }
 
-        boolean created = new InsertDiscountDAO(con, discount).access().getOutputParam();
+        double percentage = Double.parseDouble(percentageStr);
+        Timestamp expiry = Timestamp.valueOf(expiryDateStr + " 00:00:00");
 
-        LOGGER.info("Discount created: {}", created);
+        Discount discount = new Discount(code, percentage, expiry);
+        boolean inserted = new InsertDiscountDAO(con, discount).access().getOutputParam();
+
+        LOGGER.info("Discount '{}' inserted: {}", code, inserted);
         resp.sendRedirect(req.getContextPath() + "/admin/discounts");
     }
 
-    private void deleteDiscount(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
-        int discountId = Integer.parseInt(req.getParameter("discountId"));
+    private void handleDeleteDiscount(HttpServletRequest req, HttpServletResponse resp, Connection con) throws Exception {
+        String idParam = req.getParameter("discountId");
+
+        if (idParam == null || idParam.isEmpty()) {
+            ServletUtils.redirectToErrorPage(req, resp, "Missing discount ID for deletion.");
+            return;
+        }
+
+        int discountId = Integer.parseInt(idParam);
         boolean deleted = new DeleteDiscountDAO(con, discountId).access().getOutputParam();
 
-        LOGGER.info("Discount deleted: {}", deleted);
+        LOGGER.info("Discount ID {} deleted: {}", discountId, deleted);
         resp.sendRedirect(req.getContextPath() + "/admin/discounts");
     }
 }

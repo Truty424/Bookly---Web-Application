@@ -23,7 +23,6 @@ import it.unipd.bookly.utilities.ErrorCode;
 @WebServlet(name = "AdminServlet", value = "/admin/*")
 public class AdminServlet extends AbstractDatabaseServlet {
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         LogContext.setIPAddress(req.getRemoteAddr());
@@ -53,7 +52,6 @@ public class AdminServlet extends AbstractDatabaseServlet {
         HttpSession session = req.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("user") : null;
 
-        // ✅ Check if user is admin
         if (user == null || !"admin".equalsIgnoreCase(user.getRole())) {
             resp.sendRedirect(req.getContextPath() + "/user/login");
             return;
@@ -88,23 +86,24 @@ public class AdminServlet extends AbstractDatabaseServlet {
         }
     }
 
-    // ========== BOOK ==========
+    // ========================== BOOK ==========================
     private void handleAddBook(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Book book = new Book(
-                    Integer.parseInt(req.getParameter("book_id")),
-                    req.getParameter("title"),
-                    req.getParameter("language"),
-                    req.getParameter("isbn"),
-                    Double.parseDouble(req.getParameter("price")),
-                    req.getParameter("edition"),
-                    Integer.parseInt(req.getParameter("publication_year")),
-                    Integer.parseInt(req.getParameter("number_of_pages")),
-                    Integer.parseInt(req.getParameter("stock_quantity")),
-                    0.0,
-                    req.getParameter("summary")
+                Integer.parseInt(req.getParameter("book_id")),
+                req.getParameter("title"),
+                req.getParameter("language"),
+                req.getParameter("isbn"),
+                Double.parseDouble(req.getParameter("price")),
+                req.getParameter("edition"),
+                Integer.parseInt(req.getParameter("publication_year")),
+                Integer.parseInt(req.getParameter("number_of_pages")),
+                Integer.parseInt(req.getParameter("stock_quantity")),
+                0.0,
+                req.getParameter("summary")
             );
             new InsertBookDAO(con, book).access();
+            LOGGER.info("Book '{}' added successfully.", book.getTitle());
         }
     }
 
@@ -112,19 +111,20 @@ public class AdminServlet extends AbstractDatabaseServlet {
         try (var con = getConnection()) {
             int bookId = Integer.parseInt(req.getParameter("book_id"));
             new UpdateBookDAO(
-                    con,
-                    bookId,
-                    req.getParameter("title"),
-                    req.getParameter("language"),
-                    req.getParameter("isbn"),
-                    Double.parseDouble(req.getParameter("price")),
-                    req.getParameter("edition"),
-                    Integer.parseInt(req.getParameter("publication_year")),
-                    Integer.parseInt(req.getParameter("number_of_pages")),
-                    Integer.parseInt(req.getParameter("stock_quantity")),
-                    Double.parseDouble(req.getParameter("average_rate")),
-                    req.getParameter("summary")
+                con,
+                bookId,
+                req.getParameter("title"),
+                req.getParameter("language"),
+                req.getParameter("isbn"),
+                Double.parseDouble(req.getParameter("price")),
+                req.getParameter("edition"),
+                Integer.parseInt(req.getParameter("publication_year")),
+                Integer.parseInt(req.getParameter("number_of_pages")),
+                Integer.parseInt(req.getParameter("stock_quantity")),
+                Double.parseDouble(req.getParameter("average_rate")),
+                req.getParameter("summary")
             ).access();
+            LOGGER.info("Book ID {} updated successfully.", bookId);
         }
     }
 
@@ -132,32 +132,35 @@ public class AdminServlet extends AbstractDatabaseServlet {
         try (var con = getConnection()) {
             int bookId = Integer.parseInt(req.getParameter("book_id"));
             new DeleteBookDAO(con, bookId).access();
+            LOGGER.info("Book ID {} deleted.", bookId);
         }
     }
 
-    // ========== AUTHOR ==========
+    // ========================== AUTHOR ==========================
     private void handleAddAuthor(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Author author = new Author(
-                    req.getParameter("firstName"),
-                    req.getParameter("lastName"),
-                    req.getParameter("biography"),
-                    req.getParameter("nationality")
+                req.getParameter("firstName"),
+                req.getParameter("lastName"),
+                req.getParameter("biography"),
+                req.getParameter("nationality")
             );
             new InsertAuthorDAO(con, author).access();
+            LOGGER.info("Author '{} {}' added.", author.getFirstName(), author.getLastName());
         }
     }
 
     private void handleUpdateAuthor(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Author author = new Author(
-                    req.getParameter("firstName"),
-                    req.getParameter("lastName"),
-                    req.getParameter("biography"),
-                    req.getParameter("nationality")
+                req.getParameter("firstName"),
+                req.getParameter("lastName"),
+                req.getParameter("biography"),
+                req.getParameter("nationality")
             );
             author.setAuthor_id(Integer.parseInt(req.getParameter("author_id")));
             new UpdateAuthorDAO(con, author).access();
+            LOGGER.info("Author ID {} updated.", author.getAuthorId());
         }
     }
 
@@ -165,30 +168,33 @@ public class AdminServlet extends AbstractDatabaseServlet {
         try (var con = getConnection()) {
             int authorId = Integer.parseInt(req.getParameter("author_id"));
             new DeleteAuthorDAO(con, authorId).access();
+            LOGGER.info("Author ID {} deleted.", authorId);
         }
     }
 
-    // ========== PUBLISHER ==========
+    // ========================== PUBLISHER ==========================
     private void handleAddPublisher(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Publisher publisher = new Publisher(
-                    req.getParameter("publisher_name"),
-                    req.getParameter("phone"),
-                    req.getParameter("address")
+                req.getParameter("publisher_name"),
+                req.getParameter("phone"),
+                req.getParameter("address")
             );
             new InsertPublisherDAO(con, publisher).access();
+            LOGGER.info("Publisher '{}' added.", publisher.getPublisherName());
         }
     }
 
     private void handleUpdatePublisher(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Publisher publisher = new Publisher(
-                    req.getParameter("publisher_name"),
-                    req.getParameter("phone"),
-                    req.getParameter("address")
+                req.getParameter("publisher_name"),
+                req.getParameter("phone"),
+                req.getParameter("address")
             );
             publisher.setPublisherId(Integer.parseInt(req.getParameter("publisher_id")));
             new UpdatePublisherDAO(con, publisher).access();
+            LOGGER.info("Publisher ID {} updated.", publisher.getPublisherId());
         }
     }
 
@@ -196,10 +202,11 @@ public class AdminServlet extends AbstractDatabaseServlet {
         try (var con = getConnection()) {
             int publisherId = Integer.parseInt(req.getParameter("publisher_id"));
             new DeletePublisherDAO(con, publisherId).access();
+            LOGGER.info("Publisher ID {} deleted.", publisherId);
         }
     }
 
-    // ========== DISCOUNT ==========
+    // ========================== DISCOUNT ==========================
     private void handleAddDiscount(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Discount discount = new Discount();
@@ -207,6 +214,7 @@ public class AdminServlet extends AbstractDatabaseServlet {
             discount.setDiscountPercentage(Double.parseDouble(req.getParameter("percentage")));
             discount.setExpiredDate(Timestamp.valueOf(req.getParameter("expiredDate") + " 00:00:00"));
             new InsertDiscountDAO(con, discount).access();
+            LOGGER.info("Discount '{}' added.", discount.getCode());
         }
     }
 
@@ -214,6 +222,7 @@ public class AdminServlet extends AbstractDatabaseServlet {
         try (var con = getConnection()) {
             int discountId = Integer.parseInt(req.getParameter("discount_id"));
             new DeleteDiscountDAO(con, discountId).access();
+            LOGGER.info("Discount ID {} deleted.", discountId);
         }
     }
 }
