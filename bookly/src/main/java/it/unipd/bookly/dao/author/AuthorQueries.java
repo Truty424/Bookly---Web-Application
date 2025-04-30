@@ -60,4 +60,13 @@ public final class AuthorQueries {
      */
     public static final String DELETE_AUTHOR =
         "DELETE FROM booklySchema.authors WHERE author_id = ?";
+
+    /**
+     * SQL query to retrieve authors for a list of book IDs.
+     */
+    public static final String GET_AUTHORS_BY_BOOK_LIST =
+            "SELECT w.book_id, a.* " +
+                    "FROM booklySchema.authors a " +
+                    "JOIN booklySchema.writes w ON a.author_id = w.author_id " +
+                    "WHERE w.book_id IN (%s)";
 }

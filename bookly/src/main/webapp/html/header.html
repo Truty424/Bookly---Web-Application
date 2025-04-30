@@ -1,30 +1,40 @@
 <link rel="stylesheet" href="../static/css/components/header.css" />
 <nav class="header navbar navbar-expand-lg navbar-light">
-    <div class="container-fluid">        
+    <div class="container-fluid">
         <!-- Hamburger Menu -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span> <!-- Bootstrap auto -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
+
         <div class="collapse navbar-collapse d-lg-flex" id="navbarNav">
+            <!-- Logo -->
             <a class="navbar-brand col-lg-3 me-0 d-flex align-items-center" href="/">
                 <img src="${pageContext.request.contextPath}/static/img/logo.png" alt="Bookly Logo" style="height: 40px; margin-right: 10px;">
-            </a>            
+            </a>
+
+            <!-- Navigation Links -->
             <div class="col-lg-6 justify-content-lg-center">
                 <ul class="navbar-nav justify-content-lg-center">
                     <li class="nav-item dropdown">
-                        <a class="nav-link" href="/category"> Categories  </a>
+                        <a class="nav-link" href="/category">Categories</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link" href="/collection"> Authors </a>
+                        <a class="nav-link" href="/collection">Authors</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/about-us/">About Us</a>
                     </li>
                 </ul>
             </div>
-            <div class="d-lg-flex col-lg-3 justify-content-lg-end">
-                <a id="login-button" class="btn" href="${pageContext.request.contextPath}/user/login">Login</a>
+
+            <!-- Search Form + Login Button -->
+            <div class="d-lg-flex col-lg-3 justify-content-lg-end align-items-center">
+                <form class="d-flex me-2" action="${pageContext.request.contextPath}/search" method="get" role="search">
+                    <input class="form-control me-2" type="search" name="query" placeholder="Search books..." aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                <a id="login-button" class="btn btn-primary" href="${pageContext.request.contextPath}/user/login">Login</a>
             </div>
         </div>
     </div>

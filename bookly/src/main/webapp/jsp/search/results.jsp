@@ -1,93 +1,75 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="it.unipd.bookly.Resource.Book" %>
+<%@ page import="it.unipd.bookly.Resource.Author" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Map" %>
 <html>
 <head>
-    
     <title>Search Results</title>
-    <style>
-        /* Basic styles for the search results */
-        body {
-            font-family: Arial, sans-serif;
-        }
-
-        h1 {
-            color: #4CAF50;
-        }
-
-        .search-query {
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .book-list {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .book-item {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .book-item a {
-            text-decoration: none;
-            color: #007bff;
-            font-size: 1.1em;
-        }
-
-        .book-item a:hover {
-            text-decoration: underline;
-        }
-
-        .book-item p {
-            margin: 5px 0;
-        }
-
-        .no-results {
-            color: red;
-        }
-    </style>
-        <%@ include file="/html/cdn.html" %> 
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/results.css" />
+    <%@ include file="/html/cdn.html" %>
 </head>
 <body>
 
-    <%@ include file="/html/header.html" %>
-<h1>Search Results</h1>
+<%@ include file="/html/header.html" %>
 
-<%-- Display the search query entered by the user --%>
 <%
     String query = (String) request.getAttribute("search_query");
     List<Book> books = (List<Book>) request.getAttribute("search_results");
+    Map<Integer, List<Author>> authorsMap = (Map<Integer, List<Author>>) request.getAttribute("authors_map");
 %>
 
-<%-- Display the search query --%>
-<div class="search-query">
-    Showing results for: "<%= query %>"
+<div class="search-container">
+    <h1>Search Results</h1>
+    <div class="search-query">Showing results for: "<%= query %>"</div>
+
+    <% if (books != null && !books.isEmpty()) { %>
+        <ul class="book-list">
+            <% for (Book book : books) { %>
+                <li class="book-item">
+                    <div class="book-image">
+                        <img src="<%= request.getContextPath() %>/load-book-img?bookId=<%= book.getBookId() %>" alt="Cover of <%= book.getTitle() %>" />
+                    </div>
+                    <div class="book-details">
+                        <h3>
+                            <a href="<%= request.getContextPath() %>/book/<%= book.getBookId() %>"><%= book.getTitle() %></a>
+                        </h3>
+                        <p><strong>Author(s):</strong>
+                            <%
+                                List<Author> authors = authorsMap.get(book.getBookId());
+                                if (authors != null && !authors.isEmpty()) {
+                                    for (int i = 0; i < authors.size(); i++) {
+                                        Author a = authors.get(i);
+                                        out.print(a.getFirstName() + " " + a.getLastName());
+                                        if (i < authors.size() - 1) out.print(", ");
+                                    }
+                                } else {
+                                    out.print("Unknown");
+                                }
+                            %>
+                        </p>
+                        <p><strong>ISBN:</strong> <%= book.getIsbn() %></p>
+                        <p><strong>Price:</strong> €<%= String.format("%.2f", book.getPrice()) %></p>
+                        <form action="<%= request.getContextPath() %>/book/<%= book.getBookId() %>" method="get">
+                            <button type="submit" class="btn btn-primary">View Details</button>
+                        </form>
+                    </div>
+                </li>
+            <% } %>
+        </ul>
+    <% } else { %>
+        <p class="no-results">No results found for your search.</p>
+    <% } %>
+
+    <div style="text-align: center; margin-top: 40px;">
+      <form action="${pageContext.request.contextPath}/" method="get">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-home"></i> Home Page
+        </button>
+      </form>
+    </div>
 </div>
 
-<%-- Check if any books are returned --%>
-<% if (books != null && !books.isEmpty()) { %>
-    <ul class="book-list">
-        <%-- Loop through the list of books and display them --%>
-        <% for (Book book : books) { %>
-            <li class="book-item">
-                <a href="<%= request.getContextPath() %>/book/<%= book.getBookId() %>"><%= book.getTitle() %></a>
-                <p><strong>Author:</strong> <%= book.getAuthor() %></p>
-                <p><strong>ISBN:</strong> <%= book.getIsbn() %></p>
-                <p><strong>Price:</strong> $<%= book.getPrice() %></p>
-            </li>
-        <% } %>
-    </ul>
-<% } else { %>
-    <p class="no-results">No results found for your search.</p>
-<% } %>
-
-<%-- Add a link back to the main search page --%>
-<p><a href="<%= request.getContextPath() %>/search">Back to Search</a></p>
 <%@ include file="/html/footer.html" %>
 </body>
 </html>
