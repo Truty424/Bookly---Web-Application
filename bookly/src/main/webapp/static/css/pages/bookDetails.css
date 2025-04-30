@@ -1,65 +1,89 @@
-/* /static/css/pages/bookDetails.css */
-
-.book-details-heading {
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 28px;
-    font-weight: bold;
+.book-details-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", sans-serif;
 }
 
-.book-subheading {
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 22px;
-    font-weight: bold;
+.book-card-horizontal {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 40px;
 }
 
-.book-paragraph {
-    font-size: 16px;
-    color: #444;
-    margin: 8px 0;
+.book-image img {
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-.book-label {
-    color: #222;
-    font-weight: 600;
+.book-info {
+  flex: 1;
 }
 
-.book-action-form {
-    margin-top: 10px;
+.book-info h2 {
+  font-size: 1.6rem;
+  margin-bottom: 10px;
 }
 
-.book-action-button {
-    background-color: #0d6efd;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    font-size: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+.book-info p {
+  font-size: 1rem;
+  margin: 8px 0;
 }
 
-.book-action-button:hover {
-    background-color: #084298;
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-secondary {
+  background-color: #e9ecef;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.btn-secondary:hover {
+  background-color: #d6d8db;
+}
+
+.review-section h2 {
+  color: #cc0000;
+  margin-bottom: 20px;
 }
 
 .review-list {
-    list-style: none;
-    padding-left: 0;
-    margin-top: 20px;
+  list-style-type: none;
+  padding-left: 0;
 }
 
 .review-item {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    background-color: #fafafa;
+  margin-bottom: 20px;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
 }
 
-.review-item hr {
-    border: none;
-    border-top: 1px solid #ccc;
-    margin-top: 10px;
+.review-item p {
+  margin: 5px 0;
+}
+
+.back-button-wrapper {
+  text-align: center;
+  margin-top: 40px;
 }
