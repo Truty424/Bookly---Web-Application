@@ -9,6 +9,6 @@ public class ServletUtils {
     public static void redirectToErrorPage(HttpServletRequest req, HttpServletResponse resp, String errorMessage)
             throws IOException {
         req.getSession().setAttribute("errorMessage", errorMessage);
-        resp.sendRedirect(req.getContextPath() + "/jsp/error.jsp");
+        resp.sendRedirect(req.getContextPath() + "/error.jsp");
     }
 }
