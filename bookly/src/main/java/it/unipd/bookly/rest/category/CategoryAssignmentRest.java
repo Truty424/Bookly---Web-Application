@@ -13,8 +13,8 @@ import java.sql.Connection;
 
 /**
  * Handles:
- * - POST /api/book/{bookId}/category/{categoryId}
- * - DELETE /api/book/{bookId}/category/{categoryId}
+ * - POST /api/books/{bookId}/category/{categoryId}
+ * - DELETE /api/books/{bookId}/category/{categoryId}
  */
 public class CategoryAssignmentRest extends AbstractRestResource {
 
@@ -30,14 +30,14 @@ public class CategoryAssignmentRest extends AbstractRestResource {
         try {
             switch (method) {
                 case "POST" -> {
-                    if (path.matches(".*/book/\\d+/category/\\d+$")) {
+                    if (path.matches(".*/books/\\d+/category/\\d+$")) {
                         handleAddCategory(path);
                     } else {
                         sendUnsupportedPath();
                     }
                 }
                 case "DELETE" -> {
-                    if (path.matches(".*/book/\\d+/category/\\d+$")) {
+                    if (path.matches(".*/books/\\d+/category/\\d+$")) {
                         handleRemoveCategory(path);
                     } else {
                         sendUnsupportedPath();
@@ -87,7 +87,7 @@ public class CategoryAssignmentRest extends AbstractRestResource {
 
     private void sendUnsupportedPath() throws IOException {
         res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        new Message("Invalid path format.", "404", "Expected /api/book/{bookId}/category/{categoryId}.")
+        new Message("Invalid path format.", "404", "Expected /api/books/{bookId}/category/{categoryId}.")
             .toJSON(res.getOutputStream());
     }
 }

@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handles book stock updates:
- * PUT /api/book/stock?id=123&amp;quantity=10
+ * PUT /api/books/stock?id=123&amp;quantity=10
  */
 public class BookStockRest extends AbstractRestResource {
 

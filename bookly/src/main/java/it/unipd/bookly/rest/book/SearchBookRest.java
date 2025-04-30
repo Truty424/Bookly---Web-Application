@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * REST endpoint to search for books by title.
- * Endpoint: GET /api/book/search?title=example
+ * Endpoint: GET /api/books/search?title=example
  */
 public class SearchBookRest extends AbstractRestResource {
 

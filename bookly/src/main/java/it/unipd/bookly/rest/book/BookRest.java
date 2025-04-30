@@ -15,11 +15,11 @@ import java.util.List;
 /**
  * Unified REST controller for book-related operations:
  * - GET /api/books → get all books
- * - GET /api/book?id=X → get book by ID
- * - POST /api/book → insert a new book
- * - PUT /api/book → update book info
- * - PUT /api/book/stock?id=X&amp;quantity=Y → update stock
- * - DELETE /api/book?id=X → delete book
+ * - GET /api/books?id=X → get book by ID
+ * - POST /api/books → insert a new book
+ * - PUT /api/books → update book info
+ * - PUT /api/books/stock?id=X&amp;quantity=Y → update stock
+ * - DELETE /api/books?id=X → delete book
  * - GET /api/books/top-rated → books with rating &gt;= 4
  * - GET /api/books/search?title=abc → search books
  * - GET /api/books/author?id=X → by author
@@ -92,7 +92,7 @@ public class BookRest extends AbstractRestResource {
         } else if (path.contains("/books/publisher")) {
             List<Book> books = new GetBooksByPublisherIdDAO(con, Integer.parseInt(req.getParameter("id"))).access().getOutputParam();
             mapper.writeValue(res.getOutputStream(), books);
-        } else if (path.contains("/book") && idParam != null) {
+        } else if (path.contains("/books") && idParam != null) {
             Book book = new GetBookByIdDAO(con, Integer.parseInt(idParam)).access().getOutputParam();
             if (book != null) {
                 mapper.writeValue(res.getOutputStream(), book);

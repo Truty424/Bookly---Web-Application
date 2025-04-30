@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * REST endpoint to retrieve top-rated books.
- * Supported: GET /api/book/top-rated?minRating=4.5
+ * Supported: GET /api/books/top-rated?minRating=4.5
  */
 public class TopRatedBooksRest extends AbstractRestResource {
 

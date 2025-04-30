@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Handles:
  * - GET /api/category/{categoryId}/books
- * - GET /api/book/{bookId}/categories
+ * - GET /api/books/{bookId}/categories
  */
 public class CategoryBookLookupRest extends AbstractRestResource {
 
@@ -36,7 +36,7 @@ public class CategoryBookLookupRest extends AbstractRestResource {
                 case "GET" -> {
                     if (path.matches(".*/category/\\d+/books$")) {
                         handleGetBooksByCategory(path);
-                    } else if (path.matches(".*/book/\\d+/categories$")) {
+                    } else if (path.matches(".*/books/\\d+/categories$")) {
                         handleGetCategoriesByBook(path);
                     } else {
                         sendNotFound();
@@ -61,7 +61,7 @@ public class CategoryBookLookupRest extends AbstractRestResource {
     }
 
     private void handleGetCategoriesByBook(String path) throws Exception {
-        int bookId = extractId(path, "/book/", "/categories");
+        int bookId = extractId(path, "/books/", "/categories");
         List<Category> categories = new GetCategoriesByBookDAO(con, bookId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
@@ -79,7 +79,7 @@ public class CategoryBookLookupRest extends AbstractRestResource {
     private void sendNotFound() throws IOException {
         res.setStatus(HttpServletResponse.SC_NOT_FOUND);
         new Message("Invalid lookup path.", "404",
-                "Expected /category/{id}/books or /book/{id}/categories.")
+                "Expected /category/{id}/books or /books/{id}/categories.")
                 .toJSON(res.getOutputStream());
     }
 

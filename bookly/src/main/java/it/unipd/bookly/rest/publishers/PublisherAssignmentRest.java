@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Handles:
- * - GET    /api/publisher/book/{bookId} → get publishers for a book
+ * - GET    /api/publisher/books/{bookId} → get publishers for a book
  * - GET    /api/publisher/{publisherId}/books → get books by publisher
  * - GET    /api/publisher/{publisherId}/books/count → get count of books by publisher
  * - POST   → assign publisher to a book (params: bookId, publisherId)
@@ -35,7 +35,7 @@ public class PublisherAssignmentRest extends AbstractRestResource {
         try {
             switch (method) {
                 case "GET" -> {
-                    if (path.matches(".*/publisher/book/\\d+$")) {
+                    if (path.matches(".*/publisher/books/\\d+$")) {
                         handleGetPublishersByBook(path);
                     } else if (path.matches(".*/publisher/\\d+/books$")) {
                         handleGetBooksByPublisher(path);
