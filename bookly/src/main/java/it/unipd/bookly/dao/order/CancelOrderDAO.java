@@ -22,10 +22,21 @@ public class CancelOrderDAO extends AbstractDAO<Boolean> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(CANCEL_ORDER)) {
-            stmt.setInt(1, orderId);
+            stmt.setString(1, "cancelled");  // REQUIRED: status enum as string
+            stmt.setInt(2, orderId);
 
             int rowsUpdated = stmt.executeUpdate();
             this.outputParam = rowsUpdated > 0;
+
+            if (outputParam) {
+                LOGGER.info("Order {} successfully cancelled.", orderId);
+            } else {
+                LOGGER.warn("Order {} could not be cancelled (not found or already cancelled).", orderId);
+            }
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to cancel order {}: {}", orderId, e.getMessage());
+            throw e;
         }
     }
 }

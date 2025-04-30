@@ -4,6 +4,7 @@ import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import static it.unipd.bookly.dao.discount.DiscountQueries.DELETE_DISCOUNT;
 
@@ -27,7 +28,10 @@ public class DeleteDiscountDAO extends AbstractDAO<Boolean> {
 
     @Override
     protected void doAccess() throws Exception {
+        boolean originalAutoCommit = con.getAutoCommit();
         try {
+            con.setAutoCommit(false);
+
             try (PreparedStatement clearDiscount = con.prepareStatement(
                     "UPDATE booklySchema.shoppingcart SET discount_id = NULL WHERE discount_id = ?")) {
                 clearDiscount.setInt(1, discountId);
@@ -37,7 +41,6 @@ public class DeleteDiscountDAO extends AbstractDAO<Boolean> {
             try (PreparedStatement stmnt = con.prepareStatement(DELETE_DISCOUNT)) {
                 stmnt.setInt(1, discountId);
                 int rowsAffected = stmnt.executeUpdate();
-
                 this.outputParam = rowsAffected > 0;
 
                 if (outputParam) {
@@ -47,11 +50,14 @@ public class DeleteDiscountDAO extends AbstractDAO<Boolean> {
                 }
             }
 
-        } catch (Exception ex) {
+            con.commit();
+        } catch (SQLException ex) {
+            con.rollback();
             this.outputParam = false;
             LOGGER.error("Error deleting discount with ID {}: {}", discountId, ex.getMessage());
             throw ex;
+        } finally {
+            con.setAutoCommit(originalAutoCommit);
         }
     }
-
 }

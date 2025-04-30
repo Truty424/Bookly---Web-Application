@@ -28,28 +28,23 @@ public class GetOrderByIdDAO extends AbstractDAO<Order> {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    int order_id = rs.getInt("order_id");
-                    double total_price = rs.getDouble("total_price");
-                    String payment_method = rs.getString("payment_method");
-                    java.sql.Timestamp order_date = rs.getTimestamp("order_date");
-                    String address = rs.getString("address");
-                    String shipment_code = rs.getString("shipment_code");
-                    String status = rs.getString("status");
-
                     this.outputParam = new Order(
-                            order_id,
-                            total_price,
-                            payment_method,
-                            order_date,
-                            address,
-                            shipment_code,
-                            status
+                            rs.getInt("order_id"),
+                            rs.getDouble("total_price"),
+                            rs.getString("payment_method"),
+                            rs.getTimestamp("order_date"),
+                            rs.getString("address"),
+                            rs.getString("shipment_code"),
+                            rs.getString("status")
                     );
+                } else {
+                    this.outputParam = null;
+                    LOGGER.warn("No order found with ID {}", orderId);
                 }
             }
 
         } catch (Exception e) {
-            LOGGER.error("Error retrieving order by ID {}: {}", orderId, e.getMessage());
+            LOGGER.error("Error retrieving order by ID {}: {}", orderId, e.getMessage(), e);
             throw e;
         }
     }

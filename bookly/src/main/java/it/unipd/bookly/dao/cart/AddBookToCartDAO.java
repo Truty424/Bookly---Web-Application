@@ -1,14 +1,15 @@
 package it.unipd.bookly.dao.cart;
 
+import it.unipd.bookly.dao.AbstractDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.cart.CartQueries.ADD_BOOK_TO_CART;
 
 /**
- * DAO class to add a book to a shopping cart.
+ * DAO class to add a book to a shopping cart with transactional safety.
  */
 public class AddBookToCartDAO extends AbstractDAO<Void> {
 
@@ -23,24 +24,42 @@ public class AddBookToCartDAO extends AbstractDAO<Void> {
 
     @Override
     protected void doAccess() throws Exception {
-        String checkQuery = "SELECT 1 FROM booklySchema.contains WHERE book_id = ? AND cart_id = ?";
-        try (PreparedStatement checkStmt = con.prepareStatement(checkQuery)) {
+        final String CHECK_BOOK_IN_CART = """
+            SELECT 1 FROM booklySchema.contains 
+            WHERE book_id = ? AND cart_id = ?
+        """;
+
+        boolean originalAutoCommit = con.getAutoCommit();
+        con.setAutoCommit(false);  // Begin transaction
+
+        try (
+            PreparedStatement checkStmt = con.prepareStatement(CHECK_BOOK_IN_CART);
+            PreparedStatement insertStmt = con.prepareStatement(ADD_BOOK_TO_CART)
+        ) {
             checkStmt.setInt(1, book_id);
             checkStmt.setInt(2, cartId);
 
             try (ResultSet rs = checkStmt.executeQuery()) {
                 if (rs.next()) {
-                    LOGGER.warn("Book {} is already in cart {}", book_id, cartId);
-                    return; // Skip inserting, already present
+                    LOGGER.warn("Book ID {} already in cart ID {}. Skipping insert.", book_id, cartId);
+                    con.rollback();  // Explicit rollback since no change needed
+                    return;
                 }
             }
-        }
 
-        try (PreparedStatement stmt = con.prepareStatement(ADD_BOOK_TO_CART)) {
-            stmt.setInt(1, book_id);
-            stmt.setInt(2, cartId);
-            stmt.executeUpdate();
-            LOGGER.info("Book {} added to cart {}", book_id, cartId);
+            insertStmt.setInt(1, book_id);
+            insertStmt.setInt(2, cartId);
+            insertStmt.executeUpdate();
+
+            con.commit();
+            LOGGER.info("Book ID {} added to cart ID {}.", book_id, cartId);
+
+        } catch (Exception e) {
+            con.rollback();  // Rollback on any failure
+            LOGGER.error("Failed to add book ID {} to cart ID {}: {}", book_id, cartId, e.getMessage(), e);
+            throw e;
+        } finally {
+            con.setAutoCommit(originalAutoCommit);  // Restore original state
         }
     }
 }

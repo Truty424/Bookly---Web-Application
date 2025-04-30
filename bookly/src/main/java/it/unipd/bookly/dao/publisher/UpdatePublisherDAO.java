@@ -23,7 +23,7 @@ public class UpdatePublisherDAO extends AbstractDAO<Boolean> {
     /**
      * Constructor.
      *
-     * @param con       The database connection
+     * @param con The database connection
      * @param publisher The Publisher object containing updated values
      */
     public UpdatePublisherDAO(final Connection con, final Publisher publisher) {
@@ -37,10 +37,10 @@ public class UpdatePublisherDAO extends AbstractDAO<Boolean> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(UPDATE_PUBLISHER)) {
-            stmt.setInt(1, publisher.getPublisherId());
-            stmt.setString(2, publisher.getPublisherName());
-            stmt.setString(3, publisher.getPhone());
-            stmt.setString(4, publisher.getAddress());
+            stmt.setString(1, publisher.getPublisherName());
+            stmt.setString(2, publisher.getPhone());
+            stmt.setString(3, publisher.getAddress());
+            stmt.setInt(4, publisher.getPublisherId());
 
             int affectedRows = stmt.executeUpdate();
             this.outputParam = affectedRows > 0;
@@ -52,4 +52,5 @@ public class UpdatePublisherDAO extends AbstractDAO<Boolean> {
             }
         }
     }
+
 }

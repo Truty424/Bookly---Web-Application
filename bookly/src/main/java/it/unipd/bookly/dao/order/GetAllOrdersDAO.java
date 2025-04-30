@@ -23,8 +23,7 @@ public class GetAllOrdersDAO extends AbstractDAO<List<Order>> {
     protected void doAccess() throws Exception {
         List<Order> orders = new ArrayList<>();
 
-        try (PreparedStatement stmt = con.prepareStatement(GET_ALL_ORDERS);
-             ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = con.prepareStatement(GET_ALL_ORDERS); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
                 int orderId = rs.getInt("order_id");
@@ -35,7 +34,7 @@ public class GetAllOrdersDAO extends AbstractDAO<List<Order>> {
                 String shipmentCode = rs.getString("shipment_code");
                 String status = rs.getString("status");
 
-                Order order = new Order(
+                orders.add(new Order(
                         orderId,
                         totalPrice,
                         paymentMethod,
@@ -43,15 +42,14 @@ public class GetAllOrdersDAO extends AbstractDAO<List<Order>> {
                         address,
                         shipmentCode,
                         status
-                );
-
-                orders.add(order);
+                ));
             }
 
             this.outputParam = orders;
 
         } catch (Exception e) {
-            LOGGER.error("Error retrieving all orders: {}", e.getMessage());
+            LOGGER.error("Error retrieving all orders: {}", e.getMessage(), e);
+            throw e; // Ensure exception is propagated
         }
     }
 }

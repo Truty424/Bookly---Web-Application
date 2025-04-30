@@ -31,6 +31,11 @@ public class InsertReviewDAO extends AbstractDAO<Boolean> {
             // Set likes and dislikes only if non-negative, otherwise default to 0
             stmt.setInt(5, Math.max(0, review.getNumberOfLikes()));
             stmt.setInt(6, Math.max(0, review.getNumberOfDislikes()));
+            if (review.getParentReviewId() != null) {
+                stmt.setInt(7, review.getParentReviewId());
+            } else {
+                stmt.setNull(7, java.sql.Types.INTEGER);
+            }
 
             int rowsInserted = stmt.executeUpdate();
             this.outputParam = rowsInserted > 0;

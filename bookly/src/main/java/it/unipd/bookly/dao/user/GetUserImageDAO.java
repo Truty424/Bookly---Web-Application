@@ -39,13 +39,19 @@ public class GetUserImageDAO extends AbstractDAO<Image> {
 
                     if (imageData != null && imageType != null) {
                         this.outputParam = new Image(imageData, imageType);
+                        LOGGER.info("Successfully fetched profile image for user ID {}", userId);
                     } else {
                         this.outputParam = null;
+                        LOGGER.warn("User ID {} has no profile image stored.", userId);
                     }
                 } else {
-                    this.outputParam = null; // No image found
+                    this.outputParam = null;
+                    LOGGER.warn("No profile image found for user ID {}", userId);
                 }
             }
+        } catch (Exception e) {
+            LOGGER.error("Error retrieving profile image for user ID {}: {}", userId, e.getMessage(), e);
+            throw e;
         }
     }
 }

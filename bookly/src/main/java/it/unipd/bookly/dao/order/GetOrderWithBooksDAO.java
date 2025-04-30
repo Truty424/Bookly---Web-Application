@@ -7,7 +7,6 @@ import it.unipd.bookly.dao.AbstractDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +70,8 @@ public class GetOrderWithBooksDAO extends AbstractDAO<Order> {
 
             LOGGER.info("Order ID {} loaded with {} book(s).", orderId, books.size());
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving order with ID {}: {}", orderId, ex.getMessage());
+            this.outputParam = null;
+            LOGGER.error("Error retrieving order with ID {}: {}", orderId, ex.getMessage(), ex);
             throw ex;
         }
     }

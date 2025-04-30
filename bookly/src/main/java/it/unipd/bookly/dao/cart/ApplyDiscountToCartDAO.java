@@ -26,15 +26,16 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<Double> {
 
     @Override
     protected void doAccess() throws Exception {
-        double totalPrice = 0.0;
-        double discountPercentage = 0.0;
+        boolean originalAutoCommit = con.getAutoCommit();
+        con.setAutoCommit(false); // Begin transaction
 
         try (
             PreparedStatement getTotalStmt = con.prepareStatement(GET_CART_TOTAL);
             PreparedStatement getDiscountStmt = con.prepareStatement(GET_DISCOUNT_PERCENTAGE);
             PreparedStatement applyStmt = con.prepareStatement(APPLY_DISCOUNT)
         ) {
-            // Get cart total price
+            // 1. Get cart total price
+            double totalPrice;
             getTotalStmt.setInt(1, cartId);
             try (ResultSet rs = getTotalStmt.executeQuery()) {
                 if (rs.next()) {
@@ -44,7 +45,8 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<Double> {
                 }
             }
 
-            // Get discount percentage
+            // 2. Get discount percentage
+            double discountPercentage;
             getDiscountStmt.setInt(1, discountId);
             try (ResultSet rs = getDiscountStmt.executeQuery()) {
                 if (rs.next()) {
@@ -54,22 +56,24 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<Double> {
                 }
             }
 
-            // Link discount to cart
+            // 3. Apply discount to cart
             applyStmt.setInt(1, discountId);
             applyStmt.setInt(2, cartId);
             applyStmt.executeUpdate();
 
-            // Calculate discounted price
-            double discountFactor = 1 - (discountPercentage / 100);
-            double discountedPrice = totalPrice * discountFactor;
-
+            // 4. Calculate and return the discounted price
+            double discountedPrice = totalPrice * (1 - discountPercentage / 100.0);
             this.outputParam = discountedPrice;
 
-            LOGGER.info("Discount {} applied to cart {}. Discounted price: {}", discountId, cartId, discountedPrice);
+            con.commit(); // All steps succeeded
+            LOGGER.info("Discount {} applied to cart {}. Final price: {}", discountId, cartId, discountedPrice);
 
         } catch (Exception ex) {
-            LOGGER.error("Error applying discount ID {} to cart {}: {}", discountId, cartId, ex.getMessage());
+            con.rollback(); // Roll back all operations if anything fails
+            LOGGER.error("Failed to apply discount {} to cart {}: {}", discountId, cartId, ex.getMessage());
             throw ex;
+        } finally {
+            con.setAutoCommit(originalAutoCommit); // Restore original autocommit setting
         }
     }
 }

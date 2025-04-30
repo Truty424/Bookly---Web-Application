@@ -13,17 +13,17 @@ import static it.unipd.bookly.dao.review.ReviewQueries.GET_AVG_RATING_FOR_BOOK;
  */
 public class GetAvgRatingForBookDAO extends AbstractDAO<Double> {
 
-    private final int bookId;
+    private final int book_id;
 
     /**
      * Constructs a DAO for retrieving the average rating of a book.
      *
      * @param con     The database connection.
-     * @param bookId  The ID of the book.
+     * @param book_id  The ID of the book.
      */
-    public GetAvgRatingForBookDAO(Connection con, int bookId) {
+    public GetAvgRatingForBookDAO(Connection con, int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     /**
@@ -34,20 +34,20 @@ public class GetAvgRatingForBookDAO extends AbstractDAO<Double> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(GET_AVG_RATING_FOR_BOOK)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     double avg = rs.getDouble(1);
                     this.outputParam = rs.wasNull() ? 0.0 : avg;
-                    LOGGER.info("Average rating for book ID {} is {}", bookId, outputParam);
+                    LOGGER.info("Average rating for book ID {} is {}", book_id, outputParam);
                 } else {
                     this.outputParam = 0.0;
-                    LOGGER.warn("No average rating found for book ID {}", bookId);
+                    LOGGER.warn("No average rating found for book ID {}", book_id);
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Failed to retrieve average rating for book ID {}: {}", bookId, e.getMessage(), e);
+            LOGGER.error("Failed to retrieve average rating for book ID {}: {}", book_id, e.getMessage(), e);
             throw e;
         }
     }

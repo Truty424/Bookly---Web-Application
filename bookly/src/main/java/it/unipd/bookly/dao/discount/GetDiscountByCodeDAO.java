@@ -24,7 +24,7 @@ public class GetDiscountByCodeDAO extends AbstractDAO<Discount> {
      */
     public GetDiscountByCodeDAO(final Connection con, final String discountCode) {
         super(con);
-        this.discountCode = discountCode;
+        this.discountCode = discountCode != null ? discountCode.trim() : null;
     }
 
     @Override

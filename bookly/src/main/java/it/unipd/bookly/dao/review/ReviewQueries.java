@@ -5,16 +5,13 @@ public final class ReviewQueries {
     private ReviewQueries() {}
 
     // --- CREATE ---
-    public static final String INSERT_REVIEW =
-            "INSERT INTO booklySchema.reviews (user_id, book_id, review_text, rating, number_of_likes, number_of_dislikes) " +
-            "VALUES (?, ?, ?, ?, ?, ?)";
+        public static final String INSERT_REVIEW =
+        "INSERT INTO booklySchema.reviews (user_id, book_id, comment, rating, number_of_likes, number_of_dislikes, parent_review_id) " +
+        "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     // --- READ ---
     public static final String GET_REVIEW_BY_ID =
             "SELECT * FROM booklySchema.reviews WHERE review_id = ?";
-
-    public static final String GET_ALL_REVIEWS =
-            "SELECT * FROM booklySchema.reviews";
 
     public static final String GET_REVIEWS_BY_BOOK =
             "SELECT r.*, u.username, u.firstName, u.lastName " +
@@ -41,12 +38,4 @@ public final class ReviewQueries {
 
     public static final String UPDATE_REVIEW_LIKES_DISLIKES =
             "UPDATE booklySchema.reviews SET number_of_likes = ?, number_of_dislikes = ? WHERE review_id = ?";
-
-    // --- DELETE ---
-    public static final String DELETE_REVIEW =
-            "DELETE FROM booklySchema.reviews WHERE review_id = ?";
-
-    // --- OPTIONAL ANALYTICS ---
-    public static final String GET_TOP_REVIEWS_FOR_BOOK =
-            "SELECT * FROM booklySchema.reviews WHERE book_id = ? ORDER BY number_of_likes DESC LIMIT ?";
 }

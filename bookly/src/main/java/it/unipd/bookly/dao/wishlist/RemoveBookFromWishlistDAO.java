@@ -39,7 +39,6 @@ public class RemoveBookFromWishlistDAO extends AbstractDAO<Void> {
         boolean previousAutoCommit = con.getAutoCommit();
         try {
             con.setAutoCommit(false);
-
             try (PreparedStatement stmnt = con.prepareStatement(REMOVE_BOOK_FROM_WISHLIST)) {
                 stmnt.setInt(1, wishlistId);
                 stmnt.setInt(2, book_id);

@@ -19,13 +19,6 @@ public class LoginUserDAO extends AbstractDAO<User> {
     private final String username;
     private final String password;
 
-    /**
-     * Constructor.
-     *
-     * @param con       the database connection
-     * @param username  the user's username
-     * @param password  the user's password (in plain text, will be hashed by query)
-     */
     public LoginUserDAO(Connection con, String username, String password) {
         super(con);
         this.username = username;
@@ -34,52 +27,69 @@ public class LoginUserDAO extends AbstractDAO<User> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (
-            PreparedStatement userStmt = con.prepareStatement(LOGIN_USER);
-            PreparedStatement imageStmt = con.prepareStatement(GET_USER_IMAGE)
-        ) {
+        boolean autoCommitState = con.getAutoCommit();
+        con.setAutoCommit(false);  // Start transaction
+
+        PreparedStatement userStmt = null;
+        PreparedStatement imageStmt = null;
+        ResultSet userRs = null;
+        ResultSet imageRs = null;
+
+        try {
+            userStmt = con.prepareStatement(LOGIN_USER);
             userStmt.setString(1, this.username);
-            userStmt.setString(2, this.password); 
+            userStmt.setString(2, this.password);  // Will be hashed via md5(?) in SQL
 
-            try (ResultSet userRs = userStmt.executeQuery()) {
-                if (userRs.next()) {
-                    int userId = userRs.getInt("user_id");
+            userRs = userStmt.executeQuery();
 
-                    // Fetch user image if available
-                    Image profileImage = null;
-                    imageStmt.setInt(1, userId);
-                    try (ResultSet imageRs = imageStmt.executeQuery()) {
-                        if (imageRs.next()) {
-                            profileImage = new Image(
-                                imageRs.getBytes("image"),
-                                imageRs.getString("image_type")
-                            );
-                        }
-                    }
+            if (userRs.next()) {
+                int userId = userRs.getInt("user_id");
 
-                    this.outputParam = new User(
-                        userRs.getInt("user_id"),   
-                        userRs.getString("username"),
-                        userRs.getString("password"),
-                        userRs.getString("firstName"),
-                        userRs.getString("lastName"),
-                        userRs.getString("email"),
-                        userRs.getString("phone"),
-                        userRs.getString("address"),
-                        userRs.getString("role"),
-                        profileImage
+                imageStmt = con.prepareStatement(GET_USER_IMAGE);
+                imageStmt.setInt(1, userId);
+                imageRs = imageStmt.executeQuery();
+
+                Image profileImage = null;
+                if (imageRs.next()) {
+                    profileImage = new Image(
+                        imageRs.getBytes("image"),
+                        imageRs.getString("image_type")
                     );
-
-                    LOGGER.info("Login successful for user '{}'.", this.username);
-                } else {
-                    this.outputParam = null;
-                    LOGGER.warn("Login failed: No user found for '{}'.", this.username);
                 }
+
+                this.outputParam = new User(
+                    userId,
+                    userRs.getString("username"),
+                    userRs.getString("password"),
+                    userRs.getString("firstName"),
+                    userRs.getString("lastName"),
+                    userRs.getString("email"),
+                    userRs.getString("phone"),
+                    userRs.getString("address"),
+                    userRs.getString("role"),
+                    profileImage
+                );
+
+                LOGGER.info("Login successful for user '{}'.", this.username);
+            } else {
+                this.outputParam = null;
+                LOGGER.warn("Login failed: No user found for '{}'.", this.username);
             }
+
+            con.commit();  // Commit transaction
+
         } catch (Exception e) {
-            this.outputParam = null;  // Ensure it's always set
-            LOGGER.error("LoginUserDAO error for '{}': {}", this.username, e.getMessage());
+            con.rollback();  // Rollback if any error occurs
+            this.outputParam = null;
+            LOGGER.error("LoginUserDAO error for '{}': {}", this.username, e.getMessage(), e);
             throw e;
+
+        } finally {
+            if (imageRs != null) imageRs.close();
+            if (userRs != null) userRs.close();
+            if (imageStmt != null) imageStmt.close();
+            if (userStmt != null) userStmt.close();
+            con.setAutoCommit(autoCommitState);  // Restore previous autocommit state
         }
     }
 }

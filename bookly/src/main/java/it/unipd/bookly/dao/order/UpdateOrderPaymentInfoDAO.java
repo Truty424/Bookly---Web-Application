@@ -36,6 +36,16 @@ public class UpdateOrderPaymentInfoDAO extends AbstractDAO<Boolean> {
 
             int rowsUpdated = stmt.executeUpdate();
             this.outputParam = rowsUpdated > 0;
+
+            if (outputParam) {
+                LOGGER.info("Updated payment info for order ID {}.", orderId);
+            } else {
+                LOGGER.warn("No update performed for order ID {}.", orderId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error updating payment info for order ID {}: {}", orderId, e.getMessage());
+            throw e;
         }
     }
+
 }

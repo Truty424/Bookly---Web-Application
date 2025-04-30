@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.AbstractDAO;
-import static it.unipd.bookly.dao.user.UserQueries.INSERT_USER_IMAGE;
+
 import static it.unipd.bookly.dao.user.UserQueries.REGISTER_USER;
 
 /**
@@ -20,7 +20,7 @@ public class RegisterUserDAO extends AbstractDAO<User> {
     /**
      * Constructor.
      *
-     * @param con the DB connection
+     * @param con  the DB connection
      * @param user the user to register
      */
     public RegisterUserDAO(final Connection con, final User user) {
@@ -30,14 +30,12 @@ public class RegisterUserDAO extends AbstractDAO<User> {
 
     @Override
     protected void doAccess() throws Exception {
-        boolean autoCommitState = con.getAutoCommit();
+        boolean originalAutoCommit = con.getAutoCommit();
         con.setAutoCommit(false); // Begin transaction
 
-        try (
-                PreparedStatement userStmt = con.prepareStatement(REGISTER_USER, PreparedStatement.RETURN_GENERATED_KEYS); PreparedStatement imageStmt = con.prepareStatement(INSERT_USER_IMAGE)) {
-            // Set user fields
+        try (PreparedStatement userStmt = con.prepareStatement(REGISTER_USER, PreparedStatement.RETURN_GENERATED_KEYS)) {
             userStmt.setString(1, user.getUsername());
-            userStmt.setString(2, user.getPassword()); // Assume already hashed
+            userStmt.setString(2, user.getPassword()); // Already hashed
             userStmt.setString(3, user.getFirstName());
             userStmt.setString(4, user.getLastName());
             userStmt.setString(5, user.getEmail());
@@ -47,35 +45,34 @@ public class RegisterUserDAO extends AbstractDAO<User> {
 
             userStmt.executeUpdate();
 
-            // Get the generated user ID
             try (ResultSet rs = userStmt.getGeneratedKeys()) {
                 if (rs.next()) {
                     int userId = rs.getInt(1);
                     user.setUserId(userId);
 
-                    // If a profile image exists, insert it
                     Image profileImage = user.getProfileImage();
-                    if (profileImage != null) {
-                        imageStmt.setInt(1, userId);
-                        imageStmt.setBytes(2, profileImage.getPhoto());
-                        imageStmt.setString(3, profileImage.getPhotoMediaType());
-                        imageStmt.executeUpdate();
+                    if (profileImage != null && profileImage.getPhoto() != null) {
+                        // Use an existing DAO for image update
+                        boolean updated = new UpdateUserImageIfExistsDAO(con, userId, profileImage).access().getOutputParam();
+                        if (!updated) {
+                            LOGGER.warn("Image for user ID {} was not inserted or updated.", userId);
+                        }
                     }
 
-                    outputParam = user;
+                    this.outputParam = user;
                     LOGGER.info("User '{}' registered successfully with ID {}", user.getUsername(), userId);
                 } else {
                     throw new Exception("User registration failed: no ID returned.");
                 }
             }
 
-            con.commit(); // Commit transaction
-        } catch (Exception ex) {
-            con.rollback(); // Rollback on error
-            LOGGER.error("Registration failed for user '{}': {}", user.getUsername(), ex.getMessage());
-            throw ex;
+            con.commit(); // Commit if everything succeeded
+        } catch (Exception e) {
+            con.rollback();
+            LOGGER.error("Registration failed for user '{}': {}", user.getUsername(), e.getMessage(), e);
+            throw e;
         } finally {
-            con.setAutoCommit(autoCommitState); // Restore original state
+            con.setAutoCommit(originalAutoCommit); // Restore default state
         }
     }
 }

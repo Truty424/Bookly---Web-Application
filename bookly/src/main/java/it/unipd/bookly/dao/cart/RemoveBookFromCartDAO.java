@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.cart.CartQueries.REMOVE_BOOK_FROM_CART;
 
 /**
@@ -17,9 +18,9 @@ public class RemoveBookFromCartDAO extends AbstractDAO<Void> {
     /**
      * Constructor to create DAO instance.
      *
-     * @param con the database connection.
-     * @param book_id the ID of the book to remove.
-     * @param cartId the ID of the cart to remove the book from.
+     * @param con     the database connection.
+     * @param book_id  the ID of the book to remove.
+     * @param cartId  the ID of the cart to remove the book from.
      */
     public RemoveBookFromCartDAO(final Connection con, final int book_id, final int cartId) {
         super(con);
@@ -29,6 +30,9 @@ public class RemoveBookFromCartDAO extends AbstractDAO<Void> {
 
     @Override
     protected void doAccess() throws Exception {
+        boolean originalAutoCommit = con.getAutoCommit();
+        con.setAutoCommit(false); // Begin transaction
+
         try (PreparedStatement stmnt = con.prepareStatement(REMOVE_BOOK_FROM_CART)) {
             stmnt.setInt(1, book_id);
             stmnt.setInt(2, cartId);
@@ -40,9 +44,13 @@ public class RemoveBookFromCartDAO extends AbstractDAO<Void> {
                 LOGGER.warn("No book {} found in cart {} to remove.", book_id, cartId);
             }
 
+            con.commit(); // Commit the transaction
         } catch (Exception ex) {
+            con.rollback(); // Rollback on error
             LOGGER.error("Error removing book {} from cart {}: {}", book_id, cartId, ex.getMessage());
             throw ex;
+        } finally {
+            con.setAutoCommit(originalAutoCommit); // Restore connection state
         }
     }
 }

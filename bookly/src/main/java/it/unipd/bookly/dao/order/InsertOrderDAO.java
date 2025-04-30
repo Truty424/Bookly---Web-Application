@@ -24,26 +24,35 @@ public class InsertOrderDAO extends AbstractDAO<Boolean> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmt = con.prepareStatement(INSERT_ORDER)) {
-            stmt.setDouble(1, order.getTotalPrice());
-            stmt.setString(2, order.getPaymentMethod());
-            stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
-            stmt.setString(4, order.getAddress());
-            stmt.setString(5, order.getShipmentCode());
-            stmt.setString(6, order.getStatus());
+        boolean originalAutoCommit = con.getAutoCommit();
+        try {
+            con.setAutoCommit(false); 
 
-            try (var rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    order.setOrderId(rs.getInt(1));
-                    this.outputParam = true;
-                } else {
-                    this.outputParam = false;
+            try (PreparedStatement stmt = con.prepareStatement(INSERT_ORDER)) {
+                stmt.setDouble(1, order.getTotalPrice());
+                stmt.setString(2, order.getPaymentMethod());
+                stmt.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+                stmt.setString(4, order.getAddress());
+                stmt.setString(5, order.getShipmentCode());
+                stmt.setString(6, order.getStatus());
+
+                try (var rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        order.setOrderId(rs.getInt(1));
+                        this.outputParam = true;
+                    } else {
+                        this.outputParam = false;
+                    }
                 }
             }
 
+            con.commit();
         } catch (SQLException e) {
-            LOGGER.error("InsertOrderDAO - Error inserting order: {}", e.getMessage());
+            con.rollback();
+            LOGGER.error("InsertOrderDAO - Transaction rolled back: {}", e.getMessage(), e);
             throw e;
+        } finally {
+            con.setAutoCommit(originalAutoCommit);
         }
     }
 }

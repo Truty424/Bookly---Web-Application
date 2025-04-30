@@ -7,10 +7,15 @@ import java.sql.SQLException;
 
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.dao.AbstractDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class BookImageLoaderDAO extends AbstractDAO<Image> {
 
-    private static final String STATEMENT_LOAD_RECIPE_IMAGE = "SELECT * FROM booklySchema.book_image WHERE book_id = ?";
+    private static final Logger LOGGER = LogManager.getLogger(BookImageLoaderDAO.class);
+    private static final String STATEMENT_LOAD_BOOK_IMAGE =
+        "SELECT * FROM booklySchema.book_image WHERE book_id = ?";
+
     private final int book_id;
 
     public BookImageLoaderDAO(final Connection con, int book_id) {
@@ -20,13 +25,20 @@ public class BookImageLoaderDAO extends AbstractDAO<Image> {
 
     @Override
     protected void doAccess() throws SQLException {
-        try (PreparedStatement pstmt = con.prepareStatement(STATEMENT_LOAD_RECIPE_IMAGE)) {
+        try (PreparedStatement pstmt = con.prepareStatement(STATEMENT_LOAD_BOOK_IMAGE)) {
             pstmt.setInt(1, book_id);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     this.outputParam = new Image(rs.getBytes("image"), rs.getString("image_type"));
+                    LOGGER.info("Loaded image for book ID {}", book_id);
+                } else {
+                    this.outputParam = null;
+                    LOGGER.warn("No image found for book ID {}", book_id);
                 }
             }
+        } catch (SQLException e) {
+            LOGGER.error("Error loading image for book ID {}: {}", book_id, e.getMessage());
+            throw e;
         }
     }
 }

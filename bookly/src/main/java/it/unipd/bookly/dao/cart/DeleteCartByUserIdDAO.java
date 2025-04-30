@@ -4,9 +4,13 @@ import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import static it.unipd.bookly.dao.cart.CartQueries.DELETE_CART_BY_USER_ID;
 
 /**
  * DAO class to delete a cart associated with a given user.
+ * This includes deleting all book entries in the cart and the cart itself.
  */
 public class DeleteCartByUserIdDAO extends AbstractDAO<Void> {
 
@@ -19,8 +23,11 @@ public class DeleteCartByUserIdDAO extends AbstractDAO<Void> {
 
     @Override
     protected void doAccess() throws Exception {
+        boolean originalAutoCommit = con.getAutoCommit();
+        con.setAutoCommit(false); 
+
         try {
-            // Step 1: Delete entries from `contains` where the cart_id matches the user's cart
+            // Step 1: Delete books from the 'contains' table for the user's cart
             String deleteFromContains = """
                 DELETE FROM booklySchema.contains 
                 WHERE cart_id = (
@@ -30,21 +37,24 @@ public class DeleteCartByUserIdDAO extends AbstractDAO<Void> {
 
             try (PreparedStatement stmt1 = con.prepareStatement(deleteFromContains)) {
                 stmt1.setInt(1, userId);
-                int containsRows = stmt1.executeUpdate();
-                LOGGER.info("Deleted {} row(s) from 'contains' for user ID {}.", containsRows, userId);
+                int rows1 = stmt1.executeUpdate();
+                LOGGER.info("Deleted {} row(s) from 'contains' for user ID {}.", rows1, userId);
             }
 
-            // Step 2: Delete the cart
-            String deleteCart = "DELETE FROM booklySchema.shoppingcart WHERE user_id = ?";
-            try (PreparedStatement stmt2 = con.prepareStatement(deleteCart)) {
+            // Step 2: Delete the cart using predefined query constant
+            try (PreparedStatement stmt2 = con.prepareStatement(DELETE_CART_BY_USER_ID)) {
                 stmt2.setInt(1, userId);
-                int cartRows = stmt2.executeUpdate();
-                LOGGER.info("Cart(s) deleted for user ID {} ({} row(s) affected).", userId, cartRows);
+                int rows2 = stmt2.executeUpdate();
+                LOGGER.info("Deleted {} shopping cart(s) for user ID {}.", rows2, userId);
             }
 
-        } catch (Exception ex) {
-            LOGGER.error("Error deleting cart for user ID {}: {}", userId, ex.getMessage());
+            con.commit(); 
+        } catch (SQLException ex) {
+            con.rollback(); 
+            LOGGER.error("Failed to delete cart for user ID {}: {}", userId, ex.getMessage());
             throw ex;
+        } finally {
+            con.setAutoCommit(originalAutoCommit);
         }
     }
 }

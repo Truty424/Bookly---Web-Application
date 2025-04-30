@@ -36,18 +36,21 @@ public class GetLatestOrderForUserDAO extends AbstractDAO<Order> {
                     String status = rs.getString("status");
 
                     this.outputParam = new Order(
-                        orderId,
-                        totalPrice,
-                        paymentMethod,
-                        orderDate,
-                        address,
-                        shipmentCode,
-                        status
+                            orderId,
+                            totalPrice,
+                            paymentMethod,
+                            orderDate,
+                            address,
+                            shipmentCode,
+                            status
                     );
+                } else {
+                    this.outputParam = null; // No result
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error retrieving the latest order for user {}: {}", userId, e.getMessage());
+            LOGGER.error("Error retrieving the latest order for user {}: {}", userId, e.getMessage(), e);
+            throw e; // <-- Rethrow to signal failure
         }
     }
 }

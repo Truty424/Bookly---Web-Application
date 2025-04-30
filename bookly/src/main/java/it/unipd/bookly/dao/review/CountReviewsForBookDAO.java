@@ -15,17 +15,17 @@ import static it.unipd.bookly.dao.review.ReviewQueries.COUNT_REVIEWS_FOR_BOOK;
  */
 public class CountReviewsForBookDAO extends AbstractDAO<Integer> {
 
-    private final int bookId;
+    private final int book_id;
 
     /**
      * Constructs a DAO to count reviews for a specific book.
      *
      * @param con     the database connection
-     * @param bookId  the ID of the book for which to count reviews
+     * @param book_id  the ID of the book for which to count reviews
      */
-    public CountReviewsForBookDAO(Connection con, int bookId) {
+    public CountReviewsForBookDAO(Connection con, int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     /**
@@ -36,19 +36,19 @@ public class CountReviewsForBookDAO extends AbstractDAO<Integer> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(COUNT_REVIEWS_FOR_BOOK)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     outputParam = rs.getInt(1);
-                    LOGGER.info("Found {} reviews for book ID {}", outputParam, bookId);
+                    LOGGER.info("Found {} reviews for book ID {}", outputParam, book_id);
                 } else {
                     outputParam = 0;
-                    LOGGER.warn("No count result returned for book ID {}", bookId);
+                    LOGGER.warn("No count result returned for book ID {}", book_id);
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error counting reviews for book ID {}: {}", bookId, e.getMessage(), e);
+            LOGGER.error("Error counting reviews for book ID {}: {}", book_id, e.getMessage(), e);
             throw e;
         }
     }

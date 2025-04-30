@@ -28,15 +28,18 @@ public class DeletePublisherDAO extends AbstractDAO<Boolean> {
 
     @Override
     protected void doAccess() throws SQLException {
+        boolean autoCommitState = con.getAutoCommit();
+        con.setAutoCommit(false); // Start transaction
+
         try {
-            // Step 1: Delete from published_by where publisher is still linked to books
+            // Step 1: Delete from published_by
             try (PreparedStatement stmt = con.prepareStatement(
                     "DELETE FROM booklySchema.published_by WHERE publisher_id = ?")) {
                 stmt.setInt(1, publisherId);
-                stmt.executeUpdate(); // This removes the foreign key dependencies
+                stmt.executeUpdate();
             }
 
-            // Step 2: Now delete the publisher
+            // Step 2: Delete from publishers
             try (PreparedStatement stmt = con.prepareStatement(DELETE_PUBLISHER)) {
                 stmt.setInt(1, publisherId);
                 int rowsAffected = stmt.executeUpdate();
@@ -49,10 +52,14 @@ public class DeletePublisherDAO extends AbstractDAO<Boolean> {
                 }
             }
 
+            con.commit(); // All good
+
         } catch (SQLException ex) {
+            con.rollback(); // Undo partial changes
             LOGGER.error("Error deleting publisher with ID {}: {}", publisherId, ex.getMessage());
             throw ex;
+        } finally {
+            con.setAutoCommit(autoCommitState); // Restore original state
         }
     }
-
 }

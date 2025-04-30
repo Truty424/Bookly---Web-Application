@@ -29,6 +29,15 @@ public class UpdateOrderStatusDAO extends AbstractDAO<Boolean> {
 
             int rowsUpdated = stmt.executeUpdate();
             this.outputParam = rowsUpdated > 0;
+
+            if (outputParam) {
+                LOGGER.info("Order ID {} status updated to '{}'.", orderId, newStatus);
+            } else {
+                LOGGER.warn("No update occurred for Order ID {}. Possibly invalid ID.", orderId);
+            }
+        } catch (Exception e) {
+            LOGGER.error("Error updating order status for ID {}: {}", orderId, e.getMessage());
+            throw e;
         }
     }
 }

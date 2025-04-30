@@ -40,20 +40,22 @@ public class GetOrdersByUserDAO extends AbstractDAO<List<Order>> {
                     String status = rs.getString("status");
 
                     Order order = new Order(
-                        orderId,
-                        totalPrice,
-                        paymentMethod,
-                        orderDate,
-                        address,
-                        shipmentCode,
-                        status
+                            orderId,
+                            totalPrice,
+                            paymentMethod,
+                            orderDate,
+                            address,
+                            shipmentCode,
+                            status
                     );
 
                     orders.add(order);
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error retrieving orders for user {}: {}", userId, e.getMessage());
+            this.outputParam = new ArrayList<>(); // Set to empty to prevent null issues
+            LOGGER.error("Error retrieving orders for user {}: {}", userId, e.getMessage(), e);
+            throw e;
         }
 
         this.outputParam = orders;

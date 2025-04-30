@@ -36,16 +36,20 @@ public class GetReviewByIdDAO extends AbstractDAO<Review> {
                     int likes = rs.getInt("number_of_likes");
                     int dislikes = rs.getInt("number_of_dislikes");
                     Timestamp reviewDate = rs.getTimestamp("review_date");
+                    Integer parentReviewId = rs.getObject("parent_review_id") != null
+                            ? rs.getInt("parent_review_id")
+                            : null;
 
                     Review review = new Review(
-                        reviewId,
-                        userId,
-                        bookId,
-                        reviewText,
-                        rating,
-                        likes,
-                        dislikes,
-                        reviewDate
+                            reviewId,
+                            userId,
+                            bookId,
+                            reviewText,
+                            rating,
+                            likes,
+                            dislikes,
+                            reviewDate,
+                            parentReviewId
                     );
 
                     this.outputParam = review;
