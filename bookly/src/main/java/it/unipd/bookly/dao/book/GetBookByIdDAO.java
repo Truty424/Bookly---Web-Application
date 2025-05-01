@@ -10,75 +10,63 @@ import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.GET_BOOK_BY_ID;
 
 /**
- * DAO to retrieve a book by its ID from the database. This class provides
- * functionality to fetch a book record from the database using the book's
- * unique ID.
+ * DAO to retrieve a book by its ID from the database.
  */
 public class GetBookByIdDAO extends AbstractDAO<Book> {
 
-    /**
-     * The ID of the book to retrieve.
-     */
-    private final int book_id;
+    private final int bookId;
 
-    /**
-     * Constructs a DAO to retrieve a book by its ID.
-     *
-     * @param con The database connection to use.
-     * @param book_id The ID of the book to retrieve.
-     */
-    public GetBookByIdDAO(final Connection con, final int book_id) {
+    public GetBookByIdDAO(final Connection con, final int bookId) {
         super(con);
-        this.book_id = book_id;
+        this.bookId = bookId;
     }
 
-    /**
-     * Executes the query to retrieve a book by its ID. Populates the
-     * {@link #outputParam} with the retrieved {@link Book} object.
-     *
-     * @throws Exception If an error occurs during the database operation.
-     */
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(GET_BOOK_BY_ID)) {
-            stmnt.setInt(1, book_id);
+        try (PreparedStatement stmt = con.prepareStatement(GET_BOOK_BY_ID)) {
+            stmt.setInt(1, bookId);
 
-            try (ResultSet rs = stmnt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    int book_id = rs.getInt("book_id");
+                    // Basic book fields
                     String title = rs.getString("title");
                     String language = rs.getString("language");
                     String isbn = rs.getString("isbn");
                     double price = rs.getDouble("price");
                     String edition = rs.getString("edition");
-                    int publication_year = rs.getInt("publication_year");
-                    int number_of_pages = rs.getInt("number_of_pages");
-                    int stock_quantity = rs.getInt("stock_quantity");
-                    double average_rate = rs.getDouble("average_rate");
+                    int publicationYear = rs.getInt("publication_year");
+                    int numberOfPages = rs.getInt("number_of_pages");
+                    int stockQuantity = rs.getInt("stock_quantity");
+                    double averageRate = rs.getDouble("average_rate");
                     String summary = rs.getString("summary");
 
+                    // Handle optional image (LEFT JOIN)
+                    byte[] imageData = rs.getBytes("image");
+                    String imageType = rs.getString("image_type");
                     Image bookImage = null;
-                    try {
-                        byte[] imageData = rs.getBytes("image");
-                        String imageType = rs.getString("image_type");
-                        if (imageData != null && imageType != null) {
-                            bookImage = new Image(imageData, imageType);
-                        }
-                    } catch (Exception ignored) {
-                        LOGGER.debug("No image for book {}", book_id);
+
+                    if (imageData != null && imageType != null) {
+                        bookImage = new Image(imageData, imageType);
+                        LOGGER.debug("Image found for book ID {}", bookId);
+                    } else {
+                        LOGGER.debug("No image found for book ID {}", bookId);
                     }
 
-                    if (bookImage == null) {
-                        this.outputParam = new Book(book_id, title, language, isbn, price, edition,
-                                publication_year, number_of_pages, stock_quantity, average_rate, summary);
-                    } else {
-                        this.outputParam = new Book(book_id, title, language, isbn, price, edition,
-                                publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
-                    }
+                    this.outputParam = new Book(
+                            bookId, title, language, isbn, price, edition,
+                            publicationYear, numberOfPages, stockQuantity, averageRate,
+                            summary, bookImage
+                    );
+
+                    LOGGER.info("Book ID {} retrieved successfully.", bookId);
+                } else {
+                    LOGGER.warn("No book found with ID {}", bookId);
+                    this.outputParam = null;
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error retrieving book {}: {}", book_id, e.getMessage());
+            LOGGER.error("Error retrieving book ID {}: {}", bookId, e.getMessage(), e);
+            throw e;
         }
     }
 }

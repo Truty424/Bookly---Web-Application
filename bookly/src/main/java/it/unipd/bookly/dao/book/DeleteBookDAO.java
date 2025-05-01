@@ -8,7 +8,7 @@ import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.DELETE_BOOK;
 
 /**
- * DAO to delete a book from the database.
+ * DAO to delete a book from the database, including related data.
  */
 public class DeleteBookDAO extends AbstractDAO<Boolean> {
 
@@ -21,6 +21,9 @@ public class DeleteBookDAO extends AbstractDAO<Boolean> {
 
     @Override
     protected void doAccess() throws Exception {
+        boolean originalAutoCommit = con.getAutoCommit();
+        con.setAutoCommit(false);
+
         try {
             // Step 1: Delete from category_belongs
             try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.category_belongs WHERE book_id = ?")) {
@@ -52,7 +55,13 @@ public class DeleteBookDAO extends AbstractDAO<Boolean> {
                 stmt.executeUpdate();
             }
 
-            // Step 6: Finally, delete from books
+            // (Optional) Step 6: Delete from book_images if applicable
+            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.book_images WHERE book_id = ?")) {
+                stmt.setInt(1, book_id);
+                stmt.executeUpdate();
+            }
+
+            // Step 7: Finally, delete from books
             try (PreparedStatement stmt = con.prepareStatement(DELETE_BOOK)) {
                 stmt.setInt(1, book_id);
                 int affectedRows = stmt.executeUpdate();
@@ -60,15 +69,20 @@ public class DeleteBookDAO extends AbstractDAO<Boolean> {
             }
 
             if (this.outputParam) {
-                LOGGER.info("Book ID {} deleted successfully.", book_id);
+                LOGGER.info("Book ID {} deleted successfully (and all related data).", book_id);
             } else {
                 LOGGER.warn("No book found with ID {}. Deletion skipped.", book_id);
             }
 
+            con.commit(); 
+
         } catch (Exception e) {
+            con.rollback();
             this.outputParam = false;
-            LOGGER.error("Error deleting book {}: {}", book_id, e.getMessage());
+            LOGGER.error("Error deleting book {}: {}. Transaction rolled back.", book_id, e.getMessage());
             throw e;
+        } finally {
+            con.setAutoCommit(originalAutoCommit); // Always restore original autocommit state
         }
     }
 }

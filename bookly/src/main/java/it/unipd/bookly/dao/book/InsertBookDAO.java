@@ -12,74 +12,69 @@ import static it.unipd.bookly.dao.book.BookQueries.INSERT_BOOK_IMAGE;
 
 /**
  * DAO to insert a new book (with optional image).
- * This class provides functionality to add a new book record
- * to the database, including optional image data.
  */
 public class InsertBookDAO extends AbstractDAO<Boolean> {
 
-    /**
-     * The {@link Book} object containing the details of the book to be inserted.
-     */
     private final Book book;
 
-    /**
-     * Constructs a DAO to insert a new book (with optional image).
-     *
-     * @param con  The database connection to use.
-     * @param book The {@link Book} object containing the details of the book to be inserted.
-     * @throws Exception If an error occurs while setting up the DAO.
-     */
-    public InsertBookDAO(final Connection con, final Book book) throws Exception {
+    public InsertBookDAO(final Connection con, final Book book) {
         super(con);
         this.book = book;
-        con.setAutoCommit(false);
     }
 
-    /**
-     * Executes the query to insert a new book (with optional image) into the database.
-     * If an image is provided, it is inserted into the database along with the book metadata.
-     * Populates the {@link #outputParam} with the inserted {@link Book} object.
-     *
-     * @throws Exception If an error occurs during the database operation.
-     */
     @Override
     protected void doAccess() throws Exception {
+        boolean previousAutoCommit = con.getAutoCommit();
+        boolean success = false;
 
-        try (PreparedStatement stmntImg = con.prepareStatement(INSERT_BOOK_IMAGE);
-             PreparedStatement stmntBook = con.prepareStatement(INSERT_BOOK)) {
-
-            Image image = book.getImage();
+        try {
+            con.setAutoCommit(false);  // Begin transaction
 
             // Insert image if available
+            Image image = book.getImage();
             if (image != null) {
-                stmntImg.setString(1, book.getTitle());
-                stmntImg.setBytes(2, image.getPhoto());
-                stmntImg.setString(3, image.getPhotoMediaType());
-                stmntImg.execute();
-                LOGGER.info("Image for book '{}' added.", book.getTitle());
+                try (PreparedStatement stmtImg = con.prepareStatement(INSERT_BOOK_IMAGE)) {
+                    stmtImg.setString(1, book.getTitle());
+                    stmtImg.setBytes(2, image.getPhoto());
+                    stmtImg.setString(3, image.getPhotoMediaType());
+                    int imgRows = stmtImg.executeUpdate();
+                    LOGGER.info("Image inserted for book '{}', rows affected: {}", book.getTitle(), imgRows);
+                }
             }
 
             // Insert book metadata
-            stmntBook.setString(1, book.getTitle());
-            stmntBook.setString(2, book.getLanguage());
-            stmntBook.setString(3, book.getIsbn());
-            stmntBook.setDouble(4, book.getPrice());
-            stmntBook.setString(5, book.getEdition());
-            stmntBook.setInt(6, book.getPublication_year());
-            stmntBook.setInt(7, book.getNumber_of_pages());
-            stmntBook.setInt(8, book.getStockQuantity());
-            stmntBook.setDouble(9, book.getAverage_rate());
-            stmntBook.setString(10, book.getSummary());
-            stmntBook.execute();
+            try (PreparedStatement stmtBook = con.prepareStatement(INSERT_BOOK)) {
+                stmtBook.setString(1, book.getTitle());
+                stmtBook.setString(2, book.getLanguage());
+                stmtBook.setString(3, book.getIsbn());
+                stmtBook.setDouble(4, book.getPrice());
+                stmtBook.setString(5, book.getEdition());
+                stmtBook.setInt(6, book.getPublication_year());
+                stmtBook.setInt(7, book.getNumber_of_pages());
+                stmtBook.setInt(8, book.getStockQuantity());
+                stmtBook.setDouble(9, book.getAverage_rate());
+                stmtBook.setString(10, book.getSummary());
+                int bookRows = stmtBook.executeUpdate();
+                LOGGER.info("Book '{}' inserted into database, rows affected: {}", book.getTitle(), bookRows);
+                success = bookRows > 0;
+            }
 
-            LOGGER.info("Book '{}' inserted into the database.", book.getTitle());
             con.commit();
+            LOGGER.info("Transaction committed for book '{}'", book.getTitle());
 
         } catch (Exception ex) {
-            LOGGER.error("Error inserting book '{}': {}", book.getTitle(), ex.getMessage());
-            con.rollback();
+            LOGGER.error("Error inserting book '{}': {}", book.getTitle(), ex.getMessage(), ex);
+            try {
+                con.rollback();
+                LOGGER.warn("Transaction rolled back for book '{}'", book.getTitle());
+            } catch (Exception rollbackEx) {
+                LOGGER.error("Rollback failed: {}", rollbackEx.getMessage(), rollbackEx);
+            }
+            throw ex;  // Rethrow so caller knows it failed
         } finally {
-            con.setAutoCommit(true);
+            con.setAutoCommit(previousAutoCommit);  // Restore previous state
         }
+
+        this.outputParam = success;
     }
 }

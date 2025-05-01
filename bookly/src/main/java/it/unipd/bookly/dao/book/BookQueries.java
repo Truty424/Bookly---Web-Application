@@ -1,9 +1,10 @@
 package it.unipd.bookly.dao.book;
 
 /**
- * Contains SQL queries related to books in the Bookly system.
- * This class provides constants for creating, reading, updating, and deleting
- * book records in the database, as well as associating books with authors, categories, and publishers.
+ * Contains SQL queries related to books in the Bookly system. This class
+ * provides constants for creating, reading, updating, and deleting book records
+ * in the database, as well as associating books with authors, categories, and
+ * publishers.
  */
 public final class BookQueries {
 
@@ -14,7 +15,6 @@ public final class BookQueries {
     }
 
     // --- CREATE ---
-
     /**
      * SQL query to insert a new book into the database.
      */
@@ -26,10 +26,9 @@ public final class BookQueries {
     /**
      * SQL query to insert a book image into the database.
      */
-    public static final String INSERT_BOOK_IMAGE = "INSERT INTO booklySchema.book_image (title, image, image_type) VALUES (?, ?, ?)";
+    public static final String INSERT_BOOK_IMAGE = "INSERT INTO booklySchema.book_image (book_id, image, image_type) VALUES (?, ?, ?)";
 
     // --- READ ---
-
     /**
      * SQL query to retrieve a book by its ID.
      */
@@ -79,15 +78,11 @@ public final class BookQueries {
             = "SELECT * FROM booklySchema.books WHERE average_rate >= ? ORDER BY average_rate DESC";
 
     // --- UPDATE ---
-
     /**
      * SQL query to update a book's details in the database.
      */
     public static final String UPDATE_BOOK
-            = "UPDATE booklySchema.books SET "
-            + "title = ?, language = ?, isbn = ?, price = ?, edition = ?, publication_year = ?, "
-            + "number_of_pages = ?, stock_quantity = ?, average_rate = ?, summary = ? "
-            + "WHERE book_id = ?";
+            = "UPDATE booklySchema.books SET title = ?, language = ?, isbn = ?, price = ?, edition = ?, publication_year = ?, number_of_pages = ?, stock_quantity = ?, average_rate = ?, summary = ? WHERE book_id = ?";
 
     /**
      * SQL query to update a book's stock quantity.
@@ -100,4 +95,9 @@ public final class BookQueries {
      */
     public static final String DELETE_BOOK
             = "DELETE FROM booklySchema.books WHERE book_id = ?";
+
+    public static final String DELETE_BOOK_IMAGE = """
+        DELETE FROM booklySchema.book_image
+        WHERE book_id = ?
+        """;
 }

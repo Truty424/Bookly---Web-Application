@@ -9,84 +9,88 @@ import java.util.List;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.book.BookQueries.GET_BOOKS_BY_PUBLISHER_ID;
 
 /**
- * DAO to retrieve books by a specific publisher ID. This class provides
- * functionality to fetch all books associated with a specific publisher from
- * the database and return them as a list of {@link Book} objects.
+ * DAO to retrieve books by a specific publisher ID.
+ * Fetches all books associated with a specific publisher from the database and returns them as a list of {@link Book} objects.
  */
 public class GetBooksByPublisherIdDAO extends AbstractDAO<List<Book>> {
 
-    /**
-     * The ID of the publisher whose books are to be retrieved.
-     */
     private final int publisherId;
 
-    /**
-     * Constructs a DAO to retrieve books by a specific publisher ID.
-     *
-     * @param con The database connection to use.
-     * @param publisherId The ID of the publisher whose books are to be
-     * retrieved.
-     */
     public GetBooksByPublisherIdDAO(final Connection con, final int publisherId) {
         super(con);
         this.publisherId = publisherId;
     }
 
-    /**
-     * Executes the query to retrieve books by a specific publisher ID.
-     * Populates the {@link #outputParam} with a list of {@link Book} objects.
-     *
-     * @throws Exception If an error occurs during the database operation.
-     */
     @Override
     protected void doAccess() throws Exception {
         List<Book> books = new ArrayList<>();
+        boolean previousAutoCommit = con.getAutoCommit();  // Save current state
 
-        try (PreparedStatement stmnt = con.prepareStatement(GET_BOOKS_BY_PUBLISHER_ID)) {
-            stmnt.setInt(1, publisherId);
+        try {
+            con.setAutoCommit(false);  // Optional: standardize pattern even for SELECTs
 
-            try (ResultSet rs = stmnt.executeQuery()) {
-                while (rs.next()) {
-                    int book_id = rs.getInt("book_id");
-                    String title = rs.getString("title");
-                    String language = rs.getString("language");
-                    String isbn = rs.getString("isbn");
-                    double price = rs.getDouble("price");
-                    String edition = rs.getString("edition");
-                    int publication_year = rs.getInt("publication_year");
-                    int number_of_pages = rs.getInt("number_of_pages");
-                    int stock_quantity = rs.getInt("stock_quantity");
-                    double average_rate = rs.getDouble("average_rate");
-                    String summary = rs.getString("summary");
+            try (PreparedStatement stmt = con.prepareStatement(GET_BOOKS_BY_PUBLISHER_ID)) {
+                stmt.setInt(1, publisherId);
 
-                    Image bookImage = null;
-                    try {
+                try (ResultSet rs = stmt.executeQuery()) {
+                    while (rs.next()) {
+                        int bookId = rs.getInt("book_id");
+                        String title = rs.getString("title");
+                        String language = rs.getString("language");
+                        String isbn = rs.getString("isbn");
+                        double price = rs.getDouble("price");
+                        String edition = rs.getString("edition");
+                        int publicationYear = rs.getInt("publication_year");
+                        int numberOfPages = rs.getInt("number_of_pages");
+                        int stockQuantity = rs.getInt("stock_quantity");
+                        double averageRate = rs.getDouble("average_rate");
+                        String summary = rs.getString("summary");
+
+                        // Handle optional image
                         byte[] imageData = rs.getBytes("image");
                         String imageType = rs.getString("image_type");
-                        if (imageData != null && imageType != null) {
-                            bookImage = new Image(imageData, imageType);
+                        Image bookImage = (imageData != null && imageType != null)
+                                ? new Image(imageData, imageType)
+                                : null;
+
+                        if (bookImage != null) {
+                            LOGGER.debug("Image found for book ID {}", bookId);
                         }
-                    } catch (Exception ignored) {
-                        LOGGER.debug("No image found for book ID {}", book_id);
+
+                        Book book = new Book(
+                                bookId, title, language, isbn, price, edition,
+                                publicationYear, numberOfPages, stockQuantity, averageRate, summary, bookImage
+                        );
+
+                        books.add(book);
                     }
-
-                    Book book = (bookImage == null)
-                            ? new Book(book_id, title, language, isbn, price, edition,
-                                    publication_year, number_of_pages, stock_quantity, average_rate, summary)
-                            : new Book(book_id, title, language, isbn, price, edition,
-                                    publication_year, number_of_pages, stock_quantity, average_rate, summary, bookImage);
-
-                    books.add(book);
                 }
+            }
+
+            con.commit();  // No-op if autocommit was true
+
+            if (books.isEmpty()) {
+                LOGGER.info("No books found for publisher ID {}", publisherId);
+            } else {
+                LOGGER.info("Retrieved {} book(s) for publisher ID {}", books.size(), publisherId);
             }
 
             this.outputParam = books;
 
         } catch (Exception e) {
-            LOGGER.error("Error retrieving books by publisher ID {}: {}", publisherId, e.getMessage());
+            LOGGER.error("Error retrieving books by publisher ID {}: {}", publisherId, e.getMessage(), e);
+            try {
+                con.rollback();
+            } catch (Exception rollbackEx) {
+                LOGGER.error("Rollback failed: {}", rollbackEx.getMessage(), rollbackEx);
+            }
+            throw e;  // Re-throw to let caller handle
+        } finally {
+            con.setAutoCommit(previousAutoCommit);  // Restore
         }
     }
 }
