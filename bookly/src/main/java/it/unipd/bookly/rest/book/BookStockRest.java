@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Handles book stock updates:
- * PUT /api/books/stock?id=123&amp;quantity=10
+ * PUT /api/books/stock?id=123&quantity=10
  */
 public class BookStockRest extends AbstractRestResource {
 
@@ -21,15 +21,15 @@ public class BookStockRest extends AbstractRestResource {
 
     @Override
     protected void doServe() throws IOException {
+        res.setContentType("application/json;charset=UTF-8");  // Always set JSON response type
+
         final String method = req.getMethod();
 
-        switch (method) {
-            case "PUT" -> handleUpdateStock();
-            default -> {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Method not allowed", "E405", "Only PUT is supported for stock updates.")
-                        .toJSON(res.getOutputStream());
-            }
+        if ("PUT".equalsIgnoreCase(method)) {
+            handleUpdateStock();
+        } else {
+            sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "Method not allowed", "E405",
+                    "Only PUT is supported for stock updates.");
         }
     }
 
@@ -53,11 +53,14 @@ public class BookStockRest extends AbstractRestResource {
             new Message("Book stock updated successfully", "200", "Stock updated for book ID: " + bookId)
                     .toJSON(res.getOutputStream());
 
+            LOGGER.info("Stock for book ID {} successfully updated to {}", bookId, quantity);
+
         } catch (NumberFormatException e) {
+            LOGGER.warn("Invalid input for book stock update: id='{}', quantity='{}'", bookIdParam, quantityParam);
             sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid format", "E401",
                     "'id' and 'quantity' must be valid integers.");
         } catch (Exception e) {
-            LOGGER.error("Error updating book stock", e);
+            LOGGER.error("Error updating book stock for ID '{}'", bookIdParam, e);
             sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500",
                     "Internal error while updating stock: " + e.getMessage());
         }
@@ -65,6 +68,7 @@ public class BookStockRest extends AbstractRestResource {
 
     private void sendError(int status, String title, String code, String details) throws IOException {
         res.setStatus(status);
+        res.setContentType("application/json;charset=UTF-8");
         new Message(title, code, details).toJSON(res.getOutputStream());
     }
 }

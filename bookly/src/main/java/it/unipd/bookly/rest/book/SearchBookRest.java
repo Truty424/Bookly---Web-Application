@@ -18,21 +18,22 @@ import java.util.List;
  */
 public class SearchBookRest extends AbstractRestResource {
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     public SearchBookRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
         super("search-book", req, res, con);
     }
 
     @Override
     protected void doServe() throws IOException {
-        final String method = req.getMethod();
+        res.setContentType("application/json;charset=UTF-8"); // Always set JSON Content-Type
 
-        switch (method) {
-            case "GET" -> handleSearchByTitle();
-            default -> {
-                res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-                new Message("Method not allowed", "E405", "Only GET is supported for searching books.")
-                        .toJSON(res.getOutputStream());
-            }
+        if ("GET".equalsIgnoreCase(req.getMethod())) {
+            handleSearchByTitle();
+        } else {
+            res.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
+            new Message("Method not allowed", "E405", "Only GET is supported for searching books.")
+                    .toJSON(res.getOutputStream());
         }
     }
 
@@ -50,13 +51,14 @@ public class SearchBookRest extends AbstractRestResource {
 
             if (books == null || books.isEmpty()) {
                 sendError(HttpServletResponse.SC_NOT_FOUND, "No books found", "E404",
-                        "No books found for the title: " + titleParam);
+                        "No books found matching the title: " + titleParam);
                 return;
             }
 
-            res.setContentType("application/json;charset=UTF-8");
             res.setStatus(HttpServletResponse.SC_OK);
-            new ObjectMapper().writeValue(res.getOutputStream(), books);
+            mapper.writeValue(res.getOutputStream(), books);
+
+            LOGGER.info("{} book(s) found for title search '{}'.", books.size(), titleParam);
 
         } catch (Exception e) {
             LOGGER.error("Error while searching books with title '{}'", titleParam, e);
@@ -67,6 +69,6 @@ public class SearchBookRest extends AbstractRestResource {
 
     private void sendError(int status, String title, String code, String detail) throws IOException {
         res.setStatus(status);
-        new Message(title, code, detail).toJSON(res.getOutputStream());
+        mapper.writeValue(res.getOutputStream(), new Message(title, code, detail));
     }
 }
