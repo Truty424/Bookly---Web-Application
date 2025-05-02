@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Image;
+
 @WebServlet(name = "UserServlet", value = "/user/*")
 @MultipartConfig
 public class UserServlet extends AbstractDatabaseServlet {
@@ -34,12 +36,18 @@ public class UserServlet extends AbstractDatabaseServlet {
 
         try {
             switch (action) {
-                case "/login" -> forward(req, res, "/jsp/user/login.jsp");
-                case "/register" -> forward(req, res, "/jsp/user/signUp.jsp");
-                case "/changePassword" -> forward(req, res, "/jsp/user/changePassword.jsp");
-                case "/profile" -> showProfile(req, res);
-                case "/editUserProfile" -> forward(req, res, "/jsp/user/editUserProfile.jsp");
-                default -> writeError(res, ErrorCode.OPERATION_UNKNOWN);
+                case "/login" ->
+                    forward(req, res, "/jsp/user/login.jsp");
+                case "/register" ->
+                    forward(req, res, "/jsp/user/signUp.jsp");
+                case "/changePassword" ->
+                    forward(req, res, "/jsp/user/changePassword.jsp");
+                case "/profile" ->
+                    showProfile(req, res);
+                case "/editUserProfile" ->
+                    forward(req, res, "/jsp/user/editUserProfile.jsp");
+                default ->
+                    writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
         } finally {
             LogContext.removeAction();
@@ -57,11 +65,18 @@ public class UserServlet extends AbstractDatabaseServlet {
 
         try {
             switch (action) {
-                case "/login" -> handleLogin(req, res);
-                case "/register" -> handleRegister(req, res);
-                case "/changePassword" -> changePassword(req, res);
-                case "/editUserProfile" -> updateProfile(req, res);
-                default -> writeError(res, ErrorCode.OPERATION_UNKNOWN);
+                case "/login" ->
+                    handleLogin(req, res);
+                case "/register" ->
+                    handleRegister(req, res);
+                case "/changePassword" ->
+                    changePassword(req, res);
+                case "/editUserProfile" ->
+                    updateProfile(req, res);
+                case "/uploadProfileImage" ->
+                    uploadProfileImage(req, res);
+                default ->
+                    writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
         } finally {
             LogContext.removeAction();
@@ -216,15 +231,15 @@ public class UserServlet extends AbstractDatabaseServlet {
 
         try (Connection con = getConnection()) {
             boolean updated = new UpdateUserDAO(
-                con,
-                user.getUserId(),
-                username,
-                firstName,
-                lastName,
-                email,
-                phone,
-                address,
-                user.getRole()
+                    con,
+                    user.getUserId(),
+                    username,
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    address,
+                    user.getRole()
             ).access().getOutputParam();
 
             if (updated) {
@@ -245,5 +260,45 @@ public class UserServlet extends AbstractDatabaseServlet {
             LOGGER.error("Update failed: {}", e.getMessage(), e);
             forward(req, res, "/jsp/user/editUserProfile.jsp");
         }
+
     }
+
+    private void uploadProfileImage(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("user") == null) {
+            res.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
+        User user = (User) session.getAttribute("user");
+        Part filePart = req.getPart("profileImage");
+
+        if (filePart == null || filePart.getSize() == 0) {
+            req.setAttribute("error_message", "No file selected.");
+            forward(req, res, "/jsp/user/editUserProfile.jsp");
+            return;
+        }
+
+        try (Connection con = getConnection()) {
+            byte[] imageBytes = filePart.getInputStream().readAllBytes();
+            String contentType = filePart.getContentType();
+            Image image = new Image(imageBytes, contentType);
+
+            boolean updated = new UpdateUserImageIfExistsDAO(con, user.getUserId(), image).access().getOutputParam();
+
+            if (updated) {
+                req.setAttribute("success_message", "Profile image updated successfully!");
+            } else {
+                req.setAttribute("error_message", "Failed to update profile image.");
+            }
+
+            forward(req, res, "/jsp/user/editUserProfile.jsp");
+
+        } catch (Exception e) {
+            LOGGER.error("Failed to upload profile image: {}", e.getMessage(), e);
+            req.setAttribute("error_message", "An error occurred while uploading.");
+            forward(req, res, "/jsp/user/editUserProfile.jsp");
+        }
+    }
+
 }

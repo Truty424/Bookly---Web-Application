@@ -1,8 +1,5 @@
 package it.unipd.bookly.rest.user;
 
-import java.io.IOException;
-import java.sql.Connection;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.unipd.bookly.Resource.Message;
@@ -15,8 +12,13 @@ import it.unipd.bookly.utilities.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.sql.Connection;
+
 /**
- * Handles user authentication: - POST /api/auth
+ * Handles user authentication:
+ * - POST /api/user/login
+ * - POST /api/user/signup
  */
 public class AuthenticationUserRest extends AbstractRestResource {
 
@@ -32,18 +34,16 @@ public class AuthenticationUserRest extends AbstractRestResource {
         final String path = req.getRequestURI();
 
         try {
-            switch (method) {
-                case "POST" -> {
-                    if (path.endsWith("/user/login")) {
-                        handleLogin();
-                    } else if (path.endsWith("/user/signup")) {
-                        handleSignup();
-                    } else {
-                        sendNotFound("Invalid authentication path. Use /user/login or /user/signup.");
-                    }
+            if ("POST".equalsIgnoreCase(method)) {
+                if (path.endsWith("/user/login")) {
+                    handleLogin();
+                } else if (path.endsWith("/user/signup")) {
+                    handleSignup();
+                } else {
+                    sendNotFound("Invalid authentication path. Use /api/user/login or /api/user/signup.");
                 }
-                default ->
-                    sendMethodNotAllowed("Only POST is supported for authentication.");
+            } else {
+                sendMethodNotAllowed("Only POST is supported for authentication.");
             }
         } catch (Exception e) {
             LOGGER.error("AuthenticationUserRest error", e);
@@ -52,11 +52,13 @@ public class AuthenticationUserRest extends AbstractRestResource {
     }
 
     private void handleLogin() throws Exception {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        // Parse JSON input for login
+        User loginRequest = mapper.readValue(req.getInputStream(), User.class);
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
 
         if (username == null || password == null) {
-            sendBadRequest("Missing credentials.", "Both username and password are required.");
+            sendBadRequest("Missing credentials.", "Both username and password are required in JSON body.");
             return;
         }
 
@@ -76,6 +78,7 @@ public class AuthenticationUserRest extends AbstractRestResource {
     }
 
     private void handleSignup() throws Exception {
+        // Parse JSON input for signup
         User newUser = mapper.readValue(req.getInputStream(), User.class);
 
         if (newUser.getUsername() == null || newUser.getEmail() == null || newUser.getPassword() == null) {
@@ -88,7 +91,7 @@ public class AuthenticationUserRest extends AbstractRestResource {
         if (userCreated != null) {
             res.setStatus(HttpServletResponse.SC_CREATED);
             mapper.writeValue(res.getOutputStream(),
-                    new Message("User created successfully.", "201", newUser.getUsername()));
+                    new Message("User created successfully.", "201", userCreated.getUsername()));
         } else {
             res.setStatus(HttpServletResponse.SC_CONFLICT);
             new Message("Conflict", "409", "Username or email already exists.")
@@ -114,6 +117,6 @@ public class AuthenticationUserRest extends AbstractRestResource {
 
     private void sendServerError(String title, String detail) throws IOException {
         res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        new Message(title, "E500", detail).toJSON(res.getOutputStream());
+        new Message(title, "500", detail).toJSON(res.getOutputStream());
     }
 }

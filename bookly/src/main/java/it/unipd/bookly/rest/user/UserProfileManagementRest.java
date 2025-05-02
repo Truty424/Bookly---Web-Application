@@ -3,8 +3,10 @@ package it.unipd.bookly.rest.user;
 import java.io.IOException;
 import java.sql.Connection;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.user.UpdateUserDAO;
@@ -50,21 +52,26 @@ public class UserProfileManagementRest extends AbstractRestResource {
 
     private void handleUpdate(String path) throws Exception {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-        User user = mapper.readValue(req.getInputStream(), User.class);
+
+        // Parse JSON input
+        JsonNode jsonNode = mapper.readTree(req.getInputStream());
+
+        // Parse user fields
+        User user = mapper.treeToValue(jsonNode.get("user"), User.class);
 
         // Enforce userId from path
         user.setUserId(userId);
 
         Boolean updated = new UpdateUserDAO(
-            con,
-            user.getUserId(),
-            user.getUsername(),
-            user.getFirstName(),
-            user.getLastName(),
-            user.getEmail(),
-            user.getPhone(),
-            user.getAddress(),
-            user.getRole()
+                con,
+                user.getUserId(),
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhone(),
+                user.getAddress(),
+                user.getRole()
         ).access().getOutputParam();
 
         if (updated != null && updated) {

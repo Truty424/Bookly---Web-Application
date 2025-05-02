@@ -18,9 +18,9 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
       type="text/css"
     />
     <link
-    rel="stylesheet"
-    href="${pageContext.request.contextPath}/static/css/components/header.css"
-    type="text/css"
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/static/css/components/header.css"
+      type="text/css"
     />
     <link
       rel="stylesheet"
@@ -28,9 +28,9 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
       type="text/css"
     />
     <link
-    rel="stylesheet"
-    href="${pageContext.request.contextPath}/static/css/pages/userProfile.css"
-    type="text/css"
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/static/css/pages/userProfile.css"
+      type="text/css"
     />
     <%@ include file="/html/cdn.html" %>
   </head>
@@ -38,21 +38,46 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     <div class="container-fluid p-0">
       <div class="d-flex">
         <aside class="sidebar">
-            <div class="sidebar-content">
-                <ul class="nav-top">
-                    <li><a href="${pageContext.request.contextPath}/user/profile"><i class="fas fa-user"></i> My profile</a></li>
-                    <li><a href="${pageContext.request.contextPath}/user/editUserProfile"><i class="fas fa-edit"></i> Edit Profile</a></li>
-                    <li><a href="${pageContext.request.contextPath}/user/changePassword"><i class="fas fa-lock"></i> Edit Password</a></li>
-                    <li><a href="${pageContext.request.contextPath}/wishlist"><i class="fas fa-heart"></i> My Wishlist</a></li>
-                </ul>
-        
-                <ul class="nav-bottom">
-                    <li><a href="${pageContext.request.contextPath}/"><i class="fas fa-home"></i> Home Page</a></li>
-                    <li><a href="${pageContext.request.contextPath}/logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                </ul>
-            </div>
+          <div class="sidebar-content">
+            <ul class="nav-top">
+              <li>
+                <a href="${pageContext.request.contextPath}/user/profile"
+                  ><i class="fas fa-user"></i> My profile</a
+                >
+              </li>
+              <li>
+                <a
+                  href="${pageContext.request.contextPath}/user/editUserProfile"
+                  ><i class="fas fa-edit"></i> Edit Profile</a
+                >
+              </li>
+              <li>
+                <a href="${pageContext.request.contextPath}/user/changePassword"
+                  ><i class="fas fa-lock"></i> Edit Password</a
+                >
+              </li>
+              <li>
+                <a href="${pageContext.request.contextPath}/wishlist"
+                  ><i class="fas fa-heart"></i> My Wishlist</a
+                >
+              </li>
+            </ul>
+
+            <ul class="nav-bottom">
+              <li>
+                <a href="${pageContext.request.contextPath}/"
+                  ><i class="fas fa-home"></i> Home Page</a
+                >
+              </li>
+              <li>
+                <a href="${pageContext.request.contextPath}/logout"
+                  ><i class="fas fa-sign-out-alt"></i> Logout</a
+                >
+              </li>
+            </ul>
+          </div>
         </aside>
-        
+
         <main class="profile-content">
           <h1>My Profile :</h1>
 
@@ -64,15 +89,32 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                 alt="Profile Image"
               />
               <div>
-                <p><i class="fas fa-user-circle"></i><strong> First Name : </strong> ${user.firstName}</p>
-                <p><i class="fas fa-id-badge"></i><strong> Last Name : </strong> ${user.lastName}</p>
-                <p><i class="fas fa-user"></i><strong> Username : </strong> ${user.username}</p>
-                <p><i class="fas fa-envelope"></i><strong> Email : </strong> ${user.email}</p>
-                <p><i class="fas fa-phone"></i><strong> Phone : </strong> ${user.phone}</p>
-                <p><i class="fas fa-map-marker-alt"></i><strong> Address : </strong> ${user.address}</p>
+                <p>
+                  <i class="fas fa-user-circle"></i
+                  ><strong> First Name : </strong> ${user.firstName}
+                </p>
+                <p>
+                  <i class="fas fa-id-badge"></i
+                  ><strong> Last Name : </strong> ${user.lastName}
+                </p>
+                <p>
+                  <i class="fas fa-user"></i
+                  ><strong> Username : </strong> ${user.username}
+                </p>
+                <p>
+                  <i class="fas fa-envelope"></i
+                  ><strong> Email : </strong> ${user.email}
+                </p>
+                <p>
+                  <i class="fas fa-phone"></i
+                  ><strong> Phone : </strong> ${user.phone}
+                </p>
+                <p>
+                  <i class="fas fa-map-marker-alt"></i
+                  ><strong> Address : </strong> ${user.address}
+                </p>
               </div>
             </div>
-
 
             <h2>My Order History :</h2>
             <c:if test="${not empty user_orders}">
@@ -104,6 +146,39 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           <c:if test="${empty user}">
             <p class="error">Error: User session not available.</p>
           </c:if>
+          <!-- Upload Profile Image -->
+          <div class="upload-profile-image">
+            <h2>Upload/Change Profile Image</h2>
+            <form
+              action="${pageContext.request.contextPath}/user/uploadProfileImage"
+              method="post"
+              enctype="multipart/form-data"
+            >
+              <input type="hidden" name="userId" value="${user.userId}" />
+
+              <div class="form-group">
+                <label for="profileImage">Select an image to upload:</label>
+                <input
+                  type="file"
+                  name="profileImage"
+                  id="profileImage"
+                  accept="image/*"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                Upload Image
+              </button>
+            </form>
+
+            <c:if test="${not empty upload_error}">
+              <p class="error">${upload_error}</p>
+            </c:if>
+            <c:if test="${not empty upload_success}">
+              <p class="success">${upload_success}</p>
+            </c:if>
+          </div>
         </main>
       </div>
     </div>

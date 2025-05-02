@@ -15,8 +15,8 @@ import java.sql.Connection;
 import it.unipd.bookly.dao.user.GetUserByUsernameDAO;
 
 /**
- * Handles user data retrieval and updates: - GET /api/user/{id} - PUT
- * /api/user/{id}
+ * Handles user data retrieval:
+ * - GET /api/user?username={username}
  */
 public class UserDataRest extends AbstractRestResource {
 
@@ -29,20 +29,12 @@ public class UserDataRest extends AbstractRestResource {
     @Override
     protected void doServe() throws IOException {
         final String method = req.getMethod();
-        final String path = req.getRequestURI();
 
         try {
-            switch (method) {
-                case "GET" -> {
-                    if (path.matches(".*/user/\\d+$")) {
-                        handleGetUserByUsername();
-                    } else {
-                        sendNotFound("Invalid path for GET request.");
-                    }
-                }
-
-                default ->
-                    sendMethodNotAllowed("Only GET and PUT are supported.");
+            if ("GET".equalsIgnoreCase(method)) {
+                handleGetUserByUsername();
+            } else {
+                sendMethodNotAllowed("Only GET is supported for this endpoint.");
             }
         } catch (Exception e) {
             LOGGER.error("UserDataRest error: ", e);
@@ -52,15 +44,26 @@ public class UserDataRest extends AbstractRestResource {
 
     private void handleGetUserByUsername() throws Exception {
         String usernameParam = req.getParameter("username");
-        User username = new GetUserByUsernameDAO(con, usernameParam).access().getOutputParam();
 
-        if (username != null) {
+        if (usernameParam == null || usernameParam.trim().isEmpty()) {
+            sendBadRequest("Missing or empty 'username' query parameter.");
+            return;
+        }
+
+        User user = new GetUserByUsernameDAO(con, usernameParam).access().getOutputParam();
+
+        if (user != null) {
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
-            mapper.writeValue(res.getOutputStream(), username);
+            mapper.writeValue(res.getOutputStream(), user);
         } else {
-            sendNotFound("User with username " + username + " not found.");
+            sendNotFound("User with username '" + usernameParam + "' not found.");
         }
+    }
+
+    private void sendBadRequest(String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        new Message("Bad Request", "400", detail).toJSON(res.getOutputStream());
     }
 
     private void sendNotFound(String detail) throws IOException {

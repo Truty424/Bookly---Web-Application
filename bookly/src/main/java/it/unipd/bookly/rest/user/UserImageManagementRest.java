@@ -1,12 +1,12 @@
 package it.unipd.bookly.rest.user;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.Message;
@@ -18,8 +18,6 @@ import it.unipd.bookly.rest.AbstractRestResource;
  * - POST /api/user/image/{id}
  */
 public class UserImageManagementRest extends AbstractRestResource {
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     public UserImageManagementRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
         super("user-image-management", req, res, con);
@@ -35,8 +33,7 @@ public class UserImageManagementRest extends AbstractRestResource {
                 case "POST" -> {
                     if (path.matches(".*/user/image/\\d+$")) {
                         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-                        Image image = mapper.readValue(req.getInputStream(), Image.class);
-                        handleUploadImage(userId, image);
+                        handleUploadImage(userId);
                     } else {
                         sendNotFound("Invalid image upload path. Expected format: /api/user/image/{id}");
                     }
@@ -51,23 +48,42 @@ public class UserImageManagementRest extends AbstractRestResource {
         }
     }
 
-    private void handleUploadImage(int userId, Image image) throws Exception {
-        boolean success = new UpdateUserImageIfExistsDAO(con, userId, image).access().getOutputParam();
+    private void handleUploadImage(int userId) throws Exception {
+        // Expecting multipart/form-data with 'profileImage' as the field name
+        Part filePart = req.getPart("profileImage");
+        if (filePart == null || filePart.getSize() == 0) {
+            sendBadRequest("No image file uploaded. Expecting 'profileImage' as form-data field.");
+            return;
+        }
 
-        if (success) {
-            res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Image uploaded successfully.", "200", "Image updated for user ID: " + userId)
-                .toJSON(res.getOutputStream());
-        } else {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("User not found or update failed.", "404", "No user with ID " + userId)
-                .toJSON(res.getOutputStream());
+        try (InputStream input = filePart.getInputStream()) {
+            byte[] imageBytes = input.readAllBytes();
+            String contentType = filePart.getContentType();
+
+            Image image = new Image(imageBytes, contentType);
+
+            boolean success = new UpdateUserImageIfExistsDAO(con, userId, image).access().getOutputParam();
+
+            if (success) {
+                res.setStatus(HttpServletResponse.SC_OK);
+                new Message("Image uploaded successfully.", "200", "Image updated for user ID: " + userId)
+                    .toJSON(res.getOutputStream());
+            } else {
+                res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                new Message("User not found or update failed.", "404", "No user with ID " + userId)
+                    .toJSON(res.getOutputStream());
+            }
         }
     }
 
     private void sendNotFound(String detail) throws IOException {
         res.setStatus(HttpServletResponse.SC_NOT_FOUND);
         new Message("Not Found", "404", detail).toJSON(res.getOutputStream());
+    }
+
+    private void sendBadRequest(String detail) throws IOException {
+        res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        new Message("Bad Request", "400", detail).toJSON(res.getOutputStream());
     }
 
     private void sendMethodNotAllowed(String detail) throws IOException {
