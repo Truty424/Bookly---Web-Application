@@ -18,84 +18,125 @@ public final class BookQueries {
     /**
      * SQL query to insert a new book into the database.
      */
-    public static final String INSERT_BOOK
-            = "INSERT INTO booklySchema.books "
-            + "(title, language, isbn, price, edition, publication_year, number_of_pages, stock_quantity, average_rate, summary) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public static final String INSERT_BOOK = """
+        INSERT INTO booklySchema.books
+        (title, language, isbn, price, edition, publication_year, number_of_pages, stock_quantity, average_rate, summary)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
 
     /**
      * SQL query to insert a book image into the database.
      */
-    public static final String INSERT_BOOK_IMAGE = "INSERT INTO booklySchema.book_image (book_id, image, image_type) VALUES (?, ?, ?)";
+    public static final String INSERT_BOOK_IMAGE = """
+        INSERT INTO booklySchema.book_image (book_id, image, image_type)
+        VALUES (?, ?, ?)
+        """;
 
     // --- READ ---
     /**
-     * SQL query to retrieve a book by its ID.
+     * SQL query to retrieve a book by its ID, including image.
      */
-    public static final String GET_BOOK_BY_ID
-            = "SELECT * FROM booklySchema.books WHERE book_id = ?";
+    public static final String GET_BOOK_BY_ID = """
+        SELECT b.*, i.image, i.image_type
+        FROM booklySchema.books b
+        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+        WHERE b.book_id = ?
+        """;
 
     /**
-     * SQL query to retrieve all books from the database.
+     * SQL query to retrieve all books from the database, including images.
      */
-    public static final String GET_ALL_BOOKS
-            = "SELECT * FROM booklySchema.books";
+    public static final String GET_ALL_BOOKS = """
+        SELECT b.*, i.image, i.image_type
+        FROM booklySchema.books b
+        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+        """;
 
     /**
-     * SQL query to search for books by their title.
+     * SQL query to search for books by their title, including images.
      */
-    public static final String SEARCH_BOOK_BY_TITLE
-            = "SELECT * FROM booklySchema.books WHERE LOWER(title) LIKE LOWER(?)";
+    public static final String SEARCH_BOOK_BY_TITLE = """
+        SELECT b.*, i.image, i.image_type
+        FROM booklySchema.books b
+        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+        WHERE LOWER(b.title) LIKE LOWER(?)
+        """;
 
     /**
-     * SQL query to retrieve books by a specific category ID.
+     * SQL query to retrieve books by a specific category ID, including images.
      */
-    public static final String GET_BOOKS_BY_CATEGORY_ID
-            = "SELECT b.* FROM booklySchema.books b "
-            + "JOIN booklySchema.category_belongs cb ON b.book_id = cb.book_id "
-            + "WHERE cb.category_id = ?";
+    public static final String GET_BOOKS_BY_CATEGORY_ID = """
+        SELECT b.*, i.image, i.image_type
+        FROM booklySchema.books b
+        JOIN booklySchema.category_belongs cb ON b.book_id = cb.book_id
+        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+        WHERE cb.category_id = ?
+        """;
 
     /**
-     * SQL query to retrieve books by a specific author ID.
+     * SQL query to retrieve books by a specific author ID, including images.
      */
-    public static final String GET_BOOKS_BY_AUTHOR_ID
-            = "SELECT b.* FROM booklySchema.books b "
-            + "JOIN booklySchema.writes w ON b.book_id = w.book_id "
-            + "WHERE w.author_id = ?";
+    public static final String GET_BOOKS_BY_AUTHOR_ID = """
+        SELECT b.*, i.image, i.image_type
+        FROM booklySchema.books b
+        JOIN booklySchema.writes w ON b.book_id = w.book_id
+        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+        WHERE w.author_id = ?
+        """;
 
     /**
-     * SQL query to retrieve books by a specific publisher ID.
+     * SQL query to retrieve books by a specific publisher ID, including images.
      */
-    public static final String GET_BOOKS_BY_PUBLISHER_ID
-            = "SELECT b.* FROM booklySchema.books b "
-            + "JOIN booklySchema.published_by pb ON b.book_id = pb.book_id "
-            + "WHERE pb.publisher_id = ?";
+    public static final String GET_BOOKS_BY_PUBLISHER_ID = """
+        SELECT b.*, i.image, i.image_type
+        FROM booklySchema.books b
+        JOIN booklySchema.published_by pb ON b.book_id = pb.book_id
+        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+        WHERE pb.publisher_id = ?
+        """;
 
     /**
-     * SQL query to retrieve top-rated books.
+     * SQL query to retrieve top-rated books, including images.
      */
-    public static final String GET_TOP_RATED_BOOKS
-            = "SELECT * FROM booklySchema.books WHERE average_rate >= ? ORDER BY average_rate DESC";
+    public static final String GET_TOP_RATED_BOOKS = """
+        SELECT b.*, i.image, i.image_type
+        FROM booklySchema.books b
+        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+        WHERE b.average_rate >= ?
+        ORDER BY b.average_rate DESC
+        """;
 
     // --- UPDATE ---
     /**
      * SQL query to update a book's details in the database.
      */
-    public static final String UPDATE_BOOK
-            = "UPDATE booklySchema.books SET title = ?, language = ?, isbn = ?, price = ?, edition = ?, publication_year = ?, number_of_pages = ?, stock_quantity = ?, average_rate = ?, summary = ? WHERE book_id = ?";
+    public static final String UPDATE_BOOK = """
+        UPDATE booklySchema.books
+        SET title = ?, language = ?, isbn = ?, price = ?, edition = ?, publication_year = ?, number_of_pages = ?, stock_quantity = ?, average_rate = ?, summary = ?
+        WHERE book_id = ?
+        """;
 
     /**
      * SQL query to update a book's stock quantity.
      */
-    public static final String UPDATE_BOOK_STOCK
-            = "UPDATE booklySchema.books SET stock_quantity = ? WHERE book_id = ?";
+    public static final String UPDATE_BOOK_STOCK = """
+        UPDATE booklySchema.books
+        SET stock_quantity = ?
+        WHERE book_id = ?
+        """;
 
+    // --- DELETE ---
     /**
      * SQL query to delete a book from the database.
      */
-    public static final String DELETE_BOOK
-            = "DELETE FROM booklySchema.books WHERE book_id = ?";
+    public static final String DELETE_BOOK = """
+        DELETE FROM booklySchema.books
+        WHERE book_id = ?
+        """;
 
+    /**
+     * SQL query to delete a book image from the database.
+     */
     public static final String DELETE_BOOK_IMAGE = """
         DELETE FROM booklySchema.book_image
         WHERE book_id = ?

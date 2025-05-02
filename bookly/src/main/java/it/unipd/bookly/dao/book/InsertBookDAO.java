@@ -6,6 +6,8 @@ import it.unipd.bookly.dao.AbstractDAO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.ResultSet;
 
 import static it.unipd.bookly.dao.book.BookQueries.INSERT_BOOK;
 import static it.unipd.bookly.dao.book.BookQueries.INSERT_BOOK_IMAGE;
@@ -30,20 +32,10 @@ public class InsertBookDAO extends AbstractDAO<Boolean> {
         try {
             con.setAutoCommit(false);  // Begin transaction
 
-            // Insert image if available
-            Image image = book.getImage();
-            if (image != null) {
-                try (PreparedStatement stmtImg = con.prepareStatement(INSERT_BOOK_IMAGE)) {
-                    stmtImg.setString(1, book.getTitle());
-                    stmtImg.setBytes(2, image.getPhoto());
-                    stmtImg.setString(3, image.getPhotoMediaType());
-                    int imgRows = stmtImg.executeUpdate();
-                    LOGGER.info("Image inserted for book '{}', rows affected: {}", book.getTitle(), imgRows);
-                }
-            }
+            int generatedBookId;
 
-            // Insert book metadata
-            try (PreparedStatement stmtBook = con.prepareStatement(INSERT_BOOK)) {
+            // Step 1: Insert book metadata and retrieve generated book_id
+            try (PreparedStatement stmtBook = con.prepareStatement(INSERT_BOOK, Statement.RETURN_GENERATED_KEYS)) {
                 stmtBook.setString(1, book.getTitle());
                 stmtBook.setString(2, book.getLanguage());
                 stmtBook.setString(3, book.getIsbn());
@@ -54,13 +46,41 @@ public class InsertBookDAO extends AbstractDAO<Boolean> {
                 stmtBook.setInt(8, book.getStockQuantity());
                 stmtBook.setDouble(9, book.getAverage_rate());
                 stmtBook.setString(10, book.getSummary());
+
                 int bookRows = stmtBook.executeUpdate();
                 LOGGER.info("Book '{}' inserted into database, rows affected: {}", book.getTitle(), bookRows);
-                success = bookRows > 0;
+
+                if (bookRows == 0) {
+                    throw new Exception("Inserting book failed: no rows affected.");
+                }
+
+                try (ResultSet generatedKeys = stmtBook.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedBookId = generatedKeys.getInt(1);
+                        LOGGER.info("Generated book_id for '{}': {}", book.getTitle(), generatedBookId);
+                    } else {
+                        throw new Exception("Inserting book failed: no ID obtained.");
+                    }
+                }
+            }
+
+            // Step 2: Insert image if available
+            Image image = book.getImage();
+            if (image != null) {
+                try (PreparedStatement stmtImg = con.prepareStatement(INSERT_BOOK_IMAGE)) {
+                    stmtImg.setInt(1, generatedBookId);
+                    stmtImg.setBytes(2, image.getPhoto());
+                    stmtImg.setString(3, image.getPhotoMediaType());
+                    int imgRows = stmtImg.executeUpdate();
+                    LOGGER.info("Image inserted for book '{}', rows affected: {}", book.getTitle(), imgRows);
+                }
+            } else {
+                LOGGER.debug("No image provided for book '{}'. Skipping image insert.", book.getTitle());
             }
 
             con.commit();
-            LOGGER.info("Transaction committed for book '{}'", book.getTitle());
+            LOGGER.info("Transaction committed successfully for book '{}'", book.getTitle());
+            success = true;
 
         } catch (Exception ex) {
             LOGGER.error("Error inserting book '{}': {}", book.getTitle(), ex.getMessage(), ex);
@@ -70,9 +90,9 @@ public class InsertBookDAO extends AbstractDAO<Boolean> {
             } catch (Exception rollbackEx) {
                 LOGGER.error("Rollback failed: {}", rollbackEx.getMessage(), rollbackEx);
             }
-            throw ex;  // Rethrow so caller knows it failed
+            throw ex;  // Re-throw so caller knows it failed
         } finally {
-            con.setAutoCommit(previousAutoCommit);  // Restore previous state
+            con.setAutoCommit(previousAutoCommit);  // Always restore previous state
         }
 
         this.outputParam = success;

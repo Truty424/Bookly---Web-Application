@@ -9,6 +9,7 @@ import java.util.List;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.book.BookQueries.GET_ALL_BOOKS;
 
 /**
@@ -40,28 +41,38 @@ public class GetAllBooksDAO extends AbstractDAO<List<Book>> {
                 double averageRate = rs.getDouble("average_rate");
                 String summary = rs.getString("summary");
 
-                // Handle optional book image (via LEFT JOIN)
-                byte[] imageData = rs.getBytes("image");
-                String imageType = rs.getString("image_type");
+                // Handle optional book image (from LEFT JOIN)
                 Image bookImage = null;
-
-                if (imageData != null && imageType != null) {
-                    bookImage = new Image(imageData, imageType);
-                } else {
-                    LOGGER.debug("No image found for book ID {}", bookId);
+                try {
+                    byte[] imageData = rs.getBytes("image");
+                    String imageType = rs.getString("image_type");
+                    if (imageData != null && imageType != null) {
+                        bookImage = new Image(imageData, imageType);
+                    }
+                } catch (Exception imgEx) {
+                    LOGGER.warn("Image data missing or error for book ID {}: {}", bookId, imgEx.getMessage());
                 }
 
-                // Create the Book object with or without image
                 Book book = new Book(
-                        bookId, title, language, isbn, price, edition, publicationYear,
-                        numberOfPages, stockQuantity, averageRate, summary, bookImage
+                        bookId,
+                        title,
+                        language,
+                        isbn,
+                        price,
+                        edition,
+                        publicationYear,
+                        numberOfPages,
+                        stockQuantity,
+                        averageRate,
+                        summary,
+                        bookImage
                 );
 
                 books.add(book);
             }
 
             this.outputParam = books;
-            LOGGER.info("{} books successfully retrieved from the database.", books.size());
+            LOGGER.info("Retrieved {} books (with optional images) from the database.", books.size());
 
         } catch (Exception e) {
             LOGGER.error("Failed to retrieve books: {}", e.getMessage(), e);

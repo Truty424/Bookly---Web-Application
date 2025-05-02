@@ -28,70 +28,53 @@ public class GetBooksByCategoryIdDAO extends AbstractDAO<List<Book>> {
     @Override
     protected void doAccess() throws Exception {
         List<Book> books = new ArrayList<>();
-        boolean previousAutoCommit = con.getAutoCommit(); 
 
-        try {
-            con.setAutoCommit(false);
+        try (PreparedStatement stmt = con.prepareStatement(GET_BOOKS_BY_CATEGORY_ID)) {
+            stmt.setInt(1, categoryId);
 
-            try (PreparedStatement stmt = con.prepareStatement(GET_BOOKS_BY_CATEGORY_ID)) {
-                stmt.setInt(1, categoryId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int bookId = rs.getInt("book_id");
+                    String title = rs.getString("title");
+                    String language = rs.getString("language");
+                    String isbn = rs.getString("isbn");
+                    double price = rs.getDouble("price");
+                    String edition = rs.getString("edition");
+                    int publicationYear = rs.getInt("publication_year");
+                    int numberOfPages = rs.getInt("number_of_pages");
+                    int stockQuantity = rs.getInt("stock_quantity");
+                    double averageRate = rs.getDouble("average_rate");
+                    String summary = rs.getString("summary");
 
-                try (ResultSet rs = stmt.executeQuery()) {
-                    while (rs.next()) {
-                        int bookId = rs.getInt("book_id");
-                        String title = rs.getString("title");
-                        String language = rs.getString("language");
-                        String isbn = rs.getString("isbn");
-                        double price = rs.getDouble("price");
-                        String edition = rs.getString("edition");
-                        int publicationYear = rs.getInt("publication_year");
-                        int numberOfPages = rs.getInt("number_of_pages");
-                        int stockQuantity = rs.getInt("stock_quantity");
-                        double averageRate = rs.getDouble("average_rate");
-                        String summary = rs.getString("summary");
-
-                        // Handle optional image
-                        byte[] imageData = rs.getBytes("image");
-                        String imageType = rs.getString("image_type");
-                        Image bookImage = (imageData != null && imageType != null)
-                                ? new Image(imageData, imageType)
-                                : null;
-
-                        if (bookImage != null) {
-                            LOGGER.debug("Found image for book ID {}", bookId);
-                        }
-
-                        Book book = new Book(
-                                bookId, title, language, isbn, price, edition,
-                                publicationYear, numberOfPages, stockQuantity,
-                                averageRate, summary, bookImage
-                        );
-
-                        books.add(book);
+                    // Handle optional image (from LEFT JOIN)
+                    Image bookImage = null;
+                    byte[] imageData = rs.getBytes("image");
+                    String imageType = rs.getString("image_type");
+                    if (imageData != null && imageType != null) {
+                        bookImage = new Image(imageData, imageType);
+                        LOGGER.debug("Image found for book ID {}", bookId);
                     }
+
+                    Book book = new Book(
+                            bookId, title, language, isbn, price, edition,
+                            publicationYear, numberOfPages, stockQuantity,
+                            averageRate, summary, bookImage
+                    );
+
+                    books.add(book);
                 }
             }
-
-            con.commit(); 
-
-            if (books.isEmpty()) {
-                LOGGER.info("No books found for category ID {}", categoryId);
-            } else {
-                LOGGER.info("Retrieved {} book(s) for category ID {}", books.size(), categoryId);
-            }
-
-            this.outputParam = books;
-
         } catch (Exception e) {
-            LOGGER.error("Error retrieving books by category ID {}: {}", categoryId, e.getMessage(), e);
-            try {
-                con.rollback();  
-            } catch (Exception rollbackEx) {
-                LOGGER.error("Rollback failed: {}", rollbackEx.getMessage(), rollbackEx);
-            }
+            LOGGER.error("Error retrieving books for category ID {}: {}", categoryId, e.getMessage(), e);
             throw e;
-        } finally {
-            con.setAutoCommit(previousAutoCommit);
         }
+
+        if (books.isEmpty()) {
+            LOGGER.info("No books found for category ID {}", categoryId);
+        } else {
+            LOGGER.info("{} book(s) retrieved for category ID {}", books.size(), categoryId);
+        }
+
+        this.outputParam = books;
     }
 }

@@ -7,10 +7,11 @@ import java.sql.ResultSet;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.book.BookQueries.GET_BOOK_BY_ID;
 
 /**
- * DAO to retrieve a book by its ID from the database.
+ * DAO to retrieve a book by its ID from the database, including its optional image.
  */
 public class GetBookByIdDAO extends AbstractDAO<Book> {
 
@@ -40,18 +41,20 @@ public class GetBookByIdDAO extends AbstractDAO<Book> {
                     double averageRate = rs.getDouble("average_rate");
                     String summary = rs.getString("summary");
 
-                    // Handle optional image (LEFT JOIN)
-                    byte[] imageData = rs.getBytes("image");
-                    String imageType = rs.getString("image_type");
+                    // Book image (from LEFT JOIN)
                     Image bookImage = null;
-
-                    if (imageData != null && imageType != null) {
-                        bookImage = new Image(imageData, imageType);
-                        LOGGER.debug("Image found for book ID {}", bookId);
-                    } else {
-                        LOGGER.debug("No image found for book ID {}", bookId);
+                    try {
+                        byte[] imageData = rs.getBytes("image");
+                        String imageType = rs.getString("image_type");
+                        if (imageData != null && imageType != null) {
+                            bookImage = new Image(imageData, imageType);
+                            LOGGER.debug("Image loaded for book ID {}", bookId);
+                        }
+                    } catch (Exception imgEx) {
+                        LOGGER.debug("No image columns found or image missing for book ID {}", bookId);
                     }
 
+                    // Build the book object
                     this.outputParam = new Book(
                             bookId, title, language, isbn, price, edition,
                             publicationYear, numberOfPages, stockQuantity, averageRate,

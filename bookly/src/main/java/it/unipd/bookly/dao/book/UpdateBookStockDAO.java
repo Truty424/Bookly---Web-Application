@@ -1,9 +1,9 @@
 package it.unipd.bookly.dao.book;
 
+import it.unipd.bookly.dao.AbstractDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
-import it.unipd.bookly.dao.AbstractDAO;
 
 import static it.unipd.bookly.dao.book.BookQueries.UPDATE_BOOK_STOCK;
 
@@ -30,6 +30,9 @@ public class UpdateBookStockDAO extends AbstractDAO<Boolean> {
 
     @Override
     protected void doAccess() throws Exception {
+        boolean previousAutoCommit = con.getAutoCommit();
+        con.setAutoCommit(false);  // Optional: wrap in transaction for safety
+
         try (PreparedStatement stmt = con.prepareStatement(UPDATE_BOOK_STOCK)) {
             stmt.setInt(1, stockQuantity);
             stmt.setInt(2, bookId);
@@ -38,14 +41,29 @@ public class UpdateBookStockDAO extends AbstractDAO<Boolean> {
             this.outputParam = rowsAffected > 0;
 
             if (rowsAffected > 0) {
-                LOGGER.info("Stock quantity for book ID {} updated to {} ({} row(s) affected).", bookId, stockQuantity, rowsAffected);
+                LOGGER.info("Stock quantity for book ID {} successfully updated to {} ({} row(s) affected).",
+                        bookId, stockQuantity, rowsAffected);
             } else {
                 LOGGER.warn("No book found with ID {}. Stock update skipped.", bookId);
             }
 
+            con.commit();  // Commit if successful
+
         } catch (Exception ex) {
             LOGGER.error("Failed to update stock for book ID {}: {}", bookId, ex.getMessage(), ex);
-            throw ex;  // Important: propagate exception
+            try {
+                con.rollback();
+                LOGGER.warn("Transaction rolled back for stock update of book ID {}.", bookId);
+            } catch (Exception rollbackEx) {
+                LOGGER.error("Rollback failed after stock update error: {}", rollbackEx.getMessage(), rollbackEx);
+            }
+            throw ex;  // Propagate exception
+        } finally {
+            try {
+                con.setAutoCommit(previousAutoCommit);  // Restore original autocommit state
+            } catch (Exception e) {
+                LOGGER.warn("Failed to restore autocommit after stock update for book ID {}.", bookId, e);
+            }
         }
     }
 }

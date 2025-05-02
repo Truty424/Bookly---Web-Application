@@ -6,17 +6,18 @@ import java.sql.PreparedStatement;
 import it.unipd.bookly.dao.AbstractDAO;
 
 import static it.unipd.bookly.dao.book.BookQueries.DELETE_BOOK;
+import static it.unipd.bookly.dao.book.BookQueries.DELETE_BOOK_IMAGE;
 
 /**
- * DAO to delete a book from the database, including related data.
+ * DAO to delete a book from the database, including related data (categories, authors, publishers, reviews, images).
  */
 public class DeleteBookDAO extends AbstractDAO<Boolean> {
 
-    private final int book_id;
+    private final int bookId;
 
-    public DeleteBookDAO(final Connection con, final int book_id) {
+    public DeleteBookDAO(final Connection con, final int bookId) {
         super(con);
-        this.book_id = book_id;
+        this.bookId = bookId;
     }
 
     @Override
@@ -26,63 +27,73 @@ public class DeleteBookDAO extends AbstractDAO<Boolean> {
 
         try {
             // Step 1: Delete from category_belongs
-            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.category_belongs WHERE book_id = ?")) {
-                stmt.setInt(1, book_id);
+            try (PreparedStatement stmt = con.prepareStatement(
+                    "DELETE FROM booklySchema.category_belongs WHERE book_id = ?")) {
+                stmt.setInt(1, bookId);
                 stmt.executeUpdate();
             }
 
             // Step 2: Delete from writes
-            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.writes WHERE book_id = ?")) {
-                stmt.setInt(1, book_id);
+            try (PreparedStatement stmt = con.prepareStatement(
+                    "DELETE FROM booklySchema.writes WHERE book_id = ?")) {
+                stmt.setInt(1, bookId);
                 stmt.executeUpdate();
             }
 
             // Step 3: Delete from published_by
-            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.published_by WHERE book_id = ?")) {
-                stmt.setInt(1, book_id);
+            try (PreparedStatement stmt = con.prepareStatement(
+                    "DELETE FROM booklySchema.published_by WHERE book_id = ?")) {
+                stmt.setInt(1, bookId);
                 stmt.executeUpdate();
             }
 
             // Step 4: Delete from reviews
-            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.reviews WHERE book_id = ?")) {
-                stmt.setInt(1, book_id);
+            try (PreparedStatement stmt = con.prepareStatement(
+                    "DELETE FROM booklySchema.reviews WHERE book_id = ?")) {
+                stmt.setInt(1, bookId);
                 stmt.executeUpdate();
             }
 
-            // Step 5: Delete from contains
-            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.contains WHERE book_id = ?")) {
-                stmt.setInt(1, book_id);
+            // Step 5: Delete from contains (if you have an orders system or similar)
+            try (PreparedStatement stmt = con.prepareStatement(
+                    "DELETE FROM booklySchema.contains WHERE book_id = ?")) {
+                stmt.setInt(1, bookId);
                 stmt.executeUpdate();
             }
 
-            // (Optional) Step 6: Delete from book_images if applicable
-            try (PreparedStatement stmt = con.prepareStatement("DELETE FROM booklySchema.book_images WHERE book_id = ?")) {
-                stmt.setInt(1, book_id);
+            // Step 6: Delete image (optional but recommended)
+            try (PreparedStatement stmt = con.prepareStatement(DELETE_BOOK_IMAGE)) {
+                stmt.setInt(1, bookId);
                 stmt.executeUpdate();
             }
 
-            // Step 7: Finally, delete from books
+            // Step 7: Finally delete from books
             try (PreparedStatement stmt = con.prepareStatement(DELETE_BOOK)) {
-                stmt.setInt(1, book_id);
+                stmt.setInt(1, bookId);
                 int affectedRows = stmt.executeUpdate();
                 this.outputParam = affectedRows > 0;
             }
 
             if (this.outputParam) {
-                LOGGER.info("Book ID {} deleted successfully (and all related data).", book_id);
+                LOGGER.info("Book ID {} and all related data deleted successfully.", bookId);
             } else {
-                LOGGER.warn("No book found with ID {}. Deletion skipped.", book_id);
+                LOGGER.warn("No book found with ID {}. Nothing was deleted.", bookId);
             }
 
-            con.commit(); 
+            con.commit();
 
         } catch (Exception e) {
             con.rollback();
             this.outputParam = false;
-            LOGGER.error("Error deleting book {}: {}. Transaction rolled back.", book_id, e.getMessage());
+            LOGGER.error("Error deleting book ID {}: {}. Transaction rolled back.", bookId, e.getMessage(), e);
             throw e;
         } finally {
-            con.setAutoCommit(originalAutoCommit); // Always restore original autocommit state
+            // Always restore autocommit
+            try {
+                con.setAutoCommit(originalAutoCommit);
+            } catch (Exception e) {
+                LOGGER.warn("Failed to restore autocommit state after deleting book ID {}.", bookId, e);
+            }
         }
     }
 }
