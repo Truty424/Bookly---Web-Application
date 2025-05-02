@@ -68,11 +68,11 @@ public class Review {
      * @param reviewDate      The date the review was written.
      * @param parentReviewId  The id of parent's review.
      */
-    public Review(int reviewId, int userId, int bookId, String reviewText, int rating,
+    public Review(int reviewId, int userId, int book_id, String reviewText, int rating,
                 int numberOfLikes, int numberOfDislikes, Timestamp reviewDate, Integer parentReviewId) {
         this.reviewId = reviewId;
         this.userId = userId;
-        this.book_id = bookId;
+        this.book_id = book_id;
         this.reviewText = reviewText;
         this.rating = rating;
         this.numberOfLikes = numberOfLikes;

@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.category.CategoryQueries.REMOVE_CATEGORY_FROM_BOOK;
 
 /**
@@ -29,20 +30,20 @@ public class RemoveCategoryFromBookDAO extends AbstractDAO<Void> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(REMOVE_CATEGORY_FROM_BOOK)) {
-            stmnt.setInt(1, book_id);
-            stmnt.setInt(2, category_id);
+        try (PreparedStatement stmt = con.prepareStatement(REMOVE_CATEGORY_FROM_BOOK)) {
+            stmt.setInt(1, book_id);
+            stmt.setInt(2, category_id);
 
-            int rowsAffected = stmnt.executeUpdate();
+            int rowsAffected = stmt.executeUpdate();
 
             if (rowsAffected > 0) {
-                LOGGER.info("Removed category {} from book {}.", category_id, book_id);
+                LOGGER.info("Category {} successfully removed from book {}.", category_id, book_id);
             } else {
-                LOGGER.warn("No category-book link found to remove (book ID: {}, category ID: {}).", book_id, category_id);
+                LOGGER.warn("No link found between book ID {} and category ID {} to remove.", book_id, category_id);
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Failed to remove category {} from book {}: {}", category_id, book_id, ex.getMessage());
+            LOGGER.error("Error removing category {} from book {}: {}", category_id, book_id, ex.getMessage(), ex);
             throw ex;
         }
     }

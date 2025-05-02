@@ -19,7 +19,7 @@ public class GetCategoryByNameDAO extends AbstractDAO<Category> {
     /**
      * Constructor.
      *
-     * @param con          the database connection.
+     * @param con           the database connection.
      * @param category_name the name of the category to retrieve.
      */
     public GetCategoryByNameDAO(final Connection con, final String category_name) {
@@ -29,19 +29,16 @@ public class GetCategoryByNameDAO extends AbstractDAO<Category> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(GET_CATEGORY_BY_NAME)) {
-            stmnt.setString(1, category_name);
+        try (PreparedStatement stmt = con.prepareStatement(GET_CATEGORY_BY_NAME)) {
+            stmt.setString(1, category_name);
 
-            try (ResultSet rs = stmnt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    int id = rs.getInt("category_id");
-                    String name = rs.getString("category_name");
-                    String description = rs.getString("description");
-
                     Category category = new Category(
-                            id,
-                            name != null ? name : "",
-                            description != null ? description : ""
+                            rs.getInt("category_id"),
+                            rs.getString("category_name") != null ? rs.getString("category_name") : "",
+                            rs.getString("description") != null ? rs.getString("description") : ""
+                            // If your query includes more fields (like an image), you can add them here.
                     );
 
                     this.outputParam = category;
@@ -53,7 +50,7 @@ public class GetCategoryByNameDAO extends AbstractDAO<Category> {
             }
 
         } catch (Exception ex) {
-            LOGGER.error("Failed to retrieve category with name '{}': {}", category_name, ex.getMessage());
+            LOGGER.error("Failed to retrieve category with name '{}': {}", category_name, ex.getMessage(), ex);
             throw ex;
         }
     }

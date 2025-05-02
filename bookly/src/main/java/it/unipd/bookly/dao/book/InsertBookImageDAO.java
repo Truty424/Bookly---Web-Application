@@ -13,19 +13,19 @@ import static it.unipd.bookly.dao.book.BookQueries.INSERT_BOOK_IMAGE;
  */
 public class InsertBookImageDAO extends AbstractDAO<Boolean> {
 
-    private final int bookId;
+    private final int book_id;
     private final Image image;
 
     /**
      * Constructor.
      *
      * @param con Database connection
-     * @param bookId The ID of the book to associate the image with
+     * @param book_id The ID of the book to associate the image with
      * @param image The {@link Image} object containing image data and type
      */
-    public InsertBookImageDAO(final Connection con, final int bookId, final Image image) {
+    public InsertBookImageDAO(final Connection con, final int book_id, final Image image) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
         this.image = image;
     }
 
@@ -34,7 +34,7 @@ public class InsertBookImageDAO extends AbstractDAO<Boolean> {
         boolean success = false;
 
         try (PreparedStatement stmt = con.prepareStatement(INSERT_BOOK_IMAGE)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
             stmt.setBytes(2, image.getPhoto());
             stmt.setString(3, image.getPhotoMediaType());
 
@@ -42,13 +42,13 @@ public class InsertBookImageDAO extends AbstractDAO<Boolean> {
             success = rowsAffected > 0;
 
             if (success) {
-                LOGGER.info("Inserted image for book ID {} ({} row(s) affected).", bookId, rowsAffected);
+                LOGGER.info("Inserted image for book ID {} ({} row(s) affected).", book_id, rowsAffected);
             } else {
-                LOGGER.warn("No rows affected while inserting image for book ID {}.", bookId);
+                LOGGER.warn("No rows affected while inserting image for book ID {}.", book_id);
             }
 
         } catch (Exception e) {
-            LOGGER.error("Error inserting image for book ID {}: {}", bookId, e.getMessage(), e);
+            LOGGER.error("Error inserting image for book ID {}: {}", book_id, e.getMessage(), e);
             throw e;
         }
 

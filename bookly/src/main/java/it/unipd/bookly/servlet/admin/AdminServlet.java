@@ -19,7 +19,9 @@ import java.sql.Timestamp;
 
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.utilities.ErrorCode;
+import jakarta.servlet.annotation.MultipartConfig;
 
+@MultipartConfig
 @WebServlet(name = "AdminServlet", value = "/admin/*")
 public class AdminServlet extends AbstractDatabaseServlet {
 
@@ -64,18 +66,30 @@ public class AdminServlet extends AbstractDatabaseServlet {
             }
 
             switch (path) {
-                case "/addBook" -> handleAddBook(req);
-                case "/updateBook" -> handleUpdateBook(req);
-                case "/deleteBook" -> handleDeleteBook(req);
-                case "/addAuthor" -> handleAddAuthor(req);
-                case "/updateAuthor" -> handleUpdateAuthor(req);
-                case "/deleteAuthor" -> handleDeleteAuthor(req);
-                case "/addPublisher" -> handleAddPublisher(req);
-                case "/updatePublisher" -> handleUpdatePublisher(req);
-                case "/deletePublisher" -> handleDeletePublisher(req);
-                case "/addDiscount" -> handleAddDiscount(req);
-                case "/deleteDiscount" -> handleDeleteDiscount(req);
-                default -> ServletUtils.redirectToErrorPage(req, resp, "Unsupported admin action: " + path);
+                case "/addBook" ->
+                    handleAddBook(req);
+                case "/updateBook" ->
+                    handleUpdateBook(req);
+                case "/deleteBook" ->
+                    handleDeleteBook(req);
+                case "/addAuthor" ->
+                    handleAddAuthor(req);
+                case "/updateAuthor" ->
+                    handleUpdateAuthor(req);
+                case "/deleteAuthor" ->
+                    handleDeleteAuthor(req);
+                case "/addPublisher" ->
+                    handleAddPublisher(req);
+                case "/updatePublisher" ->
+                    handleUpdatePublisher(req);
+                case "/deletePublisher" ->
+                    handleDeletePublisher(req);
+                case "/addDiscount" ->
+                    handleAddDiscount(req);
+                case "/deleteDiscount" ->
+                    handleDeleteDiscount(req);
+                default ->
+                    ServletUtils.redirectToErrorPage(req, resp, "Unsupported admin action: " + path);
             }
 
             resp.sendRedirect(req.getContextPath() + "/admin/dashboard");
@@ -90,17 +104,17 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleAddBook(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Book book = new Book(
-                Integer.parseInt(req.getParameter("book_id")),
-                req.getParameter("title"),
-                req.getParameter("language"),
-                req.getParameter("isbn"),
-                Double.parseDouble(req.getParameter("price")),
-                req.getParameter("edition"),
-                Integer.parseInt(req.getParameter("publication_year")),
-                Integer.parseInt(req.getParameter("number_of_pages")),
-                Integer.parseInt(req.getParameter("stock_quantity")),
-                0.0,
-                req.getParameter("summary")
+                    Integer.parseInt(req.getParameter("book_id")),
+                    req.getParameter("title"),
+                    req.getParameter("language"),
+                    req.getParameter("isbn"),
+                    Double.parseDouble(req.getParameter("price")),
+                    req.getParameter("edition"),
+                    Integer.parseInt(req.getParameter("publication_year")),
+                    Integer.parseInt(req.getParameter("number_of_pages")),
+                    Integer.parseInt(req.getParameter("stock_quantity")),
+                    0.0,
+                    req.getParameter("summary")
             );
             new InsertBookDAO(con, book).access();
             LOGGER.info("Book '{}' added successfully.", book.getTitle());
@@ -110,20 +124,45 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleUpdateBook(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             int bookId = Integer.parseInt(req.getParameter("book_id"));
+
+            // Fetch other fields
+            String title = req.getParameter("title");
+            String language = req.getParameter("language");
+            String isbn = req.getParameter("isbn");
+            double price = Double.parseDouble(req.getParameter("price"));
+            String edition = req.getParameter("edition");
+            int publicationYear = Integer.parseInt(req.getParameter("publication_year"));
+            int numberOfPages = Integer.parseInt(req.getParameter("number_of_pages"));
+            int stockQuantity = Integer.parseInt(req.getParameter("stock_quantity"));
+            double averageRate = Double.parseDouble(req.getParameter("average_rate"));
+            String summary = req.getParameter("summary");
+
+            // Handle optional image (if any)
+            Image image = null;
+            var imagePart = req.getPart("image");  // Assumes form has <input type="file" name="image">
+            if (imagePart != null && imagePart.getSize() > 0) {
+                byte[] imageBytes = imagePart.getInputStream().readAllBytes();
+                String imageType = imagePart.getContentType();
+                image = new Image(imageBytes, imageType);
+                LOGGER.info("Received image for book ID {} ({} bytes, type: {})", bookId, imageBytes.length, imageType);
+            }
+
             new UpdateBookDAO(
-                con,
-                bookId,
-                req.getParameter("title"),
-                req.getParameter("language"),
-                req.getParameter("isbn"),
-                Double.parseDouble(req.getParameter("price")),
-                req.getParameter("edition"),
-                Integer.parseInt(req.getParameter("publication_year")),
-                Integer.parseInt(req.getParameter("number_of_pages")),
-                Integer.parseInt(req.getParameter("stock_quantity")),
-                Double.parseDouble(req.getParameter("average_rate")),
-                req.getParameter("summary")
+                    con,
+                    bookId,
+                    title,
+                    language,
+                    isbn,
+                    price,
+                    edition,
+                    publicationYear,
+                    numberOfPages,
+                    stockQuantity,
+                    averageRate,
+                    summary,
+                    image
             ).access();
+
             LOGGER.info("Book ID {} updated successfully.", bookId);
         }
     }
@@ -140,10 +179,10 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleAddAuthor(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Author author = new Author(
-                req.getParameter("firstName"),
-                req.getParameter("lastName"),
-                req.getParameter("biography"),
-                req.getParameter("nationality")
+                    req.getParameter("firstName"),
+                    req.getParameter("lastName"),
+                    req.getParameter("biography"),
+                    req.getParameter("nationality")
             );
             new InsertAuthorDAO(con, author).access();
             LOGGER.info("Author '{} {}' added.", author.getFirstName(), author.getLastName());
@@ -153,10 +192,10 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleUpdateAuthor(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Author author = new Author(
-                req.getParameter("firstName"),
-                req.getParameter("lastName"),
-                req.getParameter("biography"),
-                req.getParameter("nationality")
+                    req.getParameter("firstName"),
+                    req.getParameter("lastName"),
+                    req.getParameter("biography"),
+                    req.getParameter("nationality")
             );
             author.setAuthor_id(Integer.parseInt(req.getParameter("author_id")));
             new UpdateAuthorDAO(con, author).access();
@@ -176,9 +215,9 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleAddPublisher(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Publisher publisher = new Publisher(
-                req.getParameter("publisher_name"),
-                req.getParameter("phone"),
-                req.getParameter("address")
+                    req.getParameter("publisher_name"),
+                    req.getParameter("phone"),
+                    req.getParameter("address")
             );
             new InsertPublisherDAO(con, publisher).access();
             LOGGER.info("Publisher '{}' added.", publisher.getPublisherName());
@@ -188,9 +227,9 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleUpdatePublisher(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Publisher publisher = new Publisher(
-                req.getParameter("publisher_name"),
-                req.getParameter("phone"),
-                req.getParameter("address")
+                    req.getParameter("publisher_name"),
+                    req.getParameter("phone"),
+                    req.getParameter("address")
             );
             publisher.setPublisherId(Integer.parseInt(req.getParameter("publisher_id")));
             new UpdatePublisherDAO(con, publisher).access();

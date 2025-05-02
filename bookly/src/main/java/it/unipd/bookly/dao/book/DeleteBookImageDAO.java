@@ -12,17 +12,17 @@ import static it.unipd.bookly.dao.book.BookQueries.DELETE_BOOK_IMAGE;
  */
 public class DeleteBookImageDAO extends AbstractDAO<Boolean> {
 
-    private final int bookId;
+    private final int book_id;
 
     /**
      * Constructs the DAO.
      *
      * @param con     The database connection.
-     * @param bookId  The ID of the book whose image will be deleted.
+     * @param book_id  The ID of the book whose image will be deleted.
      */
-    public DeleteBookImageDAO(final Connection con, final int bookId) {
+    public DeleteBookImageDAO(final Connection con, final int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     /**
@@ -33,17 +33,17 @@ public class DeleteBookImageDAO extends AbstractDAO<Boolean> {
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(DELETE_BOOK_IMAGE)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
             int affectedRows = stmt.executeUpdate();
             this.outputParam = affectedRows > 0;
 
             if (this.outputParam) {
-                LOGGER.info("Image for book ID {} deleted successfully.", bookId);
+                LOGGER.info("Image for book ID {} deleted successfully.", book_id);
             } else {
-                LOGGER.warn("No image found for book ID {}. Nothing was deleted.", bookId);
+                LOGGER.warn("No image found for book ID {}. Nothing was deleted.", book_id);
             }
         } catch (Exception e) {
-            LOGGER.error("Error deleting image for book ID {}: {}", bookId, e.getMessage(), e);
+            LOGGER.error("Error deleting image for book ID {}: {}", book_id, e.getMessage(), e);
             throw e;
         }
     }

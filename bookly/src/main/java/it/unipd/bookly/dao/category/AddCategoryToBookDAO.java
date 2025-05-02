@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import it.unipd.bookly.dao.AbstractDAO;
+
 import static it.unipd.bookly.dao.category.CategoryQueries.ADD_CATEGORY_TO_BOOK;
 
 /**
@@ -22,15 +23,15 @@ public class AddCategoryToBookDAO extends AbstractDAO<Void> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(ADD_CATEGORY_TO_BOOK)) {
-            stmnt.setInt(1, book_id);
-            stmnt.setInt(2, category_id);
+        try (PreparedStatement stmt = con.prepareStatement(ADD_CATEGORY_TO_BOOK)) {
+            stmt.setInt(1, book_id);
+            stmt.setInt(2, category_id);
 
-            stmnt.executeUpdate();
+            stmt.executeUpdate();
             LOGGER.info("Category {} successfully assigned to book {}.", category_id, book_id);
 
         } catch (Exception ex) {
-            LOGGER.error("Error assigning category {} to book {}: {}", category_id, book_id, ex.getMessage());
+            LOGGER.error("Error assigning category {} to book {}: {}", category_id, book_id, ex.getMessage(), ex);
             throw ex;
         }
     }

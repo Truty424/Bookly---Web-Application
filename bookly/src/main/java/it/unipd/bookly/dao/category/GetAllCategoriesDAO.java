@@ -16,7 +16,6 @@ import static it.unipd.bookly.dao.category.CategoryQueries.GET_ALL_CATEGORIES;
  */
 public class GetAllCategoriesDAO extends AbstractDAO<List<Category>> {
 
-
     public GetAllCategoriesDAO(final Connection con) {
         super(con);
     }
@@ -25,23 +24,30 @@ public class GetAllCategoriesDAO extends AbstractDAO<List<Category>> {
     protected void doAccess() throws Exception {
         List<Category> categories = new ArrayList<>();
 
-        try (PreparedStatement stmnt = con.prepareStatement(GET_ALL_CATEGORIES);
-             ResultSet rs = stmnt.executeQuery()) {
+        try (PreparedStatement stmt = con.prepareStatement(GET_ALL_CATEGORIES);
+             ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                Category category = new Category(
-                        rs.getInt("category_id"),
-                        rs.getString("category_name"),
-                        rs.getString("description")
-                );
+                int categoryId = rs.getInt("category_id");
+                String categoryName = rs.getString("category_name");
+                String description = rs.getString("description");
+
+                Category category = new Category(categoryId, categoryName, description);
                 categories.add(category);
+
+                LOGGER.debug("Loaded category: ID={} Name='{}'", categoryId, categoryName);
             }
 
             this.outputParam = categories;
-            LOGGER.info("Retrieved {} categories from the database.", categories.size());
+
+            if (categories.isEmpty()) {
+                LOGGER.warn("⚠️ No categories found in the database.");
+            } else {
+                LOGGER.info("✅ Retrieved {} categories from the database.", categories.size());
+            }
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving categories: {}", ex.getMessage());
+            LOGGER.error("❌ Error retrieving categories: {}", ex.getMessage(), ex);
             throw ex;
         }
     }

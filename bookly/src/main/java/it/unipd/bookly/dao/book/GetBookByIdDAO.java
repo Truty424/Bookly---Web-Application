@@ -15,17 +15,17 @@ import static it.unipd.bookly.dao.book.BookQueries.GET_BOOK_BY_ID;
  */
 public class GetBookByIdDAO extends AbstractDAO<Book> {
 
-    private final int bookId;
+    private final int book_id;
 
-    public GetBookByIdDAO(final Connection con, final int bookId) {
+    public GetBookByIdDAO(final Connection con, final int book_id) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
     }
 
     @Override
     protected void doAccess() throws Exception {
         try (PreparedStatement stmt = con.prepareStatement(GET_BOOK_BY_ID)) {
-            stmt.setInt(1, bookId);
+            stmt.setInt(1, book_id);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -48,27 +48,27 @@ public class GetBookByIdDAO extends AbstractDAO<Book> {
                         String imageType = rs.getString("image_type");
                         if (imageData != null && imageType != null) {
                             bookImage = new Image(imageData, imageType);
-                            LOGGER.debug("Image loaded for book ID {}", bookId);
+                            LOGGER.debug("Image loaded for book ID {}", book_id);
                         }
                     } catch (Exception imgEx) {
-                        LOGGER.debug("No image columns found or image missing for book ID {}", bookId);
+                        LOGGER.debug("No image columns found or image missing for book ID {}", book_id);
                     }
 
                     // Build the book object
                     this.outputParam = new Book(
-                            bookId, title, language, isbn, price, edition,
+                            book_id, title, language, isbn, price, edition,
                             publicationYear, numberOfPages, stockQuantity, averageRate,
                             summary, bookImage
                     );
 
-                    LOGGER.info("Book ID {} retrieved successfully.", bookId);
+                    LOGGER.info("Book ID {} retrieved successfully.", book_id);
                 } else {
-                    LOGGER.warn("No book found with ID {}", bookId);
+                    LOGGER.warn("No book found with ID {}", book_id);
                     this.outputParam = null;
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Error retrieving book ID {}: {}", bookId, e.getMessage(), e);
+            LOGGER.error("Error retrieving book ID {}: {}", book_id, e.getMessage(), e);
             throw e;
         }
     }

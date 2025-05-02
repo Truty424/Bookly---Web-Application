@@ -45,31 +45,33 @@ public class GetBooksByCategoryDAO extends AbstractDAO<List<Book>> {
                     double averageRate = rs.getDouble("average_rate");
                     String summary = rs.getString("summary");
 
-                    Image image = null;
+                    // Process optional image (LEFT JOIN ensures columns always exist)
                     byte[] imageData = rs.getBytes("image");
                     String imageType = rs.getString("image_type");
-                    if (imageData != null && imageType != null) {
-                        image = new Image(imageData, imageType);
-                    }
+                    Image image = (imageData != null && imageType != null)
+                            ? new Image(imageData, imageType)
+                            : null;
 
-                    Book book = (image == null)
-                        ? new Book(bookId, title, language, isbn, price, edition, publicationYear, pages, stock, averageRate, summary)
-                        : new Book(bookId, title, language, isbn, price, edition, publicationYear, pages, stock, averageRate, summary, image);
+                    Book book = new Book(
+                            bookId, title, language, isbn, price, edition,
+                            publicationYear, pages, stock, averageRate, summary, image
+                    );
 
                     books.add(book);
+                    LOGGER.debug("Loaded book: ID={} Title='{}'", bookId, title);
                 }
             }
 
             if (books.isEmpty()) {
                 LOGGER.warn("No books found for category ID {}", category_id);
             } else {
-                LOGGER.info("{} book(s) retrieved for category ID {}.", books.size(), category_id);
+                LOGGER.info("✅ Retrieved {} book(s) for category ID {}.", books.size(), category_id);
             }
 
             this.outputParam = books;
 
         } catch (Exception ex) {
-            LOGGER.error("Error retrieving books for category ID {}: {}", category_id, ex.getMessage());
+            LOGGER.error("❌ Error retrieving books for category ID {}: {}", category_id, ex.getMessage(), ex);
             throw ex;
         }
     }

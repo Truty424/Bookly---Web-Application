@@ -1,11 +1,10 @@
 package it.unipd.bookly.dao.book;
 
-import it.unipd.bookly.Resource.Image;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
+import it.unipd.bookly.Resource.Image;
+import it.unipd.bookly.dao.AbstractDAO;
 import static it.unipd.bookly.dao.book.BookQueries.UPDATE_BOOK;
 
 /**
@@ -13,7 +12,7 @@ import static it.unipd.bookly.dao.book.BookQueries.UPDATE_BOOK;
  */
 public class UpdateBookDAO extends AbstractDAO<Boolean> {
 
-    private final int bookId;
+    private final int book_id;
     private final String title;
     private final String language;
     private final String isbn;
@@ -30,7 +29,7 @@ public class UpdateBookDAO extends AbstractDAO<Boolean> {
      * Constructor for book update.
      *
      * @param con DB connection
-     * @param bookId Book ID to update
+     * @param book_id Book ID to update
      * @param title Updated title
      * @param language Updated language
      * @param isbn Updated ISBN
@@ -43,11 +42,11 @@ public class UpdateBookDAO extends AbstractDAO<Boolean> {
      * @param summary Updated summary
      * @param image Optional image (can be null if no update to image is needed)
      */
-    public UpdateBookDAO(final Connection con, int bookId, String title, String language, String isbn,
-                         double price, String edition, int publicationYear, int numberOfPages,
-                         int stockQuantity, double averageRate, String summary, Image image) {
+    public UpdateBookDAO(final Connection con, int book_id, String title, String language, String isbn,
+            double price, String edition, int publicationYear, int numberOfPages,
+            int stockQuantity, double averageRate, String summary, Image image) {
         super(con);
-        this.bookId = bookId;
+        this.book_id = book_id;
         this.title = title;
         this.language = language;
         this.isbn = isbn;
@@ -79,14 +78,14 @@ public class UpdateBookDAO extends AbstractDAO<Boolean> {
                 stmt.setInt(8, stockQuantity);
                 stmt.setDouble(9, averageRate);
                 stmt.setString(10, summary);
-                stmt.setInt(11, bookId);
+                stmt.setInt(11, book_id);
 
                 int rowsAffected = stmt.executeUpdate();
 
                 if (rowsAffected > 0) {
-                    LOGGER.info("Book with ID {} successfully updated ({} row(s) affected).", bookId, rowsAffected);
+                    LOGGER.info("Book with ID {} successfully updated ({} row(s) affected).", book_id, rowsAffected);
                 } else {
-                    LOGGER.warn("No book found with ID {}. No rows were updated.", bookId);
+                    LOGGER.warn("No book found with ID {}. No rows were updated.", book_id);
                 }
             }
 
@@ -94,10 +93,10 @@ public class UpdateBookDAO extends AbstractDAO<Boolean> {
             this.outputParam = true;
 
         } catch (Exception ex) {
-            LOGGER.error("Error updating book with ID {}: {}", bookId, ex.getMessage(), ex);
+            LOGGER.error("Error updating book with ID {}: {}", book_id, ex.getMessage(), ex);
             try {
                 con.rollback();
-                LOGGER.warn("Transaction rolled back for book ID {}", bookId);
+                LOGGER.warn("Transaction rolled back for book ID {}", book_id);
             } catch (Exception rollbackEx) {
                 LOGGER.error("Rollback failed after error: {}", rollbackEx.getMessage(), rollbackEx);
             }

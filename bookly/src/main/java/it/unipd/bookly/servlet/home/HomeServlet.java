@@ -47,32 +47,32 @@ public class HomeServlet extends AbstractDatabaseServlet {
             }
 
             // 3️⃣ Get books by category
-            // Map<Integer, List<Book>> booksByCategory = new HashMap<>();
-            // for (Category category : categories) {
-            //     List<Book> books;
-            //     try (Connection con = getConnection()) {
-            //         books = new GetBooksByCategoryDAO(con, category.getCategory_id()).access().getOutputParam();
-            //     }
-            //     booksByCategory.put(category.getCategory_id(), books);
-            // }
+            Map<Integer, List<Book>> booksByCategory = new HashMap<>();
+            for (Category category : categories) {
+                List<Book> books;
+                try (Connection con = getConnection()) {
+                    books = new GetBooksByCategoryDAO(con, category.getCategory_id()).access().getOutputParam();
+                }
+                booksByCategory.put(category.getCategory_id(), books);
+            }
 
             // 4️⃣ Get authors for each book
-            // Map<Integer, List<Author>> bookAuthors = new HashMap<>();
-            // for (List<Book> books : booksByCategory.values()) {
-            //     for (Book book : books) {
-            //         List<Author> authors;
-            //         try (Connection con = getConnection()) {
-            //             authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
-            //         }
-            //         bookAuthors.put(book.getBookId(), authors);
-            //     }
-            // }
+            Map<Integer, List<Author>> bookAuthors = new HashMap<>();
+            for (List<Book> books : booksByCategory.values()) {
+                for (Book book : books) {
+                    List<Author> authors;
+                    try (Connection con = getConnection()) {
+                        authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
+                    }
+                    bookAuthors.put(book.getBookId(), authors);
+                }
+            }
 
             // ✅ Set attributes
             req.setAttribute("categories", categories);
             req.setAttribute("topRatedBooks", topRatedBooks);
-            // req.setAttribute("booksByCategory", booksByCategory);
-            // req.setAttribute("bookAuthors", bookAuthors);
+            req.setAttribute("booksByCategory", booksByCategory);
+            req.setAttribute("bookAuthors", bookAuthors);
 
             req.getRequestDispatcher("/jsp/home.jsp").forward(req, resp);
 

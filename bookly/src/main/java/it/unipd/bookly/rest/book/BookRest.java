@@ -3,6 +3,7 @@ package it.unipd.bookly.rest.book;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Image;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.book.*;
 import it.unipd.bookly.rest.AbstractRestResource;
@@ -123,10 +124,34 @@ public class BookRest extends AbstractRestResource {
             book.setAverage_rate(0.0);
         }
 
+        // Step 1: Insert the book (metadata)
         boolean inserted = new InsertBookDAO(con, book).access().getOutputParam();
+
         if (inserted) {
+            // Retrieve the generated book_id (assuming GetBookById or similar logic - depends on your DB)
+            // Let's assume the book title + ISBN is unique, so we fetch the inserted book to get its ID:
+            Book insertedBook = new SearchBookByTitleDAO(con, book.getTitle())
+                    .access()
+                    .getOutputParam()
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+
+            if (insertedBook != null && book.getImage() != null) {
+                // Step 2: Insert the image using InsertBookImageDAO
+                boolean imageInserted = new InsertBookImageDAO(con, insertedBook.getBookId(), book.getImage())
+                        .access()
+                        .getOutputParam();
+                if (imageInserted) {
+                    LOGGER.info("Image successfully inserted for book '{}'", insertedBook.getTitle());
+                } else {
+                    LOGGER.warn("Book inserted but image insertion failed for '{}'", insertedBook.getTitle());
+                }
+            }
+
             res.setStatus(HttpServletResponse.SC_CREATED);
-            mapper.writeValue(res.getOutputStream(), new Message("Book created successfully", "201", book.getTitle()));
+            mapper.writeValue(res.getOutputStream(),
+                    new Message("Book created successfully", "201", book.getTitle()));
         } else {
             respondError("Failed to create book", "400");
         }
@@ -147,7 +172,8 @@ public class BookRest extends AbstractRestResource {
                 book.getNumber_of_pages(),
                 book.getStockQuantity(),
                 book.getAverage_rate(),
-                book.getSummary()
+                book.getSummary(),
+                book.getImage()
         ).access().getOutputParam();
 
         if (updated) {

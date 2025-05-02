@@ -17,10 +17,10 @@ public class GetCategoryByIdDAO extends AbstractDAO<Category> {
     private final int category_id;
 
     /**
-     * Constructor to initialize the DAO with the given book ID.
+     * Constructor to initialize the DAO with the given category ID.
      *
-     * @param con        the database connection.
-     * @param category_id the ID of the category to retrieve.
+     * @param con          the database connection.
+     * @param category_id  the ID of the category to retrieve.
      */
     public GetCategoryByIdDAO(final Connection con, final int category_id) {
         super(con);
@@ -29,19 +29,16 @@ public class GetCategoryByIdDAO extends AbstractDAO<Category> {
 
     @Override
     protected void doAccess() throws Exception {
-        try (PreparedStatement stmnt = con.prepareStatement(GET_CATEGORY_BY_ID)) {
-            stmnt.setInt(1, category_id);
+        try (PreparedStatement stmt = con.prepareStatement(GET_CATEGORY_BY_ID)) {
+            stmt.setInt(1, category_id);
 
-            try (ResultSet rs = stmnt.executeQuery()) {
+            try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    int id = rs.getInt("category_id");
-                    String name = rs.getString("category_name");
-                    String description = rs.getString("description");
-
                     Category category = new Category(
-                            id,
-                            name != null ? name : "",
-                            description != null ? description : ""
+                            rs.getInt("category_id"),
+                            rs.getString("category_name") != null ? rs.getString("category_name") : "",
+                            rs.getString("description") != null ? rs.getString("description") : ""
+                            // Add additional fields here if your query returns more columns, e.g., images.
                     );
 
                     this.outputParam = category;
@@ -51,9 +48,8 @@ public class GetCategoryByIdDAO extends AbstractDAO<Category> {
                     LOGGER.warn("No category found for ID {}.", category_id);
                 }
             }
-
         } catch (Exception ex) {
-            LOGGER.error("Failed to retrieve category with ID {}: {}", category_id, ex.getMessage());
+            LOGGER.error("Failed to retrieve category with ID {}: {}", category_id, ex.getMessage(), ex);
             throw ex;
         }
     }
