@@ -1,0 +1,77 @@
+.books-carousel-section {
+    padding: 40px 0;
+    background: #fff;
+}
+
+.carousel-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-auto-flow: column;
+    gap: 30px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 10px;  
+    scroll-snap-type: x mandatory;
+}
+
+.book-item {
+    background: #f3f3f3;
+    border-radius: 10px;
+    text-align: center;
+    padding: 15px;
+    min-width: 260px;
+    scroll-snap-align: start;
+}
+
+.book-cover img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    z-index: 10;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+}
+.carousel-btn.prev {
+    left: 10px;
+}
+.carousel-btn.next {
+    right: 10px;
+}
+
+@media (max-width: 1024px) {
+    .carousel-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .carousel-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-grid {
+        grid-template-columns: repeat(auto-fit, minmax(90%, 1fr));
+    }
+}

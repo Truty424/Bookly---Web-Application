@@ -54,7 +54,7 @@
                 >
               </li>
               <li>
-                <a href="${pageContext.request.contextPath}/user/wishlist"
+                <a href="${pageContext.request.contextPath}/wishlist"
                   ><i class="fas fa-heart"></i> My Wishlist</a
                 >
               </li>

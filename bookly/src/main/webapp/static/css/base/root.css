@@ -54,7 +54,6 @@
     /* Colors  */
     --color-white: #ffffff;
     --color-black: #000000;
-    --color-primary: #2563eb; /* blue-600 */
     
     /* Gray */
     --color-gray-50: #f9fafb;
@@ -190,9 +189,9 @@
 
 
     /* Primary */
-    --color-primary: #2563eb;         /* blue-600 */
-    --color-primary-hover: #1d4ed8;   /* blue-700 */
-    --color-primary-light: #3b82f6;   /* blue-500 */
+    --color-primary: #FC8C59;         /* blue-600 */
+    --color-primary-hover: #E68458;   /* blue-700 */
+    --color-primary-secondary: #303030;   /* blue-500 */
   
     /* Success, Warning, Danger */
     --color-success: #10b981;         /* green-500 */

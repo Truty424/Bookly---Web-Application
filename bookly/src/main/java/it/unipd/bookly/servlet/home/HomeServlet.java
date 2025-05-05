@@ -34,19 +34,23 @@ public class HomeServlet extends AbstractDatabaseServlet {
         double minRating = 4.0;
 
         try {
-            // 1️⃣ Get all categories
+
             List<Category> categories;
             try (Connection con = getConnection()) {
                 categories = new GetAllCategoriesDAO(con).access().getOutputParam();
+                LOGGER.info("Loaded categories: {}", categories);
             }
 
-            // 2️⃣ Get top-rated books
+            Map<Integer, Category> categoryMap = new HashMap<>();
+            for (Category category : categories) {
+                categoryMap.put(category.getCategory_id(), category);
+            }
+
             List<Book> topRatedBooks;
             try (Connection con = getConnection()) {
                 topRatedBooks = new GetTopRatedBooksDAO(con, minRating).access().getOutputParam();
             }
 
-            // 3️⃣ Get books by category
             Map<Integer, List<Book>> booksByCategory = new HashMap<>();
             for (Category category : categories) {
                 List<Book> books;
@@ -54,9 +58,10 @@ public class HomeServlet extends AbstractDatabaseServlet {
                     books = new GetBooksByCategoryDAO(con, category.getCategory_id()).access().getOutputParam();
                 }
                 booksByCategory.put(category.getCategory_id(), books);
+                LOGGER.info("Loaded category: ID={} Name='{}'",
+                        category.getCategory_id(), category.getCategory_name());
             }
 
-            // 4️⃣ Get authors for each book
             Map<Integer, List<Author>> bookAuthors = new HashMap<>();
             for (List<Book> books : booksByCategory.values()) {
                 for (Book book : books) {
@@ -71,6 +76,7 @@ public class HomeServlet extends AbstractDatabaseServlet {
             // ✅ Set attributes
             req.setAttribute("categories", categories);
             req.setAttribute("topRatedBooks", topRatedBooks);
+            req.setAttribute("categoryMap", categoryMap);
             req.setAttribute("booksByCategory", booksByCategory);
             req.setAttribute("bookAuthors", bookAuthors);
 

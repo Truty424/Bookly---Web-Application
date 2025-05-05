@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-@WebServlet(name = "WishlistServlet", value = "/user/wishlist/*")
+@WebServlet(name = "WishlistServlet", value = "/wishlist/*")
 public class WishlistServlet extends AbstractDatabaseServlet {
 
     @Override
@@ -82,7 +82,7 @@ public class WishlistServlet extends AbstractDatabaseServlet {
                 default -> ServletUtils.redirectToErrorPage(req, resp, "Unsupported wishlist action: " + path);
             }
 
-            resp.sendRedirect(req.getContextPath() + "/user/wishlist");
+            resp.sendRedirect(req.getContextPath() + "/wishlist");
 
         } catch (Exception e) {
             LOGGER.error("WishlistServlet POST error", e);

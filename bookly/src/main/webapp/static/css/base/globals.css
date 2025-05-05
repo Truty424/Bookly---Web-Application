@@ -5,13 +5,24 @@
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  font-family: var(--font-family-sans);
-  font-size: var(--text-base);
-  line-height: 1.5;
-  color: var(--color-gray-900);
-  background-color: var(--color-white);
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: var(--font-family-sans) !important;
+  font-size: var(--text-base) !important;
+  line-height: 1.5 !important;
+  color: var(--color-gray-900) !important;
+  background-color: var(--color-orange-50) !important;
+}
+
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
 }
 
 
@@ -19,7 +30,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
   margin-top: 0;
   margin-bottom: var(--space-2);
-  color: var(--color-red-500);
+  color: var(--color-gray-900);
 }
 
 p {
@@ -28,7 +39,7 @@ p {
 }
 
 a {
-  color: var(--color-blue-500);
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -46,7 +57,7 @@ input, textarea, select {
 
 input:focus, textarea:focus, select:focus {
   outline: none;
-  border-color: var(--color-blue-500);
+  border-color: var(--color-primary);
   box-shadow: var(--shadow-sm);
 }
 
