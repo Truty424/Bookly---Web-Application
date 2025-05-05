@@ -92,7 +92,7 @@ public class ReviewRest extends AbstractRestResource {
         int reviewId = extractIdFromPath(path);
         Review updated = mapper.readValue(req.getInputStream(), Review.class);
 
-        boolean result = new UpdateReviewTextAndRatingDAO(con, reviewId, updated.getReviewText(), updated.getRating())
+        boolean result = new UpdateCommentAndRatingDAO(con, reviewId, updated.getReviewText(), updated.getRating())
                 .access().getOutputParam();
 
         if (result) {
