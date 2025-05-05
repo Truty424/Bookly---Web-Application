@@ -32,8 +32,8 @@ public final class ReviewQueries {
             "SELECT COUNT(*) FROM booklySchema.reviews WHERE book_id = ?";
 
     // --- UPDATE ---
-    public static final String UPDATE_REVIEW_TEXT_AND_RATING =
-            "UPDATE booklySchema.reviews SET review_text = ?, rating = ?, review_date = CURRENT_TIMESTAMP " +
+    public static final String UPDATE_COMMENT_AND_RATING =
+            "UPDATE booklySchema.reviews SET comment = ?, rating = ?, review_date = CURRENT_TIMESTAMP " +
             "WHERE review_id = ?";
 
     public static final String UPDATE_REVIEW_LIKES_DISLIKES =

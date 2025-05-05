@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.reviews (
     review_id SERIAL PRIMARY KEY,
     user_id INTEGER NOT NULL,
     book_id INTEGER NOT NULL,
-    review_text TEXT,
+    comment TEXT,
     rating INTEGER CHECK (rating >= 1 AND rating <= 5),
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     number_of_likes INTEGER,

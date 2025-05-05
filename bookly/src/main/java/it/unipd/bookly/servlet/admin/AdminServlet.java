@@ -104,7 +104,7 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleAddBook(HttpServletRequest req) throws Exception {
         try (var con = getConnection()) {
             Book book = new Book(
-                    Integer.parseInt(req.getParameter("book_id")),
+                    0,
                     req.getParameter("title"),
                     req.getParameter("language"),
                     req.getParameter("isbn"),

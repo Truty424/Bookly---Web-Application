@@ -5,18 +5,18 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import it.unipd.bookly.dao.AbstractDAO;
-import static it.unipd.bookly.dao.review.ReviewQueries.UPDATE_REVIEW_TEXT_AND_RATING;
+import static it.unipd.bookly.dao.review.ReviewQueries.UPDATE_COMMENT_AND_RATING;
 
 /**
  * DAO to update the review text and rating for a specific review.
  */
-public class UpdateReviewTextAndRatingDAO extends AbstractDAO<Boolean> {
+public class UpdateCommentAndRatingDAO extends AbstractDAO<Boolean> {
 
     private final int reviewId;
     private final String reviewText;
     private final int rating;
 
-    public UpdateReviewTextAndRatingDAO(Connection con, int reviewId, String reviewText, int rating) {
+    public UpdateCommentAndRatingDAO(Connection con, int reviewId, String reviewText, int rating) {
         super(con);
         this.reviewId = reviewId;
         this.reviewText = reviewText != null ? reviewText.trim() : "";
@@ -31,7 +31,7 @@ public class UpdateReviewTextAndRatingDAO extends AbstractDAO<Boolean> {
             return;
         }
 
-        try (PreparedStatement stmt = con.prepareStatement(UPDATE_REVIEW_TEXT_AND_RATING)) {
+        try (PreparedStatement stmt = con.prepareStatement(UPDATE_COMMENT_AND_RATING)) {
             stmt.setString(1, reviewText);
             stmt.setInt(2, rating);
             stmt.setInt(3, reviewId);
