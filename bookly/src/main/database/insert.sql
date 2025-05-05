@@ -164,5 +164,5 @@ INSERT INTO booklySchema.reviews (user_id, book_id, comment, rating, number_of_l
 (2, 1, 'Absolutely agree with your take!', 5, 12, 0, 1),
 (3, 2, 'Interesting perspective, thanks for sharing.', 4, 6, 1, 2),
 (4, 3, 'I had a similar reaction to this book.', 3, 9, 2, 3),
-(5, 4, 'Couldn't disagree more, but that's the fun of reading!', 2, 3, 5, 4),
+(5, 4, "Couldn't disagree more, but that's the fun of reading!", 2, 3, 5, 4),
 (1, 5, 'Spot on. The writing was exceptional.', 5, 18, 0, 5);

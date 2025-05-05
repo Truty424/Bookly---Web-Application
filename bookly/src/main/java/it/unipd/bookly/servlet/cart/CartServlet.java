@@ -2,6 +2,7 @@ package it.unipd.bookly.servlet.cart;
 
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Book;
+import it.unipd.bookly.Resource.Cart;
 import it.unipd.bookly.Resource.Discount;
 import it.unipd.bookly.dao.cart.*;
 import it.unipd.bookly.dao.discount.GetValidDiscountByCodeDAO;
@@ -101,16 +102,28 @@ public class CartServlet extends AbstractDatabaseServlet {
     }
 
     private void showCart(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
-        Connection con = getConnection();
-        var cart = new GetCartByUserIdDAO(con, userId).access().getOutputParam();
+        Cart cart;
+        try (Connection con = getConnection()) {
+            cart = new GetCartByUserIdDAO(con, userId).access().getOutputParam();
+        }
 
         if (cart == null) {
-            int newCartId = new CreateCartForUserDAO(con, userId, "standard").access().getOutputParam();
-            cart = new GetCartByUserIdDAO(con, newCartId).access().getOutputParam();
+            int newCartId;
+            try (Connection con = getConnection()) {
+                newCartId = new CreateCartForUserDAO(con, userId, "standard").access().getOutputParam();
+            }
+
+            try (Connection con = getConnection()) {
+                cart = new GetCartByUserIdDAO(con, newCartId).access().getOutputParam();
+            }
         }
 
         int cartId = cart.getCartId();
-        List<Book> cartBooks = new GetBooksInCartDAO(con, cartId).access().getOutputParam();
+
+        List<Book> cartBooks;
+        try (Connection con = getConnection()) {
+            cartBooks = new GetBooksInCartDAO(con, cartId).access().getOutputParam();
+        }
 
         double total = cartBooks.stream().mapToDouble(Book::getPrice).sum();
         double finalTotal = total;
@@ -118,7 +131,9 @@ public class CartServlet extends AbstractDatabaseServlet {
         Discount discount = (Discount) req.getSession().getAttribute("appliedDiscount");
 
         if (discount != null) {
-            finalTotal = new ApplyDiscountToCartDAO(con, cartId, discount.getDiscountId()).access().getOutputParam();
+            try (Connection con = getConnection()) {
+                finalTotal = new ApplyDiscountToCartDAO(con, cartId, discount.getDiscountId()).access().getOutputParam();
+            }
             req.setAttribute("applied_discount", discount);
         } else if (req.getSession().getAttribute("discountError") != null) {
             req.setAttribute("discount_error", req.getSession().getAttribute("discountError"));
@@ -132,6 +147,7 @@ public class CartServlet extends AbstractDatabaseServlet {
 
         req.getRequestDispatcher("/jsp/cart/viewCart.jsp").forward(req, resp);
     }
+
 
     private void handleApplyDiscount(HttpServletRequest req, HttpServletResponse resp, Connection con, int cartId) throws Exception {
         String discountCode = req.getParameter("discount");
