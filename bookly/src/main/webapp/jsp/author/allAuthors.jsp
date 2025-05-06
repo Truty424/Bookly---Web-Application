@@ -4,12 +4,12 @@
 <html>
 <head>
     <title>All Authors</title>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/root.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/allAuthors.css" type="text/css" />
     <%@ include file="/html/cdn.html" %> 
-    <link
-    rel="stylesheet"
-    href="<%= request.getContextPath() %>/static/css/pages/allAuthors.css"
-    type="text/css"
-    />
 </head>
 <body>
     <%@ include file="/html/header.html" %>
@@ -22,11 +22,6 @@
                     for (Author author : authors) {
             %>
                 <div class="author-card">
-                    <img
-                        src="<%= request.getContextPath() %>/static/img/authors/<%= author.getAuthorId() %>.jpg"
-                        alt="<%= author.getName() %>"
-                        class="author-image"
-                    />
                     <h3 class="author-name">
                         <a href="<%= request.getContextPath() %>/author/<%= author.getAuthorId() %>">
                             <%= author.getName() %>
@@ -43,5 +38,6 @@
             %>
         </div>
     </div>
+    <%@ include file="/html/footer.html" %>
 </body>
 </html>
