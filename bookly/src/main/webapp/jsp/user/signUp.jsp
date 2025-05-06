@@ -90,7 +90,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </div>
 
           <div class="row">
-            <div class="col-md-6 mb-3 form-group">
+            <div class="col-md-6 mb-3 form-group" style="position: relative;">
               <label for="password">Password</label>
               <input
                 class="form-control"

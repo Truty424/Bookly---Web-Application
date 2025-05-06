@@ -90,10 +90,7 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
             </div>
           </div>
           <div class="hero-image">
-            <img
-              src="../static/img/heroImage.png"
-              alt="Open book on a globe"
-            />
+            <img src="../static/img/heroImage.png" alt="Open book on a globe" />
           </div>
         </div>
       </section>
@@ -159,16 +156,12 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
                   </div>
                   <h3 class="book-title">${book.title}</h3>
                   <p class="book-author">
-                    <c:forEach
-                      var="author"
-                      items="${bookAuthors[book.bookId]}"
-                      varStatus="authorStatus"
-                    >
+                    <c:forEach var="author" items="${bookAuthors[book.bookId]}" varStatus="authorStatus">
                       ${author.name}<c:if test="${!authorStatus.last}">, </c:if>
-                    </c:forEach>
+                  </c:forEach>
                   </p>
-                  <p class="book-rating">rate:${book.average_rate}</p>
-                  <p class="book-price">€${book.price}</p>
+                  <p class="book-rating" data-format="rating">rate:${book.average_rate}</p>
+                  <p class="book-price" data-format="price">€${book.price}</p>
                 </a>
               </c:forEach>
             </div>
@@ -207,9 +200,12 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
           <div>
             <ul class="categories-grid">
               <c:forEach var="entry" items="${booksByCategory}">
-                <li class="category-list">
-                  <a href="#"> ${categoryMap[entry.key].category_name} </a>
-                </li>
+                <a
+                  class="category-list"
+                  href="${pageContext.request.contextPath}/category/${categoryMap[entry.key].category_id}"
+                >
+                  <li>${categoryMap[entry.key].category_name}</li>
+                </a>
               </c:forEach>
             </ul>
           </div>

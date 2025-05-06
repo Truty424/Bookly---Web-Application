@@ -44,7 +44,9 @@
                 }
             %>
         </div>
-        <a href="<%= request.getContextPath() %>/category" class="back-link">Back to all categories</a>
+        <div class="back-link-container">
+            <a href="<%= request.getContextPath() %>/category" class="back-link">Back to all categories</a>
+        </div>
     </div>
 </body>
 </html>

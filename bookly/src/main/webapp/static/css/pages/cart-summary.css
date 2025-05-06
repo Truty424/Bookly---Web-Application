@@ -1,11 +1,6 @@
 /* cart-summary.css - styles for cartSummary.jsp */
 
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
+
   
   .cart-container h2 {
     text-align: center;

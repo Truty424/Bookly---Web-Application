@@ -8,12 +8,6 @@
   transition: all 0.3s ease;
 }
 
-.container {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
 
 .section {
   padding: 40px 0;
@@ -64,7 +58,7 @@
 }
 
 .search-btn-hero {
-  width: 55px;
+  width: 90px;
   background: linear-gradient(to right, #FC8C59, #f99c71);
   color: #fff;
   border-radius: 0 20px 20px 0;
@@ -88,7 +82,7 @@
 }
 
 .book-rating {
-  color: #F1E9DA;
+  color: #241A00;
 }
 
 .book-rating, .book-price,.book-author {
@@ -113,6 +107,11 @@
 .stars {
   color: #f4a261;
   font-size: 16px;
+}
+.hero-image {
+  display: flex;
+  justify-items: center;
+  align-items: center;
 }
 
 .hero-image img {
@@ -312,6 +311,7 @@
 
 .category-list {
   background-color: #f7f7f7;
+  color: #333;
   border: none;
   border-radius: 10px;
   padding: 15px;
@@ -322,16 +322,9 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-.category-list a {
-  color: #333;
-}
-
-.category-list a:hover {
-  color: #fff;
-}
-
 .category-list:hover {
   background-color: #f4a261;
+  color: #fff;
 }
 
 /* Benefits Section */

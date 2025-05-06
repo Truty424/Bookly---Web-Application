@@ -23,42 +23,11 @@
   color: #333;
 }
 
-.form-group div button {
-  background: linear-gradient(to right, #7f5af0, #6a5acd);
-  color: white;
-  border: none;
-  padding: 12px;
-  border-radius: 10px;
-  width: 100%;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.form-group div button:hover {
-  background: linear-gradient(to right, #b5a9ff, #7f5af0);
-  transform: scale(1.05);
-}
-
-.toggle-password {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  cursor: pointer;
-  width: 24px;
-  height: 24px;
-}
-
-.toggle-password::before {
-  content: '\1F441'; /* Unicode for eye emoji */
-  font-size: 20px;
-  display: inline-block;
+.form-group {
+  position: relative;
 }
 
 
-.toggle-password.active::before {
-  content: '\1F648'; /* Unicode for see-no-evil monkey 🙈 */
-}
 
 .form-check-input {
   margin-right: 10px;
@@ -93,6 +62,6 @@
 }
 
 .form-options a {
-  color: #6a5acd;
+  color: var(--color-primary);
   text-decoration: none;
 }

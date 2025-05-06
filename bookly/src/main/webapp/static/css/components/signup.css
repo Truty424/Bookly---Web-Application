@@ -30,8 +30,8 @@
 }
 
 .signup-btn {
-    background: linear-gradient(to right, #7f5af0, #6a5acd);
-    color: white;
+    background: linear-gradient(to right, #FC8C59, #f99c71);
+    color: #fff;
     border: none;
     padding: 12px;
     border-radius: 10px;
@@ -41,9 +41,28 @@
     transition: background 0.3s ease, transform 0.2s ease;
 }
 
+.toggle-password {
+    position: absolute;
+    top: 46%;
+    right: 25px;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+  }
+  
+  .toggle-password::before {
+    content: '\1F441'; /* Unicode for eye emoji */
+    font-size: 20px;
+    display: inline-block;
+  }
+  
+  
+  .toggle-password.active::before {
+    content: '\1F648'; /* Unicode for see-no-evil monkey 🙈 */
+  }
 
 .signup-btn:hover {
-    background: linear-gradient(to right, #6a5acd, #7f5af0); /* Just reverse colors or darken slightly */
+    background-color: #FC8C59;
     transform: scale(1.05);
 }
 
@@ -53,10 +72,11 @@
 }
 
 .signin-link a {
-    color: #6a5acd;
-    text-decoration: none;;
+    color: var(--color-blue-400);
+    text-decoration: none;
 }
 .signin-link a:hover {
-    font-weight: bold;
+    font-weight: semibold;
     text-decoration: underline;
+    color: var(--color-blue-800);
 }
