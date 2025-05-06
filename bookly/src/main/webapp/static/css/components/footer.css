@@ -48,6 +48,10 @@
     margin-bottom: 10px;
   }
 
+  .footer-column a:hover {
+    color: var(--color-primary)
+  }
+
   .subscribe input[type="email"] {
     width: 100%;
     padding: 10px;
@@ -57,13 +61,20 @@
   }
 
   .subscribe button {
-    background-color: #d4a019;
-    color: white;
+    background: linear-gradient(to right, #FC8C59, #f99c71);
+    color: #fff;
+    outline: none;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    transition: background 0.3s ease, transform 0.5s ease;
+  }
+
+  .subscribe button:hover {
+    background-color: var(--color-primary);
+    transform: scale(0.9);
   }
 
   .social-icons {

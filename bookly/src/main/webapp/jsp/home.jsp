@@ -30,11 +30,6 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
       href="${pageContext.request.contextPath}/static/css/components/forms.css"
       type="text/css"
     />
-    <link
-      rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/components/button.css"
-      type="text/css"
-    />
 
     <link
       rel="stylesheet"
@@ -73,17 +68,17 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
             <div class="reviews-container">
               <div class="reviewer-avatars">
                 <img
-                  src="../static/img/user1.jpg"
+                  src="../static/img/micheal.jpeg"
                   alt="Reviewer 1"
                   class="reviewer-img"
                 />
                 <img
-                  src="../static/img/user2.jpg"
+                  src="../static/img/alex.jpeg"
                   alt="Reviewer 2"
                   class="reviewer-img"
                 />
                 <img
-                  src="../static/img/user3.jpg"
+                  src="../static/img/emma.jpeg"
                   alt="Reviewer 3"
                   class="reviewer-img"
                 />
@@ -108,24 +103,32 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
         <div class="container">
           <div class="features-grid">
             <div class="feature-card">
-              <div class="feature-image"></div>
+              <div class="feature-image">
+                <i class="fas fa-gift"></i>
+              </div>
               <h3 class="feature-title">
                 The best Books to give as gift this year
               </h3>
               <p class="feature-desc">Great collections for all.</p>
             </div>
             <div class="feature-card">
-              <div class="feature-image"></div>
+              <div class="feature-image">
+                <i class="fas fa-truck"></i>
+              </div>
               <h3 class="feature-title">Free Wordwide Delivery</h3>
               <p class="feature-desc">Yeah. Shop now.</p>
             </div>
             <div class="feature-card">
-              <div class="feature-image"></div>
+              <div class="feature-image">
+                <i class="fas fa-holly-berry"></i>
+              </div>
               <h3 class="feature-title">Christmas Crackers</h3>
               <p class="feature-desc">Great collections for all.</p>
             </div>
             <div class="feature-card">
-              <div class="feature-image"></div>
+              <div class="feature-image">
+                <i class="fas fa-star"></i>
+              </div>
               <h3 class="feature-title">Special Editions</h3>
               <p class="feature-desc">Great collections for all.</p>
             </div>
@@ -138,10 +141,12 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
         <div class="container">
           <h2 class="section-title">Top Rated Books</h2>
           <div class="carousel-wrapper">
-            <button class="carousel-btn prev">  <i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-btn prev">
+              <i class="fas fa-chevron-left"></i>
+            </button>
             <div class="carousel-grid" id="carousel">
               <c:forEach var="book" items="${topRatedBooks}">
-                <div class="book-item">
+                <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-item">
                   <div class="book-cover">
                     <img
                       src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}"
@@ -161,7 +166,7 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
                   </p>
                   <p class="book-rating">rate:${book.average_rate}</p>
                   <p class="book-price">€${book.price}</p>
-                </div>
+                </a>
               </c:forEach>
             </div>
             <button class="carousel-btn next">
@@ -180,7 +185,11 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
             teachers."
           </p>
           <div class="quote-author">
-            <div class="author-img"></div>
+            <img
+              src="../static/img/emma.jpeg"
+              alt="Emma Johanssen"
+              class="author-img"
+            />
             <p class="author-name">Emma Johanssen</p>
           </div>
         </div>

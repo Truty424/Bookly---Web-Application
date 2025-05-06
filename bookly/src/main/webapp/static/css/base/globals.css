@@ -7,7 +7,6 @@
 html, body {
   margin: 0 !important;
   padding: 0 !important;
-  font-family: var(--font-family-sans) !important;
   font-size: var(--text-base) !important;
   line-height: 1.5 !important;
   color: var(--color-gray-900) !important;
@@ -21,9 +20,9 @@ img {
 }
 
 a {
-  text-decoration: none;
-  color: inherit;
+  text-decoration: none !important;
 }
+
 
 
 h1, h2, h3, h4, h5, h6 {
@@ -36,15 +35,6 @@ h1, h2, h3, h4, h5, h6 {
 p {
   margin-top: 0;
   margin-bottom: var(--space-3);
-}
-
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
 }
 
 input, textarea, select {

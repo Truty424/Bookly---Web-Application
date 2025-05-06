@@ -1,13 +1,11 @@
 /* list-authors.css - styles for listAuthors.jsp */
 
-.authors-container {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    font-family: "Segoe UI", sans-serif;
-  }
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
   
   .authors-container h2 {
     text-align: center;

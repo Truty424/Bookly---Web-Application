@@ -53,7 +53,7 @@ header {
     max-width: 500px;
     margin: 0 20px;
     position: relative;
-    min-width: 250px;
+    min-width: 400px;
 }
 
 .search-bar select {
@@ -74,10 +74,10 @@ header {
 
 .search-btn {
     width: 60px;
-    background-color: var(--color-primary);
+    background: linear-gradient(to right, #FC8C59, #f99c71);
     color: #fff;
     border-radius: 0 20px 20px 0;
-    border: 1px solid var(--color-primary-hover);
+    border: 2px solid var(--color-primary-hover);
     padding: 14px;
     display: flex;
     justify-content: center;
@@ -88,16 +88,19 @@ header {
     display: flex;
     align-items: center;
     gap: 15px;
-    flex-wrap: wrap;
     margin-top: 10px;
 }
 
-.help-btn {
-    border: 1px solid #ddd;
-    background-color: white;
-    color: #333;
-    padding: 8px 15px;
-    border-radius: 15px;
+.cart-icon {
+    font-size: 16px;
+    color: #666;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.cart-icon:hover {
+    scale: 0.9;
+    color: var(--color-primary);
 }
 
 .login-btn {
@@ -107,6 +110,13 @@ header {
     border-radius: 15px;
     outline: none;
     border: none;
+    transition: background 0.3s ease, transform 0.5s ease;
+}
+
+.login-btn:hover {
+    color: #fff;
+    background-color: var(--color-primary);
+    transform: scale(0.9);
 }
 
 .nav-main {
@@ -130,14 +140,14 @@ header {
 
 .nav-links li a {
     font-weight: 500;
-    color: var(--color-primary);
+    color: #333;
     position: relative;
     text-decoration: none;
 }
 
 .nav-links li a:hover {
-    color: #333;
-    font-weight: bold;
+    color: var(--color-primary);
+    font-weight: semibold;
 }
 
 .nav-links li a.active::after {

@@ -69,7 +69,7 @@
                 />
                 <span class="toggle-password" onclick="togglePassword()"></span>
               </div>
-              <button class="login-btn" type="submit">
+              <button class="signin-btn" type="submit">
                 Sign In
               </button>
             </form>
