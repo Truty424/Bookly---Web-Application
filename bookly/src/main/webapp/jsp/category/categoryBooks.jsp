@@ -4,36 +4,47 @@
 <html>
 <head>
     <title>Books in Category</title>
-    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/cdn.html" %>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/root.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/categoryBooks.css" type="text/css"
+    />
 </head>
 <body>
-
     <%@ include file="/html/header.html" %>
-    <h1>Books in Selected Category</h1>
-
-    <ul>
-        <%
-            List<Book> books = (List<Book>) request.getAttribute("category_books");
-            if (books != null && !books.isEmpty()) {
-                for (Book book : books) {
-        %>
-                    <li>
-                        <strong><%= book.getTitle() %></strong><br/>
-                        ISBN: <%= book.getIsbn() %><br/>
-                        Price: $<%= book.getPrice() %><br/>
-                        Language: <%= book.getLanguage() %>
-                    </li>
-                    <hr/>
-        <%
+    <div class="container">
+        <h1 class="page-title">Books in Selected Category</h1>
+        <div class="books-grid">
+            <%
+                List<Book> books = (List<Book>) request.getAttribute("category_books");
+                if (books != null && !books.isEmpty()) {
+                    for (Book book : books) {
+            %>
+                            <div class="book-card">
+                                <div class="book-placeholder">
+                                    <!-- Placeholder for book image -->
+                                    <p>No Image</p>
+                                </div>
+                                <h3 class="book-title"><%= book.getTitle() %></h3>
+                                <div class="book-details">
+                                    <p><strong>Publisher:</strong> <%= book.getEdition() %></p>
+                                    <p><strong>Price:</strong> $<%= book.getPrice() %></p>
+                                    <p><strong>Language:</strong> <%= book.getLanguage() %></p>
+                                    <p><strong>Rating:</strong> <%= book.getAverage_rate() %>/5</p>
+                                </div>
+                            </div>
+            <%
+                    }
+                } else {
+            %>
+                <p class="no-books">No books found in this category.</p>
+            <%
                 }
-            } else {
-        %>
-            <li>No books found in this category.</li>
-        <%
-            }
-        %>
-    </ul>
-
-    <a href="<%= request.getContextPath() %>/category">Back to all categories</a>
+            %>
+        </div>
+        <a href="<%= request.getContextPath() %>/category" class="back-link">Back to all categories</a>
+    </div>
 </body>
 </html>
