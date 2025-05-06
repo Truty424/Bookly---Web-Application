@@ -91,7 +91,7 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
           </div>
           <div class="hero-image">
             <img
-              src="../static/img/globe-book.png"
+              src="../static/img/heroImage.png"
               alt="Open book on a globe"
             />
           </div>
@@ -146,7 +146,10 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
             </button>
             <div class="carousel-grid" id="carousel">
               <c:forEach var="book" items="${topRatedBooks}">
-                <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-item">
+                <a
+                  href="${pageContext.request.contextPath}/book/${book.bookId}"
+                  class="book-item"
+                >
                   <div class="book-cover">
                     <img
                       src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}"
@@ -199,13 +202,13 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
         <div class="container">
           <div class="categories-header">
             <h2 class="categories-title">Categories</h2>
-            <a href="#" class="view-all">View All →</a>
+            <a class="view-all" href="/category">View All →</a>
           </div>
           <div>
             <ul class="categories-grid">
               <c:forEach var="entry" items="${booksByCategory}">
                 <li class="category-list">
-                  ${categoryMap[entry.key].category_name}
+                  <a href="#"> ${categoryMap[entry.key].category_name} </a>
                 </li>
               </c:forEach>
             </ul>

@@ -4,8 +4,16 @@
 <html>
 <head>
     <title>All Categories</title>
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/root.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/static/css/base/root.css"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/static/css/base/globals.css"
+      type="text/css"
+    />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/allCategories.css" type="text/css" />

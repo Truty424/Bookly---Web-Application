@@ -6,10 +6,9 @@
     <title>All Authors</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/root.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/allAuthors.css" type="text/css" />
-    <%@ include file="/html/cdn.html" %> 
+    <%@ include file="/html/cdn.html" %>
+
 </head>
 <body>
     <%@ include file="/html/header.html" %>

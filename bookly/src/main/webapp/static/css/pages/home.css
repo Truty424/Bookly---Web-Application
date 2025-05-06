@@ -64,12 +64,16 @@
 }
 
 .search-btn-hero {
-  background: linear-gradient(to right, #FC8C59, #F99C71);
+  width: 55px;
+  background: linear-gradient(to right, #FC8C59, #f99c71);
   color: #fff;
-  border: none;
-  padding: 15px 25px;
-  cursor: pointer;
-  font-weight: 600;
+  border-radius: 0 20px 20px 0;
+  border: 1px solid var(--color-primary-hover);
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
 }
 
 .reviews-container {
@@ -81,6 +85,10 @@
 
 .reviewer-avatars {
   display: flex;
+}
+
+.book-rating {
+  color: #F1E9DA;
 }
 
 .book-rating, .book-price,.book-author {
@@ -193,6 +201,11 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover {
+  transform: scale(0.9);
 }
 
 .book-cover {
@@ -220,17 +233,9 @@
 
 .book-price {
   font-weight: 600;
-  color: #6b46c1;
+  color: var(--color-primary);
 }
 
-.book-btn {
-  background-color: #6b46c1;
-  color: white;
-  text-align: center;
-  padding: 8px 0;
-  border-radius: 15px;
-  font-size: 14px;
-}
 
 /* Quote Section */
 .quote-section {
@@ -284,9 +289,17 @@
     margin-bottom: 20px;
 }
 
+
 .view-all {
   font-size: 14px;
-  color: #f4a261;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all:hover {
+  font-size: 14px;
+  color: var(--color-primary-hover);
   text-decoration: none;
   font-weight: 500;
 }
@@ -299,7 +312,6 @@
 
 .category-list {
   background-color: #f7f7f7;
-  color: #333;
   border: none;
   border-radius: 10px;
   padding: 15px;
@@ -310,9 +322,16 @@
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+.category-list a {
+  color: #333;
+}
+
+.category-list a:hover {
+  color: #fff;
+}
+
 .category-list:hover {
   background-color: #f4a261;
-  color: #fff;
 }
 
 /* Benefits Section */
