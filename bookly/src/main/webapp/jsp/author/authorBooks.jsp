@@ -1,9 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="it.unipd.bookly.Resource.Book" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="it.unipd.bookly.Resource.Author" %>
 <%@ page import="it.unipd.bookly.dao.author.GetAuthorByIdDAO" %>
 <%@ page import="java.sql.Connection" %>
-<%@ page import="java.util.List" %>
 <html>
 <head>
     <title>Books by Author</title>
@@ -13,11 +12,11 @@
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/listBooks.css" type="text/css"/>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/allBooks.css" type="text/css" />
 </head>
 <body>
     <%@ include file="/html/header.html" %>
-    <div class="container">
+    <div class="container py-5">
         <%
             String pathInfo = request.getPathInfo();
             int authorId = (pathInfo != null && pathInfo.length() > 1) ? Integer.parseInt(pathInfo.substring(1)) : -1;
@@ -36,36 +35,27 @@
                 e.printStackTrace();
             }
         %>
-        <h1 class="page-title">Books by <%= authorName %> </h1>
+        <h1 class="page-title">Books by <%= authorName %></h1>
         <div class="books-grid">
-            <%
-                List<Book> books = (List<Book>) request.getAttribute("author_books");
-                if (books != null && !books.isEmpty()) {
-                    for (Book book : books) {
-            %>
-                        <div class="book-card">
-                            <div class="book-placeholder">
-                                <!-- Placeholder for book image -->
-                                <p>No Image</p>
+            <c:choose>
+                <c:when test="${not empty author_books}">
+                    <c:forEach var="book" items="${author_books}">
+                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-title">
+                            <div class="book-card">
+                                <img src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}" 
+                                     alt="${book.title}" class="book-image" />
+                                <h3 class="book-title">${book.title}</h3>
                             </div>
-                            <h3 class="book-title"><%= book.getTitle() %></h3>
-                            <div class="book-details">
-                                <p><strong>Publisher:</strong> <%= book.getEdition() %></p>
-                                <p><strong>Price:</strong> $<%= book.getPrice() %></p>
-                                <p><strong>Language:</strong> <%= book.getLanguage() %></p>
-                                <p><strong>Rating:</strong> <%= book.getAverage_rate() %>/5</p>
-                            </div>
-                        </div>
-            <%
-                    }
-                } else {
-            %>
-                <p class="no-books">No books found by this author.</p>
-            <%
-                }
-            %>
+                        </a>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <p class="no-books-message">No books found by this author.</p>
+                </c:otherwise>
+            </c:choose>
         </div>
-        <a href="<%= request.getContextPath() %>/author" class="back-link">Back to all authors</a>
+        <a href="${pageContext.request.contextPath}/author" class="back-link">Back to all authors</a>
     </div>
+    <%@ include file="/html/footer.html" %>
 </body>
 </html>

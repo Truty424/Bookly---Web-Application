@@ -29,10 +29,10 @@
                                 </div>
                                 <h3 class="book-title"><%= book.getTitle() %></h3>
                                 <div class="book-details">
-                                    <p><strong>Publisher:</strong> <%= book.getEdition() %></p>
-                                    <p><strong>Price:</strong> $<%= book.getPrice() %></p>
-                                    <p><strong>Language:</strong> <%= book.getLanguage() %></p>
-                                    <p><strong>Rating:</strong> <%= book.getAverage_rate() %>/5</p>
+                                    <p><strong>Publisher :</strong> <%= book.getEdition() %></p>
+                                    <p><strong>Price :</strong> $<%= book.getPrice() %></p>
+                                    <p><strong>Language :</strong> <%= book.getLanguage() %></p>
+                                    <p><strong>Average Rating :</strong> <%= book.getAverage_rate() %>/5</p>
                                 </div>
                             </div>
             <%
