@@ -38,6 +38,5 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.CartItem"
         </div>
         </div>
       </body>
+      <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
     </html>
-  </CartItem></CartItem
->

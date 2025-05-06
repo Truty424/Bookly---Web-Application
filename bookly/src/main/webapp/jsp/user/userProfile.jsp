@@ -19,11 +19,6 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
     />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/components/header.css"
-      type="text/css"
-    />
-    <link
-      rel="stylesheet"
       href="${pageContext.request.contextPath}/static/css/pages/userDashboard.css"
       type="text/css"
     />

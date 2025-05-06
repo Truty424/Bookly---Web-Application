@@ -19,20 +19,20 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/pages/wishlist.css"
+      href="${pageContext.request.contextPath}/static/css/pages/userDashboard.css"
       type="text/css"
     />
     <%@ include file="/html/cdn.html" %>
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid p-0">
       <div class="d-flex">
         <aside class="sidebar">
           <div class="sidebar-content">
             <ul class="nav-top">
               <li>
                 <a href="${pageContext.request.contextPath}/user/profile"
-                  ><i class="fas fa-tachometer-alt"></i> Dashboard</a
+                  ><i class="fas fa-user"></i> My profile</a
                 >
               </li>
               <li>
@@ -48,7 +48,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </li>
               <li>
                 <a href="${pageContext.request.contextPath}/wishlist"
-                  ><i class="fas fa-heart"></i> Wishlist</a
+                  ><i class="fas fa-heart"></i> My Wishlist</a
                 >
               </li>
             </ul>

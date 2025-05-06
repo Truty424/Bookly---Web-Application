@@ -61,5 +61,6 @@
 
 
     <a href="<%= request.getContextPath() %>/book">Continue Shopping</a>
+    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
 </body>
 </html>

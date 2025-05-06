@@ -123,7 +123,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         </c:otherwise>
       </c:choose>
     </div>
-
+    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
     <%@ include file="/html/footer.html" %>
   </body>
 </html>

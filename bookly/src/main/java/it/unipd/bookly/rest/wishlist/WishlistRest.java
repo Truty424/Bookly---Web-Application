@@ -1,6 +1,7 @@
 package it.unipd.bookly.rest.wishlist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.Wishlist;
 import it.unipd.bookly.dao.wishlist.*;
@@ -11,6 +12,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+
+import it.unipd.bookly.Resource.Book;
 
 /**
  * Handles wishlist operations:
@@ -90,12 +93,11 @@ public class WishlistRest extends AbstractRestResource {
 
     private void handleGetWishlistsByUser(String path) throws Exception {
         int userId = extractIdFromPath(path);
-        List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
-        String json = mapper.writeValueAsString(wishlists);
+        List<Book> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        new Message("Wishlists fetched successfully.", "200", json).toJSON(res.getOutputStream());
+        mapper.writeValue(res.getOutputStream(), wishlists);
     }
 
     private void handleClearWishlist(String path) throws Exception {

@@ -16,11 +16,12 @@
       type="text/css"
     />
     <link rel="stylesheet" href="../../static/css/components/forms.css"
-    type="text/css"
+    type="text/css" />
+    <%@ include file="/html/cdn.html" %>
   </head>
   <body>
 
-        <%@ include file="/html/cdn.html" %> <%@ include file="/html/header.html" %>
+ <%@ include file="/html/header.html" %>
         <div class="container">
             <div class="d-flex justify-content-center align-items-center vh-100">
                 <div class="card">

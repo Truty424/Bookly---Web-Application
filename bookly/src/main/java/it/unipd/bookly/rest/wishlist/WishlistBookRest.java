@@ -3,8 +3,10 @@ package it.unipd.bookly.rest.wishlist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Message;
-import it.unipd.bookly.Resource.Wishlist;
-import it.unipd.bookly.dao.wishlist.*;
+import it.unipd.bookly.dao.wishlist.AddBookToWishlistDAO;
+import it.unipd.bookly.dao.wishlist.GetWishlistByUserDAO;
+import it.unipd.bookly.dao.wishlist.IsBookInWishlistDAO;
+import it.unipd.bookly.dao.wishlist.RemoveBookFromWishlistDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,15 +14,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Handles wishlist book operations:
- * - POST    /api/wishlist/books/add           → Add book to wishlist
- * - DELETE  /api/wishlist/books/remove        → Remove book from wishlist
- * - GET     /api/wishlist/books/{wishlistId}  → Get books in wishlist
- * - GET     /api/wishlist/books/contains      → Check if book is in wishlist
+ * - POST    /api/wishlist/add              → Add book to wishlist
+ * - DELETE  /api/wishlist/remove           → Remove book from wishlist
+ * - GET     /api/wishlist/{userId}         → Get wishlist books for user
+ * - GET     /api/wishlist/contains         → Check if book is in wishlist
  */
 public class WishlistBookRest extends AbstractRestResource {
+
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public WishlistBookRest(HttpServletRequest req, HttpServletResponse res, Connection con) {
         super("wishlist-books", req, res, con);
@@ -38,12 +43,11 @@ public class WishlistBookRest extends AbstractRestResource {
                     else unsupported();
                 }
                 case "DELETE" -> {
-                    if (path.contains("/remove")) handleRemoveBookFromWishlist();
+                    if (path.endsWith("/remove")) handleRemoveBookFromWishlist();
                     else unsupported();
                 }
                 case "GET" -> {
-                    if (path.matches(".*/wishlist/books/\\d+$")) handleGetBooksInWishlist(path);
-                    else if (path.contains("/contains")) handleCheckBookInWishlist();
+                    if (path.matches(".*/wishlist/\\d+$")) handleGetWishlistBooks(path);
                     else unsupported();
                 }
                 default -> unsupported();
@@ -55,66 +59,58 @@ public class WishlistBookRest extends AbstractRestResource {
     }
 
     private void handleAddBookToWishlist() throws IOException {
-        String wishlistIdParam = req.getParameter("wishlistId");
-        String bookIdParam = req.getParameter("book_id");
+        // Expect JSON body like: { "userId": 5, "bookId": 10 }
+        Map<String, Integer> body = mapper.readValue(req.getInputStream(), Map.class);
 
-        if (wishlistIdParam == null || bookIdParam == null) {
-            sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400", "'wishlistId' and 'book_id' are required.");
+        Integer userId = body.get("userId");
+        Integer bookId = body.get("bookId");
+
+        if (userId == null || bookId == null) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400", "'userId' and 'bookId' are required in JSON body.");
             return;
         }
 
         try {
-            int wishlistId = Integer.parseInt(wishlistIdParam);
-            int bookId = Integer.parseInt(bookIdParam);
+            new AddBookToWishlistDAO(con, userId, bookId).access();
 
-            new AddBookToWishlistDAO(con, wishlistId, bookId).access();
-
-            res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Book added to wishlist", "200",
-                    "Book ID " + bookId + " was added to Wishlist ID " + wishlistId).toJSON(res.getOutputStream());
-
-        } catch (NumberFormatException e) {
-            sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid ID format", "E401", "'wishlistId' and 'book_id' must be valid integers.");
+            sendMessage("Book added to wishlist", "200", "Book ID " + bookId + " was added for User ID " + userId);
         } catch (Exception e) {
             LOGGER.error("Error adding book to wishlist", e);
             sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500", "Failed to add book to wishlist: " + e.getMessage());
         }
     }
 
-    private void handleRemoveBookFromWishlist() throws Exception {
-        int wishlistId = Integer.parseInt(req.getParameter("wishlistId"));
-        int bookId = Integer.parseInt(req.getParameter("book_id"));
+    private void handleRemoveBookFromWishlist() throws IOException {
+        // Expect JSON body like: { "userId": 5, "bookId": 10 }
+        Map<String, Integer> body = mapper.readValue(req.getInputStream(), Map.class);
 
-        new RemoveBookFromWishlistDAO(con, bookId, wishlistId).access();
-        sendMessage("Book removed from wishlist", "200", "Book ID: " + bookId + " removed from Wishlist ID: " + wishlistId);
+        Integer userId = body.get("userId");
+        Integer bookId = body.get("bookId");
+
+        if (userId == null || bookId == null) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400", "'userId' and 'bookId' are required in JSON body.");
+            return;
+        }
+
+        try {
+            new RemoveBookFromWishlistDAO(con, userId, bookId).access();
+            sendMessage("Book removed from wishlist", "200", "Book ID " + bookId + " removed for User ID " + userId);
+        } catch (Exception e) {
+            LOGGER.error("Error removing book from wishlist", e);
+            sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500", "Failed to remove book: " + e.getMessage());
+        }
     }
 
-    private void handleGetBooksInWishlist(String path) throws Exception {
-        int wishlistId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-        List<Book> books = new GetBooksInWishlistDAO(con, wishlistId).access().getOutputParam();
+    private void handleGetWishlistBooks(String path) throws Exception {
+        int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
+        List<Book> books = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        new ObjectMapper().writeValue(res.getOutputStream(), books);
+        mapper.writeValue(res.getOutputStream(), books);
     }
 
-    private void handleCheckBookInWishlist() throws Exception {
-        int wishlistId = Integer.parseInt(req.getParameter("wishlistId"));
-        int bookId = Integer.parseInt(req.getParameter("book_id"));
-
-        Wishlist wishlist = new Wishlist();
-        wishlist.setWishlistId(wishlistId);
-
-        Book book = new Book();
-        book.setBookId(bookId);
-
-        boolean exists = new IsBookInWishlistDAO(con, wishlist, book).access().getOutputParam();
-
-        res.setContentType("application/json;charset=UTF-8");
-        res.setStatus(HttpServletResponse.SC_OK);
-        res.getWriter().write("{\"exists\": " + exists + "}");
-    }
-
+    // === Utility ===
 
     private void unsupported() throws IOException {
         sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported operation", "E405", "This endpoint or method is not supported.");

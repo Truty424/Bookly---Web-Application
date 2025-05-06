@@ -2,8 +2,10 @@ package it.unipd.bookly.servlet.wishlist;
 
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Book;
-import it.unipd.bookly.Resource.Wishlist;
-import it.unipd.bookly.dao.wishlist.*;
+import it.unipd.bookly.Resource.User;
+import it.unipd.bookly.dao.wishlist.AddBookToWishlistDAO;
+import it.unipd.bookly.dao.wishlist.GetWishlistByUserDAO;
+import it.unipd.bookly.dao.wishlist.RemoveBookFromWishlistDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
@@ -11,6 +13,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -25,23 +28,23 @@ public class WishlistServlet extends AbstractDatabaseServlet {
         LogContext.setResource(req.getRequestURI());
         LogContext.setAction("wishlistServlet");
 
+        String action = req.getParameter("action");  // e.g., "view"
+        HttpSession session = req.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (user == null) {
+            resp.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
         try {
-            Integer userId = (Integer) req.getSession().getAttribute("userId");
-            if (userId == null) {
-                resp.sendRedirect("/jsp/user/login.jsp");
-                return;
+            switch (action != null ? action : "view") {
+                case "view" -> handleViewWishlist(req, resp, user.getUserId());
+                default -> ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
             }
-
-            String path = req.getPathInfo(); // e.g., "/", "/add/5"
-            if (path == null || path.equals("/") || path.equals("")) {
-                showWishlist(req, resp, userId);
-            } else {
-                ServletUtils.redirectToErrorPage(req, resp, "Invalid wishlist path: " + path);
-            }
-
         } catch (Exception e) {
-            LOGGER.error("WishlistServlet GET error", e);
-            ServletUtils.redirectToErrorPage(req, resp, "Unable to load wishlist.");
+            LOGGER.error("WishlistServlet error (GET): {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "WishlistServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -54,83 +57,55 @@ public class WishlistServlet extends AbstractDatabaseServlet {
         LogContext.setResource(req.getRequestURI());
         LogContext.setAction("wishlistServlet");
 
+        String action = req.getParameter("action"); 
+        HttpSession session = req.getSession(false);
+        User user = (session != null) ? (User) session.getAttribute("user") : null;
+
+        if (user == null) {
+            resp.sendRedirect(req.getContextPath() + "/user/login");
+            return;
+        }
+
         try {
-            Integer userId = (Integer) req.getSession().getAttribute("userId");
-            if (userId == null) {
-                resp.sendRedirect("/jsp/user/login.jsp");
-                return;
+            switch (action) {
+                case "add" -> handleAddToWishlist(req, resp, user.getUserId());
+                case "remove" -> handleRemoveFromWishlist(req, resp, user.getUserId());
+                default -> ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
             }
-
-            String path = req.getPathInfo();
-            int wishlistId = getOrCreateWishlistId(userId);
-
-            switch (getAction(path)) {
-                case "add" -> {
-                    int bookId = extractBookId(path);
-                    new AddBookToWishlistDAO(getConnection(), wishlistId, bookId).access();
-                    LOGGER.info("Book {} added to wishlist {}", bookId, wishlistId);
-                }
-                case "remove" -> {
-                    int bookId = extractBookId(path);
-                    new RemoveBookFromWishlistDAO(getConnection(), bookId, wishlistId).access();
-                    LOGGER.info("Book {} removed from wishlist {}", bookId, wishlistId);
-                }
-                case "clear" -> {
-                    new ClearWishlistDAO(getConnection(), wishlistId).access();
-                    LOGGER.info("Wishlist {} cleared.", wishlistId);
-                }
-                default -> ServletUtils.redirectToErrorPage(req, resp, "Unsupported wishlist action: " + path);
-            }
-
-            resp.sendRedirect(req.getContextPath() + "/wishlist");
-
+            resp.sendRedirect(req.getContextPath() + "/wishlist?action=view");  // After add/remove, refresh wishlist
         } catch (Exception e) {
-            LOGGER.error("WishlistServlet POST error", e);
-            ServletUtils.redirectToErrorPage(req, resp, "Wishlist operation failed.");
+            LOGGER.error("WishlistServlet error (POST): {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, resp, "WishlistServlet error: " + e.getMessage());
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
         }
     }
 
-    private void showWishlist(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
+    // ========================== HANDLERS ==========================
+
+    private void handleViewWishlist(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
+        List<Book> wishlist;
         try (Connection con = getConnection()) {
-            List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
-            Wishlist wishlist = (wishlists == null || wishlists.isEmpty())
-                    ? new CreateWishlistDAO(con, userId).access().getOutputParam()
-                    : wishlists.get(0);
+            wishlist = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
+        }
+        req.setAttribute("wishlist", wishlist);
+        req.getRequestDispatcher("/jsp/wishlist/wishlistBooks.jsp").forward(req, resp);
+    }
 
-            List<Book> wishlistBooks = new GetBooksInWishlistDAO(con, wishlist.getWishlistId()).access().getOutputParam();
-
-            req.setAttribute("wishlist_books", wishlistBooks);
-            req.setAttribute("wishlist_id", wishlist.getWishlistId());
-            req.getRequestDispatcher("/jsp/wishlist/wishlistBooks.jsp").forward(req, resp);
+    private void handleAddToWishlist(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
+        int bookId = Integer.parseInt(req.getParameter("book_id"));
+        try (Connection con = getConnection()) {
+            new AddBookToWishlistDAO(con, userId, bookId).access();
+            LOGGER.info("Added book ID {} to wishlist for user ID {}", bookId, userId);
         }
     }
 
-    private String getAction(String path) {
-        if (path == null) return "";
-        if (path.matches("/add/\\d+")) return "add";
-        if (path.matches("/remove/\\d+")) return "remove";
-        if (path.equals("/clear")) return "clear";
-        return "";
-    }
-
-    private int extractBookId(String path) {
-        return Integer.parseInt(path.substring(path.lastIndexOf('/') + 1));
-    }
-
-    private int getOrCreateWishlistId(int userId) throws Exception {
+    private void handleRemoveFromWishlist(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
+        int bookId = Integer.parseInt(req.getParameter("book_id"));
         try (Connection con = getConnection()) {
-            List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
-            if (wishlists == null || wishlists.isEmpty()) {
-                Wishlist newWishlist = new CreateWishlistDAO(con, userId).access().getOutputParam();
-                if (newWishlist == null) {
-                    throw new IllegalStateException("Wishlist creation failed for user ID " + userId);
-                }
-                return newWishlist.getWishlistId();
-            }
-            return wishlists.get(0).getWishlistId();
+            new RemoveBookFromWishlistDAO(con, userId, bookId).access();
+            LOGGER.info("Removed book ID {} from wishlist for user ID {}", bookId, userId);
         }
     }
 }

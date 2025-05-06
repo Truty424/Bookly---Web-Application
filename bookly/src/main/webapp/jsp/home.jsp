@@ -251,5 +251,6 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
 
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/carousel.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
   </body>
 </html>

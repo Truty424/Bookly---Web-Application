@@ -13,8 +13,13 @@ public final class WishlistQueries {
             = "INSERT INTO booklySchema.contains_wishlist (wishlist_id, book_id) VALUES (?, ?) ON CONFLICT DO NOTHING";
 
     // --- READ ---
-    public static final String GET_WISHLIST_BY_USER
-            = "SELECT * FROM booklySchema.wishlists WHERE user_id = ?";
+    public static final String GET_WISHLIST_BOOKS_BY_USER
+            = "SELECT b.*, i.image, i.image_type "
+            + "FROM booklySchema.books b "
+            + "JOIN booklySchema.contains_wishlist wc ON b.book_id = wc.book_id "
+            + "JOIN booklySchema.wishlists w ON wc.wishlist_id = w.wishlist_id "
+            + "LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id "
+            + "WHERE w.user_id = ?";
 
     public static final String GET_BOOKS_IN_WISHLIST
             = "SELECT b.*, i.image, i.image_type "
