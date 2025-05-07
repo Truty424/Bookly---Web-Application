@@ -22,6 +22,7 @@
                 <h3 class="team-name">Ben Yamoune Ayoub</h3>
                 <a href="https://www.linkedin.com/in/ayoub-ben-yamoune-1015b3250/" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
             </div>
+            <div class="team-card">
                 <img src="../static/img/team/amirjm.jpg" alt="amir jm" class="team-image" />
                 <h3 class="team-name">Jolani Mameghani Amirreza</h3>
                 <a href="https://www.linkedin.com/in/amirjm" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
