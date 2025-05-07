@@ -1,66 +1,73 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="it.unipd.bookly.Resource.Book" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page import="java.util.List" %>
+<%@ page isELIgnored="false" %>
+
 <html>
 <head>
-    <title>Your Shopping Cart</title>
-    <%@ include file="/html/cdn.html" %> 
+    <title>Your Cart</title>
+    <%@ include file="/html/cdn.html" %>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/cart.css" />
 </head>
 <body>
+<%@ include file="/html/header.html" %>
 
-    <%@ include file="/html/header.html" %>
-    <h1>Your Cart</h1>
+<div class="cart-container">
+    <!-- LEFT: Book Items -->
+    <div class="cart-items">
+        <h1>Your Cart</h1>
+        <c:forEach var="book" items="${cart_books}">
+            <div class="book-card-horizontal">
+                <div class="book-image">
+                    <img src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}" alt="Cover of ${book.title}" />
+                </div>
+                <div class="book-info">
+                    <h2><strong>${book.title}</strong></h2>
+                    <p>
+                      <c:choose>
+                        <c:when test="${not empty authors}">
+                          <c:forEach var="author" items="${authors}" varStatus="loop">
+                            ${author.name}<c:if test="${!loop.last}">, </c:if>
+                          </c:forEach>
+                        </c:when>
+                        <c:otherwise>Unknown</c:otherwise>
+                      </c:choose>
+                    </p>
+                    <p class="book-price">€${book.price}</p>
+                    <form action="${pageContext.request.contextPath}/cart/remove/${book.bookId}" method="post">
+                        <button type="submit" class="btn-cart">Remove from cart</button>
+                    </form>
+                </div>
+            </div>
+        </c:forEach>
 
-    <ul>
-        <%
-            List<Book> books = (List<Book>) request.getAttribute("cart_books");
-            if (books != null && !books.isEmpty()) {
-                for (Book book : books) {
-        %>
-                    <li>
-                        <strong><%= book.getTitle() %></strong><br/>
-                        ISBN: <%= book.getIsbn() %><br/>
-                        Price: €<%= book.getPrice() %><br/>
-                        Language: <%= book.getLanguage() %><br/>
-                        <form action="<%= request.getContextPath() %>/cart/remove/<%= book.getBookId() %>" method="post" style="display:inline;">
-                            <button type="submit">Remove from cart</button>
-                        </form>
-                    </li>
-                    <hr/>
-        <%
-                }
-            } else {
-        %>
-            <li>Your cart is empty.</li>
-        <%
-            }
-        %>
-    </ul>
+    </div>
 
-    <form method="post" action="<%= request.getContextPath() %>/cart/apply-discount">
-        <input type="text" name="discount_code" placeholder="Discount code" required />
-        <button type="submit">Apply Discount</button>
-    </form>
+    <!-- RIGHT: Summary & Checkout -->
+    <div class="cart-summary">
+        <form method="post" action="${pageContext.request.contextPath}/cart/apply-discount">
+            <input type="text" name="discount_code" placeholder="Discount code" required />
+            <button type="submit" class="btn-cart">Apply Discount</button>
+        </form>
 
-    <c:if test="${not empty discount_error}">
-        <p style="color:red;">${discount_error}</p>
-    </c:if>
-    
-    <c:if test="${not empty applied_discount}">
-        <p>Discount Applied: ${applied_discount.code} - ${applied_discount.discountRate * 100}% off</p>
-    </c:if>
+        <c:if test="${not empty discount_error}">
+            <p class="text-danger">${discount_error}</p>
+        </c:if>
 
-    <p><strong>Total:</strong> €${total_price}</p>
-    <p><strong>Final Total:</strong> €${final_total}</p>
+        <c:if test="${not empty applied_discount}">
+            <p class="text-success">Discount Applied: ${applied_discount.code} - ${applied_discount.discountRate * 100}% off</p>
+        </c:if>
 
+        <p><strong>Total:</strong> €${total_price}</p>
+        <p><strong>Final Total:</strong> €${final_total}</p>
 
-    <form action="<%= request.getContextPath() %>/checkout" method="get">
-        <button type="submit">go to checkout</button>
-    </form>
+        <form action="${pageContext.request.contextPath}/checkout" method="get">
+            <button type="submit" class="btn-cart">Go to Checkout</button>
+        </form>
 
+        <a href="${pageContext.request.contextPath}/book" class="btn-cart">Continue Shopping</a>
+    </div>
+</div>
 
-    <a href="<%= request.getContextPath() %>/book">Continue Shopping</a>
-    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
+<%@ include file="/html/footer.html" %>
 </body>
 </html>
