@@ -17,19 +17,20 @@
             <c:choose>
                 <c:when test="${not empty category_books}">
                     <c:forEach var="book" items="${category_books}">
-                        <div class="book-card">
-                            <div class="book-placeholder">
-                                <!-- Placeholder for book image -->
-                                <p>No Image</p>
+                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-link">
+                            <div class="book-card">
+                                <div class="book-placeholder">
+                                    <p>No Image</p>
+                                </div>
+                                <h3 class="book-title">${book.title}</h3>
+                                <div class="book-details">
+                                    <p><strong>Publisher :</strong> ${book.edition}</p>
+                                    <p><strong>Price :</strong> $${book.price}</p>
+                                    <p><strong>Language :</strong> ${book.language}</p>
+                                    <p><strong>Average Rating :</strong> ${book.average_rate}/5</p>
+                                </div>
                             </div>
-                            <h3 class="book-title">${book.title}</h3>
-                            <div class="book-details">
-                                <p><strong>Publisher :</strong> ${book.edition}</p>
-                                <p><strong>Price :</strong> $${book.price}</p>
-                                <p><strong>Language :</strong> ${book.language}</p>
-                                <p><strong>Average Rating :</strong> ${book.average_rate}/5</p>
-                            </div>
-                        </div>
+                        </a>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>
