@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-import it.unipd.bookly.Resource.Book;
 
 /**
  * Handles wishlist operations:
@@ -93,7 +92,7 @@ public class WishlistRest extends AbstractRestResource {
 
     private void handleGetWishlistsByUser(String path) throws Exception {
         int userId = extractIdFromPath(path);
-        List<Book> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
+        List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);

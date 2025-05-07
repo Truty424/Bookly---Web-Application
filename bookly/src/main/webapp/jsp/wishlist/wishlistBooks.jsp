@@ -73,26 +73,28 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <c:choose>
             <c:when test="${not empty wishlist_books}">
               <ul class="book-list">
-                <c:forEach var="book" items="${wishlist_books}">
-                  <li class="book-item">
-                    <div class="book-details">
-                      <a
-                        class="book-title"
-                        href="${pageContext.request.contextPath}/book?id=${book.bookId}"
+                <c:forEach var="wishlist" items="${wishlist_books}">
+                  <c:forEach var="book" items="${wishlist.books}">
+                    <li class="book-item">
+                      <div class="book-details">
+                        <a
+                          class="book-title"
+                          href="${pageContext.request.contextPath}/book?id=${book.bookId}"
+                        >
+                          ${book.title}
+                        </a>
+                        <p>Price: €${book.price}</p>
+                      </div>
+                      <form
+                        action="${pageContext.request.contextPath}/wishlist/remove/${book.bookId}"
+                        method="post"
                       >
-                        ${book.title}
-                      </a>
-                      <p>Price: €${book.price}</p>
-                    </div>
-                    <form
-                      action="${pageContext.request.contextPath}/wishlist/remove/${book.bookId}"
-                      method="post"
-                    >
-                      <button type="submit" class="remove-btn">
-                        <i class="fas fa-trash-alt"></i> Remove
-                      </button>
-                    </form>
-                  </li>
+                        <button type="submit" class="remove-btn">
+                          <i class="fas fa-trash-alt"></i> Remove
+                        </button>
+                      </form>
+                    </li>
+                  </c:forEach>
                 </c:forEach>
               </ul>
             </c:when>

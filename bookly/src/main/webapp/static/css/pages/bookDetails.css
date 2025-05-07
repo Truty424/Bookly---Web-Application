@@ -74,7 +74,7 @@
 
 .back-button {
   background-color: var(--color-primary);
-  color: #333;
+  color: #fff;
   padding: 10px 20px;
   border-radius: 5px;
   border: 1px solid var(--color-primary-hover);
@@ -85,8 +85,9 @@
 }
 
 .back-button:hover {
-  background-color: #ddd;
+  background-color: #333;
   border-color: #fff;
+  color: #fff;
 }
 
 .review-section h2 {
@@ -97,6 +98,13 @@
 .review-list {
   list-style-type: none;
   padding-left: 0;
+}
+
+.back-button-wrapper {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .review-item {
@@ -110,9 +118,20 @@
   margin: 5px 0;
 }
 
-.back-button-wrapper {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  margin-bottom: 20px;
+.review-actions {
+  margin-top: 10px;
 }
+
+.review-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin-right: 10px;
+}
+
+.review-actions button:hover {
+  color: var(--color-primary);
+}
+
+

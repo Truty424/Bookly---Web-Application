@@ -32,7 +32,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       <div class="back-button-wrapper">
         <a
           href="${pageContext.request.contextPath}/book"
-          class="btn btn-secondary back-button"
+          class="btn back-button"
         >
           <i class="fas fa-arrow-left"></i> Back to All Books
         </a>
@@ -60,7 +60,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 </c:choose>
               </p>
               <p><strong>ISBN:</strong> ${book_details.isbn}</p>
-              <p><strong>Price:</strong> €${book_details.price}</p>
+              <p data-format="price">
+                <strong>Price:</strong> €${book_details.price}
+              </p>
               <p><strong>Language:</strong> ${book_details.language}</p>
               <div class="book-actions">
                 <form
@@ -72,18 +74,22 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   </button>
                 </form>
                 <c:if test="${isInWishlist}">
-                    <form action="${pageContext.request.contextPath}/wishlist/remove/${book_details.bookId}" method="post">
-                        <button class="btn btn-wishlist" type="submit">
-                            <i class="fas fa-heart"></i>
-                        </button>
-                    </form>
+                  <form action="${pageContext.request.contextPath}/wishlist" method="post">
+                    <input type="hidden" name="action" value="remove">
+                    <input type="hidden" name="book_id" value="${book_details.bookId}">
+                    <button class="btn btn-wishlist" type="submit">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </form>
                 </c:if>
                 <c:if test="${not isInWishlist}">
-                    <form action="${pageContext.request.contextPath}/wishlist/add/${book_details.bookId}" method="post">
-                        <button class="btn btn-wishlist" type="submit">
-                            <i class="far fa-heart"></i> 
-                        </button>
-                    </form>
+                  <form action="${pageContext.request.contextPath}/wishlist" method="post">
+                    <input type="hidden" name="action" value="add">
+                    <input type="hidden" name="book_id" value="${book_details.bookId}">
+                    <button class="btn btn-wishlist" type="submit">
+                        <i class="far fa-heart"></i> 
+                    </button>
+                  </form>
                 </c:if>
               </div>
             </div>
@@ -103,10 +109,41 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       <p><strong>Comment:</strong> ${review.reviewText}</p>
                       <p><em>By User ID:</em> ${review.userId}</p>
                       <p><em>Date:</em> ${review.reviewDate}</p>
-                      <p>
-                        👍 ${review.numberOfLikes} | 👎
-                        ${review.numberOfDislikes}
-                      </p>
+                      <div class="review-actions">
+                        <form
+                          action="${pageContext.request.contextPath}/review/like"
+                          method="post"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="reviewId"
+                            value="${review.reviewId}"
+                          />
+                          <button type="submit" class="btn-like" title="Like">
+                            👍 (${review.numberOfLikes})
+                          </button>
+                        </form>
+
+                        <form
+                          action="${pageContext.request.contextPath}/review/dislike"
+                          method="post"
+                          style="display: inline"
+                        >
+                          <input
+                            type="hidden"
+                            name="reviewId"
+                            value="${review.reviewId}"
+                          />
+                          <button
+                            type="submit"
+                            class="btn-dislike"
+                            title="Dislike"
+                          >
+                            👎 (${review.numberOfDislikes})
+                          </button>
+                        </form>
+                      </div>
                       <hr />
                     </li>
                   </c:forEach>
@@ -116,6 +153,43 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 <p>No reviews available for this book.</p>
               </c:otherwise>
             </c:choose>
+            <div class="add-review-section">
+              <h3>Add Your Review</h3>
+              <form
+                action="${pageContext.request.contextPath}/review/add"
+                method="post"
+              >
+                <input
+                  type="hidden"
+                  name="bookId"
+                  value="${book_details.bookId}"
+                />
+
+                <div class="form-group">
+                  <label for="rating">Rating (1-5):</label>
+                  <select name="rating" id="rating" required>
+                    <option value="">Select</option>
+                    <c:forEach begin="1" end="5" var="i">
+                      <option value="${i}">${i}</option>
+                    </c:forEach>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="reviewText">Comment:</label>
+                  <textarea
+                    name="reviewText"
+                    id="reviewText"
+                    rows="4"
+                    required
+                  ></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                  <i class="fas fa-comment"></i> Submit Review
+                </button>
+              </form>
+            </div>
           </div>
         </c:when>
         <c:otherwise>

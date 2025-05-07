@@ -1,20 +1,22 @@
 package it.unipd.bookly.rest.wishlist;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.unipd.bookly.Resource.Book;
+
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.dao.wishlist.AddBookToWishlistDAO;
 import it.unipd.bookly.dao.wishlist.GetWishlistByUserDAO;
-import it.unipd.bookly.dao.wishlist.IsBookInWishlistDAO;
 import it.unipd.bookly.dao.wishlist.RemoveBookFromWishlistDAO;
 import it.unipd.bookly.rest.AbstractRestResource;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+
+import it.unipd.bookly.Resource.Wishlist;
 
 /**
  * Handles wishlist book operations:
@@ -103,11 +105,11 @@ public class WishlistBookRest extends AbstractRestResource {
 
     private void handleGetWishlistBooks(String path) throws Exception {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-        List<Book> books = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
+        List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        mapper.writeValue(res.getOutputStream(), books);
+        mapper.writeValue(res.getOutputStream(), wishlists);
     }
 
     // === Utility ===
