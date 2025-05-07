@@ -7,8 +7,10 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.CartItem"
     <html>
       <head>
         <title>Your Cart</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/cart-summary.css" />
-        <%@ include file="/html/cdn.html" %> 
+        <%@ include file="/html/cdn.html" %>
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" type="text/css" />
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" type="text/css" /> 
+        <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/cart-summary.css" type="text/css" />
       </head>
       <body>
 

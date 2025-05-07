@@ -160,8 +160,8 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
                       ${author.name}<c:if test="${!authorStatus.last}">, </c:if>
                   </c:forEach>
                   </p>
-                  <p class="book-rating" data-format="rating">rate:${book.average_rate}</p>
-                  <p class="book-price" data-format="price">€${book.price}</p>
+                  <p class="book-rating" data-format="rating">${book.average_rate}</p>
+                  <p class="book-price" data-format="price">${book.price}</p>
                 </a>
               </c:forEach>
             </div>

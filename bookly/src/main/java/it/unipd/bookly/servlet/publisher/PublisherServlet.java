@@ -17,9 +17,8 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Handles GET requests for:
- * - /publisher               → show all publishers
- * - /publisher/{publisherId} → show books by specific publisher
+ * Handles GET requests for: - /publisher → show all publishers -
+ * /publisher/{publisherId} → show books by specific publisher
  */
 @WebServlet(name = "PublisherServlet", value = "/publisher/*")
 public class PublisherServlet extends AbstractDatabaseServlet {
@@ -31,19 +30,17 @@ public class PublisherServlet extends AbstractDatabaseServlet {
         LogContext.setAction("publisherServlet");
 
         try {
-            String[] segments = req.getRequestURI().split("/");
-            int segmentCount = segments.length;
+            String path = req.getPathInfo(); // returns null, "/", or "/7"
 
-            switch (segmentCount) {
-                case 2, 3 -> showAllPublishers(req, resp); // /publisher or /publisher/
-                default -> {
-                    String lastSegment = segments[segments.length - 1];
-                    if (lastSegment.matches("\\d+")) {
-                        int publisherId = Integer.parseInt(lastSegment);
-                        showBooksByPublisher(req, resp, publisherId);
-                    } else {
-                        ServletUtils.redirectToErrorPage(req, resp, "Invalid publisher path.");
-                    }
+            if (path == null || "/".equals(path)) {
+                showAllPublishers(req, resp);
+            } else {
+                path = path.replaceAll("^/+", "").replaceAll("/+$", ""); // strip slashes
+                if (path.matches("\\d+")) {
+                    int publisherId = Integer.parseInt(path);
+                    showBooksByPublisher(req, resp, publisherId);
+                } else {
+                    ServletUtils.redirectToErrorPage(req, resp, "Invalid publisher path.");
                 }
             }
 
