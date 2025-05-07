@@ -5,8 +5,6 @@
     <%@ include file="/html/cdn.html" %>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/root.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/aboutUs.css" type="text/css" />
 </head>
 <body>
@@ -24,10 +22,9 @@
                 <h3 class="team-name">Ben Yamoune Ayoub</h3>
                 <a href="https://www.linkedin.com/in/ayoub-ben-yamoune-1015b3250/" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
             </div>
-            <div class="team-card">
-                <div class="team-image-placeholder">Image</div>
+                <img src="../static/img/team/amirjm.jpg" alt="amir jm" class="team-image" />
                 <h3 class="team-name">Jolani Mameghani Amirreza</h3>
-                <a href="https://www.linkedin.com/" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
+                <a href="https://www.linkedin.com/in/amirjm" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
             </div>
             <div class="team-card">
                 <div class="team-image-placeholder">Image</div>
