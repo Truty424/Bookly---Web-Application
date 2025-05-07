@@ -27,8 +27,8 @@ isELIgnored="false" %>
 
     <div class="cart-container">
       <!-- LEFT: Book Items -->
-      <div class="cart-items">
-        <h1>Your Cart</h1>
+      <main class="cart-items">
+        <h2>Your Cart</h2>
         <c:forEach var="book" items="${cart_books}">
           <div class="book-card-horizontal">
             <div class="book-image">
@@ -59,7 +59,7 @@ isELIgnored="false" %>
             </div>
           </div>
         </c:forEach>
-      </div>
+      </main>
 
       <!-- RIGHT: Summary & Checkout -->
       <div class="cart-summary">

@@ -34,12 +34,7 @@ public class CartServlet extends AbstractDatabaseServlet {
                 return;
             }
 
-            String path = req.getPathInfo() != null ? req.getPathInfo() : "";
-
-            switch (path) {
-                case "/", "" -> showCart(req, resp, userId);
-                default -> ServletUtils.redirectToErrorPage(req, resp, "Invalid cart path: " + path);
-            }
+            showCart(req, resp, userId);
 
         } catch (Exception e) {
             LOGGER.error("CartServlet GET error", e);
@@ -63,33 +58,59 @@ public class CartServlet extends AbstractDatabaseServlet {
                 return;
             }
 
-            String path = req.getPathInfo() != null ? req.getPathInfo() : "";
-            Connection con = getConnection();
-            int cartId = getOrCreateCartId(userId);
+            String path = req.getPathInfo(); // e.g., "/add/42"
+            if (path == null || path.isBlank()) {
+                ServletUtils.redirectToErrorPage(req, resp, "Missing cart action path.");
+                return;
+            }
 
-            switch (normalizePath(path)) {
+            String[] parts = path.split("/");
+            if (parts.length < 2) {
+                ServletUtils.redirectToErrorPage(req, resp, "Invalid cart path.");
+                return;
+            }
+
+            String action = parts[1]; // "add"
+            int bookId = (parts.length >= 3 && parts[2].matches("\\d+")) ? Integer.parseInt(parts[2]) : -1;
+            
+            int cartId;
+            try (Connection con = getConnection()) {
+                cartId = getOrCreateCartId(con, userId);
+            }
+
+            switch (action) {
                 case "add" -> {
-                    int bookId = extractBookIdFromPath(path);
-                    new AddBookToCartDAO(con, bookId, cartId).access();
+                    if (bookId != -1) {
+                        try (Connection con = getConnection()) {
+                            new AddBookToCartDAO(con, bookId, cartId).access();
+                        }
+                    }
                     resp.sendRedirect(req.getContextPath() + "/cart");
                 }
                 case "remove" -> {
-                    int bookId = extractBookIdFromPath(path);
-                    new RemoveBookFromCartDAO(con, bookId, cartId).access();
+                    if (bookId != -1) {
+                        try (Connection con = getConnection()) {
+                            new RemoveBookFromCartDAO(con, bookId, cartId).access();
+                        }
+                    }
                     resp.sendRedirect(req.getContextPath() + "/cart");
                 }
                 case "clear" -> {
-                    new ClearCartDAO(con, cartId).access();
+                    try (Connection con = getConnection()) {
+                        new ClearCartDAO(con, cartId).access();
+                    }
                     req.getSession().removeAttribute("appliedDiscount");
-                    req.getSession().removeAttribute("discountId");
                     resp.sendRedirect(req.getContextPath() + "/cart");
                 }
                 case "apply-discount" -> {
-                    handleApplyDiscount(req, resp, con, cartId);
+                    try (Connection con = getConnection()) {
+                        handleApplyDiscount(req, resp, con, cartId);
+                    }
                 }
-                default -> {
-                    ServletUtils.redirectToErrorPage(req, resp, "Unknown cart action: " + path);
-                }
+                case "continue-shopping" ->
+                    resp.sendRedirect(req.getContextPath() + "/book");
+                default ->
+                    ServletUtils.redirectToErrorPage(req, resp, "Unknown cart action: " + action);
             }
 
         } catch (Exception e) {
@@ -103,18 +124,18 @@ public class CartServlet extends AbstractDatabaseServlet {
 
     private void showCart(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
         Cart cart;
+
         try (Connection con = getConnection()) {
             cart = new GetCartByUserIdDAO(con, userId).access().getOutputParam();
         }
 
         if (cart == null) {
-            int newCartId;
             try (Connection con = getConnection()) {
-                newCartId = new CreateCartForUserDAO(con, userId, "in_person").access().getOutputParam();
+                new CreateCartForUserDAO(con, userId, "in_person").access();
             }
 
             try (Connection con = getConnection()) {
-                cart = new GetCartByUserIdDAO(con, newCartId).access().getOutputParam();
+                cart = new GetCartByUserIdDAO(con, userId).access().getOutputParam();
             }
         }
 
@@ -129,7 +150,6 @@ public class CartServlet extends AbstractDatabaseServlet {
         double finalTotal = total;
 
         Discount discount = (Discount) req.getSession().getAttribute("appliedDiscount");
-
         if (discount != null) {
             try (Connection con = getConnection()) {
                 finalTotal = new ApplyDiscountToCartDAO(con, cartId, discount.getDiscountId()).access().getOutputParam();
@@ -147,7 +167,6 @@ public class CartServlet extends AbstractDatabaseServlet {
 
         req.getRequestDispatcher("/jsp/cart/viewCart.jsp").forward(req, resp);
     }
-
 
     private void handleApplyDiscount(HttpServletRequest req, HttpServletResponse resp, Connection con, int cartId) throws Exception {
         String discountCode = req.getParameter("discount");
@@ -171,25 +190,11 @@ public class CartServlet extends AbstractDatabaseServlet {
         resp.sendRedirect(req.getContextPath() + "/cart");
     }
 
-    private int extractBookIdFromPath(String path) {
-        String[] parts = path.split("/");
-        return Integer.parseInt(parts[parts.length - 1].trim());
-    }
-
-    private int getOrCreateCartId(int userId) throws Exception {
-        var cart = new GetCartByUserIdDAO(getConnection(), userId).access().getOutputParam();
+    private int getOrCreateCartId(Connection con, int userId) throws Exception {
+        Cart cart = new GetCartByUserIdDAO(con, userId).access().getOutputParam();
         if (cart == null) {
-            return new CreateCartForUserDAO(getConnection(), userId, "in_person").access().getOutputParam();
+            return new CreateCartForUserDAO(con, userId, "in_person").access().getOutputParam();
         }
         return cart.getCartId();
-    }
-
-    private String normalizePath(String rawPath) {
-        if (rawPath == null || rawPath.isBlank()) return "";
-        if (rawPath.matches("/add/\\d+/?")) return "add";
-        if (rawPath.matches("/remove/\\d+/?")) return "remove";
-        if (rawPath.matches("/clear/?")) return "clear";
-        if (rawPath.matches("/apply-discount/?")) return "apply-discount";
-        return "unknown";
     }
 }
