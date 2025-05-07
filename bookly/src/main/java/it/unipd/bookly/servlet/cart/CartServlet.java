@@ -110,7 +110,7 @@ public class CartServlet extends AbstractDatabaseServlet {
         if (cart == null) {
             int newCartId;
             try (Connection con = getConnection()) {
-                newCartId = new CreateCartForUserDAO(con, userId, "standard").access().getOutputParam();
+                newCartId = new CreateCartForUserDAO(con, userId, "in_person").access().getOutputParam();
             }
 
             try (Connection con = getConnection()) {
@@ -179,7 +179,7 @@ public class CartServlet extends AbstractDatabaseServlet {
     private int getOrCreateCartId(int userId) throws Exception {
         var cart = new GetCartByUserIdDAO(getConnection(), userId).access().getOutputParam();
         if (cart == null) {
-            return new CreateCartForUserDAO(getConnection(), userId, "standard").access().getOutputParam();
+            return new CreateCartForUserDAO(getConnection(), userId, "in_person").access().getOutputParam();
         }
         return cart.getCartId();
     }

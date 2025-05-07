@@ -32,7 +32,7 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             return;
         }
 
-        try  {
+        try {
             User user = (User) session.getAttribute("user");
             Cart cart = getCartByUserId(getConnection(), user.getUserId());
 
@@ -90,23 +90,22 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             double total = applyDiscountIfExists(getConnection(), cart.getCartId(), session);
             Order order = new Order(total, paymentMethod, address, null, "placed");
 
-            boolean success = new InsertOrderDAO(getConnection(), order).access().getOutputParam();
+            int orderId = new InsertOrderDAO(getConnection(), order).access().getOutputParam();
 
-            if (success) {
-                switch (paymentMethod) {
-                    case "credit_card":
-                        clearDiscountSession(session);
-                        res.sendRedirect(req.getContextPath() + "/orders");
-                    case "in_person":
-                        clearDiscountSession(session);
-                        res.sendRedirect(req.getContextPath() + "/orders");
-                        break;
-                    default:
-                        ServletUtils.redirectToErrorPage(req, res, "Unsupported payment method.");
-                }
+            if (orderId > 0) {
+                linkCartToOrder(getConnection(), cart.getCartId(), orderId);
+                clearCart(getConnection(), cart.getCartId());
+
+                // Create a new empty cart for the user (important!)
+                new CreateCartForUserDAO(getConnection(), user.getUserId(), paymentMethod).access();
+
+                clearDiscountSession(session);
+
+                res.sendRedirect(req.getContextPath() + "/orders");
             } else {
                 ServletUtils.redirectToErrorPage(req, res, "Failed to place your order.");
             }
+
         } catch (Exception e) {
             LOGGER.error("Checkout POST error: {}", e.getMessage(), e);
             ServletUtils.redirectToErrorPage(req, res, "An error occurred while placing your order.");
@@ -138,7 +137,12 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
         if (discount != null) {
             return new ApplyDiscountToCartDAO(con, cartId, discount.getDiscountId()).access().getOutputParam();
         }
-        return getCartById(con, cartId).getTotalPrice();
+        Cart cart = getCartById(con, cartId);
+        if (cart == null) {
+            LOGGER.warn("Cart is null while applying discount.");
+            return 0.0;
+        }
+        return cart.getTotalPrice();
     }
 
     private Cart getCartById(Connection con, int cartId) throws Exception {

@@ -73,12 +73,13 @@ public class OrderServlet extends AbstractDatabaseServlet {
             }
 
             Order order = buildOrder(cart,req);
-            boolean success = insertOrder(getConnection(), order);
+            int orderId = insertOrder(getConnection(), order);
 
-            if (!success) {
+            if (orderId <= 0) {
                 ServletUtils.redirectToErrorPage(req, res, "Failed to insert order.");
                 return;
             }
+            order.setOrderId(orderId);
 
             linkOrderToCart(getConnection(), cart.getCartId(), order.getOrderId());
             clearCart(getConnection(), cart.getCartId());
@@ -100,7 +101,7 @@ public class OrderServlet extends AbstractDatabaseServlet {
         return new GetCartByUserIdDAO(con, userId).access().getOutputParam();
     }
 
-    private boolean insertOrder(Connection con, Order order) throws Exception {
+    private int insertOrder(Connection con, Order order) throws Exception {
         return new InsertOrderDAO(con, order).access().getOutputParam();
     }
 

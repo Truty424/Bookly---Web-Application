@@ -26,7 +26,7 @@ public class CreateCartForUserDAO extends AbstractDAO<Integer> {
     @Override
     protected void doAccess() throws Exception {
         // Modify query here to use RETURNING
-        final String query = CREATE_CART_FOR_USER + " RETURNING cart_id";
+        final String query = CREATE_CART_FOR_USER;
 
         try (PreparedStatement stmnt = con.prepareStatement(query)) {
             stmnt.setInt(1, userId);

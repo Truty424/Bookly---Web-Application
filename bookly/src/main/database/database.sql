@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.reviews (
 CREATE TABLE IF NOT EXISTS booklySchema.shoppingcart (
     cart_id SERIAL PRIMARY KEY,
     shipment_method booklySchema.payment_method,
-    user_id INTEGER UNIQUE NOT NULL,
+    user_id INTEGER NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     quantity INTEGER NOT NULL DEFAULT 0,
     total_price NUMERIC(10,2) NOT NULL,

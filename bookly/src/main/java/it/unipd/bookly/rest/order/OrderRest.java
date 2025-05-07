@@ -84,17 +84,19 @@ public class OrderRest extends AbstractRestResource {
 
     private void handleInsertOrder() throws Exception {
         Order order = new ObjectMapper().readValue(req.getInputStream(), Order.class);
-        boolean success = new InsertOrderDAO(con, order).access().getOutputParam();
+        int orderId = new InsertOrderDAO(con, order).access().getOutputParam();
 
-        if (success) {
+        if (orderId > 0) {
+            order.setOrderId(orderId);
             res.setStatus(HttpServletResponse.SC_CREATED);
-            new Message("Order inserted successfully.", "201", "Order for user " + order.getOrderId() + " created.")
+            new Message("Order inserted successfully.", "201", "Order ID " + orderId + " created.")
                     .toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             new Message("Failed to insert order.", "500", "Insert operation failed.")
                     .toJSON(res.getOutputStream());
         }
+
     }
 
     private void sendMethodNotAllowed(String detail) throws IOException {

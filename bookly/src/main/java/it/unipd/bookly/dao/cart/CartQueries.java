@@ -6,14 +6,15 @@ public final class CartQueries {
 
     // --- CREATE ---
     public static final String CREATE_CART_FOR_USER =
-            "INSERT INTO booklySchema.shoppingcart (user_id, quantity, shipment_method) VALUES (?, 0, ?) RETURNING cart_id";
-
+            "INSERT INTO booklySchema.shoppingcart (user_id, shipment_method, total_price, quantity) " +
+            "VALUES (?, ?::booklySchema.payment_method, 0.0, 0) " +
+            "RETURNING cart_id";
     public static final String ADD_BOOK_TO_CART =
             "INSERT INTO booklySchema.contains (book_id, cart_id) VALUES (?, ?)";
 
     // --- READ ---
     public static final String GET_CART_BY_USER_ID =
-            "SELECT * FROM booklySchema.shoppingcart WHERE user_id = ?";
+            "SELECT * FROM booklySchema.shoppingcart WHERE user_id = ? AND order_id IS NULL";
 
     public static final String GET_BOOKS_IN_CART =
             "SELECT b.* FROM booklySchema.books b " +
