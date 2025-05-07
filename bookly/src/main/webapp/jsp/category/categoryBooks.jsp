@@ -8,8 +8,6 @@
     <script src="<%= request.getContextPath() %>/static/js/format-number.js"></script>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/root.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/base/globals.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/listBooks.css" type="text/css"/>
 </head>
 <body>

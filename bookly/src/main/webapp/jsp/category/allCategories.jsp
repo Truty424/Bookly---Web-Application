@@ -14,8 +14,6 @@
       href="${pageContext.request.contextPath}/static/css/base/globals.css"
       type="text/css"
     />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/header.css" type="text/css" />
-    <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/components/footer.css" type="text/css" />
     <link rel="stylesheet" href="<%= request.getContextPath() %>/static/css/pages/allCategories.css" type="text/css" />
     <%@ include file="/html/cdn.html" %>
 </head>
