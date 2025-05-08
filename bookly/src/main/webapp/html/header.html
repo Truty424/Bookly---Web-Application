@@ -1,35 +1,29 @@
-
 <header>
   <div class="container">
     <div class="header-top">
-      <a href="${pageContext.request.contextPath}/" class="logo">Bookly</a>
-      <div>
-        <form
-          class="search-bar"
-          action="${pageContext.request.contextPath}/search"
-          method="get"
-          role="search"
-        >
-          <input type="text" placeholder="Search..." />
-          <button class="search-btn">
-            <i class="fa-solid fa-magnifying-glass"></i>
-          </button>
-        </form>
-      </div>
-      <div class="user-actions">
-        <a
-          href="${pageContext.request.contextPath}/cart"
-          class="nav-icon cart-icon"
-          ><i class="fa-solid fa-cart-shopping"></i
-        ></a>
-        <a
-          id="login-button"
-          href="${pageContext.request.contextPath}/user/login"
-          class="login-btn"
-          >Log in / Sign up</a
-        >
+      <a href="/" class="logo">Bookly</a>
+
+      <form
+        class="search-bar"
+        action="/search"
+        method="get"
+        role="search"
+      >
+        <input type="text" name="q" placeholder="Search..." />
+        <button class="search-btn" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </button>
+      </form>
+
+      <div class="user-actions" id="user-actions">
+        <!-- JavaScript will populate this -->
+        <a href="/cart" class="nav-icon cart-icon">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </a>
+        <a href="/user/login" class="login-btn">Log in / Sign up</a>
       </div>
     </div>
+
     <nav class="nav-main">
       <ul class="nav-links">
         <li><a href="/category">Categories</a></li>
@@ -41,3 +35,6 @@
     </nav>
   </div>
 </header>
+
+<!-- Include this script at the end of body or in your HTML layout -->
+<script src="../static/js/main.js" defer></script>

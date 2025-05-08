@@ -73,11 +73,11 @@
 
 
 .back-button {
-  background-color: var(--color-primary);
+  background-color: #333;
   color: #fff;
   padding: 10px 20px;
   border-radius: 5px;
-  border: 1px solid var(--color-primary-hover);
+  border: 1px solid #070606;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -85,13 +85,13 @@
 }
 
 .back-button:hover {
-  background-color: #333;
+  background-color: var(--color-primary);
   border-color: #fff;
   color: #fff;
 }
 
 .review-section h2 {
-  color: #cc0000;
+  color: var(--color-primary);
   margin-bottom: 20px;
 }
 

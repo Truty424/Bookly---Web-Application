@@ -14,6 +14,14 @@
     color: #333;
 }
 
+.books-list {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
 .books-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -52,7 +60,7 @@
 }
 
 .book-title:hover {
-    color: #0d6efd;
+    color: var(--color-primary);
     text-decoration: underline;
 }
 
