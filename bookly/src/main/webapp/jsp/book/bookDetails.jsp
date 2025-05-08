@@ -153,42 +153,36 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 <p>No reviews available for this book.</p>
               </c:otherwise>
             </c:choose>
+
             <div class="add-review-section">
               <h3>Add Your Review</h3>
-              <form
-                action="${pageContext.request.contextPath}/review/add"
-                method="post"
-              >
-                <input
-                  type="hidden"
-                  name="bookId"
-                  value="${book_details.bookId}"
-                />
-
-                <div class="form-group">
-                  <label for="rating">Rating (1-5):</label>
-                  <select name="rating" id="rating" required>
-                    <option value="">Select</option>
+              <form action="${pageContext.request.contextPath}/review/submit" method="post" enctype="multipart/form-data" class="modern-review-form">
+    
+                <!-- Rating Stars -->
+                <div class="rating-stars">
+                  <label>Select Rating with Stars:</label>
+                  <div class="stars">
                     <c:forEach begin="1" end="5" var="i">
-                      <option value="${i}">${i}</option>
+                      <input type="radio" name="rating" id="star${i}" value="${i}" required />
+                      <label for="star${i}" title="${i} stars">★</label>
                     </c:forEach>
-                  </select>
+                  </div>
                 </div>
-
+            
+                <!-- Comment Text -->
                 <div class="form-group">
-                  <label for="reviewText">Comment:</label>
-                  <textarea
-                    name="reviewText"
-                    id="reviewText"
-                    rows="4"
-                    required
-                  ></textarea>
+                  <textarea name="reviewText" placeholder="Leave comment (optional)..." rows="4" required></textarea>
                 </div>
-
-                <button type="submit" class="btn btn-primary">
-                  <i class="fas fa-comment"></i> Submit Review
-                </button>
+  
+                <!-- Submit Button -->
+                <div class="form-actions d-flex justify-content-center align-items-center my-4">
+                  <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i>
+                    Submit
+                  </button>
+                </div>
               </form>
+
             </div>
           </div>
         </c:when>

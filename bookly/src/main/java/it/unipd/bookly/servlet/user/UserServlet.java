@@ -46,6 +46,8 @@ public class UserServlet extends AbstractDatabaseServlet {
                     showProfile(req, res);
                 case "/editUserProfile" ->
                     forward(req, res, "/jsp/user/editUserProfile.jsp");
+                case "/status" ->
+                    respondWithUserStatus(req, res);
                 default ->
                     writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
@@ -177,6 +179,28 @@ public class UserServlet extends AbstractDatabaseServlet {
         } catch (Exception e) {
             LOGGER.error("Registration failed: {}", e.getMessage(), e);
             writeError(res, ErrorCode.INTERNAL_ERROR);
+        }
+    }
+
+    private void respondWithUserStatus(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        res.setContentType("application/json");
+
+        HttpSession session = req.getSession(false);
+        User user = (User) (session != null ? session.getAttribute("user") : null);
+
+        if (user != null) {
+            res.getWriter().write("""
+                {
+                  "loggedIn": true,
+                  "username": "%s"
+                }
+                """.formatted(user.getUsername()));
+        } else {
+            res.getWriter().write("""
+                {
+                  "loggedIn": false
+                }
+                """);
         }
     }
 

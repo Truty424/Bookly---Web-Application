@@ -153,6 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
     creditCardFields.style.display =
       method === "credit_card" ? "block" : "none";
     addressField.style.display =
-      method === "pay_on_delivery" ? "block" : "none";
+      method === "in_person" ? "block" : "none";
   });
 });

@@ -72,14 +72,14 @@ import="java.util.List" %>
             <select name="paymentMethod" id="paymentMethod" required>
               <option value="">Select Payment Method</option>
               <option value="credit_card">Credit Card</option>
-              <option value="pay_on_delivery">Pay on Delivery</option>
+              <option value="in_person">Pay on Delivery</option>
             </select>
           </div>
 
           <!-- Credit Card Fields -->
           <div id="credit-card-fields" style="display: none">
             <div class="row">
-              <div class="form-group" style="flex: 1;">
+              <div class="form-group" style="flex: 1">
                 <label for="cardNumber">Card Number</label>
                 <input
                   class="w-100"
@@ -97,7 +97,13 @@ import="java.util.List" %>
               </div>
               <div class="form-group">
                 <label for="cvv">CVV</label>
-                <input type="text" name="cvv" placeholder="3200" id="cvv" maxlength="4" />
+                <input
+                  type="text"
+                  name="cvv"
+                  placeholder="3200"
+                  id="cvv"
+                  maxlength="4"
+                />
               </div>
             </div>
           </div>
@@ -114,7 +120,7 @@ import="java.util.List" %>
               ></textarea>
             </div>
           </div>
-
+          <p><strong>Total:</strong> €${total_price}</p>
           <button type="submit" class="order-button">Order now</button>
         </form>
       </div>

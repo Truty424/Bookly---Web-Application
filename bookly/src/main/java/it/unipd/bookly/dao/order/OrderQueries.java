@@ -8,7 +8,7 @@ public final class OrderQueries {
     public static final String INSERT_ORDER = """
     INSERT INTO booklySchema.orders 
         (total_price, payment_method, order_date, address, shipment_code, status)
-    VALUES (?, ?::booklySchema.payment_method, ?, ?, ?, ?::booklySchema.payment_status)
+    VALUES (?,?::booklySchema.payment_method, ?, ?, ?, ?::booklySchema.payment_status)
     RETURNING order_id""";
 
     // Read

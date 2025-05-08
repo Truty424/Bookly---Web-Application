@@ -63,13 +63,17 @@ isELIgnored="false" %>
 
       <!-- RIGHT: Summary & Checkout -->
       <div class="cart-summary">
+        <a href="${pageContext.request.contextPath}/book" class="back-cart">
+          <i class="fas fa-arrow-left"></i> Back to market
+        </a>
         <form
+          class="d-flex flex-column justify-content-center align-items-center"
           method="post"
           action="${pageContext.request.contextPath}/cart/apply-discount"
         >
           <input
             type="text"
-            name="discount_code"
+            name="discount"
             placeholder="Discount code"
             required
           />
@@ -91,12 +95,8 @@ isELIgnored="false" %>
         <p><strong>Final Total:</strong> €${final_total}</p>
 
         <form action="${pageContext.request.contextPath}/checkout" method="get">
-          <button type="submit" class="btn-cart">Go to Checkout</button>
+          <button type="submit" class="btn-cart w-100">Go to Checkout</button>
         </form>
-
-        <a href="${pageContext.request.contextPath}/book" class="btn-cart"
-          >Continue Shopping</a
-        >
       </div>
     </div>
 

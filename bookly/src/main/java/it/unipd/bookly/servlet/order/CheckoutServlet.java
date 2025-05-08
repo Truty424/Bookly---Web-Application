@@ -65,7 +65,7 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
         LogContext.setAction("CheckoutServlet");
 
         HttpSession session = req.getSession(false);
-        if (!isUserLoggedIn(session)) {
+        if (session == null || session.getAttribute("user") == null) {
             res.sendRedirect(req.getContextPath() + "/user/login");
             return;
         }
@@ -80,31 +80,56 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
 
         try {
             User user = (User) session.getAttribute("user");
-            Cart cart = getCartByUserId(getConnection(), user.getUserId());
+            Cart cart;
+            List<Book> books;
 
-            if (cart == null) {
-                ServletUtils.redirectToErrorPage(req, res, "No active cart to place an order.");
-                return;
+            try (Connection con = getConnection()) {
+                cart = new GetCartByUserIdDAO(con, user.getUserId()).access().getOutputParam();
+                if (cart == null) {
+                    ServletUtils.redirectToErrorPage(req, res, "No active cart to place an order.");
+                    return;
+                }
             }
 
-            double total = applyDiscountIfExists(getConnection(), cart.getCartId(), session);
-            Order order = new Order(total, paymentMethod, address, null, "placed");
-
-            int orderId = new InsertOrderDAO(getConnection(), order).access().getOutputParam();
-
-            if (orderId > 0) {
-                linkCartToOrder(getConnection(), cart.getCartId(), orderId);
-                clearCart(getConnection(), cart.getCartId());
-
-                // Create a new empty cart for the user (important!)
-                new CreateCartForUserDAO(getConnection(), user.getUserId(), paymentMethod).access();
-
-                clearDiscountSession(session);
-
-                res.sendRedirect(req.getContextPath() + "/orders");
-            } else {
-                ServletUtils.redirectToErrorPage(req, res, "Failed to place your order.");
+            try (Connection con = getConnection()) {
+                books = new GetBooksInCartDAO(con, cart.getCartId()).access().getOutputParam();
             }
+
+            double total = books.stream().mapToDouble(Book::getPrice).sum();
+            double finalTotal = total;
+
+            Discount discount = (Discount) session.getAttribute("appliedDiscount");
+            if (discount != null) {
+                try (Connection con = getConnection()) {
+                    finalTotal = new ApplyDiscountToCartDAO(con, cart.getCartId(), discount.getDiscountId()).access().getOutputParam();
+                }
+            }
+
+            int orderId;
+            Order order = new Order(finalTotal, paymentMethod, address, null, "placed");
+            try (Connection con = getConnection()) {
+                orderId = new InsertOrderDAO(con, order).access().getOutputParam();
+            }
+
+            if (orderId <= 0) {
+                throw new IllegalStateException("Order insertion failed");
+            }
+
+            try (Connection con = getConnection()) {
+                new LinkOrderToCartDAO(con, cart.getCartId(), orderId).access();
+            }
+
+            try (Connection con = getConnection()) {
+                new ClearCartDAO(con, cart.getCartId()).access();
+            }
+
+            try (Connection con = getConnection()) {
+                new CreateCartForUserDAO(con, user.getUserId(), paymentMethod).access();
+            }
+
+            clearDiscountSession(session);
+
+            res.sendRedirect(req.getContextPath() + "/orders");
 
         } catch (Exception e) {
             LOGGER.error("Checkout POST error: {}", e.getMessage(), e);
@@ -147,14 +172,6 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
 
     private Cart getCartById(Connection con, int cartId) throws Exception {
         return new GetCartByUserIdDAO(con, cartId).access().getOutputParam();
-    }
-
-    private void linkCartToOrder(Connection con, int cartId, int orderId) throws Exception {
-        new LinkOrderToCartDAO(con, cartId, orderId).access();
-    }
-
-    private void clearCart(Connection con, int cartId) throws Exception {
-        new ClearCartDAO(con, cartId).access();
     }
 
     private void clearDiscountSession(HttpSession session) {

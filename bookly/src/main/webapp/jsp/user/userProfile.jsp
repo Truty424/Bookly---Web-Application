@@ -109,6 +109,39 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                   ><strong> Address : </strong> ${user.address}
                 </p>
               </div>
+              <!-- Upload Profile Image -->
+              <div class="upload-profile-image">
+                <h2>Upload/Change Profile Image</h2>
+                <form
+                  action="${pageContext.request.contextPath}/user/uploadProfileImage"
+                  method="post"
+                  enctype="multipart/form-data"
+                >
+                  <input type="hidden" name="userId" value="${user.userId}" />
+
+                  <div class="form-group">
+                    <label for="profileImage">Select an image to upload:</label>
+                    <input
+                      type="file"
+                      name="profileImage"
+                      id="profileImage"
+                      accept="image/*"
+                      required
+                    />
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">
+                    Upload Image
+                  </button>
+                </form>
+
+                <c:if test="${not empty upload_error}">
+                  <p class="error">${upload_error}</p>
+                </c:if>
+                <c:if test="${not empty upload_success}">
+                  <p class="success">${upload_success}</p>
+                </c:if>
+              </div>
             </div>
 
             <h2>My Order History :</h2>
@@ -141,39 +174,6 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
           <c:if test="${empty user}">
             <p class="error">Error: User session not available.</p>
           </c:if>
-          <!-- Upload Profile Image -->
-          <div class="upload-profile-image">
-            <h2>Upload/Change Profile Image</h2>
-            <form
-              action="${pageContext.request.contextPath}/user/uploadProfileImage"
-              method="post"
-              enctype="multipart/form-data"
-            >
-              <input type="hidden" name="userId" value="${user.userId}" />
-
-              <div class="form-group">
-                <label for="profileImage">Select an image to upload:</label>
-                <input
-                  type="file"
-                  name="profileImage"
-                  id="profileImage"
-                  accept="image/*"
-                  required
-                />
-              </div>
-
-              <button type="submit" class="btn btn-primary">
-                Upload Image
-              </button>
-            </form>
-
-            <c:if test="${not empty upload_error}">
-              <p class="error">${upload_error}</p>
-            </c:if>
-            <c:if test="${not empty upload_success}">
-              <p class="success">${upload_success}</p>
-            </c:if>
-          </div>
         </main>
       </div>
     </div>
