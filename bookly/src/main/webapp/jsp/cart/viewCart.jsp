@@ -33,8 +33,9 @@ isELIgnored="false" %>
           <div class="book-card-horizontal">
             <div class="book-image">
               <img
-                src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}"
+                src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
                 alt="Cover of ${book.title}"
+                onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
               />
             </div>
             <div class="book-info">

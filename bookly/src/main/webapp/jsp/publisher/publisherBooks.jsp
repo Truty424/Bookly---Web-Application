@@ -35,9 +35,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 >
                   <div class="book-card">
                     <img
-                      src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}"
+                      src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
                       alt="${book.title}"
                       class="book-image"
+                      onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
                     />
                     <h3 class="book-title">${book.title}</h3>
                   </div>

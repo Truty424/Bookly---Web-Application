@@ -32,9 +32,10 @@ import="java.util.List" %>
         <c:forEach var="book" items="${cart_books}">
           <div class="cart-book-cell">
             <img
-              src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}"
+              src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
               class="book-image"
               alt="Cover of ${book.title}"
+              onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
             />
             <div class="book-details">
               <div class="book-title">${book.title}</div>

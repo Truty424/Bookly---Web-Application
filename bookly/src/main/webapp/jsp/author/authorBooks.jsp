@@ -21,8 +21,12 @@
                     <c:forEach var="book" items="${author_books}">
                         <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-title">
                             <div class="book-card">
-                                <img src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}" 
-                                     alt="${book.title}" class="book-image" />
+                                <img
+                                  src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
+                                  alt="${book.title}"
+                                  class="book-image"
+                                  onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
+                                />
                                 <h3 class="book-title">${book.title}</h3>
                             </div>
                         </a>

@@ -25,7 +25,11 @@
         <!-- Book Information -->
         <div class="book-card-horizontal">
           <div class="book-image">
-            <img src="${pageContext.request.contextPath}/load-book-img?bookId=${book_details.bookId}" alt="Cover of ${book_details.title}" />
+            <img
+             src="${pageContext.request.contextPath}/load-book-img?bookId=${book_details.bookId}"
+             alt="Cover of ${book_details.title}"
+             onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
+             />
           </div>
           <div class="book-info">
             <h2 class="book-title">${book_details.title}</h2>

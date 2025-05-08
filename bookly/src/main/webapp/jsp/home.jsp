@@ -149,9 +149,10 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
                 >
                   <div class="book-cover">
                     <img
-                      src="${pageContext.request.contextPath}/load-book-img?bookId=${book.bookId}"
+                      src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
                       alt="Cover of ${book.title}"
                       class="book-cover"
+                      onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
                     />
                   </div>
                   <h3 class="book-title">${book.title}</h3>
