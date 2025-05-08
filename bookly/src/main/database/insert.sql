@@ -1,25 +1,25 @@
 -- Authors
 INSERT INTO booklySchema.authors (firstName, lastName, biography, nationality) VALUES
-('Chimamanda', 'Ngozi Adichie', 'Nigerian writer known for novels blending themes of feminism, politics, and identity.', 'Nigerian'),
-('Haruki', 'Murakami', 'A Japanese author famous for surreal, philosophical fiction exploring loneliness and time.', 'Japanese'),
-('Isabel', 'Allende', 'Chilean-American writer whose works often focus on womens experiences and magical realism.', 'Chilean'),
-('Ngũgĩ', 'wa Thiongo', 'Kenyan writer and academic known for his work on language, decolonization, and literature.', 'Kenyan'),
-('Elif', 'Shafak', 'Turkish-British author whose novels explore culture, gender, and mysticism.', 'Turkish'),
-('Orhan', 'Pamuk', 'Turkish novelist and Nobel laureate known for his reflections on Turkish identity and history.', 'Turkish'),
-('Arundhati', 'Roy', 'Indian author and activist acclaimed for The God of Small Things and her political essays.', 'Indian'),
-('Khaled', 'Hosseini', 'Afghan-American novelist best known for The Kite Runner and stories of exile and resilience.', 'Afghan'),
-('Yaa', 'Gyasi', 'Ghanaian-American author recognized for her debut novel Homegoing.', 'Ghanaian'),
-('Han', 'Kang', 'South Korean author awarded the Man Booker Prize for The Vegetarian.', 'South Korean'),
-('Margaret', 'Atwood', 'Canadian author known for dystopian and speculative fiction.', 'Canadian'),
-('Gabriel', 'García Márquez', 'Colombian novelist famous for magical realism.', 'Colombian'),
-('Salman', 'Rushdie', 'British-Indian writer known for postcolonial and magical realist fiction.', 'British-Indian'),
-('Toni', 'Morrison', 'American novelist renowned for her profound exploration of race and identity.', 'American'),
-('Kazuo', 'Ishiguro', 'British author known for his deeply introspective and melancholic novels.', 'British'),
-('J.K.', 'Rowling', 'British writer famous for the Harry Potter series.', 'British'),
-('Chinua', 'Achebe', 'Nigerian novelist credited with pioneering modern African literature.', 'Nigerian'),
-('George', 'Orwell', 'British author famous for dystopian novels like 1984 and Animal Farm.', 'British'),
-('Leo', 'Tolstoy', 'Russian writer known for his epic novels War and Peace and Anna Karenina.', 'Russian'),
-('Virginia', 'Woolf', 'English modernist author known for her stream-of-consciousness style.', 'English');
+('Dan', 'Brown', 'American author best known for his thriller novels featuring Robert Langdon, including The Da Vinci Code.', 'American'),
+('Stieg', 'Larsson', 'Swedish journalist and writer, renowned for his Millennium series, including The Girl with the Dragon Tattoo.', 'Swedish'),
+('Khaled', 'Hosseini', 'Afghan-American novelist and physician, acclaimed for The Kite Runner and A Thousand Splendid Suns.', 'Afghan-American'),
+('Suzanne', 'Collins', 'American author and screenwriter, widely recognized for The Hunger Games trilogy.', 'American'),
+('Paulo', 'Coelho', 'Brazilian novelist known for his spiritual and symbolic storytelling, notably in The Alchemist.', 'Brazilian'),
+('John', 'Green', 'American author and YouTube content creator, famous for The Fault in Our Stars.', 'American'),
+('Markus', 'Zusak', 'Australian writer celebrated for The Book Thief, a novel set in Nazi Germany.', 'Australian'),
+('Kathryn', 'Stockett', 'American novelist, best known for her debut novel The Help, exploring racial issues in the 1960s American South.', 'American'),
+('Gillian', 'Flynn', 'American author and former journalist, recognized for her psychological thriller Gone Girl.', 'American'),
+('Cormac', 'McCarthy', 'American novelist and playwright, awarded the Pulitzer Prize for The Road.', 'American'),
+('Yann', 'Martel', 'Canadian author, acclaimed for Life of Pi, a novel about survival and faith.', 'Canadian'),
+('Alice', 'Sebold', 'American author known for The Lovely Bones, a novel dealing with loss and the afterlife.', 'American'),
+('Audrey', 'Niffenegger', 'American writer and artist, best known for her debut novel The Time Traveler''s Wife.', 'American'),
+('William', 'Young', 'Canadian author, recognized for The Shack, a novel exploring themes of faith and redemption.', 'Canadian'),
+('Rhonda', 'Byrne', 'Australian television writer and producer, known for The Secret, a book on the law of attraction.', 'Australian'),
+('Elizabeth', 'Gilbert', 'American author and journalist, famous for her memoir Eat, Pray, Love.', 'American'),
+('Paula', 'Hawkins', 'British author, best known for her psychological thriller The Girl on the Train.', 'British'),
+('Erin', 'Morgenstern', 'American multimedia artist and author, celebrated for her debut novel The Night Circus.', 'American'),
+('Andy', 'Weir', 'American novelist and software engineer, known for his science fiction novel The Martian.', 'American');
+
 
 -- Users
 INSERT INTO booklySchema.users (username, password, firstName, lastName, email, phone, address, role) VALUES
@@ -69,52 +69,55 @@ INSERT INTO booklySchema.categories (category_name, description) VALUES
 
 -- Books
 INSERT INTO booklySchema.books (
-    title, language, isbn, price, edition, publication_year,
-    number_of_pages, stock_quantity, average_rate, summary
-) VALUES
-('Least weight company', 'Spanish', '978-1-68181-174-1', 28.38, 'Second', 2000, 869, 27, 3.9, 'Friend finally should data condition. Have important strong idea leave every. Civil possible buy accept how similar.'),
-('I artist big feel', 'Chinese', '978-1-368-79420-6', 14.4, 'First', 1960, 874, 34, 3.5, 'Although knowledge any listen sense yet value. Behind cause political but. Reach run already international.'),
-('Someone also ago', 'Arabic', '978-0-601-34019-4', 47.32, 'Second', 1992, 355, 24, 4.7, 'Purpose know rock contain with age. System suffer network city recent radio add floor. Company him land defense claim successful.'),
-('Ready family', 'Spanish', '978-0-289-22596-7', 48.43, 'Second', 1974, 475, 28, 4.3, 'Successful break trip six trip example scene. Director trip different both become light. Glass local manage western provide media eight.'),
-('Daughter mind', 'Chinese', '978-0-87501-706-8', 18.43, 'Deluxe', 2021, 402, 29, 3.3, 'Create Congress entire design. Hundred travel hot free road. Task compare product behavior good.'),
-('Move hair church', 'Arabic', '978-0-576-96371-8', 35.54, 'Second', 1950, 737, 30, 3.3, 'Computer early affect soldier evidence. Despite way friend reality other live ready. Meeting technology second hear.'),
-('Everyone show need their amount', 'Chinese', '978-0-11-793815-1', 32.65, 'Second', 1971, 981, 6, 4.8, 'Write media how why. Southern its easy rather. Race last whole ability interest late responsibility explain. Some majority research suggest by.'),
-('Father talk his', 'Spanish', '978-0-89208-008-3', 48.81, 'Deluxe', 1966, 758, 40, 4.5, 'Him after avoid prove environment mind. Thus local party network. Go everything instead world hit fact.'),
-('Month staff', 'English', '978-1-05-935394-1', 34.36, 'Revised', 1993, 660, 48, 3.7, 'Use expert population value enter church financial kind. Play doctor front however life idea process. Per discover yourself expect trade.'),
-('Yeah foreign everybody', 'Chinese', '978-1-192-21172-6', 47.73, 'Deluxe', 2001, 899, 8, 4.6, 'Article Republican nearly lawyer. Figure how friend popular learn official near notice. Sister training attorney sea number scientist administration.'),
-('The Handmaid''s Tale', 'English', '978-0-385-49081-8', 24.99, 'First', 1985, 311, 50, 4.6, 'A dystopian novel about a totalitarian society.'),
-('One Hundred Years of Solitude', 'Spanish', '978-0-06-088328-7', 22.50, 'Second', 1967, 417, 40, 4.8, 'A generational saga of the Buendía family.'),
-('Midnight''s Children', 'English', '978-0-394-53668-6', 19.99, 'Revised', 1981, 446, 30, 4.7, 'A novel blending magical realism with India''s history.'),
-('Beloved', 'English', '978-0-394-53597-9', 18.50, 'First', 1987, 324, 25, 4.9, 'A haunting novel about slavery and memory.'),
-('Never Let Me Go', 'English', '978-1-4000-7871-0', 16.75, 'Deluxe', 2005, 288, 35, 4.5, 'A speculative fiction novel exploring cloning.'),
-('Harry Potter and the Sorcerer''s Stone', 'English', '978-0-590-35340-3', 39.99, 'First', 1997, 309, 100, 4.9, 'A young wizard embarks on a magical journey.'),
-('Things Fall Apart', 'English', '978-0-385-47454-2', 14.99, 'Second', 1958, 209, 40, 4.8, 'A novel about Igbo society and colonialism.'),
-('1984', 'English', '978-0-452-28423-4', 21.50, 'Revised', 1949, 328, 50, 4.9, 'A classic dystopian novel about surveillance.'),
-('Anna Karenina', 'Russian', '978-0-679-42306-4', 25.75, 'Deluxe', 1877, 864, 30, 4.7, 'A tragic love story in imperial Russia.'),
-('Mrs Dalloway', 'English', '978-0-15-662870-9', 14.25, 'Second', 1925, 194, 20, 4.5, 'A novel about one day in the life of Clarissa Dalloway.');
+     title, language, isbn, price, edition, publication_year,
+     number_of_pages, stock_quantity, average_rate, summary
+ ) VALUES
+ ('The Da Vinci Code', 'English', '978-0-385-50420-1', 19.95, 'Illustrated', 2003, 454, 50, 3.8, 'A symbologist uncovers a secret society while investigating a murder in the Louvre.'),
+ ('The Girl with the Dragon Tattoo', 'English', '978-0-307-45454-6', 14.95, 'First', 2005, 465, 40, 4.1, 'A journalist and a hacker delve into a wealthy family''s dark secrets.'),
+ ('The Kite Runner', 'English', '978-1-59463-193-1', 16.00, '10th Anniversary', 2003, 371, 35, 4.3, 'A tale of friendship and redemption set against Afghanistan''s turbulent history.'),
+ ('The Hunger Games', 'English', '978-0-439-02352-8', 12.99, 'Collector''s', 2008, 374, 60, 4.5, 'In a dystopian future, teens fight to the death in a televised event.'),
+ ('The Alchemist', 'Portuguese', '978-0-06-112241-5', 15.99, 'Deluxe', 1988, 208, 45, 3.9, 'A shepherd embarks on a journey to fulfill his personal legend.'),
+ ('The Fault in Our Stars', 'English', '978-0-525-47881-2', 13.99, 'Collector''s', 2012, 313, 50, 4.2, 'Two teenagers with cancer fall in love and explore life''s meaning.'),
+ ('The Book Thief', 'English', '978-0-375-84220-7', 12.95, 'Anniversary', 2005, 552, 40, 4.4, 'A young girl finds solace in books during Nazi Germany.'),
+ ('The Help', 'English', '978-0-399-15534-5', 16.00, 'First', 2009, 524, 30, 4.3, 'African American maids share their stories in 1960s Mississippi.'),
+ ('Gone Girl', 'English', '978-0-307-58836-4', 15.00, 'Reprint', 2012, 422, 35, 4.0, 'A man becomes the prime suspect when his wife disappears.'),
+ ('The Road', 'English', '978-0-307-26543-3', 14.00, 'First', 2006, 287, 25, 4.1, 'A father and son journey through a post-apocalyptic landscape.'),
+ ('Life of Pi', 'English', '978-0-15-602732-8', 14.95, 'Illustrated', 2001, 319, 30, 4.0, 'A boy survives a shipwreck and shares a lifeboat with a tiger.'),
+ ('The Lovely Bones', 'English', '978-0-316-66634-3', 13.99, 'First', 2002, 328, 20, 3.8, 'A murdered girl watches over her family from the afterlife.'),
+ ('The Time Traveler''s Wife', 'English', '978-0-15-602943-8', 14.95, 'First', 2003, 546, 25, 3.9, 'A love story between a man with a time-traveling condition and his wife.'),
+ ('The Shack', 'English', '978-0-9647292-3-7', 14.99, 'First', 2007, 256, 30, 3.8, 'A man encounters God in a shack after a family tragedy.'),
+ ('The Secret', 'English', '978-1-58270-170-7', 16.95, 'First', 2006, 198, 40, 3.7, 'A self-help book exploring the law of attraction.'),
+ ('Eat, Pray, Love', 'English', '978-0-14-303841-2', 15.00, 'First', 2006, 334, 35, 3.6, 'A woman travels the world seeking self-discovery after a divorce.'),
+ ('A Thousand Splendid Suns', 'English', '978-1-59448-385-1', 16.00, 'First', 2007, 384, 30, 4.4, 'Two women form a bond amidst Afghanistan''s turmoil.'),
+ ('The Girl on the Train', 'English', '978-1-59463-402-4', 16.00, 'First', 2015, 336, 40, 3.9, 'A woman becomes entangled in a missing person investigation.'),
+ ('The Night Circus', 'English', '978-0-385-53463-5', 15.95, 'First', 2011, 387, 25, 4.0, 'Two magicians compete in a magical, traveling circus.'),
+ ('The Martian', 'English', '978-0-8041-3902-1', 15.00, 'First', 2014, 369, 35, 4.4, 'An astronaut is stranded on Mars and must survive alone.');
+
 
 -- Writes
 INSERT INTO booklySchema.writes (book_id, author_id) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
-(6, 6), (7, 7), (8, 8), (9, 9), (10, 10),
-(11, 11), (12, 12), (13, 13), (14, 14), (15, 15),
-(16, 16), (17, 17), (18, 18), (19, 19), (20, 20);
+(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7),
+(8, 8), (9, 9), (10, 10), (11, 11), (12, 12), (13, 13),
+(14, 14), (15, 15), (16, 16), (17, 3), (18, 17),
+(19, 18), (20, 19);
 
 
 -- Category Belongs
 INSERT INTO booklySchema.category_belongs (book_id, category_id) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
-(6, 6), (7, 7), (8, 8), (9, 9), (10, 10),
-(11, 1), (12, 2), (13, 3), (14, 4), (15, 5),
-(16, 6), (17, 7), (18, 8), (19, 9), (20, 10);
+(1, 7), (2, 7), (3, 1), (4, 2), (5, 3),
+(6, 1), (7, 1), (8, 1), (9, 7), (10, 1),
+(11, 3), (12, 7), (13, 2), (14, 3), (15, 9),
+(16, 9), (17, 1), (18, 7), (19, 3), (20, 2);
+
 
 
 -- Published By
 INSERT INTO booklySchema.published_by (book_id, publisher_id) VALUES
 (1, 1), (2, 2), (3, 3), (4, 4), (5, 5),
 (6, 6), (7, 7), (8, 8), (9, 9), (10, 10),
-(11, 1), (12, 2), (13, 3), (14, 4), (15, 5),
-(16, 6), (17, 7), (18, 8), (19, 9), (20, 10);
+(11, 11), (12, 12), (13, 13), (14, 14), (15, 15),
+(16, 16), (17, 3), (18, 17), (19, 18), (20, 19);
+
 
 
 -- Discounts
