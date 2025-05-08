@@ -41,20 +41,22 @@ public class GetReviewsByBookDAO extends AbstractDAO<List<Review>> {
                     int dislikes = rs.getInt("number_of_dislikes");
                     Timestamp reviewDate = rs.getTimestamp("review_date");
                     Integer parentReviewId = rs.getObject("parent_review_id") != null
-                    ? rs.getInt("parent_review_id")
-                    : null;
+                            ? rs.getInt("parent_review_id")
+                            : null;
 
                     Review review = new Review(
-                        reviewId,
-                        userId,
-                        book_id,
-                        comment,
-                        rating,
-                        likes,
-                        dislikes,
-                        reviewDate,
-                        parentReviewId
+                            reviewId,
+                            userId,
+                            book_id,
+                            comment,
+                            rating,
+                            likes,
+                            dislikes,
+                            reviewDate,
+                            parentReviewId
                     );
+
+                    review.setUsername(rs.getString("username")); // <-- Add this line
 
                     reviews.add(review);
                 }

@@ -13,7 +13,7 @@ public class Review {
     private int reviewId;
     private int userId;
     private int book_id;
-    private String reviewText;
+    private String comment;
     private int rating;
     private int numberOfLikes;
     private int numberOfDislikes;
@@ -37,18 +37,18 @@ public class Review {
      * @param reviewId        The ID of the review.
      * @param userId          The ID of the user who wrote the review.
      * @param book_id         The ID of the book being reviewed.
-     * @param reviewText      The text of the review.
+     * @param comment      The text of the review.
      * @param rating          The rating given to the book.
      * @param numberOfLikes   The number of likes the review has received.
      * @param numberOfDislikes The number of dislikes the review has received.
      * @param reviewDate      The date the review was written.
      */
-    public Review(int reviewId, int userId, int book_id, String reviewText, int rating,
+    public Review(int reviewId, int userId, int book_id, String comment, int rating,
             int numberOfLikes, int numberOfDislikes, Timestamp reviewDate) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.book_id = book_id;
-        this.reviewText = reviewText;
+        this.comment = comment;
         this.rating = rating;
         this.numberOfLikes = numberOfLikes;
         this.numberOfDislikes = numberOfDislikes;
@@ -61,19 +61,19 @@ public class Review {
      * @param reviewId        The ID of the review.
      * @param userId          The ID of the user who wrote the review.
      * @param book_id         The ID of the book being reviewed.
-     * @param reviewText      The text of the review.
+     * @param comment      The text of the review.
      * @param rating          The rating given to the book.
      * @param numberOfLikes   The number of likes the review has received.
      * @param numberOfDislikes The number of dislikes the review has received.
      * @param reviewDate      The date the review was written.
      * @param parentReviewId  The id of parent's review.
      */
-    public Review(int reviewId, int userId, int book_id, String reviewText, int rating,
+    public Review(int reviewId, int userId, int book_id, String comment, int rating,
                 int numberOfLikes, int numberOfDislikes, Timestamp reviewDate, Integer parentReviewId) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.book_id = book_id;
-        this.reviewText = reviewText;
+        this.comment = comment;
         this.rating = rating;
         this.numberOfLikes = numberOfLikes;
         this.numberOfDislikes = numberOfDislikes;
@@ -85,13 +85,13 @@ public class Review {
      *
      * @param userId     The ID of the user who wrote the review.
      * @param book_id    The ID of the book being reviewed.
-     * @param reviewText The text of the review.
+     * @param comment The text of the review.
      * @param rating     The rating given to the book.
      */
-    public Review(int userId, int book_id, String reviewText, int rating) {
+    public Review(int userId, int book_id, String comment, int rating) {
         this.userId = userId;
         this.book_id = book_id;
-        this.reviewText = reviewText;
+        this.comment = comment;
         this.rating = rating;
     }
 
@@ -136,7 +136,7 @@ public class Review {
      * @return The review text.
      */
     public String getReviewText() {
-        return reviewText;
+        return comment;
     }
 
     /**
@@ -225,8 +225,8 @@ public class Review {
      *
      * @param reviewText The review text.
      */
-    public void setReviewText(String reviewText) {
-        this.reviewText = reviewText;
+    public void setReviewText(String comment) {
+        this.comment = comment;
     }
 
     /**
@@ -282,5 +282,4 @@ public class Review {
     public void setBookTitle(String bookTitle) {
         this.bookTitle = bookTitle;
     }
-
 }

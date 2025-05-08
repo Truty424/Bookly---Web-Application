@@ -11,6 +11,8 @@ import it.unipd.bookly.Resource.Review;
 import it.unipd.bookly.dao.book.GetAllBooksDAO;
 import it.unipd.bookly.dao.book.GetBookByIdDAO;
 import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
+import it.unipd.bookly.dao.review.CountReviewsForBookDAO;
+import it.unipd.bookly.dao.review.GetAvgRatingForBookDAO;
 import it.unipd.bookly.dao.review.GetReviewsByBookDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
@@ -61,28 +63,46 @@ public class BookServlet extends AbstractDatabaseServlet {
         int bookId = Integer.parseInt(segments[segments.length - 1]);
 
         Book book;
+        List<Author> authors;
+        List<Review> reviews;
+        Double averageRating = 0.0;
+        Integer reviewCount = 0;
+
+        // Step 1: Get book
         try (Connection con = getConnection()) {
             book = new GetBookByIdDAO(con, bookId).access().getOutputParam();
         }
 
-        List<Author> authors;
+        // Step 2: Get authors
         try (Connection con = getConnection()) {
             authors = new GetAuthorsByBookDAO(con, bookId).access().getOutputParam();
         }
 
-        List<Review> reviews;
+        // Step 3: Get reviews
         try (Connection con = getConnection()) {
             reviews = new GetReviewsByBookDAO(con, bookId).access().getOutputParam();
         }
-        
+
+        // Step 4: Get average rating
+        try (Connection con = getConnection()) {
+            averageRating = new GetAvgRatingForBookDAO(con, bookId).access().getOutputParam();
+        }
+
+        // Step 5: Get review count
+        try (Connection con = getConnection()) {
+            reviewCount = new CountReviewsForBookDAO(con, bookId).access().getOutputParam();
+        }
 
         if (book != null) {
             req.setAttribute("book_details", book);
             req.setAttribute("authors", authors);
             req.setAttribute("reviews", reviews);
+            req.setAttribute("average_rating", averageRating);
+            req.setAttribute("review_count", reviewCount);
             req.getRequestDispatcher("/jsp/book/bookDetails.jsp").forward(req, resp);
         } else {
             ServletUtils.redirectToErrorPage(req, resp, "Book not found for ID: " + bookId);
         }
     }
+
 }

@@ -4,22 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipd.bookly.Resource.Message;
 import it.unipd.bookly.Resource.Review;
 import it.unipd.bookly.dao.review.*;
-
 import it.unipd.bookly.rest.AbstractRestResource;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
 
-/**
- * Handles:
- * - POST /api/review → insert a review
- * - GET /api/review/{id} → get review by ID
- * - DELETE /api/review/{id} → delete review by ID
- * - PUT /api/review/{id}/text → update review text and rating
- * - PUT /api/review/{id}/likes → update likes and dislikes
- */
 public class ReviewRest extends AbstractRestResource {
 
     private final ObjectMapper mapper = new ObjectMapper();
@@ -47,12 +39,14 @@ public class ReviewRest extends AbstractRestResource {
                     if (path.matches(".*/review/\\d+/text$")) {
                         handleUpdateTextAndRating(path);
                     } else if (path.matches(".*/review/\\d+/likes$")) {
-                        handleUpdateLikesDislikes(path);
+                        handleUpdateLikes(path);
+                    } else if (path.matches(".*/review/\\d+/dislikes$")) {
+                        handleUpdateDislikes(path);
                     } else {
                         respondMethodNotAllowed("Invalid PUT path for review.");
                     }
                 }
-                default -> respondMethodNotAllowed("Only POST, GET, PUT, DELETE supported.");
+                default -> respondMethodNotAllowed("Only POST, GET, PUT supported.");
             }
         } catch (Exception e) {
             LOGGER.error("ReviewRest error", e);
@@ -66,10 +60,12 @@ public class ReviewRest extends AbstractRestResource {
 
         if (inserted) {
             res.setStatus(HttpServletResponse.SC_CREATED);
-            new Message("Review created successfully.", "201", "Review added.").toJSON(res.getOutputStream());
+            new Message("Review created successfully", "201", "Review inserted.")
+                    .toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            new Message("Failed to create review.", "400", "Insertion returned false.").toJSON(res.getOutputStream());
+            new Message("Failed to insert review", "400", "InsertReviewDAO returned false.")
+                    .toJSON(res.getOutputStream());
         }
     }
 
@@ -77,56 +73,77 @@ public class ReviewRest extends AbstractRestResource {
         int reviewId = extractIdFromPath(path);
         Review review = new GetReviewByIdDAO(con, reviewId).access().getOutputParam();
 
-        if (review == null) {
-            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Review not found.", "404", "No review with ID " + reviewId).toJSON(res.getOutputStream());
-        } else {
+        if (review != null) {
             res.setStatus(HttpServletResponse.SC_OK);
             res.setContentType("application/json;charset=UTF-8");
             mapper.writeValue(res.getOutputStream(), review);
+        } else {
+            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            new Message("Review not found", "404", "ID: " + reviewId)
+                    .toJSON(res.getOutputStream());
         }
     }
-
 
     private void handleUpdateTextAndRating(String path) throws Exception {
         int reviewId = extractIdFromPath(path);
         Review updated = mapper.readValue(req.getInputStream(), Review.class);
 
-        boolean result = new UpdateCommentAndRatingDAO(con, reviewId, updated.getReviewText(), updated.getRating())
+        boolean success = new UpdateCommentAndRatingDAO(con, reviewId, updated.getReviewText(), updated.getRating())
                 .access().getOutputParam();
 
-        if (result) {
+        if (success) {
             res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Review updated", "200", "Text and rating updated for ID " + reviewId)
+            new Message("Review updated", "200", "Text and rating updated.")
                     .toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Update failed", "404", "No review found to update.")
+            new Message("Update failed", "404", "No matching review to update.")
                     .toJSON(res.getOutputStream());
         }
     }
 
-    private void handleUpdateLikesDislikes(String path) throws Exception {
+    private void handleUpdateLikes(String path) throws Exception {
         int reviewId = extractIdFromPath(path);
         Review update = mapper.readValue(req.getInputStream(), Review.class);
 
-        boolean result = new UpdateReviewLikesDislikesDAO(con, reviewId, update.getNumberOfLikes(), update.getNumberOfDislikes())
+        boolean success = new UpdateReviewLikesDAO(con, reviewId, update.getNumberOfLikes())
                 .access().getOutputParam();
 
-        if (result) {
+        if (success) {
             res.setStatus(HttpServletResponse.SC_OK);
-            new Message("Review engagement updated", "200", "Likes/dislikes updated.").toJSON(res.getOutputStream());
+            new Message("Likes updated", "200", "Likes successfully updated.")
+                    .toJSON(res.getOutputStream());
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            new Message("Review not found", "404", "Update failed - ID not found.").toJSON(res.getOutputStream());
+            new Message("Review not found", "404", "No matching review to update likes.")
+                    .toJSON(res.getOutputStream());
+        }
+    }
+
+    private void handleUpdateDislikes(String path) throws Exception {
+        int reviewId = extractIdFromPath(path);
+        Review update = mapper.readValue(req.getInputStream(), Review.class);
+
+        boolean success = new UpdateReviewDisLikesDAO(con, reviewId, update.getNumberOfDislikes())
+                .access().getOutputParam();
+
+        if (success) {
+            res.setStatus(HttpServletResponse.SC_OK);
+            new Message("Dislikes updated", "200", "Dislikes successfully updated.")
+                    .toJSON(res.getOutputStream());
+        } else {
+            res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            new Message("Review not found", "404", "No matching review to update dislikes.")
+                    .toJSON(res.getOutputStream());
         }
     }
 
     private int extractIdFromPath(String path) {
         String[] parts = path.split("/");
-        return Integer.parseInt(parts[parts.length - 2].equals("likes") || parts[parts.length - 2].equals("text")
-                ? parts[parts.length - 3]
-                : parts[parts.length - 1]);
+        if (parts[parts.length - 2].equals("likes") || parts[parts.length - 2].equals("text") || parts[parts.length - 2].equals("dislikes")) {
+            return Integer.parseInt(parts[parts.length - 3]);
+        }
+        return Integer.parseInt(parts[parts.length - 1]);
     }
 
     private void respondMethodNotAllowed(String detail) throws IOException {

@@ -134,6 +134,15 @@
         <url-pattern>/publisher/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>ReviewServlet</servlet-name>
+        <servlet-class>it.unipd.bookly.servlet.review.ReviewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ReviewServlet</servlet-name>
+        <url-pattern>/review/*</url-pattern>
+    </servlet-mapping>
+
     
 
     <servlet>
