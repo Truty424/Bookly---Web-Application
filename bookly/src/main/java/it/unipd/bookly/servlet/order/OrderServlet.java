@@ -5,6 +5,7 @@ import it.unipd.bookly.Resource.Cart;
 import it.unipd.bookly.Resource.Order;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.dao.cart.ClearCartDAO;
+import it.unipd.bookly.dao.cart.CreateCartForUserDAO;
 import it.unipd.bookly.dao.cart.GetCartByUserIdDAO;
 import it.unipd.bookly.dao.cart.LinkOrderToCartDAO;
 import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
@@ -37,14 +38,15 @@ public class OrderServlet extends AbstractDatabaseServlet {
             return;
         }
 
-        try {
+        try (Connection con = getConnection()) {
             User user = (User) session.getAttribute("user");
-            List<Order> orders = new GetOrdersByUserDAO(getConnection(), user.getUserId()).access().getOutputParam();
+            List<Order> orders = new GetOrdersByUserDAO(con, user.getUserId()).access().getOutputParam();
             req.setAttribute("orders", orders);
             req.getRequestDispatcher("/jsp/order/userOrders.jsp").forward(req, res);
+
         } catch (Exception e) {
-            LOGGER.error("OrderServlet GET error: {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, res, "Failed to load orders.");
+            LOGGER.error("OrderServlet GET error", e);
+            ServletUtils.redirectToErrorPage(req, res, "Failed to load your orders.");
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -63,30 +65,34 @@ public class OrderServlet extends AbstractDatabaseServlet {
             return;
         }
 
-        try {
+        try (Connection con = getConnection()) {
             User user = (User) session.getAttribute("user");
-            Cart cart = getCartByUser(getConnection(), user.getUserId());
 
+            Cart cart = new GetCartByUserIdDAO(con, user.getUserId()).access().getOutputParam();
             if (cart == null || cart.getCartId() == 0) {
                 ServletUtils.redirectToErrorPage(req, res, "No cart available to place an order.");
                 return;
             }
 
-            Order order = buildOrder(cart,req);
-            int orderId = insertOrder(getConnection(), order);
+            double total = getFinalTotalFromSessionOrCart(req, cart);
+            Order order = buildOrder(req, total);
 
+            int orderId = new InsertOrderDAO(con, order).access().getOutputParam();
             if (orderId <= 0) {
                 ServletUtils.redirectToErrorPage(req, res, "Failed to insert order.");
                 return;
             }
-            order.setOrderId(orderId);
 
-            linkOrderToCart(getConnection(), cart.getCartId(), order.getOrderId());
-            clearCart(getConnection(), cart.getCartId());
+            new LinkOrderToCartDAO(con, cart.getCartId(), orderId).access();
+            new ClearCartDAO(con, cart.getCartId()).access();
+            new CreateCartForUserDAO(con, user.getUserId(), order.getPaymentMethod()).access();
+
+            clearDiscountSession(session);
 
             res.sendRedirect(req.getContextPath() + "/orders");
+
         } catch (Exception e) {
-            LOGGER.error("OrderServlet POST error: {}", e.getMessage(), e);
+            LOGGER.error("OrderServlet POST error", e);
             ServletUtils.redirectToErrorPage(req, res, "Error placing the order.");
         } finally {
             LogContext.removeAction();
@@ -94,37 +100,26 @@ public class OrderServlet extends AbstractDatabaseServlet {
         }
     }
 
-    // ================================
-    // 🔽 DAO/Utility Functions
-    // ================================
-    private Cart getCartByUser(Connection con, int userId) throws Exception {
-        return new GetCartByUserIdDAO(con, userId).access().getOutputParam();
+    // 🔽 Helpers
+    private double getFinalTotalFromSessionOrCart(HttpServletRequest req, Cart cart) {
+        Object value = req.getSession().getAttribute("cart_final_price");
+        if (value instanceof Double) return (Double) value;
+        return cart.getTotalPrice();
     }
 
-    private int insertOrder(Connection con, Order order) throws Exception {
-        return new InsertOrderDAO(con, order).access().getOutputParam();
-    }
-
-    private void linkOrderToCart(Connection con, int cartId, int orderId) throws Exception {
-        new LinkOrderToCartDAO(con, cartId, orderId).access();
-    }
-
-    private void clearCart(Connection con, int cartId) throws Exception {
-        new ClearCartDAO(con, cartId).access();
-    }
-
-    private Order buildOrder(Cart cart, HttpServletRequest req) {
-        Double finalTotal = (Double) req.getSession().getAttribute("cart_final_price");
-        if (finalTotal == null) {
-            finalTotal = cart.getTotalPrice();
-        }
-
+    private Order buildOrder(HttpServletRequest req, double total) {
         Order order = new Order();
-        order.setTotalPrice(finalTotal);
-        order.setPaymentMethod("credit_card");
+        order.setTotalPrice(total);
+        order.setPaymentMethod(req.getParameter("paymentMethod") != null ? req.getParameter("paymentMethod") : "credit_card");
         order.setStatus("placed");
-        order.setAddress("Default Address");
-        order.setShipmentCode("DEFAULT_SHIP");
+        order.setAddress(req.getParameter("address") != null ? req.getParameter("address") : "Default Address");
+        order.setShipmentCode("AUTO-GENERATED");
         return order;
+    }
+
+    private void clearDiscountSession(HttpSession session) {
+        session.removeAttribute("appliedDiscount");
+        session.removeAttribute("discountId");
+        session.removeAttribute("cart_final_price");
     }
 }
