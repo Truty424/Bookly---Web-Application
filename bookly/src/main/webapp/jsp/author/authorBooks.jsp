@@ -4,40 +4,53 @@
 <head>
     <title>Books by Author</title>
     <%@ include file="/html/cdn.html" %>
-    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/listBooks.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" type="text/css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" type="text/css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/components/header.css" type="text/css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/components/footer.css" type="text/css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/allBooks.css" type="text/css" />
 </head>
 <body>
     <%@ include file="/html/header.html" %>
-    <div class="container py-5">
-        <h1 class="page-title">Books by <c:out value="${authorName}" /></h1>
-        <div class="books-grid">
-            <c:choose>
-                <c:when test="${not empty author_books}">
+    <div class="search-container">
+        <h1>Books by <c:out value="${authorName}" /></h1>
+
+        <c:choose>
+            <c:when test="${not empty author_books}">
+                <ul class="book-list">
                     <c:forEach var="book" items="${author_books}">
-                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-title">
-                            <div class="book-card">
+                        <li class="book-item">
+                            <div class="book-image">
                                 <img
                                   src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
-                                  alt="${book.title}"
-                                  class="book-image"
+                                  alt="Cover of ${book.title}"
                                   onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
                                 />
-                                <h3 class="book-title">${book.title}</h3>
                             </div>
-                        </a>
+                            <div class="book-details">
+                                <h3>
+                                    <a href="${pageContext.request.contextPath}/book/${book.bookId}">${book.title}</a>
+                                </h3>
+                                <p><strong>Publisher:</strong> ${book.edition}</p>
+                                <p><strong>Price:</strong> $${book.price}</p>
+                                <p><strong>Language:</strong> ${book.language}</p>
+                                <p><strong>Average Rating:</strong> ${book.average_rate}/5</p>
+                                <form action="${pageContext.request.contextPath}/book/${book.bookId}" method="get">
+                                    <button type="submit" class="btn btn-primary">View Details</button>
+                                </form>
+                            </div>
+                        </li>
                     </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <p class="no-books-message">No books found by this author.</p>
-                </c:otherwise>
-            </c:choose>
+                </ul>
+            </c:when>
+            <c:otherwise>
+                <p class="no-results">No books found by this author.</p>
+            </c:otherwise>
+        </c:choose>
+
+        <div class="home-button-wrapper">
+            <a href="${pageContext.request.contextPath}/author" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to All Authors
+            </a>
         </div>
-        <a href="${pageContext.request.contextPath}/author" class="back-link">Back to all authors</a>
     </div>
     <%@ include file="/html/footer.html" %>
 </body>

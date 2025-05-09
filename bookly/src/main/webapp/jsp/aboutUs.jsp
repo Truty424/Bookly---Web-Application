@@ -18,7 +18,7 @@
         <h2 class="team-title">Meet the Team</h2>
         <div class="team-grid">
             <div class="team-card">
-                <div class="team-image-placeholder">Image</div>
+                <img src="../static/img/team/aby.jpg" alt="ayoub ben yamoune" class="team-image" />
                 <h3 class="team-name">Ben Yamoune Ayoub</h3>
                 <a href="https://www.linkedin.com/in/ayoub-ben-yamoune-1015b3250/" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
             </div>

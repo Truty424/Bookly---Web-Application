@@ -4,43 +4,54 @@
 <head>
     <title>Books in Category</title>
     <%@ include file="/html/cdn.html" %>
-    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" type="text/css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" type="text/css" />
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/listBooks.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/listBooks.css" />
 </head>
 <body>
     <%@ include file="/html/header.html" %>
-    <div class="container">
-        <h1 class="page-title">Books in Selected Category</h1>
-        <div class="books-grid">
-            <c:choose>
-                <c:when test="${not empty category_books}">
+    <div class="search-container">
+        <h1>Books in <c:out value="${category_name}" /></h1>
+
+        <c:choose>
+            <c:when test="${not empty category_books}">
+                <ul class="book-list">
                     <c:forEach var="book" items="${category_books}">
-                        <a href="${pageContext.request.contextPath}/book/${book.bookId}" class="book-link">
-                            <div class="book-card">
-                                <div class="book-placeholder">
-                                    <p>No Image</p>
-                                </div>
-                                <h3 class="book-title">${book.title}</h3>
-                                <div class="book-details">
-                                    <p><strong>Publisher :</strong> ${book.edition}</p>
-                                    <p><strong>Price :</strong> $${book.price}</p>
-                                    <p><strong>Language :</strong> ${book.language}</p>
-                                    <p><strong>Average Rating :</strong> ${book.average_rate}/5</p>
-                                </div>
+                        <li class="book-item">
+                            <div class="book-image">
+                                <img
+                                  src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
+                                  alt="Cover of ${book.title}"
+                                  onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
+                                />
                             </div>
-                        </a>
+                            <div class="book-details">
+                                <h3>
+                                    <a href="${pageContext.request.contextPath}/book/${book.bookId}">${book.title}</a>
+                                </h3>
+                                <p><strong>Publisher:</strong> ${book.edition}</p>
+                                <p><strong>Price:</strong> $${book.price}</p>
+                                <p><strong>Language:</strong> ${book.language}</p>
+                                <p><strong>Average Rating:</strong> ${book.average_rate}/5</p>
+                                <form action="${pageContext.request.contextPath}/book/${book.bookId}" method="get">
+                                    <button type="submit" class="btn btn-primary">View Details</button>
+                                </form>
+                            </div>
+                        </li>
                     </c:forEach>
-                </c:when>
-                <c:otherwise>
-                    <p class="no-books">No books found in this category.</p>
-                </c:otherwise>
-            </c:choose>
-        </div>
-        <div class="back-link-container">
-            <a href="${pageContext.request.contextPath}/category" class="back-link">Back to all categories</a>
+                </ul>
+            </c:when>
+            <c:otherwise>
+                <p class="no-results">No books found in this category.</p>
+            </c:otherwise>
+        </c:choose>
+
+        <div class="home-button-wrapper">
+            <a href="${pageContext.request.contextPath}/category" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to All Categories
+            </a>
         </div>
     </div>
+    <%@ include file="/html/footer.html" %>
 </body>
 </html>

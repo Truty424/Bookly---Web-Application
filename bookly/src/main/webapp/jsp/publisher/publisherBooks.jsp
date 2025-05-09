@@ -1,60 +1,57 @@
-<%@ page contentType="text/html;charset=UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-  <head>
+<head>
     <title>Books by Publisher</title>
     <%@ include file="/html/cdn.html" %>
-    <link
-      rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/base/root.css"
-      type="text/css"
-    />
-    <link
-      rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/base/globals.css"
-      type="text/css"
-    />
-    <link
-      rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/pages/allBooks.css"
-      type="text/css"
-    />
-  </head>
-  <body>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/listBooks.css" />
+</head>
+<body>
     <%@ include file="/html/header.html" %>
-    <div class="container py-5">
-      <h1 class="page-title">Books by <c:out value="${publisher_name}" /></h1>
-      <div class="books-list">
+    <div class="search-container">
+        <h1>Books by <c:out value="${publisher_name}" /></h1>
+
         <c:choose>
-          <c:when test="${not empty publisher_books}">
-            <div class="books-grid">
-              <c:forEach var="book" items="${publisher_books}">
-                <a
-                  href="${pageContext.request.contextPath}/book/${book.bookId}"
-                  class="book-title"
-                >
-                  <div class="book-card">
-                    <img
-                      src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
-                      alt="${book.title}"
-                      class="book-image"
-                      onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
-                    />
-                    <h3 class="book-title">${book.title}</h3>
-                  </div>
-                </a>
-              </c:forEach>
-            </div>
-          </c:when>
-          <c:otherwise>
-            <p class="no-books-message">No books found for this publisher.</p>
-          </c:otherwise>
+            <c:when test="${not empty publisher_books}">
+                <ul class="book-list">
+                    <c:forEach var="book" items="${publisher_books}">
+                        <li class="book-item">
+                            <div class="book-image">
+                                <img
+                                  src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
+                                  alt="Cover of ${book.title}"
+                                  onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
+                                />
+                            </div>
+                            <div class="book-details">
+                                <h3>
+                                    <a href="${pageContext.request.contextPath}/book/${book.bookId}">${book.title}</a>
+                                </h3>
+                                <p><strong>Publisher:</strong> ${book.edition}</p>
+                                <p><strong>Price:</strong> $${book.price}</p>
+                                <p><strong>Language:</strong> ${book.language}</p>
+                                <p><strong>Average Rating:</strong> ${book.average_rate}/5</p>
+                                <form action="${pageContext.request.contextPath}/book/${book.bookId}" method="get">
+                                    <button type="submit" class="btn btn-primary">View Details</button>
+                                </form>
+                            </div>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </c:when>
+            <c:otherwise>
+                <p class="no-results">No books found for this publisher.</p>
+            </c:otherwise>
         </c:choose>
-      </div>
-      <a href="${pageContext.request.contextPath}/publisher" class="back-link"
-        >Back to all publishers</a
-      >
+
+        <div class="home-button-wrapper">
+            <a href="${pageContext.request.contextPath}/publisher" class="btn btn-primary">
+                <i class="fas fa-arrow-left"></i> Back to All Publishers
+            </a>
+        </div>
     </div>
     <%@ include file="/html/footer.html" %>
-  </body>
+</body>
 </html>
