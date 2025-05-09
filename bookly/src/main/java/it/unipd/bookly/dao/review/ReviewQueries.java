@@ -15,7 +15,7 @@ public final class ReviewQueries {
             = "SELECT * FROM booklySchema.reviews WHERE review_id = ?";
 
     public static final String GET_REVIEWS_BY_BOOK
-            = "SELECT r.review_id, r.user_id, r.book_id, r.rating, r.review_text, r.review_date, "
+            = "SELECT r.review_id, r.user_id, r.book_id, r.rating, r.comment, r.review_date, "
             + "r.number_of_likes, r.number_of_dislikes, u.username "
             + "FROM booklySchema.reviews r "
             + "JOIN booklySchema.users u ON r.user_id = u.user_id "

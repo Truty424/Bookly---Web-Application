@@ -28,7 +28,11 @@
             <% for (Book book : books) { %>
                 <li class="book-item">
                     <div class="book-image">
-                        <img src="<%= request.getContextPath() %>/load-book-img?bookId=<%= book.getBookId() %>" alt="Cover of <%= book.getTitle() %>" />
+                        <img
+                          src="<%= request.getContextPath() %>/static/img/book/<%= book.getBookId() %>.jpg"
+                          alt="Cover of <%= book.getTitle() %>"
+                          onerror="this.onerror=null; this.src='<%= request.getContextPath() %>/static/img/book/default.jpg';"
+                        />
                     </div>
                     <div class="book-details">
                         <h3>
@@ -48,7 +52,7 @@
                                 }
                             %>
                         </p>
-                        <p><strong>ISBN:</strong> <%= book.getIsbn() %></p>
+                        <p><strong>Rate:</strong> <%= book.getAverage_rate() %></p>
                         <p><strong>Price:</strong> €<%= String.format("%.2f", book.getPrice()) %></p>
                         <form action="<%= request.getContextPath() %>/book/<%= book.getBookId() %>" method="get">
                             <button type="submit" class="btn btn-primary">View Details</button>

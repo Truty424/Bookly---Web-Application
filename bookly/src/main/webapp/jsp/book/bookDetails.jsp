@@ -26,7 +26,7 @@
         <div class="book-card-horizontal">
           <div class="book-image">
             <img
-             src="${pageContext.request.contextPath}/load-book-img?bookId=${book_details.bookId}"
+             src="${pageContext.request.contextPath}/static/img/book/${book_details.bookId}.jpg"
              alt="Cover of ${book_details.title}"
              onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
              />
@@ -48,6 +48,13 @@
             <p><strong>Price:</strong> €${book_details.price}</p>
             <p><strong>Average Rating:</strong> ${average_rating} / 5</p>
             <p><strong>Total Reviews:</strong> ${review_count}</p>
+
+            <p><strong>Edition:</strong> ${book_details.edition}</p>
+            <p><strong>Publication Year:</strong> ${book_details.publication_year}</p>
+            <p><strong>Number of Pages:</strong> ${book_details.number_of_pages}</p>
+            <p><strong>Stock Quantity:</strong> ${book_details.stockQuantity}</p>
+            <p><strong>Summary:</strong></p>
+            <p>${book_details.summary}</p>
 
             <div class="book-actions">
               <form action="${pageContext.request.contextPath}/cart/add/${book_details.bookId}" method="post">
