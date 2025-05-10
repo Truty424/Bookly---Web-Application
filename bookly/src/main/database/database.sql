@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.reviews (
     review_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     number_of_likes INTEGER,
     number_of_dislikes INTEGER,
-    parent_review_id INTEGER, -- 👈 self-referencing for replies
+    parent_review_id INTEGER,
     FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id),
     FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id),
     FOREIGN KEY (parent_review_id) REFERENCES booklySchema.reviews(review_id) ON DELETE CASCADE

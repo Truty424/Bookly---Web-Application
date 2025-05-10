@@ -7,9 +7,45 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.search-container h1 {
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.back-btn {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: 1px solid #070606;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+  background-color: var(--color-primary);
+  border-color: #fff;
+  color: #fff;
+}
+
+.search-container h2 {
   text-align: center;
-  margin-bottom: 30px;
 }
 
 .search-query {
@@ -50,10 +86,11 @@
 
 .book-details h3 a {
   text-decoration: none;
-  color: #3366cc;
+  color: #070606;
 }
 
 .book-details h3 a:hover {
+  color: var(--color-primary);
   text-decoration: underline;
 }
 
@@ -62,24 +99,18 @@
   font-size: 0.95rem;
 }
 
-.btn.btn-primary {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 0.95rem;
+.btn-detail {
+    background: linear-gradient(to right, #FC8C59, #f99c71);
+    outline: none;
+    color: #fff;
+    transition: background 0.3s ease, transform 0.5s ease;
 }
 
-.btn.btn-primary:hover {
-  background-color: #0056b3;
+.btn-detail:hover {
+    background-color: #E68458;
+    transform: scale(1.05);
 }
 
-.btn i {
-  margin-right: 6px;
-}
 
 .no-results {
   text-align: center;

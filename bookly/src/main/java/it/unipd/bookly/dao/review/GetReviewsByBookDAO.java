@@ -1,5 +1,10 @@
 package it.unipd.bookly.dao.review;
 
+import it.unipd.bookly.Resource.Review;
+import it.unipd.bookly.dao.AbstractDAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,21 +12,20 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.unipd.bookly.Resource.Review;
-import it.unipd.bookly.dao.AbstractDAO;
-
 import static it.unipd.bookly.dao.review.ReviewQueries.GET_REVIEWS_BY_BOOK;
 
 /**
- * DAO to retrieve all reviews associated with a specific book.
+ * DAO to retrieve all reviews for a specific book.
  */
 public class GetReviewsByBookDAO extends AbstractDAO<List<Review>> {
 
-    private final int book_id;
+    private static final Logger LOGGER = LoggerFactory.getLogger(GetReviewsByBookDAO.class);
 
-    public GetReviewsByBookDAO(Connection con, int book_id) {
+    private final int bookId;
+
+    public GetReviewsByBookDAO(Connection con, int bookId) {
         super(con);
-        this.book_id = book_id;
+        this.bookId = bookId;
     }
 
     @Override
@@ -29,41 +33,37 @@ public class GetReviewsByBookDAO extends AbstractDAO<List<Review>> {
         List<Review> reviews = new ArrayList<>();
 
         try (PreparedStatement stmt = con.prepareStatement(GET_REVIEWS_BY_BOOK)) {
-            stmt.setInt(1, book_id);
+            stmt.setInt(1, bookId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    int reviewId = rs.getInt("review_id");
-                    int userId = rs.getInt("user_id");
-                    String comment = rs.getString("comment");
-                    int rating = rs.getInt("rating");
-                    int likes = rs.getInt("number_of_likes");
-                    int dislikes = rs.getInt("number_of_dislikes");
-                    Timestamp reviewDate = rs.getTimestamp("review_date");
-                    Integer parentReviewId = rs.getObject("parent_review_id") != null
-                            ? rs.getInt("parent_review_id")
-                            : null;
+                    Review review = new Review();
 
-                    Review review = new Review(
-                            reviewId,
-                            userId,
-                            book_id,
-                            comment,
-                            rating,
-                            likes,
-                            dislikes,
-                            reviewDate,
-                            parentReviewId
-                    );
+                    review.setReviewId(rs.getInt("review_id"));
+                    review.setUserId(rs.getInt("user_id"));
+                    review.setbookId(rs.getInt("book_id"));
+                    review.setReviewText(rs.getString("comment"));
+                    review.setRating(rs.getInt("rating"));
+                    review.setNumberOfLikes(rs.getInt("number_of_likes"));
+                    review.setNumberOfDislikes(rs.getInt("number_of_dislikes"));
+                    review.setReviewDate(rs.getTimestamp("review_date"));
+                    review.setUsername(rs.getString("username"));
 
-                    review.setUsername(rs.getString("username")); // <-- Add this line
+                    // Optional: safely check for parent_review_id if it exists in the ResultSet
+                    try {
+                        Object parent = rs.getObject("parent_review_id");
+                        if (parent != null) {
+                            review.setParentReviewId(rs.getInt("parent_review_id"));
+                        }
+                    } catch (Exception ignored) {
+                        // Field not selected or doesn't exist — safe to skip
+                    }
 
                     reviews.add(review);
                 }
             }
-
         } catch (Exception e) {
-            LOGGER.error("Failed to fetch reviews for book ID {}: {}", book_id, e.getMessage(), e);
+            LOGGER.error("Failed to fetch reviews for book ID {}: {}", bookId, e.getMessage(), e);
             throw e;
         }
 

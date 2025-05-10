@@ -15,6 +15,10 @@
     margin: 20px 0;
 }
 
+.category-link:hover {
+    color: var(--color-primary);
+}
+
 .category-card {
     background-color: #f9f9f9;
     border-radius: 8px;

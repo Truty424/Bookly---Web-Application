@@ -36,6 +36,26 @@
     color: var(--color-primary);
 }
 
+
+.back-btn {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid #070606;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+  background-color: var(--color-primary);
+  border-color: #fff;
+  color: #fff;
+}
+
+
 .author-image {
     width: 48px;
     height: 48px;
@@ -47,11 +67,17 @@
     font-weight: 500;
     font-size: 0.8rem;
     text-align: start;
+    margin: 0;
 }
 
 .author-name a {
     text-decoration: none;
     color: #000;
+}
+
+.author-name a:hover {
+    text-decoration: none;
+    color: var(--color-primary);
 }
 
 

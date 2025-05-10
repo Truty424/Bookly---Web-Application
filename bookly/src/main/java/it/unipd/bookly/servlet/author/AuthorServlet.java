@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+import it.unipd.bookly.dao.author.GetAuthorByIdDAO;
+
 @WebServlet(name = "AuthorServlet", value = "/author/*")
 public class AuthorServlet extends AbstractDatabaseServlet {
 
@@ -38,7 +40,8 @@ public class AuthorServlet extends AbstractDatabaseServlet {
             path = path.replaceAll("^/+", "").replaceAll("/+$", "");
 
             switch (getPathType(path)) {
-                case "authorId" -> showBooksByAuthor(req, resp, con, Integer.parseInt(path));
+                case "authorId" ->
+                    showBooksByAuthor(req, resp, Integer.parseInt(path));
                 default -> {
                     LOGGER.warn("Unrecognized path in AuthorServlet: {}", path);
                     ServletUtils.redirectToErrorPage(req, resp, "Unknown author path: " + path);
@@ -60,10 +63,20 @@ public class AuthorServlet extends AbstractDatabaseServlet {
         req.getRequestDispatcher("/jsp/author/allAuthors.jsp").forward(req, resp);
     }
 
-    private void showBooksByAuthor(HttpServletRequest req, HttpServletResponse resp, Connection con, int authorId) throws Exception {
-        List<Book> books = new GetBooksByAuthorIdDAO(con, authorId).access().getOutputParam();
+    private void showBooksByAuthor(HttpServletRequest req, HttpServletResponse resp, int authorId) throws Exception {
+        List<Book> books;
+        Author author;
+        try (Connection con = getConnection()) {
+            books = new GetBooksByAuthorIdDAO(con, authorId).access().getOutputParam();
+        }
+        try (Connection con = getConnection()) {
+            // Get author info
+            author = new GetAuthorByIdDAO(con, authorId).access().getOutputParam();
+        }
+
         req.setAttribute("author_books", books);
         req.setAttribute("author_id", authorId);
+        req.setAttribute("author", author);  // pass full Author object
         req.getRequestDispatcher("/jsp/author/authorBooks.jsp").forward(req, resp);
     }
 

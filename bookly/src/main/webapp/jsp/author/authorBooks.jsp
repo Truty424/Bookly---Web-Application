@@ -1,12 +1,12 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" %> <%@ taglib prefix="c"
+uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
-<head>
+  <head>
     <title>Books by Author</title>
     <%@ include file="/html/cdn.html" %>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/listBooks.css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" type="text/css" />
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" type="text/css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/listBooks.css" />
 </head>
 <body>
     <%@ include file="/html/header.html" %>
@@ -53,5 +53,5 @@
         </div>
     </div>
     <%@ include file="/html/footer.html" %>
-</body>
+  </body>
 </html>

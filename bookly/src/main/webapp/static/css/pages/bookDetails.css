@@ -70,7 +70,7 @@
   margin: 0;
 }
 
-.back-button {
+.back-btn {
   background-color: #333;
   color: #fff;
   padding: 10px 20px;
@@ -82,7 +82,7 @@
   transition: background-color 0.3s;
 }
 
-.back-button:hover {
+.back-btn:hover {
   background-color: var(--color-primary);
   border-color: #fff;
   color: #fff;
@@ -96,24 +96,6 @@
 .review-list {
   list-style-type: none;
   padding-left: 0;
-}
-
-.back-button-wrapper {
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.review-item {
-  margin-bottom: 20px;
-  background-color: #f8f9fa;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.review-item p {
-  margin: 5px 0;
 }
 
 .review-actions {
@@ -131,6 +113,62 @@
 .review-actions button:hover {
   color: var(--color-primary);
 }
+
+.back-button-wrapper {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.review-item-modern {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.review-header .avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.review-header .meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-header .username {
+  font-weight: 600;
+  font-size: 16px;
+  color: #111;
+}
+
+.review-header .timestamp {
+  font-size: 14px;
+  color: #666;
+}
+
+.review-body p {
+  font-size: 16px;
+  margin: 0;
+  color: #24292f;
+  line-height: 1.6;
+}
+
 
 .review-title {
   font-size: 1.5rem;
@@ -164,6 +202,56 @@
 .rating-stars input:hover ~ label {
   color: gold;
 }
+
+
+.review-item-modern {
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 20px;
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.review-header .avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.review-header .meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-header .username {
+  font-weight: 600;
+  font-size: 16px;
+  color: #111;
+}
+
+.review-header .timestamp {
+  font-size: 14px;
+  color: #666;
+}
+
+.review-body p {
+  font-size: 16px;
+  margin: 0;
+  color: #24292f;
+  line-height: 1.6;
+}
+
 
 textarea, input[type="text"] {
   width: 100%;
