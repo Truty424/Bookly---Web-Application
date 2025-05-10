@@ -17,8 +17,11 @@
                 <c:when test="${not empty all_categories}">
                     <c:forEach var="category" items="${all_categories}">
                         <div class="category-card">
-                            <img src="${pageContext.request.contextPath}/static/img/categories/${category.category_id}.jpg" 
-                                 alt="${category.category_name}" class="category-image" />
+                            <img src="${pageContext.request.contextPath}/static/img/categories/${category.category_id}.png"
+                            alt="${category.category_name}"
+                            class="category-image"
+                            onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/categories/default.jpg';"
+                            />
                             <h3 class="category-title">
                                 <a href="${pageContext.request.contextPath}/category/${category.category_id}" class="category-link">
                                     ${category.category_name}
