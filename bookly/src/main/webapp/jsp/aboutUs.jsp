@@ -28,7 +28,7 @@
                 <a href="https://www.linkedin.com/in/amirjm" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
             </div>
             <div class="team-card">
-                <div class="team-image-placeholder">Image</div>
+                <img src="../static/img/team/pari.jpg" alt="Parisa Saeedidana" class="team-image" />
                 <h3 class="team-name">Saeedidana Parisa</h3>
                 <a href="https://www.linkedin.com/in/parisa-saeedidana-067833201/" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
             </div>
