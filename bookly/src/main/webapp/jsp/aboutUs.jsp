@@ -30,7 +30,7 @@
             <div class="team-card">
                 <div class="team-image-placeholder">Image</div>
                 <h3 class="team-name">Saeedidana Parisa</h3>
-                <a href="https://www.linkedin.com/" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
+                <a href="https://www.linkedin.com/in/parisa-saeedidana-067833201/" target="_blank" class="team-link"> <i class="fa-brands fa-linkedin"></i> </a>
             </div>
             <div class="team-card">
                 <div class="team-image-placeholder">Image</div>
