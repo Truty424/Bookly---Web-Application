@@ -11,7 +11,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <body>
     <%@ include file="/html/header.html" %>
     <div class="search-container">
-        <h1>Books by <c:out value="${authorName}" /></h1>
+        <h1>Books by <c:out value="${author}" /></h1>
 
         <c:choose>
             <c:when test="${not empty author_books}">

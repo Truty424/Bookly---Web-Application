@@ -176,12 +176,23 @@ header {
     position: relative;
 }
 
+/* Hide nav toggle on desktop */
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #333;
+  cursor: pointer;
+  padding: 10px;
+}
+
 
 .avatar-dropdown {
     position: relative;
   }
-  
-  .avatar-button {
+
+.avatar-button {
     background: none;
     border: none;
     color: #333;
@@ -219,6 +230,8 @@ header {
 
 /* ---------- Responsive tweaks ---------- */
 
+
+
 /* Tablet view (max-width: 768px) */
 @media (max-width: 768px) {
     .header-top {
@@ -238,6 +251,36 @@ header {
     .nav-links {
         gap: 15px;
     }
+    .nav-toggle {
+    display: block;
+    position: absolute;
+    right: 20px;
+    top: 18px;
+    z-index: 101;
+  }
+
+  .nav-main {
+    display: none; /* hidden by default */
+    flex-direction: column;
+    background: #fff;
+    position: absolute;
+    width: 100%;
+    top: 100%;
+    left: 0;
+    border-top: 1px solid #eee;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  .nav-main.open {
+    display: flex;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 15px;
+  }
 }
 
 /* Mobile view (max-width: 576px) */
