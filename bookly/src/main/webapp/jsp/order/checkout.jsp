@@ -129,5 +129,7 @@ import="java.util.List" %>
 
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/creditCard.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>

@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
+import it.unipd.bookly.dao.category.GetCategoryByIdDAO;
+
 @WebServlet(name = "CategoryServlet", value = "/category/*")
 public class CategoryServlet extends AbstractDatabaseServlet {
 
@@ -33,8 +35,10 @@ public class CategoryServlet extends AbstractDatabaseServlet {
             String cleanPath = (path == null) ? "" : path.replaceAll("^/+", "").replaceAll("/+$", "");
 
             switch (resolveRoute(cleanPath)) {
-                case "all" -> showAllCategories(req, resp, con);
-                case "categoryId" -> showBooksByCategory(req, resp, con, Integer.parseInt(cleanPath));
+                case "all" ->
+                    showAllCategories(req, resp, con);
+                case "categoryId" ->
+                    showBooksByCategory(req, resp, Integer.parseInt(cleanPath));
                 default -> {
                     LOGGER.warn("Invalid category path: {}", cleanPath);
                     ServletUtils.redirectToErrorPage(req, resp, "Invalid category path.");
@@ -51,8 +55,12 @@ public class CategoryServlet extends AbstractDatabaseServlet {
     }
 
     private String resolveRoute(String path) {
-        if (path.isEmpty()) return "all";
-        if (path.matches("\\d+")) return "categoryId";
+        if (path.isEmpty()) {
+            return "all";
+        }
+        if (path.matches("\\d+")) {
+            return "categoryId";
+        }
         return "unknown";
     }
 
@@ -62,10 +70,26 @@ public class CategoryServlet extends AbstractDatabaseServlet {
         req.getRequestDispatcher("/jsp/category/allCategories.jsp").forward(req, resp);
     }
 
-    private void showBooksByCategory(HttpServletRequest req, HttpServletResponse resp, Connection con, int categoryId) throws Exception {
-        List<Book> books = new GetBooksByCategoryDAO(con, categoryId).access().getOutputParam();
+    private void showBooksByCategory(HttpServletRequest req, HttpServletResponse resp, int categoryId) throws Exception {
+        List<Book> books;
+        Category category;
+        try (Connection con = getConnection()) {
+            books = new GetBooksByCategoryDAO(con, categoryId).access().getOutputParam();
+        }
+
+        try (Connection con = getConnection()) {
+            category = new GetCategoryByIdDAO(con, categoryId).access().getOutputParam();
+        }
+
+        if (category == null) {
+            LOGGER.warn("No category found for ID {}", categoryId);
+            ServletUtils.redirectToErrorPage(req, resp, "Category not found.");
+            return;
+        }
+
         req.setAttribute("category_books", books);
         req.setAttribute("category_id", categoryId);
+        req.setAttribute("category_name", category.getCategory_name()); // ✅ used in JSP
         req.getRequestDispatcher("/jsp/category/categoryBooks.jsp").forward(req, resp);
     }
 }

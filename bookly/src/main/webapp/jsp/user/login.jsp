@@ -58,7 +58,7 @@
                   required
                 />
               </div>
-              <div class="mb-3" style="position: relative;">
+              <div class="mb-3" style="position: relative">
                 <input
                   class="form-control"
                   type="password"
@@ -69,9 +69,7 @@
                 />
                 <span class="toggle-password" onclick="togglePassword()"></span>
               </div>
-              <button class="signin-btn" type="submit">
-                Sign In
-              </button>
+              <button class="signin-btn" type="submit">Sign In</button>
             </form>
 
             <div class="create-account text-center mt-3">
@@ -87,5 +85,7 @@
       </div>
     </div>
     <script src="../../static/js/toggle-password.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>

@@ -139,5 +139,7 @@
     <!-- Custom JavaScript for Pagination, Search, Toast -->
     <script src="${pageContext.request.contextPath}/static/js/table-pagination.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/search-table.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
 </body>
 </html>

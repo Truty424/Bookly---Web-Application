@@ -5,22 +5,22 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="ISO-8859-1" />
+        <%@ include file="/html/cdn.html" %>
     <link
       rel="stylesheet"
-      href="../../static/css/base/root.css"
+      href="${pageContext.request.contextPath}/static/css/base/root.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="../../static/css/base/globals.css"
+      href="${pageContext.request.contextPath}/static/css/base/globals.css"
       type="text/css"
     />
-    <link rel="stylesheet" href="../../static/css/components/forms.css"
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/components/forms.css"
     type="text/css" />
-    <%@ include file="/html/cdn.html" %>
+
   </head>
   <body>
-
  <%@ include file="/html/header.html" %>
         <div class="container">
             <div class="d-flex justify-content-center align-items-center vh-100">
@@ -45,5 +45,7 @@
                 </div>
             </div>
         </div>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>

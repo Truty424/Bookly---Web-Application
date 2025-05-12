@@ -11,7 +11,7 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
     <title>Home - Bookly</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <%@ include file="/html/cdn.html" %>
     <!-- Base styles -->
     <link
       rel="stylesheet"
@@ -43,7 +43,6 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
       href="${pageContext.request.contextPath}/static/css/pages/home.css"
       type="text/css"
     />
-    <%@ include file="/html/cdn.html" %>
   </head>
 
   <body>
@@ -157,11 +156,17 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
                   </div>
                   <h3 class="book-title">${book.title}</h3>
                   <p class="book-author">
-                    <c:forEach var="author" items="${bookAuthors[book.bookId]}" varStatus="authorStatus">
+                    <c:forEach
+                      var="author"
+                      items="${bookAuthors[book.bookId]}"
+                      varStatus="authorStatus"
+                    >
                       ${author.name}<c:if test="${!authorStatus.last}">, </c:if>
-                  </c:forEach>
+                    </c:forEach>
                   </p>
-                  <p class="book-rating" data-format="rating">${book.average_rate}</p>
+                  <p class="book-rating" data-format="rating">
+                    ${book.average_rate}
+                  </p>
                   <p class="book-price" data-format="price">${book.price}</p>
                 </a>
               </c:forEach>
@@ -251,6 +256,9 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
     </div>
 
     <%@ include file="/html/footer.html" %>
+    <!-- Include this script at the end of body or in your HTML layout -->
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/carousel.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
   </body>

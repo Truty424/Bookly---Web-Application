@@ -24,10 +24,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
     <div class="book-details-container">
       <div class="back-button-wrapper">
-        <a
-          href="${pageContext.request.contextPath}/book"
-          class="btn back-btn"
-        >
+        <a href="${pageContext.request.contextPath}/book" class="btn back-btn">
           <i class="fas fa-arrow-left"></i> Back to All Books
         </a>
       </div>
@@ -252,7 +249,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </c:choose>
     </div>
 
-    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
     <%@ include file="/html/footer.html" %>
+    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>

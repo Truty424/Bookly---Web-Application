@@ -12,6 +12,7 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 25px;
     justify-content: center;
+    margin: 20px 0;
 }
 
 .publisher-card {

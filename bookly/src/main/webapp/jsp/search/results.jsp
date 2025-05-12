@@ -108,5 +108,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
     </div>
 
     <%@ include file="/html/footer.html" %>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>

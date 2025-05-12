@@ -1,95 +1,444 @@
-/* Add this at the bottom of your CSS file */
-
-/* General Container Padding */
-.container {
-  padding-left: 16px;
-  padding-right: 16px;
-  max-width: 1200px;
-  margin: 0 auto;
+/* Reset and Base Styles */
+.btn {
+  cursor: pointer;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-/* Typography Adjustments */
+
+.section {
+  padding: 40px 0;
+}
+
+/* Hero Section */
+.hero {
+  padding: 60px 20px;
+  background-color: #fdf6f0;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 40px;
+}
+
+.hero-text h1 {
+  font-size: 48px;
+  font-weight: 700;
+  color: #2d2d2d;
+  margin-bottom: 20px;
+}
+
+.hero-text p {
+  font-size: 18px;
+  margin-bottom: 30px;
+  color: #555;
+}
+
+.search-container {
+  margin-bottom: 25px;
+}
+
+.search-bar-hero {
+  display: flex;
+  border: 2px solid #f4a261;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.search-bar-hero input {
+  flex: 1;
+  padding: 15px 20px;
+  border: none;
+  outline: none;
+}
+
+.search-btn-hero {
+  width: 90px;
+  background: linear-gradient(to right, #FC8C59, #f99c71);
+  color: #fff;
+  border-radius: 0 20px 20px 0;
+  border: 1px solid var(--color-primary-hover);
+  padding: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.reviews-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.reviewer-avatars {
+  display: flex;
+}
+
+.book-rating {
+  color: #241A00;
+}
+
+.book-rating, .book-price,.book-author {
+  margin-bottom: 4px;
+}
+
+.reviewer-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  margin-left: -10px;
+  object-fit: cover;
+}
+
+.review-info p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.stars {
+  color: #f4a261;
+  font-size: 16px;
+}
+.hero-image {
+  display: flex;
+  justify-items: center;
+  align-items: center;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Features Section */
+.features {
+  padding: 60px 0;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.feature-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffebd4;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-primary);
+}
+
+.feature-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.feature-desc {
+  color: #666;
+  font-size: 14px;
+}
+
+.feature-link {
+  color: #6b46c1;
+  font-weight: 500;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+}
+
+/* Books Section */
+.books-section {
+  padding: 60px 0;
+}
+
+.section-header {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+.section-subtitle {
+  color: #666;
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.book-card {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: transform 0.3s ease;
+}
+
+.book-card:hover {
+  transform: scale(0.9);
+}
+
+.book-cover {
+  height: 300px;
+  background-color: #f3f4f6;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.book-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.book-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 12px 0;
+}
+
+.book-author {
+  color: #666;
+  font-size: 14px;
+}
+
+.book-price {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+
+/* Quote Section */
+.quote-section {
+  padding: 80px 0;
+  background-color: #fed7aa;
+  text-align: center;
+}
+
+.quote-text {
+  font-size: 24px;
+  font-style: italic;
+  max-width: 800px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+}
+
+.quote-author {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.author-img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #ddd;
+}
+
+.author-name {
+  font-weight: 600;
+}
+
+.categories-section {
+  background-color: #2d2d2d;
+  padding: 40px 0;
+  color: white;
+}
+
+.categories-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.categories-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+
+.view-all {
+  font-size: 14px;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.view-all:hover {
+  font-size: 14px;
+  color: var(--color-primary-hover);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.categories-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+}
+
+.category-list {
+  background-color: #f7f7f7;
+  color: #333;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  font-weight: 500;
+  cursor: pointer;
+  list-style: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.category-list:hover {
+  background-color: #f4a261;
+  color: #fff;
+}
+
+/* Benefits Section */
+.benefits-section {
+  padding: 60px 0;
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.benefit-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+}
+
+.benefit-icon {
+  width: 40px;
+  height: 40px;
+  background-color: #fed7aa;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f56565;
+  font-weight: bold;
+}
+
+.benefit-content h4 {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.benefit-content p {
+  color: #666;
+  font-size: 14px;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+  .hero h1 {
+    font-size: 40px;
+  }
+
+  .hero-image {
+    width: 45%;
+  }
+
+  .holiday-guide {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .guide-image {
+    height: 300px;
+  }
+}
+
 @media (max-width: 768px) {
-  .hero-text h1 {
-    font-size: 28px;
+  .header-top {
+    flex-wrap: wrap;
   }
 
-  .hero-text p {
-    font-size: 16px;
+  .nav-links {
+    min-width: max-content;
   }
 
-  .search-bar-hero input {
-    padding: 12px 16px;
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
+  }
+  .reviewer-avatars {
+    justify-content: center;
   }
 
-  .search-btn-hero {
-    padding: 12px;
-    width: auto;
-  }
-
-  .book-title {
-    font-size: 14px;
-  }
-
-  .section-title {
-    font-size: 24px;
+  .features-grid,
+  .books-grid,
+  .benefits-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 
   .quote-text {
-    font-size: 18px;
-    padding: 0 10px;
+    font-size: 20px;
   }
 }
 
-/* Button Padding Scaling */
 @media (max-width: 576px) {
-  .btn, .search-btn-hero {
-    padding: 10px 14px;
-    font-size: 14px;
-  }
-
-  .hero-text h1 {
-    font-size: 24px;
-  }
-
-  .reviewer-img {
-    width: 35px;
-    height: 35px;
-  }
-
-  .benefit-icon {
-    width: 36px;
-    height: 36px;
-  }
-
-  .author-img {
-    width: 40px;
-    height: 40px;
-  }
-
-  .categories-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Flex Wraps for Smaller Screens */
-@media (max-width: 768px) {
-  .reviews-container {
-    flex-direction: column;
-    align-items: center;
+  .header-top {
+    justify-content: center;
     text-align: center;
   }
 
-  .carousel-wrapper {
-    flex-direction: column;
-    gap: 16px;
+  .hero h1 {
+    font-size: 32px;
   }
 
-  .carousel-btn {
-    order: 1;
+  .section-title {
+    font-size: 28px;
   }
 
-  .carousel-grid {
-    order: 2;
+  .features-grid,
+  .books-grid,
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+  .categories-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }

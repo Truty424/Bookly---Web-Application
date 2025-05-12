@@ -90,7 +90,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </div>
 
           <div class="row">
-            <div class="col-md-6 mb-3 form-group" style="position: relative;">
+            <div class="col-md-6 mb-3 form-group" style="position: relative">
               <label for="password">Password</label>
               <input
                 class="form-control"
@@ -151,5 +151,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
       </div>
     </div>
     <script src="../../static/js/toggle-password.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>

@@ -16,7 +16,7 @@
     <link
       rel="stylesheet"
       href="${pageContext.request.contextPath}/static/css/pages/book-search.css"
-      type="text/css" 
+      type="text/css"
     />
   </head>
   <body>
@@ -29,5 +29,7 @@
       </form>
     </div>
     <%@ include file="/html/footer.html" %>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>
