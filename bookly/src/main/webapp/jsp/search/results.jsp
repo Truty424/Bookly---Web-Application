@@ -27,7 +27,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
   <body>
     <%@ include file="/html/header.html" %>
 
-    <div class="search-container">
+    <main class="container">
       <div class="d-flex justify-content-between align-items-center">
         <h2>Search Results</h2>
         <div>
@@ -105,7 +105,7 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
           <p class="no-results">No results found for your search.</p>
         </c:otherwise>
       </c:choose>
-    </div>
+    </main>
 
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>

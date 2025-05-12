@@ -25,7 +25,7 @@ import="java.util.List" %>
   <body>
     <%@ include file="/html/header.html" %>
 
-    <div class="checkout-grid-container">
+    <main class="checkout-grid-container">
       <!-- LEFT SIDE: BOOK CARDS -->
       <div class="checkout-left">
         <h2 class="section-title">Your Cart</h2>
@@ -125,7 +125,7 @@ import="java.util.List" %>
           <button type="submit" class="order-button">Order now</button>
         </form>
       </div>
-    </div>
+    </main>
 
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/creditCard.js"></script>

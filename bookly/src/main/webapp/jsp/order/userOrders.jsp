@@ -22,8 +22,8 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
   <body>
     <%@ include file="/html/header.html" %>
 
-    <div class="orders-container">
-      <h1>Your Orders</h1>
+    <main class="orders-container">
+      <h2>Your Orders</h2>
 
       <c:choose>
         <c:when test="${not empty orders}">
@@ -67,7 +67,7 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
           <p>No orders found.</p>
         </c:otherwise>
       </c:choose>
-    </div>
+    </main>
 
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>

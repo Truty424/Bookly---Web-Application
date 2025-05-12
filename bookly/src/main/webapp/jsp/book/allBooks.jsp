@@ -25,7 +25,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   <body>
     <%@ include file="/html/header.html" %>
 
-    <div class="container py-5">
+    <main class="container py-5">
       <div class="books-grid">
         <c:choose>
           <c:when test="${not empty all_books}">
@@ -51,7 +51,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </c:otherwise>
         </c:choose>
       </div>
-    </div>
+    </main>
 
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>

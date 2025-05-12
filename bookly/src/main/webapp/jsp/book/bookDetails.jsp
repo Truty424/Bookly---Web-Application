@@ -22,7 +22,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   <body>
     <%@ include file="/html/header.html" %>
 
-    <div class="book-details-container">
+    <main class="book-details-container">
       <div class="back-button-wrapper">
         <a href="${pageContext.request.contextPath}/book" class="btn back-btn">
           <i class="fas fa-arrow-left"></i> Back to All Books
@@ -247,7 +247,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <p>Book details not found.</p>
         </c:otherwise>
       </c:choose>
-    </div>
+    </main>
 
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>

@@ -21,9 +21,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   </head>
   <body>
     <%@ include file="/html/header.html" %>
-    <div class="search-container">
-      <h1>Books by <c:out value="${publisher_name}" /></h1>
-
+    <main class="container py-4">
+      <div class="d-flex justify-content-between align-items-center py-2">
+        <h2>Books by <c:out value="${publisher_name}" /></h2>
+        <a href="${pageContext.request.contextPath}/publisher" class="btn back-btn">
+          <i class="fas fa-arrow-left"></i> Back to All Publishers
+        </a>
+      </div>
       <c:choose>
         <c:when test="${not empty publisher_books}">
           <ul class="book-list">
@@ -64,16 +68,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <p class="no-results">No books found for this publisher.</p>
         </c:otherwise>
       </c:choose>
-
-      <div class="home-button-wrapper">
-        <a
-          href="${pageContext.request.contextPath}/publisher"
-          class="btn btn-primary"
-        >
-          <i class="fas fa-arrow-left"></i> Back to All Publishers
-        </a>
-      </div>
-    </div>
+    </main>
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>

@@ -21,7 +21,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   </head>
   <body>
     <%@ include file="/html/header.html" %>
-    <div class="search-container">
+    <main class="container">
       <div class="d-flex justify-content-between align-items-center my-4">
         <h2>Books in <c:out value="${category_name}" /></h2>
         <div class="home-button-wrapper">
@@ -77,7 +77,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           <p class="no-results">No books found in this category.</p>
         </c:otherwise>
       </c:choose>
-    </div>
+    </main>
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>

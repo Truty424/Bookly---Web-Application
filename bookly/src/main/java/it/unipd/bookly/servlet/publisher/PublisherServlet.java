@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+import it.unipd.bookly.dao.publisher.GetPublisherByIdDAO;
+
 /**
  * Handles GET requests for: - /publisher → show all publishers -
  * /publisher/{publisherId} → show books by specific publisher
@@ -62,11 +64,25 @@ public class PublisherServlet extends AbstractDatabaseServlet {
     }
 
     private void showBooksByPublisher(HttpServletRequest req, HttpServletResponse resp, int publisherId) throws Exception {
+        List<Book> books;
+        Publisher publisher;
         try (var con = getConnection()) {
-            List<Book> books = new GetBooksByPublisherDAO(con, publisherId).access().getOutputParam();
-            req.setAttribute("publisher_books", books);
-            req.setAttribute("publisher_id", publisherId);
-            req.getRequestDispatcher("/jsp/publisher/publisherBooks.jsp").forward(req, resp);
+            books = new GetBooksByPublisherDAO(con, publisherId).access().getOutputParam();
         }
+        try (var con = getConnection()) {
+            // Fetch publisher details (name) by publisherId
+            publisher = new GetPublisherByIdDAO(con, publisherId).access().getOutputParam();
+        }
+
+        // If publisher exists, set the publisher name, else set a default message
+        if (publisher != null) {
+            req.setAttribute("publisher_name", publisher.getPublisherName());  // Assuming Publisher has a getName() method
+        } else {
+            req.setAttribute("publisher_name", "Unknown Publisher");
+        }
+
+        req.setAttribute("publisher_books", books);
+        req.setAttribute("publisher_id", publisherId);
+        req.getRequestDispatcher("/jsp/publisher/publisherBooks.jsp").forward(req, resp);
     }
 }

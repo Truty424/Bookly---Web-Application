@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="ISO-8859-1" />
-        <%@ include file="/html/cdn.html" %>
+      <%@ include file="/html/cdn.html" %>
     <link
       rel="stylesheet"
       href="${pageContext.request.contextPath}/static/css/base/root.css"
@@ -22,8 +22,8 @@
   </head>
   <body>
  <%@ include file="/html/header.html" %>
-        <div class="container">
-            <div class="d-flex justify-content-center align-items-center vh-100">
+        <main class="container">
+            <div class="d-flex justify-content-center align-items-center">
                 <div class="card">
                     <h2>Change Password</h2>
                     <form
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+          </main>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>

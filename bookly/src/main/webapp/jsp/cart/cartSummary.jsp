@@ -26,7 +26,7 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.CartItem"
       </head>
       <body>
         <%@ include file="/html/header.html" %>
-        <div class="cart-container">
+        <main class="cart-container">
           <h2>Shopping Cart</h2>
           <table border="cart-table">
             <tr>
@@ -49,7 +49,7 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.CartItem"
           <div class="total-bar">
             Total: €<%= total != null ? total : "0.00" %>
           </div>
-        </div>
+        </main>
       </body>
       <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
       <script src="${pageContext.request.contextPath}/static/js/main.js"></script>

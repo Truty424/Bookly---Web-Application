@@ -12,7 +12,7 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.Author" %>
         <title>Author List</title>
       </head>
       <body>
-        <div class="authors-container">
+        <main class="authors-container">
           <h2>All Authors</h2>
           <table border="1">
             <tr>
@@ -30,7 +30,7 @@ import="java.util.List" %> <%@ page import="it.unipd.bookly.resource.Author" %>
             </tr>
             <% } %>
           </table>
-        </div>
+        </main>
         <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
         <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
       </body>

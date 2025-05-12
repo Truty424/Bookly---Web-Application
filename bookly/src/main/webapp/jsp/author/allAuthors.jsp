@@ -22,7 +22,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   </head>
   <body>
     <%@ include file="/html/header.html" %>
-    <div class="container">
+    <main class="container">
       <h1 class="page-title">Book Authors</h1>
       <div class="authors-grid">
         <c:choose>
@@ -44,7 +44,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </c:otherwise>
         </c:choose>
       </div>
-    </div>
+    </main>
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
