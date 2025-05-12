@@ -1,9 +1,14 @@
-/* Sidebar styling */
+/* Sidebar */
 .sidebar {
     width: 250px;
-    background-color: #f8f9fa;
+    background-color: #fff;
     padding: 20px;
-    border-right: 1px solid #ddd;
+    border-right: 1px solid #e0e0e0;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    border-radius: 0 12px 12px 0;
 }
 
 .sidebar-content {
@@ -20,66 +25,138 @@
 }
 
 .sidebar-content ul li {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .sidebar-content ul li a {
     text-decoration: none;
     color: #333;
-    font-size: 1rem;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
     gap: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    transition: background-color 0.3s, color 0.3s;
+    font-weight: 500;
+}
+
+.sidebar-content ul li a i {
+    color: #FC8C59;
 }
 
 .sidebar-content ul li a:hover {
-    color: #007bff;
+    background-color: #f0f4ff;
+    color: #FC8C59;
 }
 
+.sidebar-content ul li a:hover i {
+    color: #f99c71;
+}
+
+.sidebar-content ul li a.active {
+    background-color: #e6edff;
+    color: #FC8C59;
+    font-weight: bold;
+}
+
+.sidebar-content ul li a.active i {
+    color: #f99c71;
+}
+
+/* Profile Section */
 .profile-content {
+    max-width: 900px;
+    margin: 40px auto;
     padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     flex: 1;
 }
 
+.profile-content h1,
+.profile-content h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+}
+
+/* Profile Card */
 .profile-card {
     display: flex;
-    align-items: flex-start;
-    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 25px;
     margin-bottom: 30px;
 }
 
 .profile-img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
-    border: 3px solid #dee2e6;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    align-self: flex-start;
 }
 
-.button-group {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 30px;
+/* Info + Upload */
+.profile-card div {
+    flex: 1;
+    min-width: 250px;
 }
 
-.action-btn {
-    background-color: #0d6efd;
+.profile-card div p {
+    margin: 8px 0;
+    color: #444;
+    font-size: 1rem;
+}
+
+.profile-card i {
+    color: #FC8C59;
+    margin-right: 6px;
+}
+
+.upload-profile-image h2 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.upload-profile-image label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.upload-profile-image input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.upload-profile-image .btn {
+    background-color: #FC8C59;
     color: white;
+    padding: 10px 20px;
     border: none;
-    padding: 10px 18px;
+    border-radius: 6px;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-.action-btn:hover {
-    background-color: #0056b3;
+.upload-profile-image .btn:hover {
+    background-color: #f99c71;
 }
 
+/* Orders Table */
 .order-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .order-table th,
@@ -89,7 +166,72 @@
     text-align: left;
 }
 
+.order-table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.order-table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+.order-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Error Message */
 .error {
     color: red;
     font-weight: bold;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+    }
+
+    .sidebar-content {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .sidebar-content ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .sidebar-content ul li {
+        margin: 0;
+    }
+
+    .sidebar-content ul li a {
+        flex: 1 0 auto;
+        justify-content: center;
+    }
+
+    .profile-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .profile-img {
+        margin-bottom: 15px;
+    }
+
+    .profile-card > div {
+        text-align: center;
+    }
+
+    .upload-profile-image label {
+        text-align: left;
+    }
 }
