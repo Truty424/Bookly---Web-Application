@@ -1,86 +1,33 @@
-/* userProfile.css - styled similar to login.css theme */
+/* login.css - styles for login.jsp */
 
-.profile-content {
-  max-width: 900px;
-  margin: 40px auto;
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
   padding: 30px;
   background-color: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.profile-content h1,
-.profile-content h2 {
+.login-container h2 {
   text-align: center;
-  margin-bottom: 25px;
-  color: #333;
+  margin-bottom: 20px;
 }
 
-/* Profile Card */
-.profile-card {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 25px;
-  margin-bottom: 30px;
-}
-
-.profile-img {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #ccc;
-  align-self: flex-start;
-}
-
-/* User Info */
-.profile-card div {
-  flex: 1;
-  min-width: 250px;
-}
-
-.profile-card div p {
-  margin: 8px 0;
-  color: #444;
-  font-size: 1rem;
-}
-
-.profile-card i {
-  color: #3366cc;
-  margin-right: 6px;
-}
-
-/* Upload Section */
-.upload-profile-image {
-  flex: 1;
-  min-width: 250px;
-}
-
-.upload-profile-image h2 {
-  font-size: 1.1rem;
-  margin-bottom: 15px;
-  color: #333;
-}
-
-.upload-profile-image label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  display: block;
-}
-
-.upload-profile-image input[type="file"] {
+.login-container input[type="text"],
+.login-container input[type="password"] {
   width: 100%;
-  padding: 8px;
+  padding: 10px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  margin-bottom: 10px;
 }
 
-.upload-profile-image .btn {
-  background-color: #FC8C59;
+.login-container button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3366cc;
   color: white;
-  padding: 10px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -88,53 +35,6 @@
   transition: background-color 0.3s;
 }
 
-.upload-profile-image .btn:hover {
+.login-container button:hover {
   background-color: #254d99;
-}
-
-/* Order Table */
-.order-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.order-table th,
-.order-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
-}
-
-.order-table th {
-  background-color: #f0f0f0;
-  font-weight: bold;
-}
-
-.order-table tr:nth-child(even) {
-  background-color: #fafafa;
-}
-
-.order-table tr:hover {
-  background-color: #f1f1f1;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .profile-card {
-      flex-direction: column;
-      align-items: center;
-  }
-
-  .profile-img {
-      margin-bottom: 15px;
-  }
-
-  .profile-card > div {
-      text-align: center;
-  }
-
-  .upload-profile-image label {
-      text-align: left;
-  }
 }
