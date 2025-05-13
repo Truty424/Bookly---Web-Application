@@ -1,51 +1,91 @@
-/* edit-user-profile.css - styles for editUserProfile.jsp */
+/* edit-user-profile.css */
 
 .profile-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 30px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
 
+.profile-container h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.profile-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"] {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #FC8C59;
+  outline: none;
+}
+
+.profile-container .btn {
+  padding: 12px;
+  background-color: #FC8C59;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.profile-container .btn:hover {
+  background-color: #f99c71;
+}
+
+/* Error or success feedback messages */
+.success-message {
+  color: #28a745;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.error-message {
+  color: #dc3545;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Responsive design */
+@media (max-width: 500px) {
+  .profile-container {
+      padding: 20px;
+      margin: 30px 16px;
   }
-  
+
   .profile-container h2 {
-    text-align: center;
-    margin-bottom: 25px;
+      font-size: 1.3rem;
   }
-  
-  .profile-container form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .profile-container label {
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .profile-container input[type="text"],
-  .profile-container input[type="email"],
-  .profile-container input[type="password"],
-  .profile-container input[type="tel"] {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-  }
-  
-  .profile-container button {
-    padding: 12px;
-    background-color: #3366cc;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  
-  .profile-container button:hover {
-    background-color: #254d99;
-  }
-  
+}

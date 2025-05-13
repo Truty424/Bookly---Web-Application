@@ -72,17 +72,21 @@
         <main class="profile-content">
           <h2>Edit User Profile</h2>
           <form
-            action="${pageContext.request.contextPath}/user/editUserProfile"
-            method="post"
-          >
-            <label for="name">First Name:</label>
+          action="${pageContext.request.contextPath}/user/editUserProfile"
+          method="post"
+        >
+          <div class="form-group">
+            <label for="firstname">First Name:</label>
             <input
               type="text"
               id="firstname"
               name="firstName"
               value="${user.firstName}"
               required
-            /><br />
+            />
+          </div>
+        
+          <div class="form-group">
             <label for="lastname">Last Name:</label>
             <input
               type="text"
@@ -90,7 +94,10 @@
               name="lastName"
               value="${user.lastName}"
               required
-            /><br />
+            />
+          </div>
+        
+          <div class="form-group">
             <label for="username">Username:</label>
             <input
               type="text"
@@ -98,7 +105,10 @@
               name="username"
               value="${user.username}"
               required
-            /><br />
+            />
+          </div>
+        
+          <div class="form-group">
             <label for="email">Email:</label>
             <input
               type="email"
@@ -106,22 +116,30 @@
               name="email"
               value="${user.email}"
               required
-            /><br />
+            />
+          </div>
+        
+          <div class="form-group">
             <label for="phone">Phone:</label>
             <input
-              type="text"
+              type="tel"
               id="phone"
               name="phone"
               value="${user.phone}"
-            /><br />
+            />
+          </div>
+        
+          <div class="form-group">
             <label for="address">Address:</label>
             <input
               type="text"
               id="address"
               name="address"
               value="${user.address}"
-            /><br />
-            <button type="submit">Save Changes</button>
+            />
+          </div>
+        
+          <button type="submit">Save Changes</button>
           </form>
         </main>
       </div>
