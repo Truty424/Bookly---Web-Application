@@ -283,17 +283,20 @@ header {
 
 /* Mobile view (max-width: 576px) */
 @media (max-width: 576px) {
+  .container {
+    padding: 0;
+  }
   .logo {
     justify-content: center;
     text-align: center;
   }
 
   .user-actions {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     display: flex;
-    margin: 0 15px;
+    margin: 0 5px;
   }
 
   .nav-links {
@@ -302,18 +305,32 @@ header {
   }
 
   .search-bar {
-    flex-direction: column;
+    flex-direction: row;
+    margin: 5px 0;
+    width: 100%;
+    min-width: 100%;
+    gap: 12px;
   }
 
   .search-bar select,
   .search-bar input,
   .search-btn {
-    width: 100%;
+    width: 20%;
     border-radius: 10px;
     margin-bottom: 10px;
   }
 
   .search-bar input {
-    border-left: 1px solid #ddd; /* reset borders when stacked */
+    border-left: 1px solid #ddd;
+    width: 70%;
+    padding: 8px;
+  }
+  .categories-grid {
+    padding: 0;
+  }
+
+  .search-btn-hero {
+    width: 58px;
+    font-size: 12px;
   }
 }

@@ -79,5 +79,6 @@
 @media (max-width: 576px) {
     .carousel-grid {
         grid-template-columns: repeat(auto-fit, minmax(90%, 1fr));
+        gap: 15px;
     }
 }

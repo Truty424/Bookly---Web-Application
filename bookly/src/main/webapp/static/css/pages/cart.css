@@ -21,7 +21,7 @@ body {
     flex: 2;
 }
 
-.cart-items h1 {
+.cart-items h2 {
     font-size: 2rem;
     margin-bottom: 30px;
 }
@@ -133,4 +133,12 @@ body {
 .text-danger {
     color: #dc3545;
     font-size: 0.95rem;
+}
+
+
+@media screen and (max-width: 576px) {
+    /* Buttons */
+.btn-cart {
+    width: 100%;
+    }
 }

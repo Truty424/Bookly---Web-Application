@@ -97,7 +97,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                         value="${book_details.bookId}"
                       />
                       <button class="btn btn-wishlist" type="submit">
-                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-edit"></i>
                       </button>
                     </form>
                   </c:when>
@@ -206,7 +206,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 <!-- Rating Stars -->
                 <div class="rating-stars">
                   <label>Select Rating:</label>
-                  <div class="stars">
+                  <div class="stars" style="direction: rtl;">
                     <c:forEach begin="1" end="5" var="i">
                       <input
                         type="radio"

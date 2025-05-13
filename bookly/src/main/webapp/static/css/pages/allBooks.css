@@ -75,3 +75,52 @@
     margin-top: 30px;
     text-align: center;
 }
+
+/* Responsive styles */
+@media screen and (max-width: 768px) {
+    .all-books-title {
+        font-size: 28px;
+    }
+
+    .book-card {
+        max-width: 240px;
+        padding: 12px;
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 20px;
+    }
+
+    .book-title {
+        font-size: 14px;
+    }
+
+    .page-title {
+        font-size: 1.2rem;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .all-books-title {
+        font-size: 24px;
+    }
+
+    .book-card {
+        max-width: 200px;
+        padding: 10px;
+    }
+
+    .books-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .book-title {
+        font-size: 12px;
+    }
+
+    .page-title {
+        font-size: 1rem;
+    }
+}
