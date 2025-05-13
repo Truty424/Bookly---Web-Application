@@ -28,7 +28,8 @@
 }
 
 .form-group label {
-  margin-bottom: 6px;
+  margin-top: 5px;
+  margin-bottom: 10px;
   font-weight: 500;
   color: #444;
 }
@@ -76,6 +77,24 @@
   color: #dc3545;
   font-weight: bold;
   margin-top: 10px;
+}
+
+.save-button {
+  background: linear-gradient(to right, #FC8C59, #f99c71) ;
+  color: #fff ;
+  outline: none ;
+  border: none ;
+  padding: 10px 20px ;
+  border-radius: 4px ;
+  cursor: pointer ;
+  font-size: 14px ;
+  transition: background 0.3s ease, transform 0.5s ease ;
+  margin-top: 20px;
+}
+
+.save-button:hover {
+  background-color: var(--color-primary) ;
+  transform: scale(0.9) ;
 }
 
 /* Responsive design */

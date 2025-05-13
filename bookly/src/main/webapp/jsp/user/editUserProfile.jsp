@@ -17,13 +17,15 @@
     />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/pages/userDashboard.css"
+      href="${pageContext.request.contextPath}/static/css/pages/editUserProfile.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/pages/editUserProfile.css"
+      href="${pageContext.request.contextPath}/static/css/pages/userDashboard.css"
+      type="text/css"
     />
+
     <%@ include file="/html/cdn.html" %>
   </head>
   <body>
@@ -70,7 +72,7 @@
           </div>
         </aside>
         <main class="profile-content">
-          <h2>Edit User Profile</h2>
+          <h2>Edit Your Profile</h2>
           <form
           action="${pageContext.request.contextPath}/user/editUserProfile"
           method="post"
@@ -138,8 +140,7 @@
               value="${user.address}"
             />
           </div>
-        
-          <button type="submit">Save Changes</button>
+          <button type="submit" class="save-button">Save The Changes</button>
           </form>
         </main>
       </div>
