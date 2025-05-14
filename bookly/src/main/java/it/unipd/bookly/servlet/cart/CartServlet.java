@@ -138,9 +138,12 @@ public class CartServlet extends AbstractDatabaseServlet {
             req.getSession().removeAttribute("discountError");
         }
 
+        String formattedTotal = String.format("%.2f", totalPrice);
+        String formattedFinalTotal = String.format("%.2f", discountedTotal);
+
         req.setAttribute("cart_books", cartBooks);
-        req.setAttribute("total_price", totalPrice);
-        req.setAttribute("final_total", discountedTotal);
+        req.setAttribute("total_price", formattedTotal);
+        req.setAttribute("final_total", formattedFinalTotal);
 
         req.getRequestDispatcher("/jsp/cart/viewCart.jsp").forward(req, resp);
     }

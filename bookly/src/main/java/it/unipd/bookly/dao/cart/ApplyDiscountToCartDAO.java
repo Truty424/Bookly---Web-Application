@@ -1,7 +1,7 @@
 package it.unipd.bookly.dao.cart;
 
 import it.unipd.bookly.dao.AbstractDAO;
-
+import it.unipd.bookly.dao.discount.DiscountQueries;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -30,9 +30,9 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<Double> {
         con.setAutoCommit(false); // Begin transaction
 
         try (
-            PreparedStatement getTotalStmt = con.prepareStatement(GET_CART_TOTAL);
-            PreparedStatement getDiscountStmt = con.prepareStatement(GET_DISCOUNT_PERCENTAGE);
-            PreparedStatement applyStmt = con.prepareStatement(APPLY_DISCOUNT)
+                PreparedStatement getTotalStmt = con.prepareStatement(CartQueries.GET_CART_TOTAL);
+                PreparedStatement getDiscountStmt = con.prepareStatement(DiscountQueries.GET_DISCOUNT_PERCENTAGE);
+                PreparedStatement updateCartStmt = con.prepareStatement(CartQueries.UPDATE_CART_TOTAL_WITH_DISCOUNT)
         ) {
             // 1. Get cart total price
             double totalPrice;
@@ -56,16 +56,19 @@ public class ApplyDiscountToCartDAO extends AbstractDAO<Double> {
                 }
             }
 
-            // 3. Apply discount to cart
-            applyStmt.setInt(1, discountId);
-            applyStmt.setInt(2, cartId);
-            applyStmt.executeUpdate();
-
-            // 4. Calculate and return the discounted price
+            // 3. Calculate the discounted price
             double discountedPrice = totalPrice * (1 - discountPercentage / 100.0);
-            this.outputParam = discountedPrice;
 
-            con.commit(); // All steps succeeded
+            // 4. Update the cart with discounted price and discount ID
+            updateCartStmt.setDouble(1, discountedPrice);
+            updateCartStmt.setInt(2, discountId);
+            updateCartStmt.setInt(3, cartId);
+            updateCartStmt.executeUpdate();
+
+            // 5. Set the discounted price as output and commit
+            this.outputParam = discountedPrice;
+            con.commit();
+
             LOGGER.info("Discount {} applied to cart {}. Final price: {}", discountId, cartId, discountedPrice);
 
         } catch (Exception ex) {

@@ -1,6 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %> <%@ taglib
 uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> <%@ page
 isELIgnored="false" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 
 <html>
   <head>
@@ -50,7 +52,7 @@ isELIgnored="false" %>
                   <c:otherwise>Unknown</c:otherwise>
                 </c:choose>
               </p>
-              <p class="book-price">€${book.price}</p>
+              <p><span style="color: #ec8554;">€<fmt:formatNumber value="${book.price}" type="number" minFractionDigits="2" maxFractionDigits="2"/></span></p>
               <form
                 action="${pageContext.request.contextPath}/cart/remove/${book.bookId}"
                 method="post"
@@ -88,12 +90,13 @@ isELIgnored="false" %>
         <c:if test="${not empty applied_discount}">
           <p class="text-success">
             Discount Applied: ${applied_discount.code} -
-            ${applied_discount.discountRate * 100}% off
+            ${applied_discount.discountPercentage}% OFF
           </p>
         </c:if>
 
-        <p><strong>Total:</strong> €${total_price}</p>
-        <p><strong>Final Total:</strong> €${final_total}</p>
+        <p><strong>Total:</strong> <span data-format="price">${total_price}</span></p>
+        <p><strong>Final Total:</strong> <span data-format="price">${final_total}</span></p>
+
 
         <form action="${pageContext.request.contextPath}/checkout" method="get">
           <button type="submit" class="btn-cart w-100">Go to Checkout</button>
