@@ -17,30 +17,70 @@
     />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/components/forms.css"
+      href="${pageContext.request.contextPath}/static/css/pages/userDashboard.css"
       type="text/css"
     />
     <link
-    rel="stylesheet"
-    href="${pageContext.request.contextPath}/static/css/pages/changePassword.css"
-    type="text/css"
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/static/css/pages/changePassword.css"
+      type="text/css"
     />
   </head>
   <body>
-    <%@ include file="/html/header.html" %>
-    <main class="container">
-      <div class="d-flex justify-content-center align-items-center">
-        <div class="card">
+    <div class="container-fluid p-0">
+      <div class="d-flex">
+        <aside class="sidebar">
+          <div class="sidebar-content">
+            <ul class="nav-top">
+              <li>
+                <a href="${pageContext.request.contextPath}/user/profile"
+                  ><i class="fas fa-user"></i> My profile</a
+                >
+              </li>
+              <li>
+                <a
+                  href="${pageContext.request.contextPath}/user/editUserProfile"
+                  ><i class="fas fa-edit"></i> Edit Profile</a
+                >
+              </li>
+              <li>
+                <a href="${pageContext.request.contextPath}/user/changePassword"
+                  class="active"
+                  ><i class="fas fa-lock"></i> Edit Password</a
+                >
+              </li>
+              <li>
+                <a href="${pageContext.request.contextPath}/wishlist"
+                  ><i class="fas fa-heart"></i> My Wishlist</a
+                >
+              </li>
+            </ul>
+
+            <ul class="nav-bottom">
+              <li>
+                <a href="${pageContext.request.contextPath}/"
+                  ><i class="fas fa-home"></i> Home Page</a
+                >
+              </li>
+              <li>
+                <a href="${pageContext.request.contextPath}/logout"
+                  ><i class="fas fa-sign-out-alt"></i> Logout</a
+                >
+              </li>
+            </ul>
+          </div>
+        </aside>
+
+        <main class="profile-content">
           <h2>Change Your Password</h2>
           <form
             action="${pageContext.request.contextPath}/user/changePassword"
             method="post"
-            class="form-group"
           >
             <div class="form-group">
-              <label for="currentPassword">Your Current Password</label>
+              <label for="currentPassword">Your Current Password :</label>
               <input
-                type="password"
+                type="currentpassword"
                 name="currentPassword"
                 id="currentPassword"
                 placeholder="Enter your current password"
@@ -48,9 +88,9 @@
               />
             </div>
             <div class="form-group">
-              <label for="newPassword">Your New Password</label>
+              <label for="newPassword">Your New Password :</label>
               <input
-                type="password"
+                type="newPassword"
                 name="newPassword"
                 id="newPassword"
                 placeholder="Enter your new password"
@@ -59,10 +99,9 @@
             </div>
             <button type="submit" class="update-button">Update Password</button>
           </form>
-        </div>
+        </main>
       </div>
-    </main>
+    </div>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>
