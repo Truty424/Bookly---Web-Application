@@ -33,7 +33,7 @@
   </head>
   <body>
     <%@ include file="/html/header.html" %>
-    <div class="container py-5">
+    <div class="container py-5 px-3">
       <div class="row justify-content-center">
         <div class="col-lg-5 col-md-7 col-12">
           <div class="login-card shadow-sm p-4">

@@ -112,8 +112,8 @@
     }
 
     .books-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 15px;
+        grid-template-columns: 1fr;
+        place-items: center;
     }
 
     .book-title {

@@ -58,3 +58,15 @@
     color: #999;
     margin-top: 20px;
 }
+
+@media (max-width: 576px) {
+    .publisher-card {
+        max-width: 280px;
+        min-width: 280px;
+    }
+    .publishers-grid {
+        grid-template-columns: 1fr;
+        place-items: center;
+    }
+    
+}

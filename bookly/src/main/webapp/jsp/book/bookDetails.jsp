@@ -4,6 +4,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
   <head>
     <title>Book Details</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%@ include file="/html/cdn.html" %>
     <link
       rel="stylesheet"
@@ -22,7 +24,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   <body>
     <%@ include file="/html/header.html" %>
 
-    <main class="book-details-container">
+    <main class="container">
       <div class="back-button-wrapper">
         <a href="${pageContext.request.contextPath}/book" class="btn back-btn">
           <i class="fas fa-arrow-left"></i> Back to All Books

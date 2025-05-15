@@ -5,6 +5,8 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html>
   <head>
     <title>Your Orders</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%@ include file="/html/cdn.html" %>
     <link
       rel="stylesheet"

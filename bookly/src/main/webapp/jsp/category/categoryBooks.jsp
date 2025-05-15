@@ -3,6 +3,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
   <head>
     <title>Books in Category</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%@ include file="/html/cdn.html" %>
     <link
       rel="stylesheet"
@@ -21,8 +23,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   </head>
   <body>
     <%@ include file="/html/header.html" %>
-    <main class="container">
-      <div class="d-flex justify-content-between align-items-center my-4">
+    <main class="container my-2">
+      <div class="book-wrapper">
         <h2>Books in <c:out value="${category_name}" /></h2>
         <div class="home-button-wrapper">
           <a

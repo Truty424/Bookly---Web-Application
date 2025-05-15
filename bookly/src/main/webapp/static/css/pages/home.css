@@ -438,7 +438,15 @@
   .benefits-grid {
     grid-template-columns: 1fr;
   }
+
+  .features,.books-carousel-section,.quote-section,.categories-grid,.benefits-section {
+    padding: 12px;
+  }
   .categories-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
+  }
+
+  .categories-section {
+    padding: 40px 20px;
   }
 }

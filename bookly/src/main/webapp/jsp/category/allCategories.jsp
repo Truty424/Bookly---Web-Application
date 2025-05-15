@@ -3,6 +3,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
   <head>
     <title>All Categories</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%@ include file="/html/cdn.html" %>
     <link
       rel="stylesheet"
       href="${pageContext.request.contextPath}/static/css/base/root.css"
@@ -15,10 +18,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     />
     <link
       rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/pages/allCategories.css"
+      href="../../static/css/pages/allCategories.css"
       type="text/css"
     />
-    <%@ include file="/html/cdn.html" %>
   </head>
   <body>
     <%@ include file="/html/header.html" %>

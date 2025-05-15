@@ -296,7 +296,7 @@ header {
     align-items: center;
     justify-content: space-between;
     display: flex;
-    margin: 0 5px;
+    padding: 0 12px;
   }
 
   .nav-links {
@@ -306,19 +306,22 @@ header {
 
   .search-bar {
     flex-direction: row;
-    margin: 5px 0;
     width: 100%;
     min-width: 100%;
     gap: 12px;
+    padding: 12px;
+    margin: 0;
   }
 
   .search-bar select,
   .search-bar input,
   .search-btn {
-    width: 20%;
+    width: auto;
+    padding: 12px;
     border-radius: 10px;
     margin-bottom: 10px;
   }
+
 
   .search-bar input {
     border-left: 1px solid #ddd;

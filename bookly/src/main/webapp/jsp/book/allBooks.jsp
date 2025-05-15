@@ -5,20 +5,21 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   <head>
     <title>All Books</title>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%@ include file="/html/cdn.html" %>
     <link
       rel="stylesheet"
-      href="../../static/css/base/root.css"
+      href="${pageContext.request.contextPath}/static/css/base/root.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="../../static/css/base/globals.css"
+      href="${pageContext.request.contextPath}/static/css/base/globals.css"
       type="text/css"
     />
     <link
       rel="stylesheet"
-      href="../../static/css/pages/allBooks.css"
+      href="${pageContext.request.contextPath}/static/css/pages/allBooks.css"
       type="text/css"
     />
   </head>

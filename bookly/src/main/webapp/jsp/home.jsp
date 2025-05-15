@@ -198,7 +198,7 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
       </section>
 
       <section class="categories-section">
-        <div class="container">
+        <div>
           <div class="categories-header">
             <h2 class="categories-title">Categories</h2>
             <a class="view-all" href="/category">View All →</a>
