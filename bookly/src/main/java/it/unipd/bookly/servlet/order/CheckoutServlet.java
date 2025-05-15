@@ -45,9 +45,15 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             double total = calculateCartTotal(books);
             double finalTotal = applyDiscountIfExists(getConnection(), cart.getCartId(), session);
 
+            // Format the final total to 2 decimal places
+            String formattedTotal = String.format("%.2f", total);
+            String formattedFinalTotal = String.format("%.2f", finalTotal);
+
+            // Pass the formatted values to the JSP
             req.setAttribute("cart_books", books);
-            req.setAttribute("total_price", total);
-            req.setAttribute("final_total", finalTotal);
+            req.setAttribute("total_price", formattedTotal);
+            req.setAttribute("final_total", formattedFinalTotal);
+
             req.getRequestDispatcher("/jsp/order/checkout.jsp").forward(req, res);
         } catch (Exception e) {
             LOGGER.error("Checkout GET error: {}", e.getMessage(), e);
@@ -57,6 +63,7 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             LogContext.removeResource();
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {

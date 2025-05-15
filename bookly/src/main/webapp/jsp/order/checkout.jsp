@@ -123,7 +123,7 @@ import="java.util.List" %>
               ></textarea>
             </div>
           </div>
-          <p><strong>Total:</strong> €${total_price}</p>
+          <p><strong>Final Total:</strong> <span data-format="price">${final_total}</span> €</p>
           <button type="submit" class="order-button">Order now</button>
         </form>
       </div>

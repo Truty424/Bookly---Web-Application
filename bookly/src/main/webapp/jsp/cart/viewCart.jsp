@@ -96,8 +96,8 @@ isELIgnored="false" %>
           </p>
         </c:if>
 
-        <p><strong>Total:</strong> <span data-format="price">${total_price}</span></p>
-        <p><strong>Final Total:</strong> <span data-format="price">${final_total}</span></p>
+        <p><strong>Total:</strong> <span data-format="price">${total_price}</span> €</p>
+        <p><strong>Final Total:</strong> <span data-format="price">${final_total}</span> €</p>
 
 
         <form action="${pageContext.request.contextPath}/checkout" method="get">
