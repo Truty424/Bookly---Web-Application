@@ -78,11 +78,25 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
           <c:if test="${not empty user}">
             <div class="profile-card">
-              <img
-                class="profile-img"
-                src="${pageContext.request.contextPath}/user/image/${user.userId}"
-                alt="Profile Image"
-              />
+              <!-- Profile Image Section -->
+              <div class="profile-img-wrapper">
+               <c:choose>
+                <c:when test="${not empty user.userId}">
+                 <img
+                  src="${pageContext.request.contextPath}/user/image/${user.userId}"
+                  alt="Profile Image"
+                  class="profile-img"
+                 />
+                </c:when>
+               <c:otherwise>
+               <div class="profile-img-placeholder">
+                <i class="fas fa-user fa-2x"></i>
+                 <span>Profile Image</span>
+               </div>
+               </c:otherwise>
+               </c:choose>
+              </div>
+
               <div>
                 <p>
                   <i class="fas fa-user-circle"></i
