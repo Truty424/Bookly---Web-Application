@@ -54,7 +54,7 @@ isELIgnored="false" %>
                   <c:otherwise>Unknown</c:otherwise>
                 </c:choose>
               </p>
-              <p><span style="color: #ec8554;">€<fmt:formatNumber value="${book.price}" type="number" minFractionDigits="2" maxFractionDigits="2"/></span></p>
+              <div class="book-price"><span data-format="price">${book.price}</span></div>
               <form
                 action="${pageContext.request.contextPath}/cart/remove/${book.bookId}"
                 method="post"
@@ -96,8 +96,8 @@ isELIgnored="false" %>
           </p>
         </c:if>
 
-        <p><strong>Total:</strong> <span data-format="price">${total_price}</span> €</p>
-        <p><strong>Final Total:</strong> <span data-format="price">${final_total}</span> €</p>
+        <p><strong>Total:</strong> <span data-format="price">${total_price}</span> </p>
+        <p><strong>Final Total:</strong> <span data-format='price'>${final_total}</span> </p>
 
 
         <form action="${pageContext.request.contextPath}/checkout" method="get">
@@ -109,5 +109,6 @@ isELIgnored="false" %>
     <%@ include file="/html/footer.html" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
   </body>
 </html>

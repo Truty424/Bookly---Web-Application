@@ -55,7 +55,7 @@ import="java.util.List" %>
                   <c:otherwise>Unknown</c:otherwise>
                 </c:choose>
               </div>
-              <div class="book-price">€${book.price}</div>
+              <div class="book-price"><span data-format="price">${book.price}</span></div>
             </div>
           </div>
         </c:forEach>
@@ -123,7 +123,7 @@ import="java.util.List" %>
               ></textarea>
             </div>
           </div>
-          <p><strong>Final Total:</strong> <span data-format="price">${final_total}</span> €</p>
+          <p><strong>Final Total:</strong> <span data-format='price'>${final_total}</span> </p>
           <button type="submit" class="order-button">Order now</button>
         </form>
       </div>
@@ -133,5 +133,6 @@ import="java.util.List" %>
     <script src="${pageContext.request.contextPath}/static/js/creditCard.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
   </body>
 </html>

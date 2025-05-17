@@ -135,6 +135,12 @@ body {
     font-size: 0.95rem;
 }
 
+.book-price {
+    font-weight: bold;
+    color: #FC8C59;
+    margin-top: 8px;
+}
+
 
 @media screen and (max-width: 576px) {
     /* Buttons */

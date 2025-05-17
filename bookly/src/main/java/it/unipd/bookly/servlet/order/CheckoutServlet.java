@@ -51,8 +51,8 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
 
             // Pass the formatted values to the JSP
             req.setAttribute("cart_books", books);
-            req.setAttribute("total_price", formattedTotal);
-            req.setAttribute("final_total", formattedFinalTotal);
+            req.setAttribute("total_price", total);
+            req.setAttribute("final_total", finalTotal);
 
             req.getRequestDispatcher("/jsp/order/checkout.jsp").forward(req, res);
         } catch (Exception e) {
@@ -169,12 +169,8 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
         if (discount != null) {
             return new ApplyDiscountToCartDAO(con, cartId, discount.getDiscountId()).access().getOutputParam();
         }
-        Cart cart = getCartById(con, cartId);
-        if (cart == null) {
-            LOGGER.warn("Cart is null while applying discount.");
-            return 0.0;
-        }
-        return cart.getTotalPrice();
+        List<Book> books = getBooksInCart(con, cartId);
+        return calculateCartTotal(books);
     }
 
     private Cart getCartById(Connection con, int cartId) throws Exception {

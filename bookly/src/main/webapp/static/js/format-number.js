@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-format='price']").forEach((el) => {
     const value = parseFloat(el.textContent.trim());
     if (!isNaN(value)) {
-      el.textContent = `€${value.toFixed(2)}`;
+      el.textContent = `${value.toFixed(2)} €`;
     }
   });
 });
