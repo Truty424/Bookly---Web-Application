@@ -47,7 +47,7 @@
               </p>
               <p><strong>ISBN:</strong> ${book_details.isbn}</p>
               <p><strong>Language:</strong> ${book_details.language}</p>
-              <p><strong>Price:</strong> €${book_details.price}</p>
+              <p><strong>Price:</strong> <span data-format="price">${book_details.price}</span> </p>
               <p><strong>Average Rating:</strong> ${average_rating} / 5</p>
               <p><strong>Total Reviews:</strong> ${review_count}</p>
               <p><strong>Edition:</strong> ${book_details.edition}</p>

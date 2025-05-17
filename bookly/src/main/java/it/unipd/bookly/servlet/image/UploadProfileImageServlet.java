@@ -26,12 +26,12 @@ public class UploadProfileImageServlet extends HttpServlet {
             return;
         }
 
-        // Ścieżka do folderu na serwerze (realna, fizyczna ścieżka)
+
         String realPath = getServletContext().getRealPath(IMAGE_FOLDER);
         File uploadDir = new File(realPath);
         if (!uploadDir.exists()) uploadDir.mkdirs();
 
-        // Zapisujemy plik jako np. "5.jpg"
+
         File file = new File(uploadDir, userId + ".jpg");
 
         try (InputStream input = filePart.getInputStream();
