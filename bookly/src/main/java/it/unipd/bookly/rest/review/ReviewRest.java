@@ -104,9 +104,8 @@ public class ReviewRest extends AbstractRestResource {
 
     private void handleUpdateLikes(String path) throws Exception {
         int reviewId = extractIdFromPath(path);
-        Review update = mapper.readValue(req.getInputStream(), Review.class);
-
-        boolean success = new UpdateReviewLikesDAO(con, reviewId, update.getNumberOfLikes())
+        
+        boolean success = new UpdateReviewLikesDAO(con, reviewId)
                 .access().getOutputParam();
 
         if (success) {
@@ -122,9 +121,8 @@ public class ReviewRest extends AbstractRestResource {
 
     private void handleUpdateDislikes(String path) throws Exception {
         int reviewId = extractIdFromPath(path);
-        Review update = mapper.readValue(req.getInputStream(), Review.class);
 
-        boolean success = new UpdateReviewDisLikesDAO(con, reviewId, update.getNumberOfDislikes())
+        boolean success = new UpdateReviewDisLikesDAO(con, reviewId)
                 .access().getOutputParam();
 
         if (success) {
