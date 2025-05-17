@@ -7,7 +7,6 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
     <title>Search Results</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta charset="ISO-8859-1" />
     <link
       rel="stylesheet"
       href="${pageContext.request.contextPath}/static/css/base/root.css"
@@ -80,14 +79,8 @@ uri="http://java.sun.com/jsp/jstl/functions" %>
                       <c:otherwise>Unknown</c:otherwise>
                     </c:choose>
                   </p>
-                  <p><strong>Rate:</strong> ${book.average_rate}</p>
-                  <p>
-                    <strong>Price:</strong> €<fmt:formatNumber
-                      value="${book.price}"
-                      type="currency"
-                      currencySymbol="€"
-                    />
-                  </p>
+                  <p>Average Rating: <span data-format="rating">${book.average_rate}</span> / 5</p>
+                  <p><strong>Price:</strong> €${book.price}</p>
                   <form
                     action="${pageContext.request.contextPath}/book/${book.bookId}"
                     method="get"

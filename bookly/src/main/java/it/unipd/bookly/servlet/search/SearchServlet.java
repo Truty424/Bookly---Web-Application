@@ -11,13 +11,13 @@ import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Author;
 import it.unipd.bookly.dao.book.SearchBookByTitleDAO;
 import it.unipd.bookly.dao.author.GetAuthorsByBookListDAO;
+import it.unipd.bookly.dao.review.GetAvgRatingForBookDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 @WebServlet(name = "SearchServlet", value = "/search")
 public class SearchServlet extends AbstractDatabaseServlet {
 
@@ -35,22 +35,31 @@ public class SearchServlet extends AbstractDatabaseServlet {
                 return;
             }
 
-            // Search books by title
+            // 1. Wyszukaj książki po tytule
             List<Book> books;
             try (Connection con = getConnection()) {
                 books = new SearchBookByTitleDAO(con, query.trim()).access().getOutputParam();
             }
-            // Extract book IDs
+
+            // 2. Dla każdej książki pobierz średnią ocenę — z osobnym połączeniem
+            for (Book book : books) {
+                try (Connection con = getConnection()) {
+                    Double avgRating = new GetAvgRatingForBookDAO(con, book.getBookId()).access().getOutputParam();
+                    book.setAverage_rate(avgRating != null ? avgRating : 0.0);
+                }
+            }
+
+            // 3. Pobierz autorów — znów osobne połączenie
             List<Integer> bookIds = books.stream()
                     .map(Book::getBookId)
                     .collect(Collectors.toList());
 
-            // Get authors for all found books in a single query
             Map<Integer, List<Author>> authorsMap;
             try (Connection con = getConnection()) {
                 authorsMap = new GetAuthorsByBookListDAO(con, bookIds).access().getOutputParam();
             }
-            // Pass data to JSP
+
+            // 4. Przekaż dane do widoku
             req.setAttribute("search_results", books);
             req.setAttribute("authors_map", authorsMap);
             req.setAttribute("search_query", query);
