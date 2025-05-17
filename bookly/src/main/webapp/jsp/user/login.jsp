@@ -39,10 +39,6 @@
           <div class="login-card shadow-sm p-4">
             <h2 class="text-center mb-4">Sign In</h2>
 
-            <!-- <c:if test="${not empty error_message}">
-              <div class="alert alert-danger">${error_message}</div>
-            </c:if> -->
-
             <form
               class="form-group"
               action="${pageContext.request.contextPath}/user/login"

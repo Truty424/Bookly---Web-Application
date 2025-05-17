@@ -26,40 +26,60 @@ uri="http://java.sun.com/jsp/jstl/core" %>
   </head>
 
   <body>
-    <div class="container">
-      <h2>My Wishlist</h2>
+    <div class="container py-5">
+      <h2>Your Wishlist</h2>
       <c:choose>
         <c:when test="${not empty wishlist_books}">
-          <ul class="book-list">
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <c:forEach var="book" items="${wishlist_books}">
-              <li class="book-item">
-                <div class="book-details">
-                  <a
-                    class="book-title"
-                    href="${pageContext.request.contextPath}/book?id=${book.bookId}"
-                  >
-                    ${book.title}
-                  </a>
-                  <p>Price: €${book.price}</p>
+              <div class="col">
+                <div class="card h-100 shadow-sm">
+                  <img
+                    src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
+                    class="card-img-top"
+                    alt="${book.title}"
+                    onerror="this.src='${pageContext.request.contextPath}/static/img/book/default.jpg';"
+                  />
+                  <div class="card-body">
+                    <h5 class="card-title">${book.title}</h5>
+                    <p class="card-text">
+                      <strong>ISBN:</strong> ${book.isbn} <br />
+                      <strong>Price:</strong> €${book.price}
+                    </p>
+                    <form
+                      action="${pageContext.request.contextPath}/wishlist"
+                      method="post"
+                    >
+                      <input type="hidden" name="action" value="remove" />
+                      <input
+                        type="hidden"
+                        name="book_id"
+                        value="${book.bookId}"
+                      />
+                      <button class="btn btn-danger btn-sm" type="submit">
+                        Remove
+                      </button>
+                    </form>
+                  </div>
                 </div>
-                <form
-                  action="${pageContext.request.contextPath}/wishlist/remove/${book.bookId}"
-                  method="post"
-                >
-                  <button type="submit" class="remove-btn">
-                    <i class="fas fa-trash-alt"></i> Remove
-                  </button>
-                </form>
-              </li>
+              </div>
             </c:forEach>
-          </ul>
+          </div>
         </c:when>
         <c:otherwise>
-          <p>Your wishlist is currently empty.</p>
+          <p class="text-muted mt-4">Your wishlist is currently empty.</p>
         </c:otherwise>
       </c:choose>
-      <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
-      <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+
+      <div class="mt-4">
+        <a
+          href="${pageContext.request.contextPath}/book"
+          class="btn btn-primary"
+          >Browse Books</a
+        >
+      </div>
     </div>
+    <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
   </body>
 </html>

@@ -4,10 +4,13 @@ import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Category;
 import it.unipd.bookly.dao.category.GetAllCategoriesDAO;
 import it.unipd.bookly.dao.category.GetBooksByCategoryDAO;
+import it.unipd.bookly.dao.review.GetAvgRatingForBookDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 import it.unipd.bookly.LogContext;
-
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,10 +76,22 @@ public class CategoryServlet extends AbstractDatabaseServlet {
     private void showBooksByCategory(HttpServletRequest req, HttpServletResponse resp, int categoryId) throws Exception {
         List<Book> books;
         Category category;
+        Map<Integer, Double> bookRatings = new HashMap<>();
+
+        // Get all books in the given category
         try (Connection con = getConnection()) {
             books = new GetBooksByCategoryDAO(con, categoryId).access().getOutputParam();
         }
 
+        // For each book, retrieve its average rating using a separate connection
+        for (Book book : books) {
+            try (Connection con = getConnection()) {
+                Double rating = new GetAvgRatingForBookDAO(con, book.getBookId()).access().getOutputParam();
+                bookRatings.put(book.getBookId(), rating); // Store in map with bookId as key
+            }
+        }
+
+        // Retrieve the category information (e.g. name)
         try (Connection con = getConnection()) {
             category = new GetCategoryByIdDAO(con, categoryId).access().getOutputParam();
         }
@@ -87,9 +102,13 @@ public class CategoryServlet extends AbstractDatabaseServlet {
             return;
         }
 
+        // Pass all data to the JSP
         req.setAttribute("category_books", books);
         req.setAttribute("category_id", categoryId);
-        req.setAttribute("category_name", category.getCategory_name()); // ✅ used in JSP
+        req.setAttribute("category_name", category.getCategory_name());
+        req.setAttribute("book_ratings", bookRatings); // <-- NEW: Pass ratings to JSP
+
         req.getRequestDispatcher("/jsp/category/categoryBooks.jsp").forward(req, resp);
     }
+
 }

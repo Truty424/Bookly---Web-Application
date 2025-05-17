@@ -235,6 +235,32 @@ textarea, input[type="text"] {
   }
 }
 
+.review-item-modern {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+
+.review-header-right {
+  display: flex;
+  flex-direction: column;
+}
+
+
 
 @media screen and (max-width: 576px) {
 
