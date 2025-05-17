@@ -31,47 +31,10 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
   </head>
   <body>
     <div class="container-fluid p-0">
+      <button class="sidebar-toggle" onclick="toggleSidebar()">☰ Menu</button>
+      <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
       <div class="d-flex">
-        <aside class="sidebar">
-          <div class="sidebar-content">
-            <ul class="nav-top">
-              <li>
-                <a href="${pageContext.request.contextPath}/user/profile"
-                  ><i class="fas fa-user"></i> My profile</a
-                >
-              </li>
-              <li>
-                <a
-                  href="${pageContext.request.contextPath}/user/editUserProfile"
-                  ><i class="fas fa-edit"></i> Edit Profile</a
-                >
-              </li>
-              <li>
-                <a href="${pageContext.request.contextPath}/user/changePassword"
-                  ><i class="fas fa-lock"></i> Edit Password</a
-                >
-              </li>
-              <li>
-                <a href="${pageContext.request.contextPath}/wishlist"
-                  ><i class="fas fa-heart"></i> My Wishlist</a
-                >
-              </li>
-            </ul>
-
-            <ul class="nav-bottom">
-              <li>
-                <a href="${pageContext.request.contextPath}/"
-                  ><i class="fas fa-home"></i> Home Page</a
-                >
-              </li>
-              <li>
-                <a href="${pageContext.request.contextPath}/logout"
-                  ><i class="fas fa-sign-out-alt"></i> Logout</a
-                >
-              </li>
-            </ul>
-          </div>
-        </aside>
+        <%@ include file="/html/userSidebar.html" %>
 
         <main class="profile-content">
           <h1>My Profile :</h1>
@@ -191,5 +154,23 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
         </main>
       </div>
     </div>
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById("userSidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+    
+        sidebar.classList.toggle("active");
+        overlay.classList.toggle("active");
+      }
+      // Close sidebar when clicking on any link inside it (on mobile)
+  document.querySelectorAll("#userSidebar a").forEach(link => {
+    link.addEventListener("click", () => {
+      if (window.innerWidth <= 768) {
+        document.getElementById("userSidebar").classList.remove("active");
+        document.getElementById("sidebarOverlay").classList.remove("active");
+      }
+    });
+  });
+    </script>  
   </body>
 </html>
