@@ -20,6 +20,11 @@
       href="${pageContext.request.contextPath}/static/css/pages/wishlist.css"
       type="text/css"
     />
+    <link
+      rel="stylesheet"
+      href="${pageContext.request.contextPath}/static/css/pages/userDashboard.css"
+      type="text/css"
+    />
     <%@ include file="/html/cdn.html" %>
   </head>
   <body>
