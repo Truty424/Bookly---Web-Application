@@ -72,14 +72,20 @@
               <button class="signin-btn" type="submit">Sign In</button>
             </form>
 
-            <div class="create-account text-center mt-3">
+            <div class="forgot-password text-center mt-3">
               <p>
-                Don't have an account?
-                <a href="${pageContext.request.contextPath}/user/register"
-                  >Sign Up</a
-                >
+                Forgot your password?
+                <a href="${pageContext.request.contextPath}/user/changePassword">Change your password</a>
               </p>
             </div>
+            <hr class="separator" />
+            <form
+              action="${pageContext.request.contextPath}/user/register"
+              method="get"
+              class="mt-3"
+            >
+              <button type="submit" class="create-account-btn">Create A New Account</button>
+            </form>
           </div>
         </div>
       </div>

@@ -31,6 +31,13 @@
     width: 100%;
 }
 
+.signin-btn:hover {
+    transform: scale(0.95);
+    background-color: var(--color-primary);
+    color: #fff;
+    cursor: pointer;
+}
+
 .toggle-password {
     position: absolute;
     top: 20%;
@@ -50,20 +57,34 @@
     font-size: 12px !important;
 }
 
-.create-account a {
-    font-size: 12px;
-    color: var(--color-blue-400);
-    text-decoration: none;
-}
-
 .forgot-password a {
     font-size: 14px;
-    color: var(--color-blue-400);
+    color: #FC8C59;
     text-decoration: underline;
-    transition: all 0.2s ease-in-out;
+    transition: color 0.2s ease-in-out;
+    font-weight: 500;
 }
 
 .forgot-password a:hover {
-    font-weight: semibold;
-    color: var(--color-blue-800);
+    color: #e76f3d;
+    font-weight: 600;
+}
+
+.create-account-btn {
+    background: linear-gradient(to right, #3a3a3a, #2d2d2d);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 15px;
+    outline: none;
+    border: none;
+    transition: background 0.3s ease, transform 0.5s ease;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.create-account-btn:hover {
+    transform: scale(0.95);
+    background-color: var(--color-primary);
+    color: #fff;
+    cursor: pointer;
 }
