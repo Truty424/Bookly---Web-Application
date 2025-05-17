@@ -210,14 +210,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   <label>Select Rating:</label>
                   <div class="stars" style="direction: rtl;">
                     <c:forEach begin="1" end="5" var="i">
-                      <input
-                        type="radio"
-                        name="rating"
-                        id="star${i}"
-                        value="${i}"
-                        required
-                      />
-                      <label for="star${i}" title="${i} stars">★</label>
+                      <input type="radio" name="rating" id="star${i}" value="${6 - i}" required />
+                      <label for="star${i}" title="${6 - i} stars">★</label>
                     </c:forEach>
                   </div>
                 </div>
