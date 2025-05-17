@@ -17,39 +17,40 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Wishlist;
 import it.unipd.bookly.dao.wishlist.CreateWishlistDAO;
+import it.unipd.bookly.dao.wishlist.GetBooksInWishlistDAO;
 
 @WebServlet(name = "WishlistServlet", value = "/wishlist/*")
 public class WishlistServlet extends AbstractDatabaseServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         LogContext.setIPAddress(req.getRemoteAddr());
         LogContext.setResource(req.getRequestURI());
-        LogContext.setAction("wishlistServlet");
+        LogContext.setAction("WishlistServlet");
 
-        String action = req.getParameter("action");  // e.g., "view"
         HttpSession session = req.getSession(false);
-        User user = (session != null) ? (User) session.getAttribute("user") : null;
-
-        if (user == null) {
-            resp.sendRedirect(req.getContextPath() + "/user/login");
+        if (session == null || session.getAttribute("user") == null) {
+            res.sendRedirect(req.getContextPath() + "/user/login");
             return;
         }
 
-        try {
-            switch (action != null ? action : "view") {
-                case "view" ->
-                    handleViewWishlist(req, resp, user.getUserId());
-                default ->
-                    ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
-            }
+        User user = (User) session.getAttribute("user");
+
+        try (Connection con = getConnection()) {
+            List<Book> books = new GetBooksInWishlistDAO(con, user.getUserId()).access().getOutputParam();
+
+            req.setAttribute("wishlist_books", books != null ? books : Collections.emptyList());
+            req.getRequestDispatcher("/jsp/wishlist/wishlistBooks.jsp").forward(req, res);
+
         } catch (Exception e) {
-            LOGGER.error("WishlistServlet error (GET): {}", e.getMessage(), e);
-            ServletUtils.redirectToErrorPage(req, resp, "WishlistServlet error: " + e.getMessage());
+            LOGGER.error("WishlistServlet error: {}", e.getMessage(), e);
+            ServletUtils.redirectToErrorPage(req, res, "Failed to load wishlist.");
         } finally {
             LogContext.removeAction();
             LogContext.removeResource();
@@ -80,7 +81,7 @@ public class WishlistServlet extends AbstractDatabaseServlet {
                 default ->
                     ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
             }
-            resp.sendRedirect(req.getContextPath() + "/wishlist?action=view"); 
+            resp.sendRedirect(req.getContextPath() + "/wishlist?action=view");
         } catch (Exception e) {
             LOGGER.error("WishlistServlet error (POST): {}", e.getMessage(), e);
             ServletUtils.redirectToErrorPage(req, resp, "WishlistServlet error: " + e.getMessage());
@@ -89,7 +90,6 @@ public class WishlistServlet extends AbstractDatabaseServlet {
             LogContext.removeResource();
         }
     }
-
 
     private void handleViewWishlist(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
         try (Connection con = getConnection()) {
