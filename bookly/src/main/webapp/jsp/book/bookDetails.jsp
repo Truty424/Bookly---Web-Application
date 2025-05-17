@@ -121,84 +121,90 @@
 
         <!-- Reviews Section (your teammate’s version) -->
         <div class="review-section">
-          <h2>Reviews</h2>
-          <c:choose>
-            <c:when test="${not empty reviews}">
-              <ul class="review-list">
-                <c:forEach var="review" items="${reviews}">
-                  <li class="review-item-modern">
-                    <div class="review-header">
-                      <img
-                        src="${pageContext.request.contextPath}/static/img/user/${review.userId}.jpg"
-                        alt="Profile Image"
-                        class="avatar"
-                        onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/user/default.jpg';"
-                      />
-                      <div class="review-header-right">
-                        <div class="meta">
-                          <span class="username">${review.username}</span>
-                          <span class="timestamp">${review.reviewDate}</span>
+            <div class="review-section-card">
+              <h2>Reviews</h2>
+              <c:choose>
+                <c:when test="${not empty reviews}">
+                  <ul class="review-list">
+                    <c:forEach var="review" items="${reviews}">
+                      <li class="review-item-modern">
+                        <div class="review-avatar">
+                          <img
+                            src="${pageContext.request.contextPath}/static/img/user/${review.userId}.jpg"
+                            alt="Profile Image"
+                            class="avatar"
+                            onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/user/default.jpg';"
+                          />
                         </div>
-                        <div class="review-star-rating">
-                          <c:forEach begin="1" end="5" var="i">
-                            <i class="<c:choose>
-                                        <c:when test='${i <= review.rating}'>fas fa-star</c:when>
-                                        <c:otherwise>far fa-star</c:otherwise>
-                                     </c:choose>"></i>
-                          </c:forEach>
+                        <div class="review-main">
+                          <div class="review-main-top">
+                            <span class="review-username">${review.username}</span>
+                            <span class="review-date"> at ${review.reviewDate}</span>
+                          </div>                          
+                          <div class="review-main-bottom">
+                            <p>${review.reviewText}</p>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                        <div class="review-meta">
+                          <div class="review-meta-top">
+                            <div class="review-star-rating">
+                              <c:forEach begin="1" end="5" var="i">
+                                <i class="<c:choose>
+                                            <c:when test='${i <= review.rating}'>fas fa-star</c:when>
+                                            <c:otherwise>far fa-star</c:otherwise>
+                                         </c:choose>"></i>
+                              </c:forEach>
+                            </div>
+                          </div>
+                          <div class="review-meta-bottom">
+                            <form action="${pageContext.request.contextPath}/review/like" method="post" class="inline-form">
+                              <input type="hidden" name="reviewId" value="${review.reviewId}" />
+                              <button type="submit" class="emoji-button" title="Like">👍 <span>${review.numberOfLikes}</span></button>
+                            </form>
+                            
+                            <form action="${pageContext.request.contextPath}/review/dislike" method="post" class="inline-form">
+                              <input type="hidden" name="reviewId" value="${review.reviewId}" />
+                              <button type="submit" class="emoji-button" title="Dislike">👎 <span>${review.numberOfDislikes}</span></button>
+                            </form>
+                          </div>
+                        </div>
+                      </li>
+                    </c:forEach>
+                  </ul>
+                </c:when>
+                <c:otherwise>
+                  <p>No reviews available for this book.</p>
+                </c:otherwise>
+              </c:choose>
+            </div>
 
-                    <div class="review-body">
-                      <p>${review.reviewText}</p>
-                    </div>
-
-                    <div class="review-actions">
-                      <form action="${pageContext.request.contextPath}/review/like" method="post" style="display: inline">
-                        <input type="hidden" name="reviewId" value="${review.reviewId}" />
-                        <button type="submit" class="btn-like" title="Like">👍 (${review.numberOfLikes})</button>
-                      </form>
-                      <form action="${pageContext.request.contextPath}/review/dislike" method="post" style="display: inline">
-                        <input type="hidden" name="reviewId" value="${review.reviewId}" />
-                        <button type="submit" class="btn-dislike" title="Dislike">👎 (${review.numberOfDislikes})</button>
-                      </form>
-                    </div>
-                  </li>
-                </c:forEach>
-              </ul>
-            </c:when>
-            <c:otherwise>
-              <p>No reviews available for this book.</p>
-            </c:otherwise>
-          </c:choose>
 
           <!-- Add Review -->
-          <div class="add-review-section">
-            <h3>Add Your Review</h3>
-            <form action="${pageContext.request.contextPath}/review/submit" method="post" class="modern-review-form">
-              <input type="hidden" name="bookId" value="${book_details.bookId}" />
-              <div class="rating-stars">
-                <label>Select Rating:</label>
-                <div class="stars" style="direction: rtl;">
-                  <c:forEach begin="1" end="5" var="i">
-                    <input type="radio" name="rating" id="star${i}" value="${6 - i}" required />
-                    <label for="star${i}" title="${6 - i} stars">★</label>
-                  </c:forEach>
+            <div class="add-review-section">
+              <h3>Add Your Review</h3>
+              <form action="${pageContext.request.contextPath}/review/submit" method="post" class="modern-review-form">
+                <input type="hidden" name="bookId" value="${book_details.bookId}" />
+                <div class="rating-stars">
+                  <label>Select Rating:</label>
+                  <div class="stars" style="direction: rtl;">
+                    <c:forEach begin="1" end="5" var="i">
+                      <input type="radio" name="rating" id="star${i}" value="${6 - i}" required />
+                      <label for="star${i}" title="${6 - i} stars">★</label>
+                    </c:forEach>
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <textarea name="reviewText" placeholder="Leave your comment here..." rows="4" required></textarea>
-              </div>
-              <div class="form-actions d-flex justify-content-center align-items-center my-4">
-                <button type="submit" class="submit-btn">
-                  <i class="fas fa-paper-plane"></i> Submit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </c:when>
+                <div class="form-group">
+                  <textarea name="reviewText" placeholder="Leave your comment here..." rows="4" required></textarea>
+                </div>
+                <div class="form-actions d-flex justify-content-center align-items-center my-4">
+                  <button type="submit" class="submit-btn">
+                    <i class="fas fa-paper-plane"></i> Submit
+                  </button>x
+                </div>
+              </form>
+            </div>
+      </div>
+    </c:when>
 
       <c:otherwise>
         <p>Book details not found.</p>
