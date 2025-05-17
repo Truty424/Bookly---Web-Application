@@ -63,7 +63,7 @@
             </div>
 
             <!-- Summary Section in a colored box -->
-            <div class="book-summary-container" style="background-color: #fed7aa; padding: 20px; border-radius: 12px; margin-top: 20px;">
+            <div class="book-summary-container">
               <div class="book-summary" style="color: var(--color-gray-900);">
                 <p><strong>Summary:</strong></p>
                 <p>${book_details.summary}</p>
@@ -74,10 +74,19 @@
             <div class="book-extra-info">
               <div class="top-info-wrapper">
                 <div class="top-info">
-                  <p><strong>Average Rating:</strong> ${average_rating} / 5</p>
-                  <p><strong>Total Reviews:</strong> ${review_count}</p>
-                  <p><strong>Stock Quantity:</strong> ${book_details.stockQuantity}</p>
-                  <p class="book-price"><strong>Price:</strong> €${book_details.price}</p>
+                  <p><strong>Average Rating:</strong></p>
+                    <div class="review-star-rating">
+                      <c:forEach begin="1" end="5" var="i">
+                        <i class="<c:choose>
+                                    <c:when test='${i <= average_rating}'>fas fa-star</c:when>
+                                    <c:otherwise>far fa-star</c:otherwise>
+                                  </c:choose>"></i>
+                      </c:forEach>
+                      <span style="margin-left: 8px;">(${average_rating} / 5)</span>
+                    </div>
+                  <p>According to ${review_count} reviews</p>
+                  <p><strong>Remaining Quantity:</strong> ${book_details.stockQuantity}</p>
+                  <p class="book-price"><strong>Price : </strong> €${book_details.price}</p>
                 </div>
               </div>
               <div class="book-actions-wrapper">
