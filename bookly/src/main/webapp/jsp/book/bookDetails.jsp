@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <html>
   <head>
@@ -7,18 +7,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%@ include file="/html/cdn.html" %>
-    <link
-      rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/base/root.css"
-    />
-    <link
-      rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/base/globals.css"
-    />
-    <link
-      rel="stylesheet"
-      href="${pageContext.request.contextPath}/static/css/pages/bookDetails.css"
-    />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/root.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/base/globals.css" />
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/pages/bookDetails.css" />
   </head>
 
   <body>
@@ -33,7 +24,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
       <c:choose>
         <c:when test="${not empty book_details}">
-          <!-- Book Information -->
+          <!-- Book Info -->
           <div class="book-card-horizontal">
             <div class="book-image">
               <img
@@ -44,8 +35,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             </div>
             <div class="book-info">
               <h2 class="book-title">${book_details.title}</h2>
-              <p>
-                <strong>Author(s):</strong>
+              <p><strong>Author(s):</strong>
                 <c:choose>
                   <c:when test="${not empty authors}">
                     <c:forEach var="author" items="${authors}" varStatus="loop">
@@ -60,27 +50,15 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               <p><strong>Price:</strong> €${book_details.price}</p>
               <p><strong>Average Rating:</strong> ${average_rating} / 5</p>
               <p><strong>Total Reviews:</strong> ${review_count}</p>
-
               <p><strong>Edition:</strong> ${book_details.edition}</p>
-              <p>
-                <strong>Publication Year:</strong>
-                ${book_details.publication_year}
-              </p>
-              <p>
-                <strong>Number of Pages:</strong>
-                ${book_details.number_of_pages}
-              </p>
-              <p>
-                <strong>Stock Quantity:</strong> ${book_details.stockQuantity}
-              </p>
+              <p><strong>Publication Year:</strong> ${book_details.publication_year}</p>
+              <p><strong>Number of Pages:</strong> ${book_details.number_of_pages}</p>
+              <p><strong>Stock Quantity:</strong> ${book_details.stockQuantity}</p>
               <p><strong>Summary:</strong></p>
               <p>${book_details.summary}</p>
 
               <div class="book-actions">
-                <form
-                  action="${pageContext.request.contextPath}/cart/add/${book_details.bookId}"
-                  method="post"
-                >
+                <form action="${pageContext.request.contextPath}/cart/add/${book_details.bookId}" method="post">
                   <button class="btn btn-cart" type="submit">
                     <i class="fas fa-shopping-cart"></i> Add to Cart
                   </button>
@@ -88,32 +66,18 @@ uri="http://java.sun.com/jsp/jstl/core" %>
 
                 <c:choose>
                   <c:when test="${isInWishlist}">
-                    <form
-                      action="${pageContext.request.contextPath}/wishlist"
-                      method="post"
-                    >
+                    <form action="${pageContext.request.contextPath}/wishlist" method="post">
                       <input type="hidden" name="action" value="remove" />
-                      <input
-                        type="hidden"
-                        name="book_id"
-                        value="${book_details.bookId}"
-                      />
+                      <input type="hidden" name="book_id" value="${book_details.bookId}" />
                       <button class="btn btn-wishlist" type="submit">
                         <i class="fas fa-edit"></i>
                       </button>
                     </form>
                   </c:when>
                   <c:otherwise>
-                    <form
-                      action="${pageContext.request.contextPath}/wishlist"
-                      method="post"
-                    >
+                    <form action="${pageContext.request.contextPath}/wishlist" method="post">
                       <input type="hidden" name="action" value="add" />
-                      <input
-                        type="hidden"
-                        name="book_id"
-                        value="${book_details.bookId}"
-                      />
+                      <input type="hidden" name="book_id" value="${book_details.bookId}" />
                       <button class="btn btn-wishlist" type="submit">
                         <i class="far fa-heart"></i>
                       </button>
@@ -132,52 +96,46 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 <ul class="review-list">
                   <c:forEach var="review" items="${reviews}">
                     <li class="review-item-modern">
+                      <!-- Review Header with Avatar and Info -->
                       <div class="review-header">
-                        <div class="meta">
-                          <span class="username">${review.username}</span>
-                          <span class="timestamp">${review.reviewDate}</span>
-                        </div>
-                        <div class="review-star-rating">
-                          <c:forEach begin="1" end="5" var="i">
-                            <i
-                              class="<c:choose> <c:when test='${i <= review.rating}'>fas fa-star</c:when> <c:otherwise>far fa-star</c:otherwise> </c:choose>"
-                            ></i>
-                          </c:forEach>
+                        <img
+                          src="${pageContext.request.contextPath}/static/img/user/${review.userId}.jpg"
+                          alt="Profile Image"
+                          class="avatar"
+                          onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/user/default.jpg';"
+                        />
+                        <div class="review-header-right">
+                          <div class="meta">
+                            <span class="username">${review.username}</span>
+                            <span class="timestamp">${review.reviewDate}</span>
+                          </div>
+                          <div class="review-star-rating">
+                            <c:forEach begin="1" end="5" var="i">
+                              <i class="<c:choose>
+                                        <c:when test='${i <= review.rating}'>fas fa-star</c:when>
+                                        <c:otherwise>far fa-star</c:otherwise>
+                                      </c:choose>"></i>
+                            </c:forEach>
+                          </div>
                         </div>
                       </div>
+
+                      <!-- Review Body -->
                       <div class="review-body">
                         <p>${review.reviewText}</p>
                       </div>
+
+                      <!-- Review Actions -->
                       <div class="review-actions">
-                        <form
-                          action="${pageContext.request.contextPath}/review/like"
-                          method="post"
-                          style="display: inline"
-                        >
-                          <input
-                            type="hidden"
-                            name="reviewId"
-                            value="${review.reviewId}"
-                          />
+                        <form action="${pageContext.request.contextPath}/review/like" method="post" style="display: inline">
+                          <input type="hidden" name="reviewId" value="${review.reviewId}" />
                           <button type="submit" class="btn-like" title="Like">
                             👍 (${review.numberOfLikes})
                           </button>
                         </form>
-                        <form
-                          action="${pageContext.request.contextPath}/review/dislike"
-                          method="post"
-                          style="display: inline"
-                        >
-                          <input
-                            type="hidden"
-                            name="reviewId"
-                            value="${review.reviewId}"
-                          />
-                          <button
-                            type="submit"
-                            class="btn-dislike"
-                            title="Dislike"
-                          >
+                        <form action="${pageContext.request.contextPath}/review/dislike" method="post" style="display: inline">
+                          <input type="hidden" name="reviewId" value="${review.reviewId}" />
+                          <button type="submit" class="btn-dislike" title="Dislike">
                             👎 (${review.numberOfDislikes})
                           </button>
                         </form>
@@ -194,18 +152,8 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             <!-- Add Review Form -->
             <div class="add-review-section">
               <h3>Add Your Review</h3>
-              <form
-                action="${pageContext.request.contextPath}/review/submit"
-                method="post"
-                class="modern-review-form"
-              >
-                <input
-                  type="hidden"
-                  name="bookId"
-                  value="${book_details.bookId}"
-                />
-
-                <!-- Rating Stars -->
+              <form action="${pageContext.request.contextPath}/review/submit" method="post" class="modern-review-form">
+                <input type="hidden" name="bookId" value="${book_details.bookId}" />
                 <div class="rating-stars">
                   <label>Select Rating:</label>
                   <div class="stars" style="direction: rtl;">
@@ -215,21 +163,10 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     </c:forEach>
                   </div>
                 </div>
-
-                <!-- Comment Text -->
                 <div class="form-group">
-                  <textarea
-                    name="reviewText"
-                    placeholder="Leave your comment here..."
-                    rows="4"
-                    required
-                  ></textarea>
+                  <textarea name="reviewText" placeholder="Leave your comment here..." rows="4" required></textarea>
                 </div>
-
-                <!-- Submit Button -->
-                <div
-                  class="form-actions d-flex justify-content-center align-items-center my-4"
-                >
+                <div class="form-actions d-flex justify-content-center align-items-center my-4">
                   <button type="submit" class="submit-btn">
                     <i class="fas fa-paper-plane"></i> Submit
                   </button>
@@ -238,7 +175,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             </div>
           </div>
         </c:when>
-
         <c:otherwise>
           <p>Book details not found.</p>
         </c:otherwise>

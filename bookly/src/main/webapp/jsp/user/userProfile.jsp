@@ -46,9 +46,10 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                <c:choose>
                 <c:when test="${not empty user.userId}">
                  <img
-                  src="${pageContext.request.contextPath}/user/image/${user.userId}"
+                  src="${pageContext.request.contextPath}/static/img/user/${user.userId}.jpg"
                   alt="Profile Image"
                   class="profile-img"
+                  onerror="this.onerror=null; this.src='${pageContext.request.contextPath}/static/img/user/default.jpg';"
                  />
                 </c:when>
                <c:otherwise>
