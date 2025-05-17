@@ -60,7 +60,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   </p>
                   <p><strong>Language:</strong> ${book.language}</p>
                   <p data-format="rating">
-                    <strong>Average Rating:</strong> ${book.average_rate}/5
+                    <strong>Average Rating:</strong>
+                    <c:choose>
+                      <c:when test="${book_ratings[book.bookId] != null}">
+                        ${book_ratings[book.bookId]} / 5
+                      </c:when>
+                      <c:otherwise>N/A</c:otherwise>
+                    </c:choose>
                   </p>
                   <form
                     action="${pageContext.request.contextPath}/book/${book.bookId}"

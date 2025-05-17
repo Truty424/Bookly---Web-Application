@@ -147,3 +147,21 @@ INSERT INTO booklySchema.reviews (user_id, book_id, comment, rating, number_of_l
 (4, 3, 'I had a similar reaction to this book.', 3, 9, 2, 3),
 (5, 4, 'Could not disagree more, but that is the fun of reading!', 2, 3, 5, 4),
 (1, 5, 'Spot on. The writing was exceptional.', 5, 18, 0, 5);
+
+-- Additional reviews
+INSERT INTO booklySchema.reviews (user_id, book_id, comment, rating, number_of_likes, number_of_dislikes) VALUES
+(2, 6, 'A beautiful yet heartbreaking story that captures the essence of youth and mortality.', 5, 72, 2),
+(3, 7, 'Stunningly written. The narrative voice is unforgettable and powerful.', 5, 84, 1),
+(4, 8, 'A moving portrait of courage and change, steeped in historical context.', 4, 63, 4),
+(5, 9, 'Dark and suspenseful, with twists that kept me guessing until the end.', 4, 47, 3),
+(1, 10, 'Bleak yet profound. A quiet masterpiece about survival and love.', 5, 91, 0),
+(2, 11, 'Visually rich and philosophically deep. A unique survival tale.', 4, 58, 2),
+(3, 12, 'A deeply emotional read that stayed with me long after I finished.', 4, 41, 1),
+(4, 13, 'Imaginative and intense, though a bit hard to follow at times.', 3, 28, 6),
+(5, 14, 'An emotional journey. Raises big questions about faith and suffering.', 4, 53, 2),
+(1, 15, 'The message is powerful, but the style was not to my taste.', 3, 33, 8),
+(2, 16, 'Authentic, raw, and inspiring. A journey of self-discovery.', 4, 45, 3),
+(3, 17, 'A beautifully painful story that sheds light on resilience and womanhood.', 5, 69, 1),
+(4, 18, 'Twisty, tense, and fast-paced. A real page-turner!', 4, 51, 2),
+(5, 19, 'Magical realism at its best. Dreamlike and haunting.', 5, 60, 0),
+(1, 20, 'Technically detailed but highly entertaining. A brilliant blend of science and humor.', 5, 88, 1);
