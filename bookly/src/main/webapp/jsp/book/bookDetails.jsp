@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 
 <html>
 <head>
@@ -142,7 +144,7 @@
                             <span class="review-date"> at ${review.reviewDate}</span>
                           </div>                          
                           <div class="review-main-bottom">
-                            <p>${review.reviewText}</p>
+                            <p>${fn:escapeXml(review.reviewText)}</p>
                           </div>
                         </div>
                         <div class="review-meta">
