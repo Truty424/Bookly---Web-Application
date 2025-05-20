@@ -31,7 +31,7 @@
     <main class="profile-container">
       <h2>Change Your Password</h2>
       <form action="${pageContext.request.contextPath}/user/changePassword" method="post">
-        <div class="form-group">
+        <div class="form-group" style="position: relative;">
           <label for="currentPassword">Your Current Password:</label>
           <input
             type="password"
@@ -40,8 +40,10 @@
             placeholder="Enter your current password"
             required
           />
+          <span class="toggle-password" onclick="togglePassword('currentPassword', this)">👁️</span>
         </div>
-        <div class="form-group">
+      
+        <div class="form-group" style="position: relative;">
           <label for="newPassword">Your New Password:</label>
           <input
             type="password"
@@ -50,13 +52,28 @@
             placeholder="Enter your new password"
             required
           />
+          <span class="toggle-password" onclick="togglePassword('newPassword', this)">👁️</span>
         </div>
+      
         <button type="submit" class="btn">Update Password</button>
       </form>
+      
     </main>
     
       </div>
     </div>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
+    <script>
+      function togglePassword(inputId, iconSpan) {
+        const input = document.getElementById(inputId);
+        if (input.type === "password") {
+          input.type = "text";
+          iconSpan.textContent = "🙈";
+        } else {
+          input.type = "password";
+          iconSpan.textContent = "👁️";
+        }
+      }
+    </script>    
   </body>
 </html>
