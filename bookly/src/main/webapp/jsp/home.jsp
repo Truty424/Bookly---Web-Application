@@ -197,8 +197,9 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
         </div>
       </section>
 
+      <!-- Categories Section -->
       <section class="categories-section">
-        <div>
+        <div class="container">
           <div class="categories-header">
             <h2 class="categories-title">Categories</h2>
             <a class="view-all" href="/category">View All →</a>
@@ -217,6 +218,7 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
           </div>
         </div>
       </section>
+      
 
       <!-- Benefits Section -->
       <section class="benefits-section">
