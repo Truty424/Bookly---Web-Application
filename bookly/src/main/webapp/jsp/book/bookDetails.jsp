@@ -186,8 +186,8 @@
               <h3>Add Your Review</h3>
               <form action="${pageContext.request.contextPath}/review/submit" method="post" class="modern-review-form">
                 <input type="hidden" name="bookId" value="${book_details.bookId}" />
+                <label>Select Your Rating:</label>
                 <div class="rating-stars">
-                  <label>Select Rating:</label>
                   <div class="stars" style="direction: rtl;">
                     <c:forEach begin="1" end="5" var="i">
                       <input type="radio" name="rating" id="star${i}" value="${6 - i}" required />
@@ -201,7 +201,7 @@
                 <div class="form-actions d-flex justify-content-center align-items-center my-4">
                   <button type="submit" class="submit-btn">
                     <i class="fas fa-paper-plane"></i> Submit
-                  </button>x
+                  </button>
                 </div>
               </form>
             </div>

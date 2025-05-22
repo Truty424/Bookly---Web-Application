@@ -453,6 +453,7 @@ textarea, input[type="text"] {
   width: 100%;
   padding: 0.8rem;
   color: #333;
+  border-radius: 12px;
 }
 
 .submit-btn {
@@ -555,6 +556,51 @@ textarea, input[type="text"] {
   width: 100%;
   margin-bottom: 40px;
   margin: 0 auto 40px auto;
+}
+
+.rating-stars .stars {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  direction: ltr; /* Fixes reverse behavior */
+}
+
+.rating-stars input[type="radio"] {
+  display: none;
+}
+
+.rating-stars label {
+  font-size: 2rem;
+  color: transparent;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s ease-in-out;
+}
+
+.rating-stars label::before {
+  content: '★';
+  color: #FC8C59;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: color 0.2s ease-in-out;
+  opacity: 0.3;
+}
+
+/* Hover effect */
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+  transform: scale(1.2);
+}
+
+.rating-stars label:hover::before,
+.rating-stars label:hover ~ label::before {
+  opacity: 1;
+}
+
+/* Checked stars */
+.rating-stars input[type="radio"]:checked ~ label::before {
+  opacity: 1;
 }
 
 
