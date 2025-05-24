@@ -33,6 +33,7 @@
           href="${pageContext.request.contextPath}/static/css/pages/manageAdmin.css"
           type="text/css"
         />
+        <script src="${pageContext.request.contextPath}/static/js/validate-author.js"></script>
         <%@ include file="/html/cdn.html" %>
   </head>
   <body>

@@ -35,6 +35,7 @@ uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
       href="${pageContext.request.contextPath}/static/css/pages/manageAdmin.css"
       type="text/css"
     />
+    <script src="${pageContext.request.contextPath}/static/js/validate-publisher.js"></script>
     <%@ include file="/html/cdn.html" %>
   </head>
   <body>
