@@ -88,10 +88,14 @@
             </a>
           </div>
           <div class="team-card">
-            <div class="team-image-placeholder">Image</div>
+            <img
+              src="../static/img/team/adatru.jpg"
+              alt="Adam Truty"
+              class="team-image"
+            />
             <h3 class="team-name">Truty Adam</h3>
             <a
-              href="https://www.linkedin.com/"
+              href="https://www.linkedin.com/in/adam-truty-46b5bb269/"
               target="_blank"
               class="team-link"
             >
