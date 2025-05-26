@@ -8,6 +8,13 @@
   transition: all 0.3s ease;
 }
 
+.main-container {
+  margin: 0;
+  width: 100%;
+  padding: 0;
+  max-width: 100%;
+}
+
 
 .section {
   padding: 40px 0;

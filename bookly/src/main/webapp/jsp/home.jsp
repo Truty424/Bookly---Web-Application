@@ -48,7 +48,7 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
   <body>
     <%@ include file="/html/header.html" %>
 
-    <div class="container">
+    <div class="container main-container">
       <!-- Hero Section -->
       <section class="hero">
         <div class="container hero-grid">
