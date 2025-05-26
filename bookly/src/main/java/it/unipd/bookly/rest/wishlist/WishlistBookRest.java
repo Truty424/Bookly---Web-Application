@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.List;
 import java.util.Map;
 
 import it.unipd.bookly.Resource.Wishlist;
@@ -105,11 +104,11 @@ public class WishlistBookRest extends AbstractRestResource {
 
     private void handleGetWishlistBooks(String path) throws Exception {
         int userId = Integer.parseInt(path.substring(path.lastIndexOf("/") + 1));
-        List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
+        Wishlist wishlist = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        mapper.writeValue(res.getOutputStream(), wishlists);
+        mapper.writeValue(res.getOutputStream(), wishlist);
     }
 
     // === Utility ===

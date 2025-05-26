@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.util.List;
 
 
 /**
@@ -92,11 +91,11 @@ public class WishlistRest extends AbstractRestResource {
 
     private void handleGetWishlistsByUser(String path) throws Exception {
         int userId = extractIdFromPath(path);
-        List<Wishlist> wishlists = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
+        Wishlist wishlist = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
 
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
-        mapper.writeValue(res.getOutputStream(), wishlists);
+        mapper.writeValue(res.getOutputStream(), wishlist);
     }
 
     private void handleClearWishlist(String path) throws Exception {

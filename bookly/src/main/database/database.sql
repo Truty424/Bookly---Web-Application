@@ -86,10 +86,10 @@ CREATE TABLE IF NOT EXISTS booklySchema.book_image (
 );
 
 CREATE TABLE IF NOT EXISTS booklySchema.wishlists (
-    wishlist_id SERIAL PRIMARY KEY,
-    user_id INTEGER NOT NULL,
+    user_id INTEGER PRIMARY KEY,
+    wishlist_id SERIAL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS booklySchema.orders (
