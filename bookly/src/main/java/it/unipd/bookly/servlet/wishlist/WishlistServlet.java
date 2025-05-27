@@ -1,9 +1,11 @@
 package it.unipd.bookly.servlet.wishlist;
 
 import it.unipd.bookly.LogContext;
+import it.unipd.bookly.Resource.Author;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.User;
 import it.unipd.bookly.Resource.Wishlist;
+import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
 import it.unipd.bookly.dao.wishlist.*;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
@@ -14,7 +16,10 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "WishlistServlet", value = "/wishlist/*")
 public class WishlistServlet extends AbstractDatabaseServlet {
@@ -36,9 +41,10 @@ public class WishlistServlet extends AbstractDatabaseServlet {
         }
 
         try {
-            switch (action != null ? action : "view") {
-                case "view" -> handleViewWishlistBooks(req, resp, user.getUserId());
-                default -> ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
+            if ("view".equals(action) || action == null) {
+                handleViewWishlistBooks(req, resp, user.getUserId());
+            } else {
+                ServletUtils.redirectToErrorPage(req, resp, "Unknown action: " + action);
             }
         } catch (Exception e) {
             LOGGER.error("WishlistServlet error (GET): ", e);
@@ -73,9 +79,9 @@ public class WishlistServlet extends AbstractDatabaseServlet {
 
             String redirectBookId = req.getParameter("book_id_redirect");
             if (redirectBookId != null) {
-                resp.sendRedirect(req.getContextPath() + "/book/details?bookId=" + redirectBookId);
+                resp.sendRedirect(req.getContextPath() + "/book/" + redirectBookId);
             } else {
-                resp.sendRedirect(req.getContextPath() + "/wishlist?action=view");
+                resp.sendRedirect(req.getContextPath() + "/wishlist");
             }
 
         } catch (Exception e) {
@@ -90,6 +96,15 @@ public class WishlistServlet extends AbstractDatabaseServlet {
     private void handleViewWishlistBooks(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
         Wishlist wishlist;
 
+        List<Book> books = new ArrayList<>();
+        
+        Map<Integer, List<Author>> wishlistAuthors = new HashMap<>();
+        try (Connection con = getConnection()) {
+            for (Book book : books) {
+                List<Author> authors = new GetAuthorsByBookDAO(con, book.getBookId()).access().getOutputParam();
+                wishlistAuthors.put(book.getBookId(), authors);
+            }
+        }
         try (Connection con = getConnection()) {
             wishlist = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
         }
@@ -100,12 +115,13 @@ public class WishlistServlet extends AbstractDatabaseServlet {
             }
         }
 
-        List<Book> books;
         try (Connection con = getConnection()) {
             books = new GetBooksInWishlistDAO(con, wishlist.getWishlistId()).access().getOutputParam();
         }
 
+
         req.setAttribute("wishlist_books", books);
+        req.setAttribute("wishlist_authors", wishlistAuthors);
         req.getRequestDispatcher("/jsp/wishlist/wishlistBooks.jsp").forward(req, resp);
     }
 
@@ -115,43 +131,33 @@ public class WishlistServlet extends AbstractDatabaseServlet {
 
         try (Connection con = getConnection()) {
             wishlist = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
-        }
-
-        if (wishlist == null) {
-            try (Connection con = getConnection()) {
+            if (wishlist == null) {
                 wishlist = new CreateWishlistDAO(con, userId).access().getOutputParam();
             }
-        }
 
-        boolean alreadyExists;
-        try (Connection con = getConnection()) {
             Book book = new Book();
             book.setBookId(bookId);
-            alreadyExists = new IsBookInWishlistDAO(con, wishlist, book).access().getOutputParam();
-        }
+            boolean alreadyExists = new IsBookInWishlistDAO(con, wishlist, book).access().getOutputParam();
 
-        if (!alreadyExists) {
-            try (Connection con = getConnection()) {
+            if (!alreadyExists) {
                 new AddBookToWishlistDAO(con, wishlist.getWishlistId(), bookId).access();
                 LOGGER.info("✅ Book ID {} added to wishlist ID {}", bookId, wishlist.getWishlistId());
+            } else {
+                LOGGER.info("ℹ️ Book ID {} already exists in wishlist ID {}", bookId, wishlist.getWishlistId());
             }
-        } else {
-            LOGGER.info("ℹ️ Book ID {} already in wishlist ID {}, skipping insert.", bookId, wishlist.getWishlistId());
         }
     }
 
     private void handleRemoveFromWishlist(HttpServletRequest req, HttpServletResponse resp, int userId) throws Exception {
         int bookId = Integer.parseInt(req.getParameter("book_id"));
+        LOGGER.info("Attempting to remove book ID {} for user ID {}", bookId, userId);
         Wishlist wishlist;
-
         try (Connection con = getConnection()) {
             wishlist = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
+            if (wishlist == null) {
+                throw new Exception("No wishlist found for user.");
+            }
         }
-
-        if (wishlist == null) {
-            throw new Exception("No wishlist found for user.");
-        }
-
         try (Connection con = getConnection()) {
             new RemoveBookFromWishlistDAO(con, wishlist.getWishlistId(), bookId).access();
             LOGGER.info("🗑️ Removed book {} from wishlist {}", bookId, wishlist.getWishlistId());

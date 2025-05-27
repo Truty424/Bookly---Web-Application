@@ -24,9 +24,4 @@ public class WishlistQueries {
     public static final String COUNT_BOOKS_IN_WISHLIST =
         "SELECT COUNT(*) FROM booklySchema.contains_wishlist WHERE wishlist_id = ?";
 
-    public static final String CLEAR_WISHLIST =
-        "DELETE FROM booklySchema.contains_wishlist WHERE wishlist_id = ?";
-
-    public static final String DELETE_WISHLIST =
-        "DELETE FROM booklySchema.wishlists WHERE wishlist_id = ?";
 }

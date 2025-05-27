@@ -16,7 +16,6 @@ import java.sql.Connection;
 /**
  * Handles wishlist operations:
  * - POST   /api/wishlist?userId=123           → create wishlist for user
- * - DELETE /api/wishlist/{wishlistId}         → delete wishlist
  * - GET    /api/wishlist/user/{userId}        → get wishlists by user
  * - POST   /api/wishlist/clear/{wishlistId}   → clear wishlist
  */
@@ -35,20 +34,7 @@ public class WishlistRest extends AbstractRestResource {
 
         try {
             switch (method) {
-                case "POST" -> {
-                    if (path.matches(".*/wishlist/clear/\\d+")) {
-                        handleClearWishlist(path);
-                    } else {
-                        handleCreateWishlist();
-                    }
-                }
-                case "DELETE" -> {
-                    if (path.matches(".*/wishlist/\\d+")) {
-                        handleDeleteWishlist(path);
-                    } else {
-                        unsupported("DELETE");
-                    }
-                }
+                case "POST" -> handleCreateWishlist(); 
                 case "GET" -> {
                     if (path.matches(".*/wishlist/user/\\d+")) {
                         handleGetWishlistsByUser(path);
@@ -80,15 +66,6 @@ public class WishlistRest extends AbstractRestResource {
         mapper.writeValue(res.getOutputStream(), wishlist);
     }
 
-    private void handleDeleteWishlist(String path) throws Exception {
-        int wishlistId = extractIdFromPath(path);
-        Wishlist wishlist = new Wishlist();
-        wishlist.setWishlistId(wishlistId);
-
-        new DeleteWishlistDAO(con, wishlist).access();
-        sendMessage("Wishlist deleted successfully.", "200", null, HttpServletResponse.SC_OK);
-    }
-
     private void handleGetWishlistsByUser(String path) throws Exception {
         int userId = extractIdFromPath(path);
         Wishlist wishlist = new GetWishlistByUserDAO(con, userId).access().getOutputParam();
@@ -96,13 +73,6 @@ public class WishlistRest extends AbstractRestResource {
         res.setContentType("application/json;charset=UTF-8");
         res.setStatus(HttpServletResponse.SC_OK);
         mapper.writeValue(res.getOutputStream(), wishlist);
-    }
-
-    private void handleClearWishlist(String path) throws Exception {
-        int wishlistId = extractIdFromPath(path);
-
-        new ClearWishlistDAO(con, wishlistId).access();
-        sendMessage("Wishlist cleared successfully.", "200", null, HttpServletResponse.SC_OK);
     }
 
     private int extractIdFromPath(String path) {

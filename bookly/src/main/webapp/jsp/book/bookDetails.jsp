@@ -101,29 +101,15 @@
                   </button>
                 </form>
 
-                <!-- Wishlist Action -->
-                <c:choose>
-                  <c:when test="${isInWishlist}">
-                    <form action="${pageContext.request.contextPath}/wishlist" method="post">
-                      <input type="hidden" name="action" value="remove" />
-                      <input type="hidden" name="book_id" value="${book_details.bookId}" />
-                      <input type="hidden" name="book_id_redirect" value="${book_details.bookId}" />
-                      <button class="btn btn-wishlist" type="submit" title="Remove from Wishlist">
-                        <i class="fas fa-heart-broken"></i>
-                      </button>
-                    </form>
-                  </c:when>
-                  <c:otherwise>
-                    <form action="${pageContext.request.contextPath}/wishlist" method="post">
-                      <input type="hidden" name="action" value="add" />
-                      <input type="hidden" name="book_id" value="${book_details.bookId}" />
-                      <input type="hidden" name="book_id_redirect" value="${book_details.bookId}" />
-                      <button class="btn btn-wishlist" type="submit" title="Add to Wishlist">
-                        <i class="far fa-heart"></i> 
-                      </button>
-                    </form>
-                  </c:otherwise>
-                </c:choose>
+           
+                <form action="${pageContext.request.contextPath}/wishlist" method="post">
+                  <input type="hidden" name="action" value="add" />
+                  <input type="hidden" name="book_id" value="${book_details.bookId}" />
+                  <input type="hidden" name="book_id_redirect" value="${book_details.bookId}" />
+                  <button class="btn btn-wishlist" type="submit">
+                    <i class="far fa-heart"></i>
+                  </button>
+                </form>
               </div>
             </div>
           </div>
