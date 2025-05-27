@@ -224,8 +224,17 @@
     }
 
     .profile-img {
-        margin-bottom: 15px;
+        width: 25vw;
+        height: 25vw;
+        max-width: 100px;
+        max-height: 100px;
     }
+
+    .profile-img-wrapper {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+      }
 
     .profile-card > div {
         text-align: center;
