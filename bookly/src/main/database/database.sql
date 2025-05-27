@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS booklySchema.wishlists (
     user_id INTEGER PRIMARY KEY,
     wishlist_id SERIAL UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+    FOREIGN KEY (user_id) REFERENCES booklySchema.users(user_id)
 );
 
 CREATE TABLE IF NOT EXISTS booklySchema.orders (
