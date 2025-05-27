@@ -56,13 +56,15 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
             <h1>A Library That's Always Open.</h1>
             <p>You may access the best collection with over +30 genres</p>
             <div class="search-container">
-              <div class="search-bar-hero">
+              <form action="${pageContext.request.contextPath}/search" method="get" class="search-bar-hero">
                 <input
                   type="text"
+                  name="query"
                   placeholder="Search Books, Authors Or Topics"
+                  required
                 />
-                <button class="search-btn-hero">Search</button>
-              </div>
+                <button type="submit" class="search-btn-hero">Search</button>
+              </form>
             </div>
             <div class="reviews-container">
               <div class="reviewer-avatars">
