@@ -223,7 +223,7 @@ public class Review {
     /**
      * Sets the text of the review.
      *
-     * @param reviewText The review text.
+     * @param comment The review text.
      */
     public void setReviewText(String comment) {
         this.comment = comment;

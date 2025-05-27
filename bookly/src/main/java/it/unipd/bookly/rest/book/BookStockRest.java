@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Handles book stock updates:
- * PUT /api/books/stock?id=123&quantity=10
+ * Handles book stock updates:<br>
+ * <code>PUT /api/books/stock?id=123&amp;quantity=10</code>
  */
 public class BookStockRest extends AbstractRestResource {
 
