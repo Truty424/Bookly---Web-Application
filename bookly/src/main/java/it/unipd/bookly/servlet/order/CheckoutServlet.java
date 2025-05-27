@@ -4,6 +4,7 @@ import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.*;
 import it.unipd.bookly.dao.cart.*;
 import it.unipd.bookly.dao.order.InsertOrderDAO;
+import it.unipd.bookly.dao.order.InsertOrderItemsDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
@@ -34,6 +35,10 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
 
         try {
             User user = (User) session.getAttribute("user");
+            if (user != null && user.getAddress() != null) {
+                req.setAttribute("savedAddress", user.getAddress());
+            }
+
             Cart cart = getCartByUserId(getConnection(), user.getUserId());
 
             if (cart == null) {
@@ -124,6 +129,10 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
 
             try (Connection con = getConnection()) {
                 new LinkOrderToCartDAO(con, cart.getCartId(), orderId).access();
+            }
+
+            try (Connection con = getConnection()) {
+                new InsertOrderItemsDAO(con, cart.getCartId(), orderId).access();
             }
 
             try (Connection con = getConnection()) {

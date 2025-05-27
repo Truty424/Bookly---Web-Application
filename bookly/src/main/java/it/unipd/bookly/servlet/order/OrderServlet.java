@@ -8,8 +8,11 @@ import it.unipd.bookly.dao.cart.ClearCartDAO;
 import it.unipd.bookly.dao.cart.CreateCartForUserDAO;
 import it.unipd.bookly.dao.cart.GetCartByUserIdDAO;
 import it.unipd.bookly.dao.cart.LinkOrderToCartDAO;
+import it.unipd.bookly.dao.order.GetOrderWithBooksDAO;
 import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
 import it.unipd.bookly.dao.order.InsertOrderDAO;
+import it.unipd.bookly.dao.order.InsertOrderItemsDAO;
+import it.unipd.bookly.dao.order.GetOrderByIdDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
@@ -40,6 +43,34 @@ public class OrderServlet extends AbstractDatabaseServlet {
 
         try (Connection con = getConnection()) {
             User user = (User) session.getAttribute("user");
+
+            String pathInfo = req.getPathInfo(); // e.g. "/42"
+            if (pathInfo != null && pathInfo.matches("/\\d+")) {
+                // === Individual Order Details ===
+                int orderId = Integer.parseInt(pathInfo.substring(1));
+
+                System.out.println("Trying to load order with ID: " + orderId);
+
+                Order order = new GetOrderWithBooksDAO(con, orderId).access().getOutputParam();
+
+                if (order == null) {
+                    LOGGER.warn("⚠️ No books found for order. Falling back to basic order info...");
+                    try (Connection fallbackCon = getConnection()) {
+                        order = new GetOrderByIdDAO(fallbackCon, orderId).access().getOutputParam();
+                    }
+                }
+
+                if (order == null) {
+                    ServletUtils.redirectToErrorPage(req, res, "Order not found.");
+                    return;
+                }
+
+                req.setAttribute("order", order);
+                req.getRequestDispatcher("/jsp/order/orderDetails.jsp").forward(req, res);
+                return;
+            }
+
+            // === All Orders ===
             List<Order> orders = new GetOrdersByUserDAO(con, user.getUserId()).access().getOutputParam();
             req.setAttribute("orders", orders);
             req.getRequestDispatcher("/jsp/order/userOrders.jsp").forward(req, res);
@@ -52,6 +83,7 @@ public class OrderServlet extends AbstractDatabaseServlet {
             LogContext.removeResource();
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -84,6 +116,8 @@ public class OrderServlet extends AbstractDatabaseServlet {
             }
 
             new LinkOrderToCartDAO(con, cart.getCartId(), orderId).access();
+            new InsertOrderItemsDAO(con, cart.getCartId(), orderId).access();
+            LOGGER.info("InsertOrderItemsDAO ran for orderId={}, cartId={}", orderId, cart.getCartId());
             new ClearCartDAO(con, cart.getCartId()).access();
             new CreateCartForUserDAO(con, user.getUserId(), order.getPaymentMethod()).access();
 

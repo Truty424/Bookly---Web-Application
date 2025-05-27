@@ -139,6 +139,12 @@ prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
                   </tr>
                 </c:forEach>
               </table>
+
+              <div class="view-all-orders-wrapper">
+                <a href="${pageContext.request.contextPath}/orders" class="view-all-orders-btn">
+                  View All Orders →
+                </a>
+              </div>
             </c:if>
             <c:if test="${empty user_orders}">
               <p>No orders found.</p>

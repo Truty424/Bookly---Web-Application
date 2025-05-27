@@ -111,8 +111,16 @@ import="java.util.List" %>
             </div>
           </div>
 
-          <!-- Address Field -->
-          <div id="address-field" style="display: none">
+          <!-- Address Suggestion -->
+          <c:if test="${not empty savedAddress}">
+            <div class="form-group">
+              <input type="checkbox" id="useSavedAddress" onclick="fillSavedAddress()" />
+              <label for="useSavedAddress">Use my saved address</label>
+              <input type="hidden" id="savedAddress" value="${savedAddress}" />
+            </div>
+          </c:if>
+
+          <div id="address-field">
             <div class="form-group">
               <label for="address">Delivery Address</label>
               <textarea
@@ -120,9 +128,11 @@ import="java.util.List" %>
                 id="address"
                 rows="3"
                 placeholder="Your shipping address..."
+                required
               ></textarea>
             </div>
           </div>
+
           <p><strong>Final Total:</strong> <span data-format='price'>${final_total}</span> </p>
           <button type="submit" class="order-button">Order now</button>
         </form>
@@ -134,5 +144,6 @@ import="java.util.List" %>
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/address-suggestion.js"></script>
   </body>
 </html>

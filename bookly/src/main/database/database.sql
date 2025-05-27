@@ -179,3 +179,12 @@ CREATE TABLE IF NOT EXISTS booklySchema.contains_wishlist (
     FOREIGN KEY (wishlist_id) REFERENCES booklySchema.wishlists(wishlist_id),
     FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
 );
+
+CREATE TABLE IF NOT EXISTS booklySchema.order_items (
+    order_id INTEGER NOT NULL,
+    book_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    PRIMARY KEY (order_id, book_id),
+    FOREIGN KEY (order_id) REFERENCES booklySchema.orders(order_id) ON DELETE CASCADE,
+    FOREIGN KEY (book_id) REFERENCES booklySchema.books(book_id)
+);

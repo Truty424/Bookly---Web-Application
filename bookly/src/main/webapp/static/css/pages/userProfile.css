@@ -230,3 +230,22 @@
   text-align: center;
   line-height: 1.2;
 }
+.view-all-orders-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.view-all-orders-btn {
+  background-color: #FC8C59;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+
+.view-all-orders-btn:hover {
+  background-color: #f97d3d;
+}
