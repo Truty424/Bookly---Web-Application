@@ -2,6 +2,7 @@ package it.unipd.bookly.servlet.order;
 
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.*;
+import it.unipd.bookly.dao.author.GetAuthorsByBookListDAO;
 import it.unipd.bookly.dao.cart.*;
 import it.unipd.bookly.dao.order.InsertOrderDAO;
 import it.unipd.bookly.dao.order.InsertOrderItemsDAO;
@@ -17,6 +18,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @WebServlet(name = "CheckoutServlet", value = "/checkout")
 public class CheckoutServlet extends AbstractDatabaseServlet {
@@ -50,14 +53,22 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             double total = calculateCartTotal(books);
             double finalTotal = applyDiscountIfExists(getConnection(), cart.getCartId(), session);
 
-            // Format the final total to 2 decimal places
-            String formattedTotal = String.format("%.2f", total);
-            String formattedFinalTotal = String.format("%.2f", finalTotal);
+            // Get authors for books in cart
+            List<Integer> bookIds = books.stream().map(Book::getBookId).toList();
+            Map<Integer, List<Author>> authorsMap;
+            try (Connection con = getConnection()) {
+                authorsMap = new GetAuthorsByBookListDAO(con, bookIds).access().getOutputParam();
+            } catch (Exception e) {
+                authorsMap = new HashMap<>(); // fallback to avoid crashing JSP
+                LOGGER.warn("Could not fetch authors for checkout view: {}", e.getMessage());
+            }
 
             // Pass the formatted values to the JSP
             req.setAttribute("cart_books", books);
             req.setAttribute("total_price", total);
             req.setAttribute("final_total", finalTotal);
+            req.setAttribute("authors_map", authorsMap);
+
 
             req.getRequestDispatcher("/jsp/order/checkout.jsp").forward(req, res);
         } catch (Exception e) {

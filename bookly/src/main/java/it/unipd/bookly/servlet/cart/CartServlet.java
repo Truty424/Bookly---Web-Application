@@ -3,8 +3,10 @@ package it.unipd.bookly.servlet.cart;
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Cart;
+import it.unipd.bookly.Resource.Author;
 import it.unipd.bookly.Resource.Discount;
 import it.unipd.bookly.dao.cart.*;
+import it.unipd.bookly.dao.author.GetAuthorsByBookListDAO;
 import it.unipd.bookly.dao.discount.GetValidDiscountByCodeDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
@@ -18,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "CartServlet", value = "/cart/*")
 public class CartServlet extends AbstractDatabaseServlet {
@@ -124,6 +127,16 @@ public class CartServlet extends AbstractDatabaseServlet {
         try (Connection con = getConnection()) {
             cartBooks = new GetBooksInCartDAO(con, cartId).access().getOutputParam();
         }
+
+        // Extract book IDs
+        List<Integer> bookIds = cartBooks.stream().map(Book::getBookId).toList();
+
+        // Get authors mapped by bookId
+        Map<Integer, List<Author>> authorsMap;
+        try (Connection con = getConnection()) {
+            authorsMap = new GetAuthorsByBookListDAO(con, bookIds).access().getOutputParam();
+        }
+        req.setAttribute("authors_map", authorsMap);
 
         double totalPrice = cartBooks.stream().mapToDouble(Book::getPrice).sum();
         double discountedTotal = totalPrice;

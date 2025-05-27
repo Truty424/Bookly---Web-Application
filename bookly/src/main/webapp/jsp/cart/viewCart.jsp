@@ -46,9 +46,9 @@ isELIgnored="false" %>
               <h2><strong>${book.title}</strong></h2>
               <p>
                 <c:choose>
-                  <c:when test="${not empty authors}">
-                    <c:forEach var="author" items="${authors}" varStatus="loop">
-                      ${author.name}<c:if test="${!loop.last}">, </c:if>
+                  <c:when test="${not empty authors_map[book.bookId]}">
+                    <c:forEach var="author" items="${authors_map[book.bookId]}" varStatus="loop">
+                      ${author.firstName} ${author.lastName}<c:if test="${!loop.last}">, </c:if>
                     </c:forEach>
                   </c:when>
                   <c:otherwise>Unknown</c:otherwise>

@@ -39,9 +39,7 @@
               <c:otherwise>Unknown</c:otherwise>
             </c:choose>
           </div>
-          <div class="book-price">
-            <fmt:formatNumber value="${book.price}" type="number" minFractionDigits="2" />
-          </div>
+          <div class="book-price"><span data-format="price">${book.price}</span></div>
         </div>
       </div>
     </c:forEach>
@@ -79,5 +77,6 @@
 <%@ include file="/html/footer.html" %>
 <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
 </body>
 </html>

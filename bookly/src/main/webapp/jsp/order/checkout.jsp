@@ -44,11 +44,7 @@ import="java.util.List" %>
               <div class="book-authors">
                 <c:choose>
                   <c:when test="${not empty authors_map[book.bookId]}">
-                    <c:forEach
-                      var="author"
-                      items="${authors_map[book.bookId]}"
-                      varStatus="loop"
-                    >
+                    <c:forEach var="author" items="${authors_map[book.bookId]}" varStatus="loop">
                       ${author.name}<c:if test="${!loop.last}">, </c:if>
                     </c:forEach>
                   </c:when>

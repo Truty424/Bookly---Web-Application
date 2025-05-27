@@ -4,6 +4,7 @@ import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Cart;
 import it.unipd.bookly.Resource.Order;
 import it.unipd.bookly.Resource.User;
+import it.unipd.bookly.Resource.Author;
 import it.unipd.bookly.dao.cart.ClearCartDAO;
 import it.unipd.bookly.dao.cart.CreateCartForUserDAO;
 import it.unipd.bookly.dao.cart.GetCartByUserIdDAO;
@@ -13,6 +14,7 @@ import it.unipd.bookly.dao.order.GetOrdersByUserDAO;
 import it.unipd.bookly.dao.order.InsertOrderDAO;
 import it.unipd.bookly.dao.order.InsertOrderItemsDAO;
 import it.unipd.bookly.dao.order.GetOrderByIdDAO;
+import it.unipd.bookly.dao.author.GetAuthorsByBookListDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
@@ -25,6 +27,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @WebServlet(name = "OrderServlet", value = "/orders/*")
 public class OrderServlet extends AbstractDatabaseServlet {
@@ -59,13 +63,22 @@ public class OrderServlet extends AbstractDatabaseServlet {
                         order = new GetOrderByIdDAO(fallbackCon, orderId).access().getOutputParam();
                     }
                 }
-
+                Map<Integer, List<Author>> authorsMap = new HashMap<>();
+                if (order != null && order.getBooks() != null && !order.getBooks().isEmpty()) {
+                    List<Integer> bookIds = order.getBooks().stream().map(b -> b.getBookId()).toList();
+                    try (Connection authorCon = getConnection()) {
+                        authorsMap = new GetAuthorsByBookListDAO(authorCon, bookIds).access().getOutputParam();
+                    } catch (Exception e) {
+                        LOGGER.warn("Could not load authors for order view: {}", e.getMessage());
+                    }
+                }
                 if (order == null) {
                     ServletUtils.redirectToErrorPage(req, res, "Order not found.");
                     return;
                 }
 
                 req.setAttribute("order", order);
+                req.setAttribute("authors_map", authorsMap);
                 req.getRequestDispatcher("/jsp/order/orderDetails.jsp").forward(req, res);
                 return;
             }
