@@ -212,7 +212,7 @@ public class UserServlet extends AbstractDatabaseServlet {
         }
 
         User user = (User) session.getAttribute("user");
-        String newPassword = req.getParameter("password");
+        String newPassword = req.getParameter("newPassword");
 
         if (newPassword == null || newPassword.trim().isEmpty()) {
             req.setAttribute("error_message", "Password cannot be empty.");

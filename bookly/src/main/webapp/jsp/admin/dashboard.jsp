@@ -1,5 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %> <%@ page
-import="it.unipd.bookly.Resource.User" %>
+<%@ page contentType="text/html;charset=UTF-8" %> 
+<%@ page import="it.unipd.bookly.Resource.User" %>
 
 <html>
   <head>
