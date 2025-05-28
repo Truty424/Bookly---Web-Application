@@ -101,14 +101,24 @@
                   </button>
                 </form>
 
-           
                 <form action="${pageContext.request.contextPath}/wishlist" method="post">
-                  <input type="hidden" name="action" value="add" />
                   <input type="hidden" name="book_id" value="${book_details.bookId}" />
-                  <input type="hidden" name="book_id_redirect" value="${book_details.bookId}" />
-                  <button class="btn btn-wishlist" type="submit">
-                    <i class="far fa-heart"></i>
-                  </button>
+                  <input type="hidden" name="redirect_to" value="${pageContext.request.contextPath}/book/${book_details.bookId}" />
+                
+                  <c:choose>
+                    <c:when test="${isInWishlist}">
+                      <input type="hidden" name="action" value="remove" />
+                      <button class="btn btn-remove-wishlist" type="submit" title="Remove from Wishlist">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </c:when>
+                    <c:otherwise>
+                      <input type="hidden" name="action" value="add" />
+                      <button class="btn btn-wishlist" type="submit" title="Add to Wishlist">
+                        <i class="far fa-heart"></i>
+                      </button>
+                    </c:otherwise>
+                  </c:choose>
                 </form>
               </div>
             </div>

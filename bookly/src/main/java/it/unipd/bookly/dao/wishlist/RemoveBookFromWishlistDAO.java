@@ -14,24 +14,21 @@ import it.unipd.bookly.exceptions.DatabaseException;
 public class RemoveBookFromWishlistDAO extends AbstractDAO<Void> {
 
     private final int book_id;
-    private final int wishlistId;
 
     /**
      * Constructor.
      *
      * @param con the database connection
      * @param book_id the book to remove
-     * @param wishlistId the wishlist from which to remove the book
      */
-    public RemoveBookFromWishlistDAO(final Connection con, final int book_id, final int wishlistId) {
+    public RemoveBookFromWishlistDAO(final Connection con, final int book_id) {
         super(con);
 
-        if (book_id <= 0 || wishlistId <= 0) {
-            throw new IllegalArgumentException("Both book_id and wishlistId must be positive integers.");
+        if (book_id <= 0) {
+            throw new IllegalArgumentException("Both book_id must be positive integers.");
         }
 
         this.book_id = book_id;
-        this.wishlistId = wishlistId;
     }
 
     @Override
@@ -40,21 +37,20 @@ public class RemoveBookFromWishlistDAO extends AbstractDAO<Void> {
         try {
             con.setAutoCommit(false);
             try (PreparedStatement stmnt = con.prepareStatement(REMOVE_BOOK_FROM_WISHLIST)) {
-                stmnt.setInt(1, wishlistId);
-                stmnt.setInt(2, book_id);
+                stmnt.setInt(1, book_id);
 
                 int affectedRows = stmnt.executeUpdate();
                 if (affectedRows == 0) {
-                    LOGGER.warn("No entry found: book ID {} was not in wishlist ID {}.", book_id, wishlistId);
+                    LOGGER.warn("No entry found: book ID {} was not in wishlist ID {}.", book_id);
                     throw new SQLException("No matching book found in the wishlist.");
                 }
 
                 con.commit();
-                LOGGER.info("Book ID {} successfully removed from wishlist ID {}.", book_id, wishlistId);
+                LOGGER.info("Book ID {} successfully removed from wishlist ID {}.", book_id);
 
             } catch (SQLException e) {
                 con.rollback();
-                LOGGER.error("Database error while removing book ID {} from wishlist ID {}: {}", book_id, wishlistId, e.getMessage());
+                LOGGER.error("Database error while removing book ID {} from wishlist ID {}: {}", book_id, e.getMessage());
                 throw new DatabaseException("Failed to remove book from wishlist.", e);
             }
 

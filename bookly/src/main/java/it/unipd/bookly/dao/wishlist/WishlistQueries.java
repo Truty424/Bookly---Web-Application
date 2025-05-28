@@ -11,10 +11,10 @@ public class WishlistQueries {
         "INSERT INTO booklySchema.contains_wishlist (wishlist_id, book_id) VALUES (?, ?)";
 
     public static final String REMOVE_BOOK_FROM_WISHLIST =
-        "DELETE FROM booklySchema.contains_wishlist WHERE wishlist_id = ? AND book_id = ?";
+        "DELETE FROM booklySchema.contains_wishlist WHERE book_id = ?";
 
     public static final String IS_BOOK_IN_WISHLIST =
-        "SELECT EXISTS (SELECT 1 FROM booklySchema.contains_wishlist WHERE wishlist_id = ? AND book_id = ?)";
+        "SELECT 1 FROM booklySchema.contains_wishlist WHERE wishlist_id = ? AND book_id = ?";
 
     public static final String GET_BOOKS_IN_WISHLIST =
         "SELECT b.* FROM booklySchema.books b " +

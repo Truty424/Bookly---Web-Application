@@ -1,6 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" %> <%@ taglib prefix="c"
-uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ page contentType="text/html;charset=UTF-8" %> 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
   <head>
     <title>Your Wishlists</title>
@@ -53,7 +52,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             >
               <c:forEach var="book" items="${wishlist_books}">
                 <div class="col">
-                  <div class="card h-100 shadow-sm p-3">
+                  <div class="card shadow-sm p-3">
                     <img
                     src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
                     class="card-img-top mb-2" alt=test"
@@ -86,11 +85,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                           name="book_id"
                           value="${book.bookId}"
                         />
-                        <input
-                          type="hidden"
-                          name="book_id_redirect"
-                          value="${book.bookId}"
-                        />
+                        <input type="hidden" name="redirect_to" value="${pageContext.request.contextPath}/wishlist" />
                         <button
                           class="btn btn-outline-danger btn-sm"
                           type="submit"

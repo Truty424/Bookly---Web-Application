@@ -8,12 +8,16 @@ import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.Book;
 import it.unipd.bookly.Resource.Author;
 import it.unipd.bookly.Resource.Review;
+import it.unipd.bookly.Resource.User;
+import it.unipd.bookly.Resource.Wishlist;
 import it.unipd.bookly.dao.book.GetAllBooksDAO;
 import it.unipd.bookly.dao.book.GetBookByIdDAO;
 import it.unipd.bookly.dao.author.GetAuthorsByBookDAO;
 import it.unipd.bookly.dao.review.CountReviewsForBookDAO;
 import it.unipd.bookly.dao.review.GetAvgRatingForBookDAO;
 import it.unipd.bookly.dao.review.GetReviewsByBookDAO;
+import it.unipd.bookly.dao.wishlist.IsBookInWishlistDAO;
+import it.unipd.bookly.dao.wishlist.GetWishlistByUserDAO;
 import it.unipd.bookly.servlet.AbstractDatabaseServlet;
 import it.unipd.bookly.utilities.ServletUtils;
 
@@ -21,6 +25,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet(name = "BookServlet", value = "/book/*")
 public class BookServlet extends AbstractDatabaseServlet {
@@ -67,6 +72,8 @@ public class BookServlet extends AbstractDatabaseServlet {
         List<Review> reviews;
         Double averageRating = 0.0;
         Integer reviewCount = 0;
+        boolean isInWishlist = false;
+        Wishlist wishlist;
 
         // Step 1: Get book
         try (Connection con = getConnection()) {
@@ -93,12 +100,27 @@ public class BookServlet extends AbstractDatabaseServlet {
             reviewCount = new CountReviewsForBookDAO(con, bookId).access().getOutputParam();
         }
 
+        // Step 6: Check if book is in user's wishlist
+        HttpSession session = req.getSession(false);
+        if (session != null && session.getAttribute("user") != null) {
+            User user = (User) session.getAttribute("user");
+            try (Connection con = getConnection()) {
+                wishlist = new GetWishlistByUserDAO(con, user.getUserId()).access().getOutputParam();
+            }
+            try (Connection con = getConnection()) {
+                if (wishlist != null) {
+                    isInWishlist = new IsBookInWishlistDAO(con, wishlist.getWishlistId(), bookId).access().getOutputParam();
+                }
+            }
+        }
+
         if (book != null) {
             req.setAttribute("book_details", book);
             req.setAttribute("authors", authors);
             req.setAttribute("reviews", reviews);
             req.setAttribute("average_rating", averageRating);
             req.setAttribute("review_count", reviewCount);
+            req.setAttribute("isInWishlist", isInWishlist);
             req.getRequestDispatcher("/jsp/book/bookDetails.jsp").forward(req, resp);
         } else {
             ServletUtils.redirectToErrorPage(req, resp, "Book not found for ID: " + bookId);

@@ -218,7 +218,15 @@
   transform: scale(1.05);
 }
 
-.btn-wishlist {
+.btn-wishlist i {
+  color: #d63384; /* pink heart */
+}
+
+.btn-remove-wishlist i {
+  color: #dc3545; /* red trash */
+}
+
+.btn-wishlist, .btn-remove-wishlist{
   border: none;
   background-color: #f8f9fa;
   outline: none;

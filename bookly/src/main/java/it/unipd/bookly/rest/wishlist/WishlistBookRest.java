@@ -85,17 +85,16 @@ public class WishlistBookRest extends AbstractRestResource {
         // Expect JSON body like: { "userId": 5, "bookId": 10 }
         Map<String, Integer> body = mapper.readValue(req.getInputStream(), Map.class);
 
-        Integer userId = body.get("userId");
         Integer bookId = body.get("bookId");
 
-        if (userId == null || bookId == null) {
+        if (bookId == null) {
             sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing parameters", "E400", "'userId' and 'bookId' are required in JSON body.");
             return;
         }
 
         try {
-            new RemoveBookFromWishlistDAO(con, userId, bookId).access();
-            sendMessage("Book removed from wishlist", "200", "Book ID " + bookId + " removed for User ID " + userId);
+            new RemoveBookFromWishlistDAO(con, bookId).access();
+            sendMessage("Book removed from wishlist", "200", "Book ID " + bookId);
         } catch (Exception e) {
             LOGGER.error("Error removing book from wishlist", e);
             sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Server error", "E500", "Failed to remove book: " + e.getMessage());
