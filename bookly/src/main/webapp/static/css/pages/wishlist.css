@@ -1,51 +1,103 @@
-/* Sidebar */
+/* === Wishlist Layout Grid === */
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 20px;
+  padding: 0 1rem;
+  justify-content: center;
+}
+
+/* === Book Card === */
+.book-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+}
+
+.book-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.book-image {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.book-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #222;
+  text-decoration: none;
+  margin: 0.5rem 0;
+  display: block;
+}
+
+.book-title:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.text-muted {
+  color: #6c757d;
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.book-price {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fc8c59;
+  margin-bottom: 0.75rem;
+}
+
+.book-card .btn {
+  font-size: 0.8rem;
+  padding: 6px 12px;
+  border-radius: 5px;
+}
+
+/* === Page Title === */
+.all-books-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #333;
+}
+
+/* === Sidebar === */
 .sidebar {
   width: 250px;
   background-color: #fff;
   padding: 20px;
   border-right: 1px solid #e0e0e0;
-  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
   height: 100vh;
   position: sticky;
   top: 0;
   border-radius: 0 12px 12px 0;
-  transition: transform 0.3s ease-in-out;
   z-index: 1001;
 }
 
-.sidebar-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sidebar li {
-  margin: 15px 0;
-  font-size: 16px;
-}
-
-.sidebar li a {
-  color: #333;
-  text-decoration: none;
-  display: block;
-}
-
-.sidebar li a:hover {
-  color: #FC8C59;
-}
-
-/* Toggle button (hidden on desktop) */
+/* === Sidebar Toggle Button === */
 .sidebar-toggle {
   display: none;
 }
 
-/* Mobile sidebar overlay */
+/* === Overlay === */
 .sidebar-overlay {
   display: none;
   position: fixed;
@@ -61,46 +113,7 @@
   display: block;
 }
 
-/* Wishlist list */
-.wishlist-list {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0;
-}
-
-.wishlist-item {
-  padding: 15px 20px;
-  margin-bottom: 15px;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
-  background-color: #ffffff;
-  transition: box-shadow 0.3s ease;
-}
-
-.wishlist-item:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.wishlist-item a {
-  text-decoration: none;
-  color: #212529;
-  font-weight: 600;
-  font-size: 18px;
-  display: block;
-}
-
-.wishlist-item a:hover {
-  color: #0d6efd;
-  text-decoration: underline;
-}
-
-/* Main content styling */
-.profile-content {
-  padding: 30px;
-  flex: 1;
-}
-
-/* Responsive */
+/* === Responsive Sidebar === */
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;
@@ -110,9 +123,10 @@
     width: 80%;
     height: 100vh;
     border-radius: 0;
-    z-index: 1001;
     padding: 24px 16px;
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 1001;
+    transition: transform 0.3s ease-in-out;
   }
 
   .sidebar.active {
@@ -120,17 +134,54 @@
   }
 
   .sidebar-toggle {
-    display: block !important;
+    display: block;
+    width: 100%;
     background-color: #FC8C59;
     color: white;
     padding: 12px 16px;
     font-size: 1.2rem;
     border: none;
-    width: 100%;
     text-align: left;
     cursor: pointer;
     font-weight: bold;
     border-radius: 0 0 8px 8px;
-    z-index: 1002;
+    z-index: 999; /* Behind the sidebar */
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .sidebar-overlay.active {
+    display: block;
+  }
+
+  main {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .all-books-title {
+    font-size: 28px;
+    margin-top: 20px;
+  }
+}
+
+/* === Extra Responsive Tuning (Small Phones) === */
+@media (max-width: 576px) {
+  .book-title {
+    font-size: 0.9rem;
+  }
+
+  .text-muted {
+    font-size: 0.8rem;
+  }
+
+  .book-price {
+    font-size: 0.85rem;
+  }
+
+  .all-books-title {
+    font-size: 24px;
+    margin-top: 20px;
   }
 }
