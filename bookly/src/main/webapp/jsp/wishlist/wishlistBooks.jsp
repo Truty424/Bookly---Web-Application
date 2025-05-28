@@ -40,19 +40,10 @@
         <%@ include file="/html/userSidebar.html" %>
         <c:choose>
           <c:when test="${not empty wishlist_books}">
-            <div
-              style="
-                max-width: 900px;
-                margin: 40px auto;
-                padding: 30px;
-                background-color: #fff;
-                border-radius: 12px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-              "
-            >
+            <div class="wishlist-container">
               <c:forEach var="book" items="${wishlist_books}">
                 <div class="col">
-                  <div class="card shadow-sm p-3">
+                  <div class="wishlist-card shadow-sm p-3">
                     <img
                     src="${pageContext.request.contextPath}/static/img/book/${book.bookId}.jpg"
                     class="card-img-top mb-2" alt=test"
