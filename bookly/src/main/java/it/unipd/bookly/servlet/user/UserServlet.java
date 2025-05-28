@@ -203,7 +203,6 @@ public class UserServlet extends AbstractDatabaseServlet {
                 """);
         }
     }
-
     private void changePassword(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
@@ -324,5 +323,4 @@ public class UserServlet extends AbstractDatabaseServlet {
             forward(req, res, "/jsp/user/editUserProfile.jsp");
         }
     }
-
 }
