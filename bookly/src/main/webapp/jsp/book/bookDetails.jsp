@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 <html>
 <head>
@@ -144,7 +145,7 @@
                     <div class="review-main">
                       <div class="review-main-top">
                         <span class="review-username">${review.username}</span>
-                        <span class="review-date">at ${review.reviewDate}</span>
+                        <span class="review-date">at <fmt:formatDate value="${review.reviewDate}" pattern="yyyy-MM-dd HH:mm:ss" /></span>
                       </div>
                       <div class="review-main-bottom">
                         <p>${fn:escapeXml(review.reviewText)}</p>

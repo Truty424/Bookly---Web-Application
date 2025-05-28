@@ -611,46 +611,97 @@ textarea, input[type="text"] {
 }
 
 
+@media screen and (max-width: 576px) {
+  .review-item-modern {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .review-meta {
+    align-items: center;
+  }
+
+  .review-meta-bottom {
+    justify-content: center;
+  }
+
+  .review-avatar .avatar {
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+  }
+
+  .review-username {
+    width: 100%;
+    text-align: center;
+  }
+
+  .review-date {
+    width: 100%;
+    text-align: center;
+  }
+}
 
 
 @media screen and (max-width: 768px) {
   .book-card-horizontal {
-    flex-direction: column;
-  }
-  .book-actions {
-    flex-direction: column;
-  }
-
-  .book-details-grid {
-    grid-template-columns: 1fr;
-  }
-  .book-extra-info {
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    height: 100%;
-    align-items: flex-end;
-    position: relative;
+    gap: 20px;
   }
-}
 
-.avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.review-header {
+  .book-image {
   display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  gap: 12px;
+  justify-content: center;
+  }
+
+  .book-image img {
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+    margin: 0 auto;
+  }
+
+  .book-main-info .book-meta-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .book-extra-info {
+    width: 100%;
+    align-items: center;
+  }
+
+  .book-actions-wrapper {
+    align-items: center;
+    width: 100%;
+  }
+
+  .book-actions {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  .book-actions form:first-child button {
+    width: 100%;
+  }
+
+  .book-title {
+    text-align: center;
+    font-size: 1.8rem;
+  }
+
+  .book-summary-container {
+    padding: 16px;
+  }
+
+  .back-button-wrapper {
+  margin: 20px 12px;
 }
 
-.review-header-right {
-  display: flex;
-  flex-direction: column;
+  .book-details-card {
+    margin: 0 0px 40px àpx;
+  }
 }
 
 @media screen and (max-width: 992px) {
