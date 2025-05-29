@@ -25,7 +25,12 @@ uri="http://java.sun.com/jsp/jstl/fmt" %>
     <%@ include file="/html/header.html" %>
 
     <main class="orders-container">
-      <h2>Your Orders</h2>
+      <div class="orders-header">
+        <h2>Your Orders</h2>
+        <a href="${pageContext.request.contextPath}/user/profile" class="btn-back">
+          ← Back to Profile
+        </a>
+      </div>    
 
       <c:choose>
         <c:when test="${not empty orders}">

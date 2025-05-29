@@ -80,3 +80,29 @@ body {
     background-color: #e68458;
     transform: scale(1.05);
 }
+
+.orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.btn-back {
+    background-color: transparent;
+    color: #fc8c59;
+    border: 2px solid #fc8c59;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #fc8c59;
+    color: white;
+    transform: scale(1.03);
+}
