@@ -31,18 +31,38 @@ public class AdminServlet extends AbstractDatabaseServlet {
         LogContext.setResource(req.getRequestURI());
         LogContext.setAction("AdminServlet");
 
-        String operation = req.getRequestURI().substring(req.getRequestURI().lastIndexOf("admin") + 5);
+        String operation = req.getPathInfo();
         LOGGER.info("GET operation: {}", operation);
 
         try {
             switch (operation) {
                 case "/dashboard" ->
                     req.getRequestDispatcher("/jsp/admin/dashboard.jsp").forward(req, res);
+                case "/addBook" ->
+                    req.getRequestDispatcher("/jsp/admin/addBook.jsp").forward(req, res);
+                case "/addAuthor" -> {
+                    try (var con = getConnection()) {
+                        var allBooks = new GetAllBooksDAO(con).access().getOutputParam();
+                        req.setAttribute("all_books", allBooks);
+                        LOGGER.info("Number of books fetched: {}", allBooks.size());
+                    }
+                    req.getRequestDispatcher("/jsp/admin/addAuthor.jsp").forward(req, res);
+                }
+                case "/addPublisher" -> {
+                    try (var con = getConnection()) {
+                        var allBooks = new GetAllBooksDAO(con).access().getOutputParam();
+                        req.setAttribute("all_books", allBooks);
+                        LOGGER.info("Number of books fetched: {}", allBooks.size());
+                    }
+                    req.getRequestDispatcher("/jsp/admin/addPublisher.jsp").forward(req, res);
+                }
+                case "/addDiscount" ->
+                    req.getRequestDispatcher("/jsp/admin/addDiscount.jsp").forward(req, res);
                 default ->
                     writeError(res, ErrorCode.OPERATION_UNKNOWN);
             }
-        } catch (IOException e) {
-            LOGGER.error("IOException during GET: ", e);
+        } catch (Exception e) {
+            LOGGER.error("Exception during GET: ", e);
             writeError(res, ErrorCode.INTERNAL_ERROR);
         }
     }
@@ -177,8 +197,10 @@ public class AdminServlet extends AbstractDatabaseServlet {
 
     // ========================== AUTHOR ==========================
     private void handleAddAuthor(HttpServletRequest req) throws Exception {
+        // String[] bookIds = req.getParameterValues("bookIds");
+        Author author;
         try (var con = getConnection()) {
-            Author author = new Author(
+            author = new Author(
                     req.getParameter("firstName"),
                     req.getParameter("lastName"),
                     req.getParameter("biography"),
@@ -186,6 +208,7 @@ public class AdminServlet extends AbstractDatabaseServlet {
             );
             new InsertAuthorDAO(con, author).access();
             LOGGER.info("Author '{} {}' added.", author.getFirstName(), author.getLastName());
+            // Retrieve selected books
         }
     }
 
@@ -213,14 +236,29 @@ public class AdminServlet extends AbstractDatabaseServlet {
 
     // ========================== PUBLISHER ==========================
     private void handleAddPublisher(HttpServletRequest req) throws Exception {
+        String[] bookIds = req.getParameterValues("bookIds");
+        Publisher publisher;
         try (var con = getConnection()) {
-            Publisher publisher = new Publisher(
+            publisher = new Publisher(
                     req.getParameter("publisher_name"),
                     req.getParameter("phone"),
                     req.getParameter("address")
             );
             new InsertPublisherDAO(con, publisher).access();
             LOGGER.info("Publisher '{}' added.", publisher.getPublisherName());
+        }
+        if (bookIds != null && bookIds.length > 0) {
+            for (String bookIdStr : bookIds) {
+                try {
+                    int bookId = Integer.parseInt(bookIdStr);
+                    try (var con = getConnection()) {
+                        new AddPublisherToBookDAO(con, bookId, publisher.getPublisherId()).access();
+                        LOGGER.info("Assigned book {} to publisher {}", bookId, publisher.getPublisherId());
+                    }
+                } catch (NumberFormatException e) {
+                    LOGGER.warn("Invalid book ID '{}', skipping...", bookIdStr);
+                }
+            }
         }
     }
 

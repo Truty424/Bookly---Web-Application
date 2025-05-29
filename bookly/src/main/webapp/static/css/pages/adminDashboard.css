@@ -18,7 +18,7 @@
 }
 .card-link:hover {
     background: #f0f0f0;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    color: #FC8C59;
 }
 .card-title {
     font-size: 1.2rem;
@@ -27,13 +27,13 @@
 .logout-btn {
     margin-top: 2rem;
     padding: 0.75rem 1.5rem;
-    background-color: #ef4444;
+    background-color: #FC8C59;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
 }
 .logout-btn:hover {
-    background-color: #dc2626;
+    transform: scale(0.9);
 }

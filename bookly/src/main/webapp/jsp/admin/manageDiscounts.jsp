@@ -49,7 +49,7 @@
             </div>
             <div class="col-md-6 text-md-end mt-3 mt-md-0 action-buttons">
               <a
-                href="<%= request.getContextPath() %>/jsp/admin/addDiscount.jsp"
+                href="<%= request.getContextPath() %>/admin/addDiscount"
                 class="btn-add btn-custom"
               >
                 + Create Discount

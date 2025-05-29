@@ -47,7 +47,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
           </div>
           <div class="col-md-6 text-md-end mt-3 mt-md-0 action-buttons">
             <a
-              href="${pageContext.request.contextPath}/jsp/admin/addBook.jsp"
+              href="${pageContext.request.contextPath}/admin/addBook"
               class="btn-add btn-custom"
             >
               + Add Book
