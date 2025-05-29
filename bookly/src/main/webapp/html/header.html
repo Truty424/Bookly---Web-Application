@@ -25,18 +25,35 @@
         </button>
       </form>
 
-      <!-- User Actions -->
-      <div class="user-actions" id="user-actions">
-        <a href="${pageContext.request.contextPath}/cart" class="cart-icon">
-          <i class="fas fa-shopping-cart"></i>
-        </a>
-        <a
-          class="login-btn"
-          href="${pageContext.request.contextPath}/user/login"
-          >Login</a
-        >
+<!-- User Actions -->
+<div class="user-actions" id="user-actions">
+  <a href="${pageContext.request.contextPath}/cart" class="cart-icon">
+    <i class="fas fa-shopping-cart"></i>
+  </a>
+
+  <c:choose>
+    <c:when test="${not empty sessionScope.user}">
+      <div class="dropdown">
+        <button class="dropdown-toggle">
+          <i class="fas fa-user-circle"></i>
+          ${sessionScope.user.username}
+        </button>
+        <div class="dropdown-menu">
+          <a href="${pageContext.request.contextPath}/user/profile">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="${pageContext.request.contextPath}/user/logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </a>
+        </div>
       </div>
-    </div>
+    </c:when>
+    <c:otherwise>
+      <a class="login-btn" href="${pageContext.request.contextPath}/user/login">Login</a>
+    </c:otherwise>
+  </c:choose>
+</div>
+
 
     <!-- Main Navigation -->
     <nav class="nav-main">

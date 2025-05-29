@@ -249,3 +249,9 @@
 .view-all-orders-btn:hover {
   background-color: #f97d3d;
 }
+
+.view-all-orders-btn:visited,
+.view-all-orders-btn:active,
+.view-all-orders-btn:focus {
+  color: white;
+}

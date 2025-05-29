@@ -265,5 +265,33 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
     <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/carousel.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
+
+    <!-- Back to Top Button -->
+<button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="
+position: fixed;
+bottom: 20px;
+right: 20px;
+background-color: #FC8C59;
+color: white;
+border: none;
+padding: 10px 14px;
+border-radius: 50%;
+font-size: 1.2rem;
+cursor: pointer;
+z-index: 1000;
+box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+display: none;
+" id="backToTopBtn" aria-label="Scroll to top">
+↑
+</button>
+
+<!-- Back to Top Scroll Script -->
+<script>
+window.addEventListener("scroll", function () {
+  const btn = document.getElementById("backToTopBtn");
+  btn.style.display = window.scrollY > 300 ? "block" : "none";
+});
+</script>
+
   </body>
 </html>
