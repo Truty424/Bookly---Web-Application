@@ -21,6 +21,7 @@ Bookly is a complete backend and JSP-powered frontend system for managing an onl
 | `/jsp`             | JSP pages used for views                         |
 | `/html`            | Static error/success HTML pages                  |
 | `/sql`             | Contains `database.sql` and `insert.sql` files   |
+| `/static/img/book` | Book cover images stored in the host file system |
 
 ---
 
@@ -30,6 +31,13 @@ Bookly is a complete backend and JSP-powered frontend system for managing an onl
 git clone https://github.com/your-org/bookly.git
 cd bookly
 ```
+1. Add Book Cover Images
+Place your .jpg book cover images inside
+```bash 
+/src/main/webapp/static/img/book/
+```
+Files should be named 1.jpg, 2.jpg, ..., 20.jpg to match book IDs.
+
 2. after that you have to run the docker
 ```bash
    mvn package
@@ -62,11 +70,25 @@ Example endpoints:
 - `POST /users`
 - `GET /books`
 - `POST /order`
-- `GET /wishlist/user/{id}`
+- `GET /wishlist`
 
 5. Package and deploy to your preferred servlet container (Tomcat, Jetty, etc.).
 
 ---
+
+####  🧠 Notes on Image Handling
+- Images are stored as binary (BYTEA) in the book_image table.
+- Docker volume mapping
+
+```bash
+ ./src/main/webapp/static/img/book:/mnt/book-images
+```
+- SQL uses
+```bash
+pg_read_binary_file('/mnt/book-images/1.jpg')
+```
+
+Ensure the .jpg files exist before launching docker compose up.
 
 #### 🔧 Configuration
 
@@ -95,13 +117,13 @@ All dependencies are declared in `pom.xml`.
 
 #### 🚀 Deployment instructions
 
-1. Clean the project with:
+1. Clean and build the project with:
    ```bash
-   mvn package clean
+   mvn clean package
    ```
-2. Build the project with:
+2. Run the Docker with:
    ```bash
-   mvn package
+   docker compose up --build
    ```
 
 
