@@ -60,26 +60,17 @@ function validateCVV(cvv) {
   return /^\d{3,4}$/.test(cvv);
 }
 
-function validateExpiryDate(expiry) {
-  if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(expiry)) return false;
+// function validateExpiryDate(expiry) {
+//   if (!/^\d{4}-\d{2}$/.test(expiry)) return false;
 
-  const [month, year] = expiry.split("/");
-  const currentDate = new Date();
-  const currentYear = parseInt(currentDate.getFullYear().toString().slice(-2));
-  const currentMonth = currentDate.getMonth() + 1;
+//   const [year, month] = expiry.split("-").map(Number);
+//   const currentDate = new Date();
+//   const currentYear = currentDate.getFullYear();
+//   const currentMonth = currentDate.getMonth() + 1;
 
-  const inputYear = parseInt(year);
-  const inputMonth = parseInt(month);
+//   return year > currentYear || (year === currentYear && month >= currentMonth);
+// }
 
-  return (
-    inputYear > currentYear ||
-    (inputYear === currentYear && inputMonth >= currentMonth)
-  );
-}
-
-function validateCardholderName(name) {
-  return /^[a-zA-Z\s]{3,50}$/.test(name.trim());
-}
 
 function validateCart() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -95,7 +86,6 @@ function setupFormValidation() {
     const cardNumber = document.querySelector("input[name='cardNumber']").value;
     const cvv = document.querySelector("input[name='cvv']").value;
     const expiry = document.querySelector("input[name='expiry']").value;
-    const cardholder = document.querySelector("input[name='cardholder']").value;
 
     if (!validateCart()) {
       alert("Cart is empty.");
@@ -115,44 +105,63 @@ function setupFormValidation() {
       return;
     }
 
-    if (!validateExpiryDate(expiry)) {
-      alert("Invalid expiry date.");
-      e.preventDefault();
-      return;
-    }
-
-    if (!validateCardholderName(cardholder)) {
-      alert("Invalid cardholder name.");
-      e.preventDefault();
-      return;
-    }
+    // if (!validateExpiryDate(expiry)) {
+    //   alert("Invalid expiry date.");
+    //   e.preventDefault();
+    //   return;
+    // }
   });
 }
 
-// Initialization
 document.addEventListener("DOMContentLoaded", () => {
-  formatCardNumber(document.querySelector("input[name='cardNumber']"));
-  autoTab(
-    document.querySelector("input[name='cardNumber']"),
-    "input[name='expiry']",
-    19
-  );
-  autoTab(
-    document.querySelector("input[name='expiry']"),
-    "input[name='cvv']",
-    5
-  );
-  setupFormValidation();
+  const cardNumberInput = document.querySelector("input[name='cardNumber']");
+  // const expiryInput = document.querySelector("input[name='expiry']");
+  const cvvInput = document.querySelector("input[name='cvv']");
   const methodSelect = document.getElementById("paymentMethod");
   const creditCardFields = document.getElementById("credit-card-fields");
   const addressField = document.getElementById("address-field");
+  const addressInput = document.getElementById("address");
+  const orderButton = document.querySelector(".order-button");
 
+  formatCardNumber(cardNumberInput);
+  autoTab(cardNumberInput, "input[name='expiry']", 19);
+  autoTab(expiryInput, "input[name='cvv']", 5);
+  setupFormValidation();
+
+  console.log(methodSelect);
+
+  function updateButtonState() {
+    const method = methodSelect.value;
+
+    if (method === "credit_card") {
+      const cardValid = validateCreditCardNumber(cardNumberInput.value);
+      const cvvValid = validateCVV(cvvInput.value);
+      // const expiryValid = validateExpiryDate(expiryInput.value);
+      orderButton.disabled = !(cardValid && cvvValid);
+    } else if (method === "in_person") {
+      const addressValid = addressInput.value.trim().length > 0;
+      orderButton.disabled = !addressValid;
+    } else {
+      orderButton.disabled = true;
+    }
+  }
+
+  // Toggle field visibility on payment method change
   methodSelect.addEventListener("change", () => {
     const method = methodSelect.value;
 
-    creditCardFields.style.display =
-      method === "credit_card" ? "block" : "none";
-    addressField.style.display =
-      method === "in_person" ? "block" : "none";
+    creditCardFields.style.display =  method === "credit_card" ? "block" : "none";
+    addressField.style.display = method === "in_person" ? "block" : "none";
+
+    updateButtonState();
   });
+
+  // Watch all input fields for changes
+  [cardNumberInput, expiryInput, cvvInput, addressInput, methodSelect].forEach(
+    (input) => {
+      input.addEventListener("input", updateButtonState);
+    }
+  );
+
+  updateButtonState(); // check initial state
 });

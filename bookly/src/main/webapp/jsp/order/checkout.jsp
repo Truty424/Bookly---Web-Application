@@ -64,7 +64,7 @@ import="java.util.List" %>
         <form
           action="${pageContext.request.contextPath}/checkout"
           method="post"
-          id="payment-form"
+          id="checkout-form"
         >
           <div class="form-group">
             <label for="paymentMethod"><strong>Payment Method</strong></label>
@@ -73,6 +73,9 @@ import="java.util.List" %>
               <option value="credit_card">Credit Card</option>
               <option value="in_person">Pay on Delivery</option>
             </select>
+            <c:if test="${not empty errors.paymentMethod}">
+              <div class="error-message">${errors.paymentMethod}</div>
+            </c:if>
           </div>
 
           <!-- Credit Card Fields -->
@@ -87,14 +90,20 @@ import="java.util.List" %>
                   id="cardNumber"
                   placeholder="1234 5678 9012 3456"
                 />
+                <c:if test="${not empty errors.cardNumber}">
+                  <div class="error-message">${errors.cardNumber}</div>
+                </c:if>
               </div>
             </div>
-            <div class="row my-4">
-              <div class="form-group">
+            <div class="row my-2">
+              <!-- <div class="form-group d-flex justify-content-center align-items-center gap-2 my-2">
                 <label for="expiry">Expiry Date</label>
                 <input type="month" name="expiry" id="expiry" />
-              </div>
-              <div class="form-group">
+                <c:if test="${not empty errors.expiry}">
+                  <div class="error-message">${errors.expiry}</div>
+                </c:if>
+              </div> -->
+              <div class="form-group d-flex justify-content-center align-items-center gap-2 my-2">
                 <label for="cvv">CVV</label>
                 <input
                   type="text"
@@ -103,6 +112,9 @@ import="java.util.List" %>
                   id="cvv"
                   maxlength="4"
                 />
+                <c:if test="${not empty errors.cvv}">
+                  <div class="error-message">${errors.cvv}</div>
+                </c:if>
               </div>
             </div>
           </div>
@@ -124,13 +136,15 @@ import="java.util.List" %>
                 id="address"
                 rows="3"
                 placeholder="Your shipping address..."
-                required
               ></textarea>
+              <c:if test="${not empty errors.address}">
+                <div class="error-message">${errors.address}</div>
+              </c:if>
             </div>
           </div>
 
           <p><strong>Final Total:</strong> <span data-format='price'>${final_total}</span> </p>
-          <button type="submit" class="order-button">Order now</button>
+          <button type="submit" class="order-button" disabled>Order now</button>
         </form>
       </div>
     </main>

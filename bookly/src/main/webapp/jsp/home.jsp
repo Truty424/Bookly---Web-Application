@@ -56,7 +56,11 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
             <h1>A Library That's Always Open.</h1>
             <p>You may access the best collection with over +30 genres</p>
             <div class="search-container">
-              <form action="${pageContext.request.contextPath}/search" method="get" class="search-bar-hero">
+              <form
+                action="${pageContext.request.contextPath}/search"
+                method="get"
+                class="search-bar-hero"
+              >
                 <input
                   type="text"
                   name="query"
@@ -226,7 +230,6 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
           </div>
         </div>
       </section>
-      
 
       <!-- Benefits Section -->
       <section class="benefits-section">
@@ -265,6 +268,32 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
       </section>
     </div>
 
+    <!-- Back to Top Button -->
+    <button
+      onclick="window.scrollTo({top: 0, behavior: 'smooth'});"
+      style="
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        background-color: rgb(252, 140, 89);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        font-size: 1.2rem;
+        cursor: pointer;
+        z-index: 1000;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 12px;
+        display: block;
+        width: 40px;
+        height: 40px;
+        display: none;
+      "
+      id="backToTopBtn"
+      aria-label="Scroll to top"
+    >
+      ↑
+    </button>
+
     <%@ include file="/html/footer.html" %>
     <!-- Include this script at the end of body or in your HTML layout -->
     <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
@@ -272,32 +301,12 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
     <script src="${pageContext.request.contextPath}/static/js/carousel.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
 
-    <!-- Back to Top Button -->
-<button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" style="
-position: fixed;
-bottom: 20px;
-right: 20px;
-background-color: #FC8C59;
-color: white;
-border: none;
-padding: 10px 14px;
-border-radius: 50%;
-font-size: 1.2rem;
-cursor: pointer;
-z-index: 1000;
-box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-display: none;
-" id="backToTopBtn" aria-label="Scroll to top">
-↑
-</button>
-
-<!-- Back to Top Scroll Script -->
-<script>
-window.addEventListener("scroll", function () {
-  const btn = document.getElementById("backToTopBtn");
-  btn.style.display = window.scrollY > 300 ? "block" : "none";
-});
-</script>
-
+    <!-- Back to Top Scroll Script -->
+    <script>
+      window.addEventListener("scroll", function () {
+        const btn = document.getElementById("backToTopBtn");
+        btn.style.display = window.scrollY > 300 ? "block" : "none";
+      });
+    </script>
   </body>
 </html>
