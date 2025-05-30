@@ -57,6 +57,7 @@ public class InsertBookDAO extends AbstractDAO<Boolean> {
                 try (ResultSet generatedKeys = stmtBook.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         generatedBookId = generatedKeys.getInt(1);
+                        book.setBookId(generatedBookId);
                         LOGGER.info("Generated book_id for '{}': {}", book.getTitle(), generatedBookId);
                     } else {
                         throw new Exception("Inserting book failed: no ID obtained.");

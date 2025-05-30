@@ -39,6 +39,7 @@ public class InsertBookImageDAO extends AbstractDAO<Boolean> {
             stmt.setString(3, image.getPhotoMediaType());
 
             int rowsAffected = stmt.executeUpdate();
+            
             success = rowsAffected > 0;
 
             if (success) {

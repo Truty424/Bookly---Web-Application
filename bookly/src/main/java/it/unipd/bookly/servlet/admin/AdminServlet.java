@@ -21,6 +21,7 @@ import java.sql.Timestamp;
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.utilities.ErrorCode;
 import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.http.Part;
 
 @MultipartConfig
 @WebServlet(name = "AdminServlet", value = "/admin/*")
@@ -123,8 +124,10 @@ public class AdminServlet extends AbstractDatabaseServlet {
 
     // ========================== BOOK ==========================
     private void handleAddBook(HttpServletRequest req) throws Exception {
+        Image image;
+        Book book;
         try (var con = getConnection()) {
-            Book book = new Book(
+            book = new Book(
                     0,
                     req.getParameter("title"),
                     req.getParameter("language"),
@@ -137,8 +140,23 @@ public class AdminServlet extends AbstractDatabaseServlet {
                     0.0,
                     req.getParameter("summary")
             );
+
             new InsertBookDAO(con, book).access();
             LOGGER.info("Book '{}' added successfully.", book.getTitle());
+        }
+        // 3. Check if image was uploaded
+        Part imagePart = req.getPart("image");
+        try (var con = getConnection()) {
+            if (imagePart != null && imagePart.getSize() > 0) {
+                int bookId = book.getBookId();
+                byte[] imageBytes = imagePart.getInputStream().readAllBytes();
+                String contentType = imagePart.getContentType();
+                image = new Image(imageBytes, contentType);
+
+                // 4. Insert image for the book
+                new InsertBookImageDAO(con, bookId, image).access();
+                LOGGER.info("Image uploaded for book ID {}", bookId);
+            }
         }
     }
 

@@ -23,6 +23,7 @@ services:
     volumes:
       - ./src/main/database/database.sql:/docker-entrypoint-initdb.d/01_database.sql
       - ./src/main/database/insert.sql:/docker-entrypoint-initdb.d/02_insert.sql
+      - ./src/main/webapp/static/img/book:/mnt/book-images
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s

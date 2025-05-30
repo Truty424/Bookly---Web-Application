@@ -165,3 +165,26 @@ INSERT INTO booklySchema.reviews (user_id, book_id, comment, rating, number_of_l
 (4, 18, 'Twisty, tense, and fast-paced. A real page-turner!', 4, 51, 2),
 (5, 19, 'Magical realism at its best. Dreamlike and haunting.', 5, 60, 0),
 (1, 20, 'Technically detailed but highly entertaining. A brilliant blend of science and humor.', 5, 88, 1);
+
+
+INSERT INTO booklySchema.book_image (book_id, image, image_type) VALUES
+(1, pg_read_binary_file('/mnt/book-images/1.jpg'), 'image/jpeg'),
+(2, pg_read_binary_file('/mnt/book-images/2.jpg'), 'image/jpeg'),
+(3, pg_read_binary_file('/mnt/book-images/3.jpg'), 'image/jpeg'),
+(4, pg_read_binary_file('/mnt/book-images/4.jpg'), 'image/jpeg'),
+(5, pg_read_binary_file('/mnt/book-images/5.jpg'), 'image/jpeg'),
+(6, pg_read_binary_file('/mnt/book-images/6.jpg'), 'image/jpeg'),
+(7, pg_read_binary_file('/mnt/book-images/7.jpg'), 'image/jpeg'),
+(8, pg_read_binary_file('/mnt/book-images/8.jpg'), 'image/jpeg'),
+(9, pg_read_binary_file('/mnt/book-images/9.jpg'), 'image/jpeg'),
+(10, pg_read_binary_file('/mnt/book-images/10.jpg'), 'image/jpeg'),
+(11, pg_read_binary_file('/mnt/book-images/11.jpg'), 'image/jpeg'),
+(12, pg_read_binary_file('/mnt/book-images/12.jpg'), 'image/jpeg'),
+(13, pg_read_binary_file('/mnt/book-images/13.jpg'), 'image/jpeg'),
+(14, pg_read_binary_file('/mnt/book-images/14.jpg'), 'image/jpeg'),
+(15, pg_read_binary_file('/mnt/book-images/15.jpg'), 'image/jpeg'),
+(16, pg_read_binary_file('/mnt/book-images/16.jpg'), 'image/jpeg'),
+(17, pg_read_binary_file('/mnt/book-images/17.jpg'), 'image/jpeg'),
+(18, pg_read_binary_file('/mnt/book-images/18.jpg'), 'image/jpeg'),
+(19, pg_read_binary_file('/mnt/book-images/19.jpg'), 'image/jpeg'),
+(20, pg_read_binary_file('/mnt/book-images/20.jpg'), 'image/jpeg');
