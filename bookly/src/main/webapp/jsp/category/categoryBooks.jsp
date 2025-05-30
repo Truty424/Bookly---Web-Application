@@ -54,10 +54,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                       >${book.title}</a
                     >
                   </h3>
-                  <p><strong>Publisher:</strong> ${book.edition}</p>
-                  <p data-format="price">
-                    <strong>Price:</strong> $${book.price}
-                  </p>
+                  <p><strong>Price:</strong> <span data-format='price'> ${book.price}</span> </p>
                   <p><strong>Language:</strong> ${book.language}</p>
                   <p data-format="rating">
                     <strong>Average Rating:</strong>

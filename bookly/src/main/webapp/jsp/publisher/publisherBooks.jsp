@@ -50,9 +50,9 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                     >
                   </h3>
                   <p><strong>Publisher:</strong> ${publisher_name}</p>
-                  <p><strong>Price:</strong> $${book.price}</p>
+                  <p><strong>Price:</strong> <span data-format='price'> ${book.price}</span> </p>
                   <p><strong>Language:</strong> ${book.language}</p>
-                  <p><strong>Average Rating:</strong> ${book.average_rate}/5</p>
+                  <p><strong>Average Rating:</strong> ${book_ratings[book.bookId]} / 5</p>
                   <form
                     action="${pageContext.request.contextPath}/book/${book.bookId}"
                     method="get"

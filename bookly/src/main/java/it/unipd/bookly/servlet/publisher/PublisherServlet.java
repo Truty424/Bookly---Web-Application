@@ -14,7 +14,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import it.unipd.bookly.dao.publisher.GetPublisherByIdDAO;
 
@@ -66,8 +68,19 @@ public class PublisherServlet extends AbstractDatabaseServlet {
     private void showBooksByPublisher(HttpServletRequest req, HttpServletResponse resp, int publisherId) throws Exception {
         List<Book> books;
         Publisher publisher;
+        Map<Integer, Double> bookRatings = new HashMap<>();
         try (var con = getConnection()) {
             books = new GetBooksByPublisherDAO(con, publisherId).access().getOutputParam();
+        }
+
+        // Compute ratings for each book
+        for (Book book : books) {
+            try (var con = getConnection()) {
+                Double rating = new it.unipd.bookly.dao.review.GetAvgRatingForBookDAO(con, book.getBookId())
+                        .access()
+                        .getOutputParam();
+                bookRatings.put(book.getBookId(), rating);
+            }
         }
         try (var con = getConnection()) {
             // Fetch publisher details (name) by publisherId
@@ -83,6 +96,7 @@ public class PublisherServlet extends AbstractDatabaseServlet {
 
         req.setAttribute("publisher_books", books);
         req.setAttribute("publisher_id", publisherId);
+        req.setAttribute("book_ratings", bookRatings);
         req.getRequestDispatcher("/jsp/publisher/publisherBooks.jsp").forward(req, resp);
     }
 }

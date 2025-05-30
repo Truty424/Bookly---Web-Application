@@ -88,7 +88,7 @@
                 </div>
                 <p>Based on ${review_count} reviews</p>
                 <p><strong>Stock:</strong> ${book_details.stockQuantity}</p>
-                <p class="book-price"><strong>Price:</strong> €${book_details.price}</p>
+                <p class="book-price"><strong>Price: </strong><span data-format="price">${book_details.price}</span> </p>
               </div>
             </div>
 
@@ -220,5 +220,6 @@
 <script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/main.js"></script>
 <script src="${pageContext.request.contextPath}/static/js/header.js"></script>
+<script src="${pageContext.request.contextPath}/static/js/format-number.js"></script>
 </body>
 </html>
