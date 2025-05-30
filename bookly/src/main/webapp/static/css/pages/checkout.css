@@ -143,3 +143,27 @@ body {
     font-weight: bold;
     color: #303030;
 }
+
+@media screen and (max-width: 768px) {
+  .checkout-grid-container {
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+
+  .checkout-left,
+  .checkout-right {
+    width: 100%;
+  }
+
+  .checkout-right {
+    margin-top: 20px;
+  }
+
+  .order-button {
+    width: 100%;
+  }
+}
+

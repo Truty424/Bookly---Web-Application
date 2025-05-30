@@ -106,3 +106,19 @@ body {
     color: white;
     transform: scale(1.03);
 }
+
+/* === Responsive === */
+@media screen and (max-width: 768px) {
+  .checkout-grid-container {
+    flex-direction: column;
+  }
+
+  .book-image {
+    width: 100px;
+    height: 150px;
+  }
+
+  .checkout-right {
+    width: 100%;
+  }
+}

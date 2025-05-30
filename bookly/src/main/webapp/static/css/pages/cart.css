@@ -133,10 +133,19 @@
     margin-top: 8px;
 }
 
+@media screen and (max-width: 768px) {
+  .cart-container {
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
+  }
 
-@media screen and (max-width: 576px) {
-    /* Buttons */
-.btn-cart {
+  .cart-summary {
     width: 100%;
-    }
+  }
+
+  .back-cart {
+    width: 100%;
+    justify-content: center;
+  }
 }
