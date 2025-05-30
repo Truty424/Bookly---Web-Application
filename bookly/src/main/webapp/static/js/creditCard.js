@@ -38,8 +38,11 @@ function detectCardBrand(value) {
 // Validate Card Number (Luhn)
 function validateCreditCardNumber(number) {
   const cleaned = number.replace(/\D/g, "");
-  if (!/^\d{13,19}$/.test(cleaned)) return false;
-
+  console.log("CLEANED:", cleaned);
+  if (!/^\d{13,19}$/.test(cleaned)) {
+    console.log("FAILED REGEX");
+    return false;
+  }
   let sum = 0;
   let shouldDouble = false;
 
@@ -56,6 +59,23 @@ function validateCreditCardNumber(number) {
   return sum % 10 === 0;
 }
 
+function showError(input, message) {
+  let errorEl = input.parentElement.querySelector(".error-message");
+  if (!errorEl) {
+    errorEl = document.createElement("div");
+    errorEl.className = "error-message";
+    input.parentElement.appendChild(errorEl);
+  }
+  errorEl.textContent = message;
+}
+
+function clearError(input) {
+  const errorEl = input.parentElement.querySelector(".error-message");
+  if (errorEl) {
+    errorEl.remove();
+  }
+}
+
 function validateCVV(cvv) {
   return /^\d{3,4}$/.test(cvv);
 }
@@ -70,7 +90,6 @@ function validateCVV(cvv) {
 
 //   return year > currentYear || (year === currentYear && month >= currentMonth);
 // }
-
 
 function validateCart() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -115,7 +134,7 @@ function setupFormValidation() {
 
 document.addEventListener("DOMContentLoaded", () => {
   const cardNumberInput = document.querySelector("input[name='cardNumber']");
-  // const expiryInput = document.querySelector("input[name='expiry']");
+  const expiryInput = document.querySelector("input[name='expiry']");
   const cvvInput = document.querySelector("input[name='cvv']");
   const methodSelect = document.getElementById("paymentMethod");
   const creditCardFields = document.getElementById("credit-card-fields");
@@ -128,16 +147,27 @@ document.addEventListener("DOMContentLoaded", () => {
   autoTab(expiryInput, "input[name='cvv']", 5);
   setupFormValidation();
 
-  console.log(methodSelect);
-
   function updateButtonState() {
     const method = methodSelect.value;
 
     if (method === "credit_card") {
       const cardValid = validateCreditCardNumber(cardNumberInput.value);
       const cvvValid = validateCVV(cvvInput.value);
-      // const expiryValid = validateExpiryDate(expiryInput.value);
-      orderButton.disabled = !(cardValid && cvvValid);
+      if (!cardValid && cardNumberInput.value.trim().length > 0) {
+        showError(cardNumberInput, "Invalid card number.");
+      } else {
+        clearError(cardNumberInput);
+      }
+  
+      if (!cvvValid && cvvInput.value.trim().length > 0) {
+        showError(cvvInput, "Invalid CVV.");
+      } else {
+        clearError(cvvInput);
+      }
+  
+      const expiryValid = validateExpiryDate(expiryInput.value);
+      console.log(expiryValid);
+      orderButton.disabled = !(cardValid && cvvValid && expiryValid);
     } else if (method === "in_person") {
       const addressValid = addressInput.value.trim().length > 0;
       orderButton.disabled = !addressValid;
@@ -150,18 +180,17 @@ document.addEventListener("DOMContentLoaded", () => {
   methodSelect.addEventListener("change", () => {
     const method = methodSelect.value;
 
-    creditCardFields.style.display =  method === "credit_card" ? "block" : "none";
+    creditCardFields.style.display =
+      method === "credit_card" ? "block" : "none";
     addressField.style.display = method === "in_person" ? "block" : "none";
 
     updateButtonState();
   });
 
   // Watch all input fields for changes
-  [cardNumberInput, expiryInput, cvvInput, addressInput, methodSelect].forEach(
-    (input) => {
-      input.addEventListener("input", updateButtonState);
-    }
-  );
+  [cardNumberInput, cvvInput, addressInput, methodSelect].forEach((input) => {
+    input.addEventListener("input", updateButtonState);
+  });
 
   updateButtonState(); // check initial state
 });
