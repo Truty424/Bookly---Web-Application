@@ -198,8 +198,12 @@ public class AdminServlet extends AbstractDatabaseServlet {
 
     // ========================== AUTHOR ==========================
     private void handleAddAuthor(HttpServletRequest req) throws Exception {
-        // String[] bookIds = req.getParameterValues("bookIds");
+        String[] bookIds = req.getParameterValues("bookIds");
         Author author;
+
+        int authorId;
+
+        // Step 1: Insert the author and retrieve generated ID
         try (var con = getConnection()) {
             author = new Author(
                     req.getParameter("firstName"),
@@ -208,8 +212,20 @@ public class AdminServlet extends AbstractDatabaseServlet {
                     req.getParameter("nationality")
             );
             new InsertAuthorDAO(con, author).access();
-            LOGGER.info("Author '{} {}' added.", author.getFirstName(), author.getLastName());
-            // Retrieve selected books
+            authorId = author.getAuthorId(); // ✅ Now populated
+            LOGGER.info("Author '{} {}' inserted with ID {}", author.getFirstName(), author.getLastName(), authorId);
+        }
+
+        // Step 2: Link the author to books, if any
+        if (bookIds != null && bookIds.length > 0) {
+            for (String bookIdStr : bookIds) {
+                try (Connection con = getConnection()) {
+                    int bookId = Integer.parseInt(bookIdStr);
+                    new AddAuthorToBookDAO(con, bookId, authorId).access();
+                } catch (NumberFormatException e) {
+                    LOGGER.warn("Invalid book ID '{}', skipping...", bookIdStr);
+                }
+            }
         }
     }
 
@@ -239,6 +255,7 @@ public class AdminServlet extends AbstractDatabaseServlet {
     private void handleAddPublisher(HttpServletRequest req) throws Exception {
         String[] bookIds = req.getParameterValues("bookIds");
         Publisher publisher;
+        int publisherId;
         try (var con = getConnection()) {
             publisher = new Publisher(
                     req.getParameter("publisher_name"),
@@ -248,16 +265,16 @@ public class AdminServlet extends AbstractDatabaseServlet {
 
             // Insert and populate the generated ID
             new InsertPublisherDAO(con, publisher).access();  // sets publisherId inside
-            int publisherId = publisher.getPublisherId();     // now has real ID
+            publisherId = publisher.getPublisherId();     // now has real ID
+        }
 
-            if (bookIds != null && bookIds.length > 0) {
-                for (String bookIdStr : bookIds) {
-                    try {
-                        int bookId = Integer.parseInt(bookIdStr);
-                        new AddPublisherToBookDAO(con, bookId, publisherId).access();
-                    } catch (NumberFormatException e) {
-                        LOGGER.warn("Invalid book ID '{}', skipping...", bookIdStr);
-                    }
+        if (bookIds != null && bookIds.length > 0) {
+            for (String bookIdStr : bookIds) {
+                try (Connection con = getConnection()) {
+                    int bookId = Integer.parseInt(bookIdStr);
+                    new AddPublisherToBookDAO(con, bookId, publisherId).access();
+                } catch (NumberFormatException e) {
+                    LOGGER.warn("Invalid book ID '{}', skipping...", bookIdStr);
                 }
             }
         }
