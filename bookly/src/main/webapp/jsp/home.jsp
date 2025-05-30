@@ -166,9 +166,15 @@ import="it.unipd.bookly.Resource.Category" %> <%@ page import="java.util.List"
                       ${author.name}<c:if test="${!authorStatus.last}">, </c:if>
                     </c:forEach>
                   </p>
-                  <p class="book-rating" data-format="rating">
-                    ${book.average_rate}
-                  </p>
+                  <div class="book-rating">
+                    <c:forEach begin="1" end="5" var="i">
+                      <i class="<c:choose>
+                                  <c:when test='${i <= book.average_rate}'>fas fa-star</c:when>
+                                  <c:otherwise>far fa-star</c:otherwise>
+                               </c:choose>"></i>
+                    </c:forEach>
+                    <span>(${book.average_rate})</span>
+                  </div>                  
                   <p class="book-price" data-format="price">${book.price}</p>
                 </a>
               </c:forEach>

@@ -99,12 +99,21 @@ public final class BookQueries {
      * SQL query to retrieve top-rated books, including images.
      */
     public static final String GET_TOP_RATED_BOOKS = """
-        SELECT b.*, i.image, i.image_type
-        FROM booklySchema.books b
-        LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
-        WHERE b.average_rate >= ?
-        ORDER BY b.average_rate DESC
-        """;
+    SELECT b.book_id, b.title, b.language, b.isbn, b.price, b.edition,
+           b.publication_year, b.number_of_pages, b.stock_quantity,
+           b.summary,
+           i.image, i.image_type,
+           AVG(r.rating) AS average_rate
+    FROM booklySchema.books b
+    LEFT JOIN booklySchema.book_image i ON b.book_id = i.book_id
+    JOIN booklySchema.reviews r ON b.book_id = r.book_id
+    GROUP BY b.book_id, b.title, b.language, b.isbn, b.price, b.edition,
+             b.publication_year, b.number_of_pages, b.stock_quantity,
+             b.summary, i.image, i.image_type
+    HAVING AVG(r.rating) >= ?
+    ORDER BY AVG(r.rating) DESC
+    LIMIT 10
+    """;
 
     // --- UPDATE ---
     /**
