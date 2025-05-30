@@ -1,11 +1,3 @@
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: #fef7ef; /* Soft beige like homepage */
-    margin: 0;
-    padding: 0;
-    color: #303030;
-}
-
 .cart-container {
     display: flex;
     flex-direction: row;

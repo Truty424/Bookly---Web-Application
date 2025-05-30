@@ -234,6 +234,9 @@
     }
 
     .sidebar-content ul {
+        display: grid;
+        place-content: start;
+        place-items: start;
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
@@ -269,6 +272,8 @@
 
     .profile-card > div {
         text-align: center;
+        background: transparent;
+        border: none;
     }
 
     .upload-profile-image label {

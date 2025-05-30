@@ -120,6 +120,10 @@ body {
     margin-top: 8px;
 }
 
+.order-button:disabled {
+    background: linear-gradient(to right, #ffc9b0, #6a5044);
+}
+
 .order-button:hover {
     background-color: #E68458;
     transform: scale(1.05);

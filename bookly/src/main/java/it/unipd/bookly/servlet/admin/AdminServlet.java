@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Timestamp;
 
 import it.unipd.bookly.LogContext;
@@ -244,19 +245,19 @@ public class AdminServlet extends AbstractDatabaseServlet {
                     req.getParameter("phone"),
                     req.getParameter("address")
             );
-            new InsertPublisherDAO(con, publisher).access();
-            LOGGER.info("Publisher '{}' added.", publisher.getPublisherName());
-        }
-        if (bookIds != null && bookIds.length > 0) {
-            for (String bookIdStr : bookIds) {
-                try {
-                    int bookId = Integer.parseInt(bookIdStr);
-                    try (var con = getConnection()) {
-                        new AddPublisherToBookDAO(con, bookId, publisher.getPublisherId()).access();
-                        LOGGER.info("Assigned book {} to publisher {}", bookId, publisher.getPublisherId());
+
+            // Insert and populate the generated ID
+            new InsertPublisherDAO(con, publisher).access();  // sets publisherId inside
+            int publisherId = publisher.getPublisherId();     // now has real ID
+
+            if (bookIds != null && bookIds.length > 0) {
+                for (String bookIdStr : bookIds) {
+                    try {
+                        int bookId = Integer.parseInt(bookIdStr);
+                        new AddPublisherToBookDAO(con, bookId, publisherId).access();
+                    } catch (NumberFormatException e) {
+                        LOGGER.warn("Invalid book ID '{}', skipping...", bookIdStr);
                     }
-                } catch (NumberFormatException e) {
-                    LOGGER.warn("Invalid book ID '{}', skipping...", bookIdStr);
                 }
             }
         }
