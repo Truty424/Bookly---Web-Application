@@ -94,6 +94,13 @@ function setupFormValidation() {
 
   form.addEventListener("submit", function (e) {
     const paymentMethod = document.getElementById("paymentMethod").value;
+    const address = document.getElementById("address").value;
+
+    if (!address.trim()) {
+      alert("Address is required.");
+      e.preventDefault();
+      return;
+    }
 
     if (paymentMethod === "credit_card") {
       const cardNumber = document.querySelector(
@@ -116,13 +123,6 @@ function setupFormValidation() {
 
       if (!validateExpiryDate(expiry)) {
         alert("Invalid expiry date.");
-        e.preventDefault();
-        return;
-      }
-    } else if (paymentMethod === "in_person") {
-      const address = document.getElementById("address").value;
-      if (!address.trim()) {
-        alert("Address is required.");
         e.preventDefault();
         return;
       }
@@ -154,6 +154,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const cardValid = validateCreditCardNumber(cardNumberInput.value);
       const cvvValid = validateCVV(cvvInput.value);
       const expiryValid = validateExpiryDate(expiryInput.value);
+      const addressValid = addressInput.value.trim().length > 0;
+
+      if (!addressValid) showError(addressInput, "Address is required.");
+      else clearError(addressInput);
 
       // Show errors only if there's input
       if (cardNumberInput.value.trim() && !cardValid) {
@@ -174,7 +178,12 @@ document.addEventListener("DOMContentLoaded", () => {
         clearError(expiryInput);
       }
 
-      orderButton.disabled = !(cardValid && cvvValid && expiryValid);
+      orderButton.disabled = !(
+        cardValid &&
+        cvvValid &&
+        expiryValid &&
+        addressValid
+      );
     } else if (method === "in_person") {
       const addressValid = addressInput.value.trim().length > 0;
 
@@ -196,7 +205,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     creditCardFields.style.display =
       method === "credit_card" ? "block" : "none";
-    addressField.style.display = method === "in_person" ? "block" : "none";
+
+    addressField.style.display = "block";
 
     updateButtonState();
   });

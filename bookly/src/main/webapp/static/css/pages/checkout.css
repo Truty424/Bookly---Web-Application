@@ -109,7 +109,7 @@
     font-weight: 500;
     cursor: pointer;
     transition: background 0.3s ease, transform 0.3s ease;
-    margin-top: 8px;
+    margin-top: 0;
 }
 
 .order-button:disabled {
