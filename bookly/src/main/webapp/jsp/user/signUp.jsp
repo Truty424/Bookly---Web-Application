@@ -129,6 +129,13 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             </div>
           </div>
 
+
+          <c:if test="${not empty error_message}">
+            <p class="text-danger text-center mt-2">
+              <strong>${error_message}</strong>
+            </p>
+          </c:if>
+
           <div class="row">
             <div class="col-12">
               <button type="submit" class="w-100 signup-btn mt-3">
@@ -136,12 +143,6 @@ uri="http://java.sun.com/jsp/jstl/core" %>
               </button>
             </div>
           </div>
-
-          <c:if test="${not empty error_message}">
-            <p class="text-danger text-center mt-2">
-              <strong>${error_message}</strong>
-            </p>
-          </c:if>
         </form>
 
         <p class="text-center signin-link mt-4">

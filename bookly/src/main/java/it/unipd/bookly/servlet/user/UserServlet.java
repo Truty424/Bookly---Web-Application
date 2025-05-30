@@ -178,7 +178,18 @@ public class UserServlet extends AbstractDatabaseServlet {
 
         } catch (Exception e) {
             LOGGER.error("Registration failed: {}", e.getMessage(), e);
-            writeError(res, ErrorCode.INTERNAL_ERROR);
+            String lowerMessage = e.getMessage().toLowerCase();
+
+            String errorMessage = "Registration failed due to a server error.";
+
+            if (lowerMessage.contains("users_username_key")) {
+                errorMessage = "Username already exists. Please choose another.";
+            } else if (lowerMessage.contains("users_email_key")) {
+                errorMessage = "An account with this email already exists.";
+            }
+
+            req.setAttribute("error_message", errorMessage);
+            forward(req, res, "/jsp/user/signUp.jsp");
         }
     }
 
@@ -203,6 +214,7 @@ public class UserServlet extends AbstractDatabaseServlet {
                 """);
         }
     }
+
     private void changePassword(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
         if (session == null || session.getAttribute("user") == null) {
