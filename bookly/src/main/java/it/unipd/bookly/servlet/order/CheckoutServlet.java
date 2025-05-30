@@ -2,7 +2,6 @@ package it.unipd.bookly.servlet.order;
 
 import it.unipd.bookly.LogContext;
 import it.unipd.bookly.Resource.*;
-import it.unipd.bookly.dao.author.GetAuthorsByBookListDAO;
 import it.unipd.bookly.dao.cart.*;
 import it.unipd.bookly.dao.order.InsertOrderDAO;
 import it.unipd.bookly.dao.order.InsertOrderItemsDAO;
@@ -18,8 +17,6 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
-import java.util.Map;
-import java.util.HashMap;
 
 @WebServlet(name = "CheckoutServlet", value = "/checkout")
 public class CheckoutServlet extends AbstractDatabaseServlet {
@@ -53,22 +50,14 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             double total = calculateCartTotal(books);
             double finalTotal = applyDiscountIfExists(getConnection(), cart.getCartId(), session);
 
-            // Get authors for books in cart
-            List<Integer> bookIds = books.stream().map(Book::getBookId).toList();
-            Map<Integer, List<Author>> authorsMap;
-            try (Connection con = getConnection()) {
-                authorsMap = new GetAuthorsByBookListDAO(con, bookIds).access().getOutputParam();
-            } catch (Exception e) {
-                authorsMap = new HashMap<>(); // fallback to avoid crashing JSP
-                LOGGER.warn("Could not fetch authors for checkout view: {}", e.getMessage());
-            }
+            // Format the final total to 2 decimal places
+            String formattedTotal = String.format("%.2f", total);
+            String formattedFinalTotal = String.format("%.2f", finalTotal);
 
             // Pass the formatted values to the JSP
             req.setAttribute("cart_books", books);
             req.setAttribute("total_price", total);
             req.setAttribute("final_total", finalTotal);
-            req.setAttribute("authors_map", authorsMap);
-
 
             req.getRequestDispatcher("/jsp/order/checkout.jsp").forward(req, res);
         } catch (Exception e) {
@@ -79,7 +68,6 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
             LogContext.removeResource();
         }
     }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -95,10 +83,36 @@ public class CheckoutServlet extends AbstractDatabaseServlet {
 
         String address = req.getParameter("address");
         String paymentMethod = req.getParameter("paymentMethod");
+        String cardNumber = req.getParameter("cardNumber");
+        String cvv = req.getParameter("cvv");
+        String expiry = req.getParameter("expiry");
 
-        if (address == null || address.isBlank() || paymentMethod == null || paymentMethod.isBlank()) {
-            ServletUtils.redirectToErrorPage(req, res, "Please fill in all checkout fields.");
-            return;
+        if (paymentMethod == null || paymentMethod.isBlank()) {
+            ServletUtils.redirectToErrorPage(req, res, "Payment method is required.");
+        } else if ("credit_card".equals(paymentMethod)) {
+            if (cardNumber == null || !cardNumber.replaceAll("\\s+", "").matches("\\d{13,19}")) {
+                ServletUtils.redirectToErrorPage(req, res, "Invalid card number.");
+            }
+            if (cvv == null || !cvv.matches("\\d{3,4}")) {
+                ServletUtils.redirectToErrorPage(req, res, "Invalid CVV.");
+            }
+            if (expiry == null || !expiry.matches("\\d{4}-\\d{2}")) {
+                ServletUtils.redirectToErrorPage(req, res, "Invalid expiry date format.");
+            } else {
+                // Validate if expiry date is future
+                String[] parts = expiry.split("-");
+                int year = Integer.parseInt(parts[0]);
+                int month = Integer.parseInt(parts[1]);
+                java.time.YearMonth now = java.time.YearMonth.now();
+                java.time.YearMonth exp = java.time.YearMonth.of(year, month);
+                if (exp.isBefore(now)) {
+                    ServletUtils.redirectToErrorPage(req, res, "Card expiry must be in the future.");
+                }
+            }
+        } else if ("in_person".equals(paymentMethod)) {
+            if (address == null || address.isBlank()) {
+                ServletUtils.redirectToErrorPage(req, res, "Delivery address is required.");
+            }
         }
 
         try {

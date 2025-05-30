@@ -75,6 +75,7 @@
     font-size: 1rem;
     margin-bottom: 12px;
 }
+
 .back-cart {
     background-color: #333;
     color: #fff;
@@ -148,4 +149,15 @@
     width: 100%;
     justify-content: center;
   }
+  .btn-cart {
+    margin-top: 0;
+    font-size: 0.75rem;
+  }
 }
+
+@media screen and (min-width: 768px) and (max-width: 1025px) {
+    .back-cart {
+        width: 50%;
+        font-size: 12px;
+    }
+} 

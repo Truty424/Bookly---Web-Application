@@ -96,13 +96,13 @@ import="java.util.List" %>
               </div>
             </div>
             <div class="row my-2">
-              <!-- <div class="form-group d-flex justify-content-center align-items-center gap-2 my-2">
+              <div class="form-group d-flex justify-content-center align-items-center gap-2 my-2">
                 <label for="expiry">Expiry Date</label>
                 <input type="month" name="expiry" id="expiry" />
                 <c:if test="${not empty errors.expiry}">
                   <div class="error-message">${errors.expiry}</div>
                 </c:if>
-              </div> -->
+              </div>
               <div class="form-group d-flex justify-content-center align-items-center gap-2 my-2">
                 <label for="cvv">CVV</label>
                 <input

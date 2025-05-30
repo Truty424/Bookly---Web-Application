@@ -8,15 +8,6 @@ function formatCardNumber(input) {
   });
 }
 
-// Auto Move to Next Field
-function autoTab(input, nextSelector, length) {
-  input.addEventListener("input", () => {
-    if (input.value.replace(/\s/g, "").length === length) {
-      document.querySelector(nextSelector).focus();
-    }
-  });
-}
-
 // Card Brand Detection
 function detectCardBrand(value) {
   const brandElem = document.getElementById("card-brand");
@@ -80,55 +71,62 @@ function validateCVV(cvv) {
   return /^\d{3,4}$/.test(cvv);
 }
 
-// function validateExpiryDate(expiry) {
-//   if (!/^\d{4}-\d{2}$/.test(expiry)) return false;
+function validateExpiryDate(expiry) {
+  if (!/^\d{4}-\d{2}$/.test(expiry)) return false;
 
-//   const [year, month] = expiry.split("-").map(Number);
-//   const currentDate = new Date();
-//   const currentYear = currentDate.getFullYear();
-//   const currentMonth = currentDate.getMonth() + 1;
+  const [year, month] = expiry.split("-").map(Number);
 
-//   return year > currentYear || (year === currentYear && month >= currentMonth);
-// }
+  const currentDate = new Date();
+  const currentYear = currentDate.getFullYear();
+  const currentMonth = currentDate.getMonth() + 1;
+
+  return year > currentYear || (year === currentYear && month >= currentMonth);
+}
 
 function validateCart() {
   const cart = JSON.parse(localStorage.getItem("cart")) || [];
   return cart.length > 0;
 }
 
-// Main Submission Handler
 function setupFormValidation() {
   const form = document.querySelector("#checkout-form");
   if (!form) return;
 
   form.addEventListener("submit", function (e) {
-    const cardNumber = document.querySelector("input[name='cardNumber']").value;
-    const cvv = document.querySelector("input[name='cvv']").value;
-    const expiry = document.querySelector("input[name='expiry']").value;
+    const paymentMethod = document.getElementById("paymentMethod").value;
 
-    if (!validateCart()) {
-      alert("Cart is empty.");
-      e.preventDefault();
-      return;
+    if (paymentMethod === "credit_card") {
+      const cardNumber = document.querySelector(
+        "input[name='cardNumber']"
+      ).value;
+      const cvv = document.querySelector("input[name='cvv']").value;
+      const expiry = document.querySelector("input[name='expiry']").value;
+
+      if (!validateCreditCardNumber(cardNumber)) {
+        alert("Invalid card number.");
+        e.preventDefault();
+        return;
+      }
+
+      if (!validateCVV(cvv)) {
+        alert("Invalid CVV.");
+        e.preventDefault();
+        return;
+      }
+
+      if (!validateExpiryDate(expiry)) {
+        alert("Invalid expiry date.");
+        e.preventDefault();
+        return;
+      }
+    } else if (paymentMethod === "in_person") {
+      const address = document.getElementById("address").value;
+      if (!address.trim()) {
+        alert("Address is required.");
+        e.preventDefault();
+        return;
+      }
     }
-
-    if (!validateCreditCardNumber(cardNumber)) {
-      alert("Invalid card number.");
-      e.preventDefault();
-      return;
-    }
-
-    if (!validateCVV(cvv)) {
-      alert("Invalid CVV.");
-      e.preventDefault();
-      return;
-    }
-
-    // if (!validateExpiryDate(expiry)) {
-    //   alert("Invalid expiry date.");
-    //   e.preventDefault();
-    //   return;
-    // }
   });
 }
 
@@ -143,33 +141,49 @@ document.addEventListener("DOMContentLoaded", () => {
   const orderButton = document.querySelector(".order-button");
 
   formatCardNumber(cardNumberInput);
-  autoTab(cardNumberInput, "input[name='expiry']", 19);
-  autoTab(expiryInput, "input[name='cvv']", 5);
   setupFormValidation();
 
   function updateButtonState() {
+    clearError(cardNumberInput);
+    clearError(cvvInput);
+    clearError(expiryInput);
+    clearError(addressInput);
     const method = methodSelect.value;
 
     if (method === "credit_card") {
       const cardValid = validateCreditCardNumber(cardNumberInput.value);
       const cvvValid = validateCVV(cvvInput.value);
-      if (!cardValid && cardNumberInput.value.trim().length > 0) {
+      const expiryValid = validateExpiryDate(expiryInput.value);
+
+      // Show errors only if there's input
+      if (cardNumberInput.value.trim() && !cardValid) {
         showError(cardNumberInput, "Invalid card number.");
       } else {
         clearError(cardNumberInput);
       }
-  
-      if (!cvvValid && cvvInput.value.trim().length > 0) {
+
+      if (cvvInput.value.trim() && !cvvValid) {
         showError(cvvInput, "Invalid CVV.");
       } else {
         clearError(cvvInput);
       }
-  
-      const expiryValid = validateExpiryDate(expiryInput.value);
-      console.log(expiryValid);
+
+      if (expiryInput.value.trim() && !validateExpiryDate(expiryInput.value)) {
+        showError(expiryInput, "Expiry date must be in the future.");
+      } else {
+        clearError(expiryInput);
+      }
+
       orderButton.disabled = !(cardValid && cvvValid && expiryValid);
     } else if (method === "in_person") {
       const addressValid = addressInput.value.trim().length > 0;
+
+      if (!addressValid) {
+        showError(addressInput, "Address is required.");
+      } else {
+        clearError(addressInput);
+      }
+
       orderButton.disabled = !addressValid;
     } else {
       orderButton.disabled = true;
